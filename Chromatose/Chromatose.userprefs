@@ -1,0 +1,13 @@
+﻿<Properties>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Plugins\whydoidoit.com\Radical\System\Radical.cs">
+    <Files>
+      <File FileName="Assets\Plugins\whydoidoit.com\Radical\System\Radical.cs" Line="1037" Column="4" />
+      <File FileName="Assets\TK2DROOT\tk2d\Code\Sprites\tk2dBaseSprite.cs" Line="527" Column="5" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>
