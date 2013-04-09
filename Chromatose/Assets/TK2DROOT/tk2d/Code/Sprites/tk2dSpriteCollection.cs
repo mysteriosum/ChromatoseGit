@@ -531,7 +531,7 @@ public class tk2dSpriteCollection : MonoBehaviour
 	public bool mipmapEnabled = false;
 	public int anisoLevel = 1;
 
-	public float physicsDepth = 0.1f;
+	public float physicsDepth = 10f;
 	
 	public bool disableTrimming = false;
 	
