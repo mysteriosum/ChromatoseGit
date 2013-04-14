@@ -2,10 +2,12 @@
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
   <MonoDevelop.Ide.Workbench ActiveDocument="Assets\ChromAssets\Systems\Gameplay Systems\Movement.cs">
     <Files>
-      <File FileName="Assets\ChromAssets\Systems\Gameplay Systems\Movement.cs" Line="62" Column="17" />
+      <File FileName="Assets\ChromAssets\Systems\Management\ChromatoseManager.cs" Line="1" Column="1" />
+      <File FileName="Assets\TK2DROOT\tk2d\Shaders\resources\BlendVertexColor.shader" Line="1" Column="1" />
+      <File FileName="Assets\ChromAssets\Systems\Gameplay Systems\Movement.cs" Line="198" Column="96" />
       <File FileName="Assets\Plugins\whydoidoit.com\Radical\System\Radical.cs" Line="1" Column="1" />
       <File FileName="Assets\TK2DROOT\tk2d\Code\Sprites\tk2dBaseSprite.cs" Line="1" Column="1" />
-      <File FileName="Assets\ChromAssets\Avatar\Avatar.cs" Line="9" Column="2" />
+      <File FileName="Assets\ChromAssets\Avatar\Avatar.cs" Line="1" Column="1" />
       <File FileName="Assets\ChromAssets\ING_NME\Scripts\ColourBeing.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
