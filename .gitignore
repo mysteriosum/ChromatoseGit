@@ -7,7 +7,7 @@ Chromatose/Assets/ChromAssets/*.meta
 Chromatose/Plusgins/*.meta
 Chromatose/TK2DROOT/*.meta
 Chromatose/UnitySerializer/*.meta
-Chromatose/Assets/Add-ons/*.meta
+Chromatose/Assets/Add-ons/*.*.meta
 Chromatose/Assets/Art/*.meta
 Chromatose/Assets/Avatar/*.meta
 Chromatose/Assets/ING_NME/*.meta
