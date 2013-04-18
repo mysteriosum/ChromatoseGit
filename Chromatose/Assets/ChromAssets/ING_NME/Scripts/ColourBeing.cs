@@ -7,6 +7,9 @@ using System.Collections;
 abstract public class ColourBeing : MonoBehaviour {		//base class for all living things in Chromatose
 	
 	public Colour colour;
+	protected Colour shownColour;
+	protected Colour tempColour = new Colour(-1, -1, -1);
+	
 	[System.SerializableAttribute]
 	public class Colour{
 		
@@ -14,16 +17,40 @@ abstract public class ColourBeing : MonoBehaviour {		//base class for all living
 		public int g;
 		public int b;
 		
+		public Colour(int R, int G, int B){
+			r = R;
+			g = G;
+			b = B;
+			
+		}
+		public Colour(){
+			r = 0;
+			g = 0;
+			b = 0;
+		}
+		public override string ToString(){
+			return "r = " + r + 
+				" | g = " + g + 
+				" | b = " + b;
+			
+		}
 	}
-	
 	private bool dead;
 	public bool Dead{
+		get{ return dead; }
+		set{ dead = value;
+			transform.position = dead? new Vector3(transform.position.x, transform.position.y, -50)
+									 : new Vector3(transform.position.x, transform.position.y, 0); }
+	}
+	
+	private bool gone;
+	public bool Gone{
 		get{
-			return dead;
+			return gone;
 		}
 		set{
-			dead = value;
-			transform.position = dead? new Vector3(transform.position.x, transform.position.y, -200)
+			gone = value;
+			transform.position = gone? new Vector3(transform.position.x, transform.position.y, -200)
 									 : new Vector3(transform.position.x, transform.position.y, 0);
 		}
 	}
@@ -31,6 +58,8 @@ abstract public class ColourBeing : MonoBehaviour {		//base class for all living
 	protected int colourConsiderMin = 100;
 	protected bool tinted;
 	protected bool triggered = false;
+	protected bool tempered = false;
+	protected float tempCounter = 0f;
 	
 	// Use this for initialization
 	void Start () {
@@ -40,7 +69,6 @@ abstract public class ColourBeing : MonoBehaviour {		//base class for all living
 	
 	// Update is called once per frame
 	void Update () {
-	
 	}
 	
 	public Colour GetColour(){
@@ -67,6 +95,69 @@ abstract public class ColourBeing : MonoBehaviour {		//base class for all living
 		}
 		return false;
 	}
+	
+	
+	/// <summary>
+	/// Sets a temporary value to a colour
+	/// </summary>
+	/// <param name='toAdd'>
+	/// What colour to add; 0 = r; 1 = g; 2 = b.
+	/// </param>
+	/// <param name='newValue'>
+	/// New colour value.
+	/// </param>
+	
+	public void TempColour(int toAdd, int newValue){
+		
+		Debug.Log("Start of temp colour! and " + tempColour + " vs " + colour);
+		switch (toAdd){
+		case 0:
+			if (tempColour.r >= 0) break;
+			tempColour = new Colour(colour.r, -1, -1);
+			colour.r = newValue;
+			break;
+		case 1:
+			if (tempColour.g >= 0) break;
+			tempColour = new Colour(-1, colour.g, -1);
+			colour.g = newValue;
+			break;
+		case 2:
+			if (tempColour.b >= 0) break;
+			tempColour = new Colour(-1, -1, colour.b);
+			colour.b = newValue;
+			break;
+		default:
+			Debug.LogWarning("Trying to add colour but your toAdd value is " + toAdd.ToString());
+			break;
+		}
+		Debug.Log("End of tempColour! and " + tempColour + " vs " + colour);
+		
+	}
+	
+	public void EndTemp(){
+		if (tempColour.r >= 0){
+			colour.r = tempColour.r;
+		}
+		if (tempColour.g >= 0){
+			colour.g = tempColour.g;
+		}
+		if (tempColour.b >= 0){
+			colour.b = tempColour.b;
+		}
+		
+		Debug.Log("End that temp! and " + tempColour + " vs " + colour);
+		tempColour = new Colour (-1, -1, -1);
+	}
+	
+	/// <summary>
+	/// Adds the colour.
+	/// </summary>
+	/// <param name='toAdd'>
+	/// What colour to add; 0 = r; 1 = g; 2 = b.
+	/// </param>
+	/// <param name='amount'>
+	/// Amount.
+	/// </param>
 	
 	public void AddColour(int toAdd, int amount){
 		//Debug.Log("Adding colour!");

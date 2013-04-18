@@ -1,14 +1,16 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\ChromAssets\Systems\Gameplay Systems\Movement.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\ChromAssets\ING_NME\Scripts\DangerBlob.cs">
     <Files>
-      <File FileName="Assets\ChromAssets\Systems\Management\ChromatoseManager.cs" Line="1" Column="1" />
-      <File FileName="Assets\TK2DROOT\tk2d\Shaders\resources\BlendVertexColor.shader" Line="1" Column="1" />
-      <File FileName="Assets\ChromAssets\Systems\Gameplay Systems\Movement.cs" Line="198" Column="96" />
-      <File FileName="Assets\Plugins\whydoidoit.com\Radical\System\Radical.cs" Line="1" Column="1" />
-      <File FileName="Assets\TK2DROOT\tk2d\Code\Sprites\tk2dBaseSprite.cs" Line="1" Column="1" />
-      <File FileName="Assets\ChromAssets\Avatar\Avatar.cs" Line="1" Column="1" />
-      <File FileName="Assets\ChromAssets\ING_NME\Scripts\ColourBeing.cs" Line="1" Column="1" />
+      <File FileName="Assets\ChromAssets\Systems\Gameplay Systems\Movement.cs" Line="1" Column="1" />
+      <File FileName="Assets\ChromAssets\ING_NME\Scripts\DangerBlob.cs" Line="1" Column="1" />
+      <File FileName="Assets\ChromAssets\ING_NME\Scripts\Spawner.cs" Line="22" Column="14" />
+      <File FileName="Assets\ChromAssets\ING_NME\Scripts\Killer.cs" Line="20" Column="1" />
+      <File FileName="Assets\ChromAssets\Add-ons\GizmoDad.cs" Line="1" Column="1" />
+      <File FileName="Assets\ChromAssets\ING_NME\Scripts\ColourBeing.cs" Line="31" Column="37" />
+      <File FileName="Assets\ChromAssets\ING_NME\Scripts\Collectible.cs" Line="17" Column="17" />
+      <File FileName="Assets\ChromAssets\Systems\Management\ChromatoseManager.cs" Line="75" Column="2" />
+      <File FileName="Assets\ChromAssets\ING_NME\Scripts\TollBooth.cs" Line="26" Column="66" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

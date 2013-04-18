@@ -24,9 +24,10 @@ public class GizmoDad : MonoBehaviour {
 	
 	public Couleur myColour = Couleur.black;
 	public Forme myShape = Forme.wireSphere;
-	public float radius = 1;
+	public float radius = 50f;
 	public Vector3 size = Vector3.one;
 	public bool useCollider = false;
+	public float alpha = 1f;
 	private Color myColor;
 	
 	
@@ -51,47 +52,49 @@ public class GizmoDad : MonoBehaviour {
 			t.localScale = Vector3.one;
 		}
 		
+		alpha = Mathf.Clamp01(alpha);
 		
 		size = useCollider ? collider.size : size;
 		
 		switch (myColour){
 			
 		case Couleur.black:
-			myColor = Color.black;
+			myColor = new Color(0, 0, 0, alpha);
 			break;
 			
 		case Couleur.white:
-			myColor = Color.white;
+			myColor = new Color(255, 255, 255, alpha);
 			break;
 			
 		case Couleur.red:
-			myColor = Color.red;
+			myColor = new Color(255, 0, 0, alpha);
 			break;
 			
 		case Couleur.blue:
-			myColor = Color.blue;
+			myColor = new Color(0, 0, 255, alpha);
 			break;
 			
 		case Couleur.green:
-			myColor = Color.green;
+			myColor = new Color(0, 255, 0, alpha);
 			break;
 			
 		case Couleur.yellow:
-			myColor = Color.yellow;
+			myColor = new Color(255, 0, 255, alpha);
 			break;
 			
 		case Couleur.magenta:
-			myColor = Color.magenta;
+			myColor = new Color(255, 255, 0, alpha);
 			break;
 			
 		case Couleur.cyan:
-			myColor = Color.cyan;
+			myColor = new Color(0, 255, 255, alpha);
 			break;
 		}
 		
 		Matrix4x4 rotMatrix = Matrix4x4.TRS(t.position, t.rotation, t.lossyScale);
 		Gizmos.matrix = rotMatrix;
 		Gizmos.color = myColor;
+		
 		
 		switch(myShape){
 		case Forme.cube:

@@ -24,8 +24,8 @@ public class Movement : MonoBehaviour {
 	[System.Serializable]
 	public class Thruster{			//This is where I do all of my Translation
 		
-		public float maxSpeed;
-		public float accel;
+		public float maxSpeed = 100;
+		public float accel = 5;
 		[System.NonSerialized]
 		public float magnitude;
 		[System.NonSerialized]
