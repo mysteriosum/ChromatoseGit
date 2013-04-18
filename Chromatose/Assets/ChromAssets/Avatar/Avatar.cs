@@ -57,9 +57,9 @@ public class Avatar : ColourBeing
 		
 		if (loseTimer >= loseRate){
 			loseTimer = 0f;
-			colour.r -= 1;
-			colour.g -= 1;
-			colour.b -= 1;
+			colour.r = tempColour.r >= 0 ? colour.r : colour.r - 1;
+			colour.g = tempColour.g >= 0 ? colour.g : colour.g - 1;
+			colour.b = tempColour.b >= 0 ? colour.b : colour.b - 1;
 		}
 		
 		colour.r = Mathf.Clamp(colour.r, 0, 255);

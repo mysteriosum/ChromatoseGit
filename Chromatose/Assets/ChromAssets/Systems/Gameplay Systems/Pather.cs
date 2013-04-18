@@ -22,7 +22,15 @@ public class Pather{		//Pather is the class that helps me find the path!
 	readonly int timing = 60;
 	
 	// Use this for initialization
-	
+	/// <summary>
+	/// Initializes a new instance of the <see cref="Pather"/> class.
+	/// </summary>
+	/// <param name='predator'>
+	/// Predator.
+	/// </param>
+	/// <param name='prey'>
+	/// Prey.
+	/// </param>
 	public Pather(Transform predator, Transform prey){
 		this.predator = predator;
 		this.prey = prey;
@@ -37,7 +45,12 @@ public class Pather{		//Pather is the class that helps me find the path!
 		targets = new Transform[nodes.GetLength(0)];
 		Debug.Log("all the targets: " + nodes.GetLength(0));
 	}
-	
+	/// <summary>
+	/// Seek the specified target.
+	/// </summary>
+	/// <param name='target'>
+	/// Target.
+	/// </param>
 	public Transform Seek(Transform target){
 		timer ++;
 		
