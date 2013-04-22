@@ -135,8 +135,8 @@ public class tk2dSpriteCollectionDefinition
 	public ColliderType colliderType = ColliderType.UserDefined;
 	public Vector2 boxColliderMin, boxColliderMax;
 	public tk2dSpriteColliderIsland[] polyColliderIslands;
-	public PolygonColliderCap polyColliderCap = PolygonColliderCap.None;
-	public bool colliderConvex = false;
+	public PolygonColliderCap polyColliderCap = PolygonColliderCap.FrontAndBack;
+	public bool colliderConvex = true;
 	public bool colliderSmoothSphereCollisions = false;
 	public ColliderColor colliderColor = ColliderColor.Default;
 	

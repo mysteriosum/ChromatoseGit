@@ -59,6 +59,7 @@ public class DangerBlob : ColourBeing {
 
 	
 	void OnCollisionEnter(Collision other){
+		Debug.Log("COLLISION!");
 		if (other.gameObject.tag != "avatar"){
 			return;
 		}
