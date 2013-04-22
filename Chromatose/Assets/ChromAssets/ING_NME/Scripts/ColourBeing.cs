@@ -7,7 +7,7 @@ using System.Collections;
 abstract public class ColourBeing : MonoBehaviour {		//base class for all living things in Chromatose
 	
 	public Colour colour;
-	protected Colour shownColour;
+	protected Color shownColour;
 	protected Colour tempColour = new Colour(-1, -1, -1);
 	
 	[System.SerializableAttribute]
@@ -60,6 +60,7 @@ abstract public class ColourBeing : MonoBehaviour {		//base class for all living
 	protected bool triggered = false;
 	protected bool tempered = false;
 	protected float tempCounter = 0f;
+	protected tk2dSprite spriteInfo;
 	
 	// Use this for initialization
 	void Start () {

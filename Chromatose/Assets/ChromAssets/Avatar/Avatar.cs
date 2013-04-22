@@ -4,7 +4,7 @@ using System.Collections;
 public class Avatar : ColourBeing
 {
 	
-	private float loseRate = 15f;
+	private float loseRate = 5f;
 	private float loseTimer = 0f;
 	
 	protected Vector2 velocity;
@@ -29,7 +29,7 @@ public class Avatar : ColourBeing
 	public Transform t;
 	private Renderer r;
 	private Material mat;
-	
+	private Shader s;
 	// Use this for initialization
 	void Start ()
 	{
@@ -42,15 +42,36 @@ public class Avatar : ColourBeing
 		t = this.transform;
 		r = this.renderer;
 		mat = this.renderer.materials[0];
+		s = mat.shader;
+		spriteInfo = GetComponent<tk2dSprite>();
 	}
 	
 	// Update is called once per frame
 	void Update ()
 	{
 								//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
-								//<------------Handling Movement!------------>
+								//<----------Handling Colour Blend!---------->
 								//<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>
 		
+		
+		int highestColour = Mathf.Max(colour.r, colour.g, colour.b);		//Decide what colour the avatar is
+		//Debug.Log("Highest colour is " + highestColour);
+		float r = 255; float g = 255; float b = 255;
+		if (highestColour == colour.r){
+			g -= colour.r;
+			b -= colour.r;
+		}
+		if (highestColour == colour.g){
+			r -= colour.g;
+			b -= colour.g;
+		}
+		if (highestColour == colour.b){
+			g -= colour.b;
+			r -= colour.b;
+		}
+		shownColour = new Color(r/255f, g/255f, b/255f, 1f);		//TODO : proper colour on 
+		//Debug.Log("I'm showing the colour " + shownColour);
+		spriteInfo.color = shownColour;
 		
 					//Check for inputs: WAD or Up, Left Right
 		loseTimer += velocity.magnitude;
@@ -65,6 +86,11 @@ public class Avatar : ColourBeing
 		colour.r = Mathf.Clamp(colour.r, 0, 255);
 		colour.g = Mathf.Clamp(colour.g, 0, 255);
 		colour.b = Mathf.Clamp(colour.b, 0, 255);
+		
+		
+								//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
+								//<------------Handling Movement!------------>
+								//<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>
 		if (canControl){
 			getW = Input.GetKey (KeyCode.W);
 			if (Input.GetKey (KeyCode.UpArrow)){
@@ -86,8 +112,6 @@ public class Avatar : ColourBeing
 						//Translating the inputs to movement functions
 		TranslateInputs();
 		
-		//mat.color = new Color(colour.r, colour.g, colour.b, 1);
-		mat.SetColor("_Color", new Color(colour.r, colour.g, colour.b));
 	}
 	
 	protected void TranslateInputs(){
