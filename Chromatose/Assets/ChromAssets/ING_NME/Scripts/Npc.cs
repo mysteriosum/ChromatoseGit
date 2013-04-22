@@ -31,6 +31,7 @@ public class Npc : ColourBeing {
 	void Start () {
 		movement = GetComponent<Movement>();
 		t = transform;
+		spriteInfo = GetComponent<tk2dSprite>();
 		if (movement.target){
 			target = movement.target;
 			
@@ -42,11 +43,9 @@ public class Npc : ColourBeing {
 			
 		}
 		
-		initColour = new ColourBeing.Colour();
-		initColour.r = colour.r;
-		initColour.g = colour.g;
-		initColour.b = colour.b;
+		initColour = new ColourBeing.Colour(colour.r, colour.g, colour.b);
 		
+		shownColour = new Color((float)initColour.r/255f, (float)initColour.g/255f, (float)initColour.b/255f, 1f);
 		Debug.Log("my init red " + initColour.r);
 	}
 	
@@ -76,6 +75,7 @@ public class Npc : ColourBeing {
 			}
 			else{
 				breaking = false;
+				losingColour = true;
 			}
 		}
 		
@@ -139,7 +139,7 @@ public class Npc : ColourBeing {
 					closestDist = detectRadius;
 				}
 				Transform closest = null;
-				Debug.Log("Amount of destructibles = " + potentials);
+				//Debug.Log("Amount of destructibles = " + potentials);
 				foreach (GameObject p in potentials){
 					Vector2 tempDist = (Vector2)p.transform.position - (Vector2)t.position;
 					if (tempDist.magnitude < closestDist && p.GetComponent<Destructible>() != null){
@@ -148,7 +148,7 @@ public class Npc : ColourBeing {
 					}
 				}
 				if (closest){		//There's a destructible thing, I'ma find the closest Node to that
-					Debug.Log("Closest guy is " + closest.name);
+					//Debug.Log("Closest guy is " + closest.name);
 					toDestroy = closest.GetComponent<Destructible>();
 					closestNode = toDestroy.myNode;
 					
@@ -165,11 +165,9 @@ public class Npc : ColourBeing {
 					toDestroy.AddOne();
 					target = null;
 					closestNode = null;
-					losingColour = true;
 					inMotion = false;
 					breaking = true;
 					colour.r = initColour.r;
-					Debug.Log("I have a new red! It's " + colour.r);
 				}
 			}
 			
@@ -211,7 +209,17 @@ public class Npc : ColourBeing {
 	update:
 		if (losingColour){
 			colour.r = colour.r > initColour.r? colour.r - 1 : colour.r;
+			shownColour.r -= 1f/255f;
+			
+			if ((float)colour.r /255f > (float)shownColour.r + 2f/255f){
+				losingColour = false;
+			}
 		}
+		if ((float)colour.r /255f > (float)shownColour.r + 2f/255f){
+			shownColour.r += 1f/255f;
+		}
+		
+		spriteInfo.color = shownColour;
 		//end :)
 	}
 	
