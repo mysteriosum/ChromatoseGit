@@ -65,8 +65,8 @@ public class DangerBlob : ColourBeing {
 		}
 		
 		Avatar avatar = other.gameObject.GetComponent<Avatar>();
-		
-		if (CheckSameColour(avatar.colour) && diesOnImpact){
+		bool sameColour = CheckSameColour(avatar.colour);
+		if (sameColour && diesOnImpact){
 			Debug.Log("Bye bye");
 			Dead = true;
 			if (respawns){
@@ -74,7 +74,7 @@ public class DangerBlob : ColourBeing {
 			}
 			return;
 		}
-		
+		if (sameColour) return;
 		Vector2 diff = new Vector2(avatar.t.position.x, avatar.t.position.y) - new Vector2(transform.position.x, transform.position.y);
 		avatar.movement.SetVelocity(diff.normalized * knockback);
 		

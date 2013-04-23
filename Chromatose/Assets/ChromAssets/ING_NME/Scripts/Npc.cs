@@ -1,6 +1,6 @@
 using UnityEngine;
 using System.Collections;
-
+[RequireComponent(typeof(Movement))]
 public class Npc : ColourBeing {
 	
 	Movement movement;
@@ -42,6 +42,9 @@ public class Npc : ColourBeing {
 			
 			
 		}
+			if (!avatar){
+				Debug.Log("Can't find the Avatar! He ain't here I tells ya!");
+			}
 		
 		initColour = new ColourBeing.Colour(colour.r, colour.g, colour.b);
 		
@@ -91,13 +94,15 @@ public class Npc : ColourBeing {
 			if (!target){
 				target = avatar;
 			}
-			
 			Vector2 diff = (Vector2) target.position - (Vector2)t.position;
 			
 			if (target == avatar){
-				if (diff.magnitude < detectRadius && CheckSameColour(target.GetComponent<ColourBeing>().colour)){
+				if (diff.magnitude < detectRadius && avatar.GetComponent<Avatar>().CheckIsBlue()){
 					inMotion = true;
 					
+				}
+				else{
+					inMotion = false;
 				}
 			}
 			checkTimer += Time.deltaTime;
@@ -105,7 +110,7 @@ public class Npc : ColourBeing {
 					
 				checkTimer = 0;
 				toBuild = FindClosestOfTag(t, "buildable").GetComponent<Buildable>();
-				
+				 
 				if (toBuild){
 					Debug.Log("My target's name is " + toBuild.name);
 					closestNode = FindClosestOfTag(t, "node", closeRadius);
@@ -132,14 +137,14 @@ public class Npc : ColourBeing {
 		//<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>
 	red:
 		if (colour.r > anarchyConsiderMin){		//If I'm red enough to consider fighting
-			if (!target){  //find a target, and the nearest one, ideally
+			if (target != null){  //find a target, and the nearest one, ideally
 				GameObject[] potentials = GameObject.FindGameObjectsWithTag("destructible");
 				float closestDist = Mathf.Infinity;
 				if (colour.b > colourConsiderMin){
 					closestDist = detectRadius;
 				}
 				Transform closest = null;
-				//Debug.Log("Amount of destructibles = " + potentials);
+				Debug.Log("Amount of destructibles = " + potentials.Length);
 				foreach (GameObject p in potentials){
 					Vector2 tempDist = (Vector2)p.transform.position - (Vector2)t.position;
 					if (tempDist.magnitude < closestDist && p.GetComponent<Destructible>() != null){
@@ -148,7 +153,7 @@ public class Npc : ColourBeing {
 					}
 				}
 				if (closest){		//There's a destructible thing, I'ma find the closest Node to that
-					//Debug.Log("Closest guy is " + closest.name);
+					Debug.Log("Closest guy is " + closest.name);
 					toDestroy = closest.GetComponent<Destructible>();
 					closestNode = toDestroy.myNode;
 					
@@ -158,7 +163,8 @@ public class Npc : ColourBeing {
 					target = closestNode;
 				}
 			}
-			else{
+			else if (target){
+				Debug.Log("I should have a target...");
 				target = myPather.Seek(target);		//I have a target, so I'm going to look for it!
 				float distToClosest = ((Vector2)closestNode.position - (Vector2)t.position).magnitude;
 				if (distToClosest < closeRadius){

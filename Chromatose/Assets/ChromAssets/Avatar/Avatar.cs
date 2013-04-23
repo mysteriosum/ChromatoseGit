@@ -4,7 +4,7 @@ using System.Collections;
 public class Avatar : ColourBeing
 {
 	
-	private float loseRate = 5f;
+	private float loseRate = 6f;
 	private float loseTimer = 0f;
 	
 	protected Vector2 velocity;
@@ -155,6 +155,10 @@ public class Avatar : ColourBeing
 		canControl = false;
 			
 		Invoke("CanControl", t);
+	}
+	
+	public bool CheckIsBlue(){
+		return colour.b > 0;
 	}
 	
 	public void CanControl(){
