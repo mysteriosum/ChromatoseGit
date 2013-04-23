@@ -46,7 +46,7 @@ public class GizmoDad : MonoBehaviour {
 		Transform t = GetComponent<Transform>();
 		BoxCollider collider = GetComponent<BoxCollider>();
 		
-		if (t.localScale != Vector3.one){
+		if (t.localScale != Vector3.one && collider){
 			Vector3 diff = t.localScale - Vector3.one;
 			collider.size += diff;
 			t.localScale = Vector3.one;

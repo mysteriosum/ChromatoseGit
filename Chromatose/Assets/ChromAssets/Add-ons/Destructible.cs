@@ -7,13 +7,12 @@ public class Destructible : MonoBehaviour {
 	public int npcsToTrigger = 1;
 	public Transform myNode;
 	
-	Collider[] children;
+	Collider[] children = new Collider[2];
 	int curNPCs = 0;
 	
 	// Use this for initialization
 	void Start () {
 		anim = GetComponent<tk2dAnimatedSprite>();
-		children = GetComponentsInChildren<Collider>(true);
 	}
 	
 	// Update is called once per frame
@@ -22,7 +21,8 @@ public class Destructible : MonoBehaviour {
 	}
 	
 	void Destroy(){
-		Debug.Log("Argh! I am destroyed!");
+		
+		children = GetComponentsInChildren<Collider>(true);
 		
 		foreach (Collider c in children){
 			c.enabled = false;

@@ -18,8 +18,8 @@ public class Pather{		//Pather is the class that helps me find the path!
 	int closeDistance = 20;
 	int maxDist = 5000;
 	
-	int timer = 0;
-	readonly int timing = 60;
+	float timer = 0;
+	readonly float timing = 0.5f;
 	
 	// Use this for initialization
 	/// <summary>
@@ -39,11 +39,14 @@ public class Pather{		//Pather is the class that helps me find the path!
 		nodes = new Transform[Nodes.GetLength(0)];
 		foreach (GameObject go in Nodes){
 			nodes[counter] = go.transform;
-			Debug.Log(go);
+			//Debug.Log(go);
 			counter ++;
 		}
-		targets = new Transform[nodes.GetLength(0)];
-		Debug.Log("all the targets: " + nodes.GetLength(0));
+		int nodesNumber = nodes.GetLength(0);
+		targets = new Transform[nodesNumber];
+		if (nodesNumber - 1 > maxFailures)
+			maxFailures = nodesNumber - 1;
+		//Debug.Log("all the targets: " + nodes.GetLength(0));
 	}
 	/// <summary>
 	/// Seek the specified target.
@@ -52,12 +55,12 @@ public class Pather{		//Pather is the class that helps me find the path!
 	/// Target.
 	/// </param>
 	public Transform Seek(Transform target){
-		timer ++;
+		timer += Time.deltaTime;
 		
 		if (timer < timing){		//It's not TIME yet!
 			if (Vector3.Distance(target.position, predator.position) < closeDistance && target != prey){
 				onToTheNextOne = true;
-				Debug.Log("I'm here now, going to find the next closest");
+				//Debug.Log("I'm here now, going to find the next closest");
 				
 			}
 			return target;
@@ -68,7 +71,7 @@ public class Pather{		//Pather is the class that helps me find the path!
 		
 		timer = 0;
 		if (targets[0] == null){		//if this is my first time, my target is going to be the one given in the argument
-			Debug.Log("My first target!");
+			//Debug.Log("My first target!");
 			targets[0] = target;
 			return targets[0];			//you know, to make sure that targets[0] is my first one
 		}
@@ -78,7 +81,7 @@ public class Pather{		//Pather is the class that helps me find the path!
 		
 		//first update to see if I can see my target now
 		if (!Physics.Linecast(predator.position, prey.position, out hit, mask)){
-			Debug.Log("There he is! I see him again!");
+			//Debug.Log("There he is! I see him again!");
 			lastKnownLocation = prey.position;
 			timesFailed = 0;
 			curTarget = 0;
@@ -87,17 +90,17 @@ public class Pather{		//Pather is the class that helps me find the path!
 		
 		
 		if (Physics.Linecast(predator.position, target.position, out hit, mask)){
-			Debug.Log("There's a collision in the way!" + hit.point);
+			//Debug.Log("There's a collision in the way!" + hit.point);
 			
 			timesFailed ++;				//jump to 'timesFailed >= maxFailures'
-			Debug.Log("fail! Add one to failures. Timestamp : " + Time.time.ToString());
+			//Debug.Log("fail! Add one to failures. Timestamp : " + Time.time.ToString());
 		}
 		else{
 			Debug.Log("Found my current target");
 			if (onToTheNextOne){
 				timesFailed ++;
 				onToTheNextOne = false;
-				Debug.Log("I'm here now, going to find the next closest");
+				//Debug.Log("I'm here now, going to find the next closest");
 	
 			}
 			else return target;
@@ -105,12 +108,12 @@ public class Pather{		//Pather is the class that helps me find the path!
 		
 		if (timesFailed >= maxFailures){	//if I've failed too much, I'm no longer hunting
 			hunting = false;
-			Debug.Log("Failed too much... ;_;. Timestamp : " + Time.time.ToString());
+			//Debug.Log("Failed too much... ;_;. Timestamp : " + Time.time.ToString());
 		}
 		
 		if (!hunting){		//If I'm no longer hunting then I go back.
 			curTarget --;
-			Debug.Log("Not hunting, so just gonna go find sommat else");
+			//Debug.Log("Not hunting, so just gonna go find sommat else");
 			if (curTarget <= 0){
 				return null;
 			}
@@ -118,7 +121,7 @@ public class Pather{		//Pather is the class that helps me find the path!
 		}
 		
 		curTarget ++;
-		Debug.Log("Looking for a new target, I guess....  CurTarget = " + curTarget.ToString());
+		//Debug.Log("Looking for a new target, I guess....  CurTarget = " + curTarget.ToString());
 		//find a new node
 		float shortestLength = maxDist;
 		int shortestIndex = 0;
@@ -131,21 +134,21 @@ public class Pather{		//Pather is the class that helps me find the path!
 					found = true;
 					break;
 				}
-				Debug.Log("Seen him already");
+			//	Debug.Log("Seen him already");
 			}
 			if (found){
 			
 				continue;
 			}
 			else if(Physics.Linecast(predator.position, node.position, out hit, mask)){
-				Debug.Log("no thanks there's something in the way");
+				//Debug.Log("no thanks there's something in the way");
 				continue;
 			}
 			float dist = Vector3.Distance(lastKnownLocation, node.position);
 			if (dist < shortestLength){
 				shortestLength = dist;
 				shortestIndex = counter;
-				Debug.Log("This guy's not far: " + node.gameObject.name);
+				//Debug.Log("This guy's not far: " + node.gameObject.name);
 			}
 		}
 		if (shortestLength >= maxDist){ //great, no nodes are in range. I'll go back home then
@@ -155,7 +158,7 @@ public class Pather{		//Pather is the class that helps me find the path!
 		}
 		else{
 			targets[Mathf.Max(curTarget, 0)] = nodes[shortestIndex];
-			Debug.Log("New shortest! Yay!");
+			//Debug.Log("New shortest! Yay!");
 		}
 		
 		//is there a node nearer to the one I have?
