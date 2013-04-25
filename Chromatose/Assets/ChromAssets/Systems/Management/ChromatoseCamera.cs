@@ -11,6 +11,9 @@ public class ChromatoseCamera : MonoBehaviour {
 	int height;
 	// Use this for initialization
 	void Start () {
+		if (!avatar){
+			avatar = GameObject.Find("Avatar").transform;
+		}
 		t = GetComponent<Transform>();
 		cam2d = GetComponent<tk2dCamera>();
 		width = (int) cam2d.camera.GetScreenWidth();
