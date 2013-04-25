@@ -56,4 +56,8 @@ public class Robot : MonoBehaviour {
 			transform.Rotate(new Vector3(0, 0, angle));
 		}
 	}
+	
+	void Disable(){
+		myLaser.gameObject.SetActive(false);
+	}
 }

@@ -53,8 +53,8 @@ public class GizmoDad : MonoBehaviour {
 		}
 		
 		alpha = Mathf.Clamp01(alpha);
-		
-		size = useCollider ? collider.size : size;
+		if (collider)
+			size = useCollider ? collider.size : size;
 		
 		switch (myColour){
 			

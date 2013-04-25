@@ -84,13 +84,17 @@ public class Movement : MonoBehaviour {
 	
 	public void SlowToStop(){
 		if (thruster.velocity != Vector2.zero){
-			thruster.velocity = Vector2.Lerp(thruster.velocity, Vector3.zero, 0.4f);
-			Debug.Log("Slowing...");
+			thruster.velocity = Vector2.Lerp(thruster.velocity, Vector3.zero, 0.02f);
+			t.position += (Vector3)Displace(false);
 		}
 	}
 	
 	public void SetVelocity(Vector2 newVel){
 		thruster.velocity = newVel;
+	}
+	
+	public Vector2 GetVelocity(){
+		return thruster.velocity;
 	}
 	
 	//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
@@ -147,7 +151,7 @@ public class Movement : MonoBehaviour {
 		public Vector2 Collide(ContactPoint point, Vector2 velocity){
 			
 			Vector2 normal = point.normal;
-			Debug.Log(point.normal);
+			//Debug.Log(point.normal);
 			normal = new Vector2(-normal.y, normal.x);
 			Vector2 newVel = 2 * normal * (normal.x * velocity.x + normal.y * velocity.y) - velocity;
 			

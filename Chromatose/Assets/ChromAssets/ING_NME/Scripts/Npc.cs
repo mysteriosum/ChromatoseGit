@@ -1,5 +1,7 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+
 [RequireComponent(typeof(Movement))]
 public class Npc : ColourBeing {
 	
@@ -14,18 +16,26 @@ public class Npc : ColourBeing {
 	
 	bool losingColour = false;
 	bool inMotion = false;
+	
 	bool building = false;
 	bool breaking = false;
 	int anarchyConsiderMin = 200;
 	
+	bool stoppingForever = false;
+	bool addingGreen;
+	bool waitingForMaxGreen;
+	
+	
 	ColourBeing.Colour initColour;
 	Pather myPather;
+	int currentNode = 0;
 	
 	public int detectRadius = 250;
 	
 	int closeRadius = 100;
 	float checkTimer = 0;
 	float checkTiming = 0.8f;
+	List<Transform> myPath;
 	
 	// Use this for initialization
 	void Start () {
@@ -61,6 +71,12 @@ public class Npc : ColourBeing {
 		
 		
 		//.....................................................................tumbleweed
+		
+		//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
+		//<--------------CHECKS SECTION!--------------->
+		//<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>
+		
+		
 		if (building){
 			if (toBuild){
 				goto update;
@@ -82,7 +98,9 @@ public class Npc : ColourBeing {
 			}
 		}
 		
-		
+		if (stoppingForever){
+			goto move;
+		}
 		
 		//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
 		//<----------------BLUE SECTION!--------------->
@@ -97,11 +115,11 @@ public class Npc : ColourBeing {
 			Vector2 diff = (Vector2) target.position - (Vector2)t.position;
 			
 			if (target == avatar){
-				if (diff.magnitude < detectRadius && avatar.GetComponent<Avatar>().CheckIsBlue()){
+				if (diff.magnitude < detectRadius && avatar.GetComponent<Avatar>().CheckIsBlue() && !inMotion){
 					inMotion = true;
 					
 				}
-				else{
+				else if(inMotion){
 					inMotion = false;
 				}
 			}
@@ -112,16 +130,24 @@ public class Npc : ColourBeing {
 				toBuild = FindClosestOfTag(t, "buildable").GetComponent<Buildable>();
 				 
 				if (toBuild){
-					Debug.Log("My target's name is " + toBuild.name);
+					/*
 					closestNode = FindClosestOfTag(t, "node", closeRadius);
 					if (!closestNode) goto move;
-					target = closestNode;
+					target = closestNode;*/
+					closestNode = toBuild.myNode;
+					if ((closestNode.position - t.position).magnitude < closeRadius){
+						target = closestNode;
+					}
 				}
 			}
 			
 			if (target == closestNode){
 				if (diff.magnitude < closeRadius){
-					toBuild.AddOne();
+					bool isValid = toBuild.AddOne(this);
+					if (!isValid){
+						target = avatar;
+						goto red;
+					}
 					inMotion = false;
 					building = true;
 					target = null;
@@ -137,43 +163,52 @@ public class Npc : ColourBeing {
 		//<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>
 	red:
 		if (colour.r > anarchyConsiderMin){		//If I'm red enough to consider fighting
-			if (target != null){  //find a target, and the nearest one, ideally
+			
+			if (target == null){  //find a target, and the nearest one, ideally
 				GameObject[] potentials = GameObject.FindGameObjectsWithTag("destructible");
 				float closestDist = Mathf.Infinity;
 				if (colour.b > colourConsiderMin){
 					closestDist = detectRadius;
 				}
 				Transform closest = null;
-				Debug.Log("Amount of destructibles = " + potentials.Length);
+				//Debug.Log("Amount of destructibles = " + potentials.Length);
 				foreach (GameObject p in potentials){
 					Vector2 tempDist = (Vector2)p.transform.position - (Vector2)t.position;
-					if (tempDist.magnitude < closestDist && p.GetComponent<Destructible>() != null){
+					Destructible pScript = p.GetComponent<Destructible>();
+					if (tempDist.magnitude < closestDist && pScript != null){
+						if (!pScript.CheckName(name)) continue;				//If the Destructible is picky, it might not want you
 						closestDist = tempDist.magnitude;
 						closest = p.transform;
 					}
 				}
 				if (closest){		//There's a destructible thing, I'ma find the closest Node to that
-					Debug.Log("Closest guy is " + closest.name);
+					//Debug.Log("Closest guy is " + closest.name);
 					toDestroy = closest.GetComponent<Destructible>();
 					closestNode = toDestroy.myNode;
 					
 					myPather = new Pather(t, closestNode);
-					
+					myPath = myPather.NewPath(t, closestNode);
 					inMotion = true;
-					target = closestNode;
+					target = myPath[0];
 				}
 			}
 			else if (target){
-				Debug.Log("I should have a target...");
+				//Debug.Log("I should have a target...");
 				target = myPather.Seek(target);		//I have a target, so I'm going to look for it!
-				float distToClosest = ((Vector2)closestNode.position - (Vector2)t.position).magnitude;
-				if (distToClosest < closeRadius){
-					toDestroy.AddOne();
-					target = null;
-					closestNode = null;
-					inMotion = false;
-					breaking = true;
-					colour.r = initColour.r;
+				float distToTarget = ((Vector2)target.position - (Vector2)t.position).magnitude;
+				if (distToTarget < closeRadius){
+					if (target == closestNode){
+						toDestroy.AddOne(this);
+						target = null;
+						closestNode = null;
+						inMotion = false;
+						breaking = true;
+						colour.r = initColour.r;
+					}
+					else{
+						currentNode ++;
+						target = myPath[currentNode];
+					}
 				}
 			}
 			
@@ -202,8 +237,14 @@ public class Npc : ColourBeing {
 			
 			t.Rotate(0, 0, angle - zGoodFormat);
 			Vector2 disp = movement.Displace(true);
-			
-			transform.position += new Vector3(disp.x, disp.y, 0);
+			if (stoppingForever){
+				inMotion = false;
+				goto update;
+			}
+			else{
+				//Debug.Log("Transform!");
+				transform.position += new Vector3(disp.x, disp.y, 0);
+			}
 		}
 		else{
 			movement.SlowToStop();
@@ -224,6 +265,25 @@ public class Npc : ColourBeing {
 		if ((float)colour.r /255f > (float)shownColour.r + 2f/255f){
 			shownColour.r += 1f/255f;
 		}
+		
+		if (addingGreen){
+			Debug.Log("Adding green!");
+			colour.g ++;
+			shownColour.g += 1f/255f;
+			if (colour.g > 254){
+				addingGreen = false;
+				waitingForMaxGreen = false;
+			}
+		}
+		
+		if (stoppingForever){
+			//movement.SlowToStop();
+			if (movement.GetVelocity().magnitude < 5 && !waitingForMaxGreen){
+				this.enabled = false;
+			}
+		}
+		
+		
 		
 		spriteInfo.color = shownColour;
 		//end :)
@@ -260,8 +320,31 @@ public class Npc : ColourBeing {
 		return closestHere;
 		
 	}
+	
+		//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
+		//<============SPECIFIC FUNCTIONS!!============>
+		//<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>
+	public void StopAndDisable(){
+		stoppingForever = true;
+		Debug.Log("Rawr, stop and disable!");
+	}
+	
+	public void AddGreenUntilMax(){
+		waitingForMaxGreen = true;
+		addingGreen = true;
+	}
+	
+	public void SetNewTarget(Transform newTarget){
+		target = newTarget;
+		
+	}
+	
 	Transform FindClosestOfTag(Transform mainTarget, string tag){
 		return FindClosestOfTag(mainTarget, tag, 10000000);
+	}
+	
+	public void MaxRed(){
+		colour.r = 255;
 	}
 	
 	override public void Trigger(){
