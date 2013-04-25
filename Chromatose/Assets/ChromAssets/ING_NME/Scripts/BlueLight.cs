@@ -16,6 +16,7 @@ public class BlueLight : MonoBehaviour {
 	void OnTriggerStay(Collider other){
 		Avatar avatar = other.gameObject.GetComponent<Avatar>();
 		if (!avatar) return;
+		if (avatar.name != "Avatar") return;
 		avatar.TempColour(2, 255);
 	}
 	

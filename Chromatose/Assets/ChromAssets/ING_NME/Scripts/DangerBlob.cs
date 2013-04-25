@@ -52,6 +52,7 @@ public class DangerBlob : ColourBeing {
 	
 	// Update is called once per frame
 	void Update () {
+		if (colour.White)
 		movement.Move();
 		
 		

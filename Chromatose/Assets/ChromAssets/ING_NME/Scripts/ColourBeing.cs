@@ -16,7 +16,18 @@ abstract public class ColourBeing : MonoBehaviour {		//base class for all living
 		public int r; 
 		public int g;
 		public int b;
-		
+		public bool White{		
+			get{ return r == 0 && g == 0 && b == 0; }
+		}
+		public bool Red{
+			get{ return r > 0; } 
+		}
+		public bool Blue{
+			get{ return b > 0; }
+		}
+		public bool Green{
+			get{ return g > 0; }
+		}
 		public Colour(int R, int G, int B){
 			r = R;
 			g = G;
