@@ -1,6 +1,6 @@
 using UnityEngine;
 using System.Collections;
-
+using System.Collections.Generic;
 public class Pather{		//Pather is the class that helps me find the path!
 	
 	Transform[] targets;
@@ -17,6 +17,25 @@ public class Pather{		//Pather is the class that helps me find the path!
 	int maxFailures = 9;
 	int closeDistance = 20;
 	int maxDist = 5000;
+	
+	class Node{
+		public int f;
+		public int g = 0;
+		public int h = 0;
+		public Node parent;
+		public readonly Transform t;
+		public readonly Vector2 pos;
+		public Node(Transform t, Node parent){
+			this.t = t;
+			this.parent = parent;
+			pos = t.position;
+		}
+		
+		public override string ToString(){
+			return t.name + " at position " + pos.ToString();
+		}
+	}
+	
 	
 	float timer = 0;
 	readonly float timing = 0.5f;
@@ -168,6 +187,120 @@ public class Pather{		//Pather is the class that helps me find the path!
 		return targets[curTarget];
 	}
 	
+	public List<Transform> NewPath(Transform begin, Transform end){
+	init:
+		List<Node> openList = new List<Node>();
+		List<Node> closedList = new List<Node>();
+		List<Node> toAdd = new List<Node>();
+		List<Transform> thePath = new List<Transform>();
+		int smallestF;
+		int mask = 1 << LayerMask.NameToLayer("collision");		//for teh linecasts
+		RaycastHit hit;
+		bool foundEnd = false;
+		Node firstNode = new Node(begin, null);
+		openList.Add(firstNode);
+		Node underScrutiny = firstNode;
+		int counter = 0;
+		foreach (Transform t in nodes){			//Start by getting all the nodes I can see from the start
+			if (!Physics.Linecast(t.position, (Vector3)underScrutiny.pos, out hit, mask)){
+				Node newNode = new Node(t, underScrutiny);
+				openList.Add(newNode);
+				//Debug.Log(newNode);
+			}
+		}
+		openList.Remove(underScrutiny);
+		closedList.Add(underScrutiny);
+	open:					//Here I find my lowest F score among things in the Open list
+		smallestF = 10000000;
+		//Debug.Log("There's still Node 24 in the openList : " + openList.Contains(underScrutiny) + " and as proof: " + underScrutiny);
 		
+		foreach (Node n in openList){
+			n.g = gScore(n.pos, n.parent);
+			n.h = hScore(n.pos, (Vector2)end.position);
+			n.f = n.g + n.h;
+			if (n.f < smallestF){
+				smallestF = n.f;
+				underScrutiny = n;
+				//Debug.Log("Now under scrutiny: " + n);
+			}
+		}
+		//Debug.Log("There has been " + underScrutiny + " in the openList : " + openList.Contains(underScrutiny));
+		openList.Remove(underScrutiny);		//Move it from the open to the closed list
+		closedList.Add(underScrutiny);
+		//Debug.Log("There's still " + underScrutiny + " in the openList : " + openList.Contains(underScrutiny));
+		
+		foreach (Transform t in nodes){		//Check what nodes I can see from the current "UnderScrutiny"
+			if (t == underScrutiny.t) continue;
+			foreach (Node cn in closedList){
+				if (cn.t == t){			//Nix it if it's on the closed list
+					//Debug.Log(cn + " On closed list.");
+					continue;
+				}
+			}
+			if (!Physics.Linecast(t.position, (Vector3)underScrutiny.pos, out hit, mask)){
+				//Debug.Log("There's " + openList.Count);
+				bool found = false;
+				foreach (Node on in openList){
+					if (on.t == t){		//If it's on the open list, see if this is better
+						//Debug.Log("Found " + on + " in the open list");
+						if (gScore((Vector2)t.position, underScrutiny) < on.g){
+							on.parent = underScrutiny;
+							on.g = gScore(on.pos, underScrutiny);
+							on.f = on.h + on.g;
+							//Debug.Log("Turns out it's shorter");
+							
+						}
+						else{
+							//Debug.Log("It's not shorter!");
+						}
+						found = true;
+						continue;
+					}
+				}
+				if (found) continue;
+				
+				Node newNode = new Node(t, underScrutiny);	//if the t is not already a node, make a new one
+				//Debug.Log("Ought to be adding a new node..." + newNode);
+				openList.Add(newNode);
+				if (t == end){		//if I can see the end node, start to wrap it up
+					foundEnd = true;
+					underScrutiny = newNode;
+				}
+			}
+			else{
+				//Debug.Log("Between " + t.name + " and " + underScrutiny + " there's " + hit.transform.name);
+			}
+		}
+		
+		if (!foundEnd){
+			counter ++;
+			if (counter < 25)
+			goto open;
+		}
+		counter = 0;
+		do {
+			counter ++;
+			if (counter > nodes.Length){
+				//Debug.Log("I think the path is too long :S");
+				break;
+			}
+			thePath.Add(underScrutiny.t);
+			underScrutiny = underScrutiny.parent;
+		}
+		while(underScrutiny != firstNode);
+		
+		thePath.Reverse();
+		//Debug.Log(underScrutiny + " and I did this " + counter + " times. There are " + thePath.Count + " nodes in the path");
+		
+		
+		return thePath;
+		
+	}
 	
+	int hScore(Vector2 here, Vector2 endPlace){
+		return (int)Mathf.Abs(here.x - endPlace.x) + (int)Mathf.Abs(here.y - endPlace.y);
+	}
+	int gScore(Vector2 here, Node parent){
+		return parent.g + (int)(here - parent.pos).magnitude;
+	}
 }

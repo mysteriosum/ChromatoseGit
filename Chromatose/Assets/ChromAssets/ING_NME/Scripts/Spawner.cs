@@ -2,23 +2,38 @@ using UnityEngine;
 using System.Collections;
 
 public class Spawner : MonoBehaviour {
+	
 	public GameObject original;
-	public float rateOfFire = 2f;
 	float timer = 0;
-	bool shooting = true;
+	int currentState = 0;
+	int stateAmount;
+	[System.SerializableAttribute]
+	public class States{
+		
+		public float rateOfFire = 2f;
+		public bool shooting = true;
+		
+		public States(float rateOfFire, bool shooting){
+			this.rateOfFire = rateOfFire;
+			this.shooting = shooting;
+		}
+	}
+	
+	public States[] states = {new States(2f, true)};
 	
 	// Use this for initialization
 	void Start () {
 		if (original){
 			original.SetActive(false);
 		}
+		stateAmount = states.Length;
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		
-		if (shooting) timer += Time.deltaTime;
-		if (timer >= rateOfFire){
+		if (states[currentState].shooting) timer += Time.deltaTime;
+		if (timer >= states[currentState].rateOfFire){
 			GameObject newGuy = Instantiate(original as Object, transform.position, transform.rotation) as GameObject;
 			newGuy.SetActive(true);
 			timer = 0;
@@ -26,6 +41,10 @@ public class Spawner : MonoBehaviour {
 	}
 	
 	void Disable(){
-		shooting = false;
+		states[currentState].shooting = false;
+	}
+	
+	void NextState(){
+		currentState = Mathf.Min(stateAmount -1, currentState + 1);
 	}
 }

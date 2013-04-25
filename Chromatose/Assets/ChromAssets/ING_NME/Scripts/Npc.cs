@@ -1,5 +1,7 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+
 [RequireComponent(typeof(Movement))]
 public class Npc : ColourBeing {
 	
@@ -23,14 +25,17 @@ public class Npc : ColourBeing {
 	bool addingGreen;
 	bool waitingForMaxGreen;
 	
+	
 	ColourBeing.Colour initColour;
 	Pather myPather;
+	int currentNode = 0;
 	
 	public int detectRadius = 250;
 	
 	int closeRadius = 100;
 	float checkTimer = 0;
 	float checkTiming = 0.8f;
+	List<Transform> myPath;
 	
 	// Use this for initialization
 	void Start () {
@@ -66,6 +71,12 @@ public class Npc : ColourBeing {
 		
 		
 		//.....................................................................tumbleweed
+		
+		//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
+		//<--------------CHECKS SECTION!--------------->
+		//<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>
+		
+		
 		if (building){
 			if (toBuild){
 				goto update;
@@ -152,14 +163,15 @@ public class Npc : ColourBeing {
 		//<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>
 	red:
 		if (colour.r > anarchyConsiderMin){		//If I'm red enough to consider fighting
-			if (target != null){  //find a target, and the nearest one, ideally
+			
+			if (target == null){  //find a target, and the nearest one, ideally
 				GameObject[] potentials = GameObject.FindGameObjectsWithTag("destructible");
 				float closestDist = Mathf.Infinity;
 				if (colour.b > colourConsiderMin){
 					closestDist = detectRadius;
 				}
 				Transform closest = null;
-				Debug.Log("Amount of destructibles = " + potentials.Length);
+				//Debug.Log("Amount of destructibles = " + potentials.Length);
 				foreach (GameObject p in potentials){
 					Vector2 tempDist = (Vector2)p.transform.position - (Vector2)t.position;
 					Destructible pScript = p.GetComponent<Destructible>();
@@ -170,27 +182,33 @@ public class Npc : ColourBeing {
 					}
 				}
 				if (closest){		//There's a destructible thing, I'ma find the closest Node to that
-					Debug.Log("Closest guy is " + closest.name);
+					//Debug.Log("Closest guy is " + closest.name);
 					toDestroy = closest.GetComponent<Destructible>();
 					closestNode = toDestroy.myNode;
 					
 					myPather = new Pather(t, closestNode);
-					
+					myPath = myPather.NewPath(t, closestNode);
 					inMotion = true;
-					target = closestNode;
+					target = myPath[0];
 				}
 			}
 			else if (target){
-				Debug.Log("I should have a target...");
+				//Debug.Log("I should have a target...");
 				target = myPather.Seek(target);		//I have a target, so I'm going to look for it!
-				float distToClosest = ((Vector2)closestNode.position - (Vector2)t.position).magnitude;
-				if (distToClosest < closeRadius){
-					toDestroy.AddOne(this);
-					target = null;
-					closestNode = null;
-					inMotion = false;
-					breaking = true;
-					colour.r = initColour.r;
+				float distToTarget = ((Vector2)target.position - (Vector2)t.position).magnitude;
+				if (distToTarget < closeRadius){
+					if (target == closestNode){
+						toDestroy.AddOne(this);
+						target = null;
+						closestNode = null;
+						inMotion = false;
+						breaking = true;
+						colour.r = initColour.r;
+					}
+					else{
+						currentNode ++;
+						target = myPath[currentNode];
+					}
 				}
 			}
 			
@@ -323,6 +341,10 @@ public class Npc : ColourBeing {
 	
 	Transform FindClosestOfTag(Transform mainTarget, string tag){
 		return FindClosestOfTag(mainTarget, tag, 10000000);
+	}
+	
+	public void MaxRed(){
+		colour.r = 255;
 	}
 	
 	override public void Trigger(){

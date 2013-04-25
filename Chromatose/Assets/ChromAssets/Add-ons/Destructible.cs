@@ -62,6 +62,8 @@ public class Destructible : MonoBehaviour {
 	
 	public bool CheckName(string name){
 		if (specificName == "") return true;
+		bool identical = specificName == name;
+		print("It is " + identical + " that it's the same name");
 		return name == specificName;
 	}
 	
