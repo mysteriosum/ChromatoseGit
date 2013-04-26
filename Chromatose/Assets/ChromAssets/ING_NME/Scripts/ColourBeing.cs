@@ -9,6 +9,7 @@ abstract public class ColourBeing : MonoBehaviour {		//base class for all living
 	public Colour colour;
 	protected Color shownColour;
 	protected Colour tempColour = new Colour(-1, -1, -1);
+	protected tk2dAnimatedSprite anim;
 	
 	[System.SerializableAttribute]
 	public class Colour{
@@ -61,7 +62,7 @@ abstract public class ColourBeing : MonoBehaviour {		//base class for all living
 		}
 		set{
 			gone = value;
-			transform.position = gone? new Vector3(transform.position.x, transform.position.y, -200)
+			transform.position = gone? new Vector3(transform.position.x, transform.position.y, -3000)
 									 : new Vector3(transform.position.x, transform.position.y, 0);
 		}
 	}
@@ -75,7 +76,6 @@ abstract public class ColourBeing : MonoBehaviour {		//base class for all living
 	
 	// Use this for initialization
 	void Start () {
-		
 		
 	}
 	

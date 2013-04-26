@@ -16,7 +16,7 @@ public class TollBooth : MonoBehaviour {
 	void Start () {
 		chroManager = GameObject.FindObjectOfType(typeof(ChromatoseManager)) as ChromatoseManager;
 		avatarT = GameObject.FindGameObjectWithTag("avatar").GetComponent<Transform>();
-		Debug.Log("Did I find avatar? " + avatarT.name);
+		//Debug.Log("Did I find avatar? " + avatarT.name);
 		BoxCollider[] chilluns = gameObject.GetAllComponentsInChildren<BoxCollider>();
 		foreach (BoxCollider c in chilluns){
 			if (c.isTrigger){
@@ -28,7 +28,7 @@ public class TollBooth : MonoBehaviour {
 			}
 		}
 		colliderT = myCollider.transform;
-		Debug.Log("Got a collider " + myCollider.name + " and a transform: " + colliderT.name);
+		//Debug.Log("Got a collider " + myCollider.name + " and a transform: " + colliderT.name);
 		
 		anim = GetComponent<tk2dAnimatedSprite>();
 		
@@ -49,6 +49,7 @@ public class TollBooth : MonoBehaviour {
 				collisionChild.gameObject.SetActive(false);
 				if (anim)
 					anim.Play();
+					anim.CurrentClip.wrapMode = tk2dSpriteAnimationClip.WrapMode.Once;
 			}
 		}
 	}

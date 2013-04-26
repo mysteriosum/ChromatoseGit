@@ -22,6 +22,21 @@ public class Avatar : ColourBeing
 	protected bool getD;
 	
 	
+	private bool hurt;
+	public bool Hurt{
+		get{ return hurt;}
+		set{ hurt = value;}
+	}
+	int hurtTimer = 0;
+	int hurtTiming = 60;
+	int blinkOffAt = 20;
+	int blinkOnAt = 10;
+	bool invisible = false;
+	int Invisible{
+		get{ return invisible ? 0 : 1;}
+	}
+	
+	
 	private bool canControl = true;
 	
 	
@@ -69,7 +84,7 @@ public class Avatar : ColourBeing
 			g -= colour.b;
 			r -= colour.b;
 		}
-		shownColour = new Color(r/255f, g/255f, b/255f, 1f);		//TODO : proper colour on 
+		shownColour = new Color(r/255f, g/255f, b/255f, Invisible);		//TODO : proper colour on 
 		//Debug.Log("I'm showing the colour " + shownColour);
 		spriteInfo.color = shownColour;
 		
@@ -111,6 +126,26 @@ public class Avatar : ColourBeing
 			
 						//Translating the inputs to movement functions
 		TranslateInputs();
+		
+								//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
+								//<------------Other fun things!!------------>
+								//<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>
+		
+		if (hurt && Time.timeScale > 0){		//Am I hurt? Blink the sprite appropriately
+			hurtTimer ++;
+			if (hurtTimer % blinkOnAt == 0){
+				
+				invisible = false;
+			}
+			if (hurtTimer % blinkOffAt == 0){
+				invisible = true;
+			}
+			
+			if (hurtTimer >= hurtTiming){
+				hurt = false;
+				invisible = false;
+			}
+		}
 		
 	}
 	
@@ -159,6 +194,12 @@ public class Avatar : ColourBeing
 		canControl = false;
 			
 		Invoke("CanControl", t);
+	}
+	
+	void Ouch(){
+		hurt = true;
+		CannotControlFor(0.5f);
+		invisible = true;
 	}
 	
 	public bool CheckIsBlue(){

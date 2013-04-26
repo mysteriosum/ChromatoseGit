@@ -41,6 +41,7 @@ public class Destructible : MonoBehaviour {
 		}
 		
 		anim.Play();
+			anim.CurrentClip.wrapMode = tk2dSpriteAnimationClip.WrapMode.Once;
 		
 		gameObject.RemoveComponent(typeof (Destructible));
 	}
@@ -58,6 +59,10 @@ public class Destructible : MonoBehaviour {
 			Destroy();
 		}
 		return true;
+	}
+	
+	void DeadAndGone(){
+		transform.position = new Vector3(transform.position.x, transform.position.y, -2000);
 	}
 	
 	public bool CheckName(string name){

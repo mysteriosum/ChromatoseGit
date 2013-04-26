@@ -33,6 +33,8 @@ public class Npc : ColourBeing {
 	public int detectRadius = 250;
 	
 	int closeRadius = 100;
+	int mask;
+	RaycastHit hit;
 	float checkTimer = 0;
 	float checkTiming = 0.8f;
 	List<Transform> myPath;
@@ -40,6 +42,8 @@ public class Npc : ColourBeing {
 	
 	// Use this for initialization
 	void Start () {
+		
+		mask = 1 << LayerMask.NameToLayer("collision");		//for teh linecasts
 		movement = GetComponent<Movement>();
 		t = transform;
 		spriteInfo = GetComponent<tk2dSprite>();
@@ -62,7 +66,7 @@ public class Npc : ColourBeing {
 		
 		initColour = new ColourBeing.Colour(colour.r, colour.g, colour.b);
 		
-		shownColour = new Color((float)initColour.r/255f, (float)initColour.g/255f, (float)initColour.b/255f, 1f);
+		shownColour = new Color((float)initColour.r/255f, (float)initColour.g/255f, (float)initColour.b/255f, spriteInfo.color.a);
 	}
 	
 	// Update is called once per frame
@@ -111,16 +115,18 @@ public class Npc : ColourBeing {
 		
 	blue:
 		if (colour.b > colourConsiderMin){
-			
+			if (colour.r > anarchyConsiderMin) goto red;
 			if (!target){
 				target = avatar;
 			}
+			
 			Vector2 diff = (Vector2) target.position - (Vector2)t.position;
 			
 			if (target == avatar){
-				if (diff.magnitude < detectRadius && avatar.GetComponent<Avatar>().CheckIsBlue() && !inMotion){
+				
+				if (diff.magnitude < detectRadius && avatar.GetComponent<Avatar>().colour.Blue && !inMotion){
 					inMotion = true;
-					
+					//Debug.Log("Should be in motion");
 				}
 				else if(inMotion){
 					inMotion = false;
@@ -148,6 +154,7 @@ public class Npc : ColourBeing {
 			
 			if (target == closestNode){
 				if (diff.magnitude < closeRadius){
+					//Debug.Log("Now at build node");
 					bool isValid = toBuild.AddOne(this);
 					if (!isValid){
 						target = avatar;
@@ -169,12 +176,12 @@ public class Npc : ColourBeing {
 	red:
 		if (colour.r > anarchyConsiderMin){		//If I'm red enough to consider fighting
 			
-			if (target == null){  //find a target, and the nearest one, ideally
+			if (target == null || target == avatar){  //find a target, and the nearest one, ideally
 				GameObject[] potentials = GameObject.FindGameObjectsWithTag("destructible");
 				float closestDist = Mathf.Infinity;
-				if (colour.b > colourConsiderMin){
+				/*if (colour.b > colourConsiderMin){
 					closestDist = detectRadius;
-				}
+				}*/
 				Transform closest = null;
 				//Debug.Log("Amount of destructibles = " + potentials.Length);
 				foreach (GameObject p in potentials){
@@ -221,7 +228,7 @@ public class Npc : ColourBeing {
 		}
 		else if (colour.r > 0){ //Absorb colour from Avatar. Don't want to do it if I have NO colour, just... little colour.
 			Vector2 diff = (Vector2) avatar.position - (Vector2)t.position;
-			if (diff.magnitude < detectRadius && avatarScript.colour.Red){
+			if (diff.magnitude < detectRadius && avatarScript.colour.Red && !Physics.Linecast(avatar.position, t.position, out hit, mask)){
 				colour.r = 255;
 				
 			}
