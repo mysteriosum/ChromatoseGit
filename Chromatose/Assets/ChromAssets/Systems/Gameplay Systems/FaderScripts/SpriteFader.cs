@@ -15,6 +15,10 @@ public class SpriteFader : MonoBehaviour {
 	void Start () {
 		inAlpha = -fadeRate;
 		outAlpha = 1 + fadeRate;
+		
+		foreach (tk2dSprite sprite in spritesIn){
+			sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, inAlpha);
+		}
 	}
 	
 	// Update is called once per frame
