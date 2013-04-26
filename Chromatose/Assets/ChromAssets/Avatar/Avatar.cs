@@ -114,7 +114,7 @@ public class Avatar : ColourBeing
 		
 	}
 	
-	protected void TranslateInputs(){
+	protected void TranslateInputs(float multiplier){
 		bool gonnaRotate = false;
 		bool clockwise = false;
 		bool gonnaThrust = false;
@@ -142,8 +142,12 @@ public class Avatar : ColourBeing
 			//t.rotation.eulerAngles = movement.rotator.Rotate(t.rotation.eulerAngles, clockwise);
 		}
 		velocity = this.movement.Displace(gonnaThrust);
-		t.position += new Vector3(velocity.x, velocity.y, 0);
+		t.position += new Vector3(velocity.x, velocity.y, 0) * multiplier;
 		//Debug.Log(t.rotation.eulerAngles.z);
+		
+	}
+	protected void TranslateInputs(){
+		TranslateInputs(1f);
 	}
 	
 	

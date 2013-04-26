@@ -36,6 +36,7 @@ public class Npc : ColourBeing {
 	float checkTimer = 0;
 	float checkTiming = 0.8f;
 	List<Transform> myPath;
+	Avatar avatarScript;
 	
 	// Use this for initialization
 	void Start () {
@@ -52,14 +53,16 @@ public class Npc : ColourBeing {
 			
 			
 		}
-			if (!avatar){
-				Debug.Log("Can't find the Avatar! He ain't here I tells ya!");
-			}
+		if (avatar){
+			avatarScript = avatar.GetComponent<Avatar>();
+		}
+		else{
+			Debug.Log("Can't find the Avatar! He ain't here I tells ya!");
+		}
 		
 		initColour = new ColourBeing.Colour(colour.r, colour.g, colour.b);
 		
 		shownColour = new Color((float)initColour.r/255f, (float)initColour.g/255f, (float)initColour.b/255f, 1f);
-		Debug.Log("my init red " + initColour.r);
 	}
 	
 	// Update is called once per frame
@@ -127,7 +130,9 @@ public class Npc : ColourBeing {
 			if (checkTimer >= checkTiming){		//check for node every [checktiming] seconds
 					
 				checkTimer = 0;
-				toBuild = FindClosestOfTag(t, "buildable").GetComponent<Buildable>();
+				Transform closestBuildable = FindClosestOfTag(t, "buildable");
+				if (!closestBuildable) goto red;
+				toBuild = closestBuildable.GetComponent<Buildable>();
 				 
 				if (toBuild){
 					/*
@@ -194,7 +199,7 @@ public class Npc : ColourBeing {
 			}
 			else if (target){
 				//Debug.Log("I should have a target...");
-				target = myPather.Seek(target);		//I have a target, so I'm going to look for it!
+				//0target = myPather.Seek(target);		//I have a target, so I'm going to look for it!
 				float distToTarget = ((Vector2)target.position - (Vector2)t.position).magnitude;
 				if (distToTarget < closeRadius){
 					if (target == closestNode){
@@ -216,7 +221,7 @@ public class Npc : ColourBeing {
 		}
 		else if (colour.r > 0){ //Absorb colour from Avatar. Don't want to do it if I have NO colour, just... little colour.
 			Vector2 diff = (Vector2) avatar.position - (Vector2)t.position;
-			if (diff.magnitude < detectRadius && CheckSameColour(avatar.GetComponent<ColourBeing>().colour)){
+			if (diff.magnitude < detectRadius && avatarScript.colour.Red){
 				colour.r = 255;
 				
 			}
