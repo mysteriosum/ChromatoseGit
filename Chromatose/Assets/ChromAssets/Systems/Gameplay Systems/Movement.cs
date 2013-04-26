@@ -15,6 +15,9 @@ public class Movement : MonoBehaviour {
 	public Rotator rotator = new Rotator();
 	public Collider2d collider2d = new Collider2d();
 	
+	float collideTimer = 0f;
+	float collideTiming = 0.5f;
+	
 	[System.NonSerializedAttribute]
 	public Transform t;
 	//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
@@ -58,9 +61,18 @@ public class Movement : MonoBehaviour {
 		
 		if (collision.gameObject.tag == "collision"){
 			ContactPoint point = collision.contacts[0];
-			
-			thruster.velocity = collider2d.Collide(point, thruster.velocity);
+			if (collideTimer <= 0){
+				thruster.velocity = collider2d.Collide(point, thruster.velocity);
+				collideTimer = collideTiming;
+			}
 		}
+	}
+	
+	void OnCollisionStay(Collision collision){
+		if (collision.gameObject.tag != "collision") return;
+		ContactPoint point = collision.contacts[0];
+		t.position += new Vector3(point.normal.x, point.normal.y, 0);
+		thruster.velocity += (Vector2)point.normal * thruster.accel * 2;
 	}
 	
 	//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
@@ -193,7 +205,9 @@ public class Movement : MonoBehaviour {
 	
 	// Update is called once per frame, but doesn't want to call my other ones. I'm gonna make it!
 	void Update () {
-		
+		if (collideTimer > 0){
+			collideTimer -= Time.deltaTime;
+		}
 	}
 	
 	void OnGUI(){

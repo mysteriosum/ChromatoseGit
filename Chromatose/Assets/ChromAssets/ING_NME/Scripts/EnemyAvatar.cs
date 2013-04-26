@@ -66,6 +66,9 @@ public class EnemyAvatar : Avatar {
 		if (prey){
 			pather = new Pather(t, prey);
 		}
+		if (patrol && patrolRoute != null){
+			target = patrolRoute[0];
+		}
 		
 		mask = 1 << LayerMask.NameToLayer("collision");		//for teh linecasts
 	}
@@ -104,7 +107,7 @@ public class EnemyAvatar : Avatar {
 		}
 		
 		if (returning && target){
-			Debug.Log("Returning, for some reason");
+			
 			if (Vector3.Distance(target.position, t.position) < 50){
 				if (target == guardPost){
 					returning = false;
@@ -116,6 +119,21 @@ public class EnemyAvatar : Avatar {
 				
 			}
 			
+		}
+		
+		if (patrol){
+			if (Vector3.Distance(target.position, t.position) < 50){
+				if (target == guardPost){
+					returning = false;
+				}
+				else{
+					curNode ++;
+					if (curNode == patrolRoute.Length) curNode = 0;
+					target = patrolRoute[curNode];
+					//Debug.Log("Shavatar targets " + curNode);
+				}
+				
+			}
 		}
 		
 		if (guardDuty){
@@ -163,7 +181,7 @@ public class EnemyAvatar : Avatar {
 	void OnCollisionEnter(Collision collider){
 		if (collider.gameObject.tag == "avatar"){
 			Avatar avatar = collider.gameObject.GetComponent<Avatar>();
-			ReturnToPost();
+			if (guardDuty) ReturnToPost();
 			avatar.SetColour(0, 0, 0);
 		}
 	}
@@ -180,6 +198,21 @@ public class EnemyAvatar : Avatar {
 		curNode = 0;
 		target = myPath[curNode];
 		onPath = true;
+	}
+	
+	void OnDrawGizmosSelected(){
+		if (!patrol) return;
+		int maxIndex = patrolRoute.Length;
+		if (maxIndex <= 1) return;
+		int index = 0;
+		
+		int nextIndex = 1;
+		for(int i = 0; i < maxIndex; i++){
+			Gizmos.DrawLine(patrolRoute[index].position, patrolRoute[nextIndex].position);
+			
+			index = (index + 1) % maxIndex;
+			nextIndex = (index + 1) % maxIndex;
+		}
 	}
 	
 }

@@ -6,6 +6,7 @@ public class DangerBlob : ColourBeing {
 	public bool diesOnImpact = false;
 	public bool respawns = false;
 	public float respawnTime = 3f;
+	public string deathClipName;
 	
 	[System.SerializableAttribute]
 	public class Movement{
@@ -47,6 +48,7 @@ public class DangerBlob : ColourBeing {
 	void Start () {
 		movement.Setup();
 		movement.t = transform;
+		anim = GetComponent<tk2dAnimatedSprite>();
 		
 	}
 	
@@ -69,12 +71,21 @@ public class DangerBlob : ColourBeing {
 		if (sameColour && diesOnImpact){
 			Debug.Log("Bye bye");
 			Dead = true;
+			if (anim){
+				anim.Play(anim.GetClipIdByName(deathClipName));
+				anim.CurrentClip.wrapMode = tk2dSpriteAnimationClip.WrapMode.Once;
+			}
+			
 			if (respawns){
 				Invoke("Respawn", respawnTime);
 			}
 			return;
 		}
 		if (sameColour) return;
+		if (avatar.Hurt) return;
+		Vector2 back = (Vector2) other.contacts[0].normal * -1;
+		avatar.transform.position += (Vector3)back * 12;
+		avatar.SendMessage("Ouch");
 		Vector2 diff = new Vector2(avatar.t.position.x, avatar.t.position.y) - new Vector2(transform.position.x, transform.position.y);
 		avatar.movement.SetVelocity(diff.normalized * knockback);
 		
@@ -83,6 +94,11 @@ public class DangerBlob : ColourBeing {
 	
 	void Respawn(){
 		Dead = false;
+	}
+	
+	void DeadAndGone(){
+		Gone = true;
+		Debug.Log("Dead and Gone!");
 	}
 
 	
