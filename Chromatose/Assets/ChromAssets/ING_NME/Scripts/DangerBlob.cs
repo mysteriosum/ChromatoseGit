@@ -69,7 +69,7 @@ public class DangerBlob : ColourBeing {
 		Avatar avatar = other.gameObject.GetComponent<Avatar>();
 		bool sameColour = CheckSameColour(avatar.colour);
 		if (sameColour && diesOnImpact){
-			Debug.Log("Bye bye");
+			//Debug.Log("Bye bye");
 			Dead = true;
 			if (anim){
 				anim.Play(anim.GetClipIdByName(deathClipName));
@@ -98,7 +98,7 @@ public class DangerBlob : ColourBeing {
 	
 	void DeadAndGone(){
 		Gone = true;
-		Debug.Log("Dead and Gone!");
+		//Debug.Log("Dead and Gone!");
 	}
 
 	

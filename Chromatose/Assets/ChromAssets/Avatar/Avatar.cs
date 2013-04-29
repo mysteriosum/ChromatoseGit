@@ -45,9 +45,22 @@ public class Avatar : ColourBeing
 	private Renderer r;
 	private Material mat;
 	private Shader s;
+	private GameObject outline;
+	private GameObject outlinePointer;
+	private string outlineName = "Player1";
+	private string outlinePointerName = "Player6";
+	
+	
+	[System.NonSerializedAttribute]
+	public Texture avatarOutlineTexture;
+	private bool hasOutline = false;
+	
 	// Use this for initialization
 	void Start ()
 	{
+		
+		
+		
 		movement = GetComponent<Movement>();
 		
 		
@@ -59,6 +72,11 @@ public class Avatar : ColourBeing
 		mat = this.renderer.materials[0];
 		s = mat.shader;
 		spriteInfo = GetComponent<tk2dSprite>();
+		
+		outlinePointer = new GameObject("OutlinePointer");		//make my outline pointer thing
+		tk2dSprite.AddComponent<tk2dSprite>(outlinePointer, spriteInfo.Collection, outlinePointerName);
+		outlinePointer.renderer.enabled = false;
+		//outlinePointer.transform.localScale = new Vector3(0.3f, 0.3f, 1f);
 	}
 	
 	// Update is called once per frame
@@ -144,6 +162,42 @@ public class Avatar : ColourBeing
 			if (hurtTimer >= hurtTiming){
 				hurt = false;
 				invisible = false;
+			}
+		}
+		
+					//TEST : Making copies of myself!
+		
+		if (Input.GetKeyDown(KeyCode.Space)){
+			if (!hasOutline){
+				outline = new GameObject("Outline");
+				outline.transform.rotation = t.rotation;
+				outline.transform.position = t.position;
+				tk2dSprite.AddComponent<tk2dSprite>(outline, spriteInfo.Collection, outlineName);
+				hasOutline = true;
+			}
+			else{
+				t.position = outline.transform.position;
+				t.rotation = outline.transform.rotation;
+				Destroy(outline);
+				hasOutline = false;
+				//velocity = Vector2.zero;				//TEST For now I like the idea of keeping your current moment for when you go back
+				//movement.SetVelocity(velocity);
+			}
+		}
+		
+					//Update my little pointer man!
+		
+		if (!hasOutline && outlinePointer.renderer.enabled){
+			outlinePointer.renderer.enabled = false;
+		}
+		else if (hasOutline && outline){
+			Vector3 direction = outline.transform.position - t.position;
+			if (direction.magnitude > 30){
+				outlinePointer.renderer.enabled = true;
+				outlinePointer.transform.position = t.position + direction.normalized * 30;
+				Vector3 lookDirection = VectorFunctions.ConvertLookDirection(direction);
+				outlinePointer.transform.rotation = Quaternion.LookRotation(new Vector3(0, 0, 1), direction);
+				
 			}
 		}
 		

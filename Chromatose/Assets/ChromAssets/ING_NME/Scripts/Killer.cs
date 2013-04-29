@@ -6,11 +6,13 @@ public class Killer : MonoBehaviour {
 	public GameObject mySpecialObject;
 	public GameObject[] thingsToTrigger;
 	string specialName;
+	bool specific;
 	// Use this for initialization
 	void Start () {
 		if (mySpecialObject){
 			specialName = mySpecialObject.name;
 		}
+		specific = mySpecialObject;
 	}
 	
 	// Update is called once per frame
@@ -19,7 +21,7 @@ public class Killer : MonoBehaviour {
 	}
 	
 	void OnTriggerEnter(Collider other){
-		if (mySpecialObject){
+		if (specific){
 			if (other.gameObject.name != specialName && other.gameObject.name != specialName + "(Clone)"){
 				return;
 			}

@@ -24,6 +24,8 @@ public class Npc : ColourBeing {
 	bool stoppingForever = false;
 	bool addingGreen;
 	bool waitingForMaxGreen;
+	bool saidOK = false;
+	bool saidFollow = false;
 	
 	
 	ColourBeing.Colour initColour;
@@ -126,7 +128,13 @@ public class Npc : ColourBeing {
 				
 				if (diff.magnitude < detectRadius && avatar.GetComponent<Avatar>().colour.Blue && !inMotion){
 					inMotion = true;
-					//Debug.Log("Should be in motion");
+					if (!saidFollow){
+						GameObject followBubble = ChromatoseManager.manager.OneShotAnim("bubbleIFollowYou", 4f, t.position);
+													//follow avatar here
+						followBubble.SetParent(gameObject);
+						followBubble.transform.localPosition = new Vector3(20, 20, 0);
+						saidFollow = true;
+					}
 				}
 				else if(inMotion){
 					inMotion = false;
@@ -229,7 +237,7 @@ public class Npc : ColourBeing {
 		else if (colour.r > 0){ //Absorb colour from Avatar. Don't want to do it if I have NO colour, just... little colour.
 			Vector2 diff = (Vector2) avatar.position - (Vector2)t.position;
 			if (diff.magnitude < detectRadius && avatarScript.colour.Red && !Physics.Linecast(avatar.position, t.position, out hit, mask)){
-				colour.r = 255;
+				MaxRed();
 				
 			}
 		}
@@ -357,6 +365,11 @@ public class Npc : ColourBeing {
 	
 	public void MaxRed(){
 		colour.r = 255;
+		if (saidOK) return;
+		saidOK = true;
+		GameObject ok = ChromatoseManager.manager.OneShotAnim("bubbleOK",1f, t.position + new Vector3(20, 20, 0));
+		//ok.SetParent(gameObject);
+		//ok.transform.localPosition = new Vector3(20, 20, 0);
 	}
 	
 	override public void Trigger(){

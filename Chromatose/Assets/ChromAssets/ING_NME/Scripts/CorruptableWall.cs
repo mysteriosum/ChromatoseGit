@@ -4,7 +4,7 @@ using System.Collections;
 public class CorruptableWall : MonoBehaviour {
 	tk2dAnimatedSprite anim;
 	bool corrupted = true;
-	float timing = 2.5f;
+	float timing = 5.0f;
 	float timer = 0f;
 	bool started = false;
 	public GameObject[] myBlobbies;
@@ -12,15 +12,16 @@ public class CorruptableWall : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		anim = gameObject.GetComponent<tk2dAnimatedSprite>();
-		anim.ClipFps = 5f;
+		//anim.ClipFps = 5f;
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		if (started) timer += Time.deltaTime;
 		if (timer >= timing && !anim.IsPlaying(anim.CurrentClip)){
-			anim.ClipFps = 5f;
+			//anim.ClipFps = 5f;
 			anim.Play();
+			anim.CurrentClip.wrapMode = tk2dSpriteAnimationClip.WrapMode.Once;
 			anim.animationCompleteDelegate = StopAndDestroy;
 			
 		}
