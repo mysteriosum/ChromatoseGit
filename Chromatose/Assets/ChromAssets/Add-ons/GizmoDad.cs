@@ -28,7 +28,7 @@ public class GizmoDad : MonoBehaviour {
 	public Vector3 size = Vector3.one;
 	public bool useCollider = false;
 	public float alpha = 1f;
-	private Color myColor;
+	protected Color myColor;
 	
 	
 	// Use this for initialization

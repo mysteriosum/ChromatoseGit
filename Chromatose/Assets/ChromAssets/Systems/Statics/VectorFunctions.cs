@@ -30,4 +30,8 @@ static class VectorFunctions {
 		return angle;
 	}
 	
+	static public Vector3 ConvertLookDirection(Vector3 convertee){
+		return new Vector3(convertee.z, convertee.y, convertee.x);
+	}
+	
 }

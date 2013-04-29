@@ -1,10 +1,9 @@
 fileFormatVersion: 2
-guid: 3aca8567c5cf1984c8c1b10a2466b4a9
+guid: ab2cee6b514ed9e4092bc8b138046d4d
 MonoImporter:
   serializedVersion: 2
   defaultReferences:
-  - oneShotSpritePrefab: {fileID: 100000, guid: bf87ee7d5de87d7468a684aa3a9f6fc1,
-      type: 2}
+  - spritePrefab: {fileID: 100000, guid: bf87ee7d5de87d7468a684aa3a9f6fc1, type: 2}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

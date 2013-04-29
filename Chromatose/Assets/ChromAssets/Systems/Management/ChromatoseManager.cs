@@ -25,6 +25,20 @@ public class ChromatoseManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		
+		if (Input.GetKeyDown(KeyCode.PageUp)){
+			if (Application.loadedLevel == 0) return;
+			Application.LoadLevel(Application.loadedLevel - 1);
+		}
+		
+		if (Input.GetKeyDown(KeyCode.PageUp)){
+			if (Application.loadedLevel == Application.levelCount - 1) return;
+			Application.LoadLevel(Application.loadedLevel + 1);
+		}
+		
+		if (Input.GetKeyDown(KeyCode.Escape)){
+			Application.Quit();
+		}
 	
 	}
 	
@@ -99,6 +113,27 @@ public class ChromatoseManager : MonoBehaviour {
 											+ "\nG = " + collectibles.g 
 											+ "\nB = " + collectibles.b
 											+ "\nW = " + collectibles.w);
+	}
+	
+	
+		
+		//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
+		//<-------------STATIC FUNCTIONS!-------------->
+		//<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>
+	
+	public GameObject oneShotSpritePrefab;
+	
+	tk2dSprite spriteInfo;
+	public GameObject OneShotAnim( string animName, float time, Vector3 callerPosition){
+		
+		GameObject newGuy = GameObject.Instantiate(oneShotSpritePrefab, callerPosition, Quaternion.identity) as GameObject;
+		
+		spriteInfo = newGuy.GetComponent<tk2dSprite>();
+		
+			spriteInfo.SetSprite(spriteInfo.Collection.GetSpriteIdByName(animName));
+		GameObject.Destroy(newGuy, time);
+		return newGuy;
+		
 	}
 	
 }
