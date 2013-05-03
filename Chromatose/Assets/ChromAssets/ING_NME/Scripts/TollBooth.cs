@@ -44,7 +44,7 @@ public class TollBooth : MonoBehaviour {
 				avatarT.position.y > colliderT.position.y - myCollider.size.y/2 && 
 				avatarT.position.y < colliderT.position.y + myCollider.size.y/2
 			){
-				chroManager.RemoveCollectibles(Couleur.blue, requiredPayment);
+				chroManager.RemoveCollectibles(Couleur.blue, requiredPayment, avatarT.position);
 				triggered = true;
 				collisionChild.gameObject.SetActive(false);
 				if (anim)
