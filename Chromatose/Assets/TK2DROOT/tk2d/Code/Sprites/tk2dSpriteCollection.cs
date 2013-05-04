@@ -517,7 +517,7 @@ public class tk2dSpriteCollection : MonoBehaviour
 	public Material[] atlasMaterials;
 	public Texture2D[] atlasTextures;
 	
-	public bool useTk2dCamera = false;
+	public bool useTk2dCamera = true;
 	public int targetHeight = 800;
 	public float targetOrthoSize = 300.0f;
 	public float globalScale = 1.0f;
