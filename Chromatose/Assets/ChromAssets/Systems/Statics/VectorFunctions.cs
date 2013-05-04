@@ -34,4 +34,21 @@ static class VectorFunctions {
 		return new Vector3(convertee.z, convertee.y, convertee.x);
 	}
 	
+	static public Transform FindClosestOfTag(Vector3 closestTo, string tag, int maxDistance){
+		GameObject[] tagged = GameObject.FindGameObjectsWithTag(tag);
+		float closestDist = maxDistance;
+		Transform closestHere = null;
+		foreach (GameObject n in tagged){
+			float tempDist = (closestTo - n.transform.position).magnitude;		//This was cast as (Vector2), but I don't think it's necessary. Maybe it will be eventually?
+			
+			if (tempDist < closestDist){
+				closestDist = tempDist;
+				closestHere = n.transform;
+			}
+		}
+		
+		return closestHere;
+		
+	}
+	
 }

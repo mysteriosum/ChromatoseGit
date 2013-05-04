@@ -5,6 +5,7 @@ MonoImporter:
   defaultReferences:
   - oneShotSpritePrefab: {fileID: 100000, guid: bf87ee7d5de87d7468a684aa3a9f6fc1,
       type: 2}
+  - bubbleCollection: {fileID: 11400000, guid: 25e1a71eac2884840a62ce3415cc4f0d, type: 2}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
