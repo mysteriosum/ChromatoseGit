@@ -38,6 +38,8 @@ public class Avatar : ColourBeing
 		private int loseColourPartCounter = 0;
 		private int partDropMin = 5;
 		private int partDropMax = 13;
+	
+	private List<GiveColourParticle> giveColourParts = new List<GiveColourParticle>();
 
 	public float accelPartTimer = 0f;
 	public float accelPartTiming = 0.3f;
@@ -186,7 +188,62 @@ public class Avatar : ColourBeing
 	}
 	
 	private class GiveColourParticle {
+		List<GameObject> gos = new List<GameObject>();
+		Transform target;
+		Transform origin;
+		Vector3 velocity;
+		//tk2dAnimatedSprite spriteInfo;
+		int shotsLeft = 4;
+		float timer = 0f;
+		float frequency = 0.07f;
+		float speed = 400f;
+		tk2dSpriteCollectionData colData;
 		
+		
+		public GiveColourParticle(tk2dSpriteCollectionData colData, Transform target, Transform origin){
+			this.colData = colData;
+			this.target = target;
+			this.origin = origin;
+			this.velocity = (target.position - origin.position).normalized * speed;
+		}
+		
+		public bool Main(){
+			timer += Time.deltaTime;
+			if (timer >= frequency && shotsLeft > 0){
+				Shoot();
+				shotsLeft --;
+				timer = 0;
+			}
+			
+			GameObject toDestroy = null;
+			foreach (GameObject go in gos){
+				
+				go.transform.rotation = Quaternion.LookRotation(Vector3.forward, target.position - go.transform.position);
+				go.transform.Translate(Vector3.up * speed * Time.deltaTime, Space.Self);
+				if ((go.transform.position - target.position).magnitude < 10){
+					toDestroy = go;
+				}
+			}
+			if (toDestroy != null){
+				gos.Remove(toDestroy);
+				Destroy(toDestroy);
+				if (gos.Count == 0)
+					return true;
+			}
+			return false;
+		}
+		
+		public void Shoot(){
+			
+				GameObject newGuy = new GameObject("colourGivePart" + shotsLeft);
+				gos.Add(newGuy);
+				tk2dSprite.AddComponent<tk2dSprite>(newGuy, colData, "part_avatarGiveColor");
+				
+				tk2dSprite spriteInfo = newGuy.GetComponent<tk2dSprite>();
+				
+				newGuy.transform.position = origin.position + Vector3.forward;
+				spriteInfo.color = Color.red;
+		}
 	}
 	
 	
@@ -646,6 +703,10 @@ public class Avatar : ColourBeing
 				loseAllColourPart = null;
 			}
 		}
+		GiveColourParticle giveToRemove = null;
+		foreach (GiveColourParticle part in giveColourParts){
+			part.Main();
+		}
 		
 		
 		
@@ -773,6 +834,10 @@ public class Avatar : ColourBeing
 		colour.r = 0;
 		colour.g = 0;
 		colour.b = 0;
+	}
+	
+	public void GiveColourTo(Transform target, Transform origin){
+		giveColourParts.Add(new GiveColourParticle(particleCollection, target, origin));
 	}
 	
 }
