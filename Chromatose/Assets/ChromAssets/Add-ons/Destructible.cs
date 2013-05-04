@@ -2,9 +2,14 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-public class Destructible : MonoBehaviour {
+public class Destructible : MonoBehaviour {		//move sprite @ 15 frames or 0.5f secs
 	
 	protected tk2dAnimatedSprite anim;
+	protected tk2dSprite spriteInfo;
+	
+	public GameObject poof;
+	
+	
 	public int npcsToTrigger = 1;
 	public Transform myNode;
 	public string specificName = "";
@@ -21,7 +26,8 @@ public class Destructible : MonoBehaviour {
 	
 	// Use this for initialization
 	void Start () {
-		anim = GetComponent<tk2dAnimatedSprite>();
+		Setup();
+		
 	}
 	
 	// Update is called once per frame
@@ -29,18 +35,28 @@ public class Destructible : MonoBehaviour {
 	
 	}
 	
-	void Destroy(){
+	protected void Setup(){
+		spriteInfo = GetComponent<tk2dSprite>();
+		poof = Instantiate(poof) as GameObject;
+		poof.SetActive(false);
+		anim = poof.GetComponent<tk2dAnimatedSprite>();
+		anim.animationEventDelegate = NextImage/*(anim, anim.CurrentClip, anim.CurrentClip.frames[14], 14)*/;
+		anim.animationCompleteDelegate = Done;	
+	}
+	
+	protected void Destroy(){
 		
 		children = GetComponentsInChildren<Collider>(true);
 		
 		foreach (Collider c in children){
 			c.enabled = false;
 		}
+		poof.SetActive(true);
+		poof.transform.position = transform.position;
+		poof.transform.rotation = transform.rotation;
 		
 		anim.Play();
 			anim.CurrentClip.wrapMode = tk2dSpriteAnimationClip.WrapMode.Once;
-		
-		gameObject.RemoveComponent(typeof (Destructible));
 	}
 	
 	public bool AddOne(Npc npc){
@@ -58,7 +74,7 @@ public class Destructible : MonoBehaviour {
 		return true;
 	}
 	
-	void DeadAndGone(){
+	protected void DeadAndGone(){
 		transform.position = new Vector3(transform.position.x, transform.position.y, -2000);
 	}
 	
@@ -67,6 +83,16 @@ public class Destructible : MonoBehaviour {
 		bool identical = specificName == name;
 		print("It is " + identical + " that it's the same name");
 		return name == specificName;
+	}
+	
+	protected void NextImage(tk2dAnimatedSprite sprite, tk2dSpriteAnimationClip clip, tk2dSpriteAnimationFrame frame, int frameNum){
+		Debug.Log("Next");
+		spriteInfo.spriteId ++;
+	}
+	
+	protected void Done(tk2dAnimatedSprite sprite, int index){
+		
+		gameObject.RemoveComponent(typeof (Destructible));
 	}
 	
 	
