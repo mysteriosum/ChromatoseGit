@@ -5,8 +5,7 @@ public class Buildable : Destructible {
 
 	// Use this for initialization
 	void Start () {
-		anim = GetComponent<tk2dAnimatedSprite>();
-	
+		Setup();
 	}
 	
 	// Update is called once per frame

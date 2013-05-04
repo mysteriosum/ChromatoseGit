@@ -402,7 +402,7 @@ public class Npc : ColourBeing {
 			Vector2 diff = (Vector2) avatar.position - (Vector2)t.position;
 			if (diff.magnitude < detectRadius && avatarScript.colour.Red && !Physics.Linecast(avatar.position, t.position, out hit, mask)){
 				MaxRed();
-				
+				avatarScript.GiveColourTo(t, avatar);
 			}
 		}
 	move:
