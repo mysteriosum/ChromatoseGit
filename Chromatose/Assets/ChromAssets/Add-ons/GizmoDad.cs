@@ -43,18 +43,14 @@ public class GizmoDad : MonoBehaviour {
 	}
 	
 	void OnDrawGizmos(){
-		Transform t = GetComponent<Transform>();
-		BoxCollider collider = GetComponent<BoxCollider>();
 		
-		if (t.localScale != Vector3.one && collider){
-			Vector3 diff = t.localScale - Vector3.one;
-			collider.size += diff;
-			t.localScale = Vector3.one;
-		}
+		Transform t = GetComponent<Transform>();
+		BoxCollider derCollider = GetComponent<BoxCollider>();
+		
 		
 		alpha = Mathf.Clamp01(alpha);
-		if (collider)
-			size = useCollider ? collider.size : size;
+		if (derCollider)
+			size = useCollider ? derCollider.size : size;
 		
 		switch (myColour){
 			
@@ -112,4 +108,16 @@ public class GizmoDad : MonoBehaviour {
 			
 		}
 	}
+	/*
+	void OnDrawGizmosSelected(){
+		
+		Transform t = GetComponent<Transform>();
+		BoxCollider derCollider = GetComponent<BoxCollider>();
+		
+		if (t.localScale != Vector3.one && derCollider){
+			Vector3 diff = t.localScale - Vector3.one;
+			derCollider.size += diff;
+			t.localScale = Vector3.one;
+		}	
+	}*/
 }
