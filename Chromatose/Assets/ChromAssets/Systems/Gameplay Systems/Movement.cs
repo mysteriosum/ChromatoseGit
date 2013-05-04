@@ -216,4 +216,11 @@ public class Movement : MonoBehaviour {
 		GUI.TextArea(new Rect(0, 0, 128, 64), "Resolution: " + x.ToString () + " x " + y.ToString());
 	}
 	
+	public void SetNewMoveStats(float newMax, float newAccel, float newRotRate){
+		thruster.maxSpeed = newMax;
+		thruster.accel = newAccel;
+		rotator.rotationRate = newRotRate;
+		return;
+	}
+	
 }

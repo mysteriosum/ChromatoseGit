@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 enum ColourEnum{
 	
@@ -7,20 +8,42 @@ enum ColourEnum{
 
 public class ChromatoseManager : MonoBehaviour {
 	private Avatar avatar;
+	private AvatarPointer avatarP;
 	public static ChromatoseManager manager; 
 	
-	private class Collectibles{
-		public int w;
-		public int r;
-		public int g;
-		public int b;
+	
+	private class CollectiblesManager{
+		public List<Collectible> w = new List<Collectible>();
+		public List<Collectible> r = new List<Collectible>();
+		public List<Collectible> g = new List<Collectible>();
+		public List<Collectible> b = new List<Collectible>();
+	}
+	private class RoomStats{
+		public List<Collectible> consumedCollectibles = new List<Collectible>();
 	}
 	
-	private Collectibles collectibles = new Collectibles();
+	private RoomStats[] roomStats = {new RoomStats(), new RoomStats(), new RoomStats(), new RoomStats(), new RoomStats(), new RoomStats(), new RoomStats(), new RoomStats(), new RoomStats()};
+	
+	private CollectiblesManager collectibles = new CollectiblesManager();
+	
+	public GameObject oneShotSpritePrefab;
+	public tk2dSpriteCollectionData bubbleCollection;
+	public tk2dFontData chromatoseFont;
+	
+												//GETTERS & SETTERS
+	public List<Collectible> WhiteCollectibles{
+		get{ return collectibles.w; }
+	}
+	
 	
 	// Use this for initialization
-	void Start () {
+	void Awake () {
 		manager = this;
+		Debug.Log("this level = " + Application.loadedLevel);
+	}
+	
+	void OnLevelWasLoaded(){
+		
 	}
 	
 	// Update is called once per frame
@@ -42,19 +65,19 @@ public class ChromatoseManager : MonoBehaviour {
 	
 	}
 	
-	public void AddCollectible(Couleur colour){
-		switch (colour){
+	public void AddCollectible(Collectible col){
+		switch (col.colColour){
 		case Couleur.red:
-			collectibles.r += 1;
+			collectibles.r.Add(col);
 			break;
 		case Couleur.green:
-			collectibles.g += 1;
+			collectibles.g.Add(col);
 			break;
 		case Couleur.blue:
-			collectibles.b += 1;
+			collectibles.b.Add(col);
 			break;
 		case Couleur.white:
-			collectibles.w += 1;
+			collectibles.w.Add(col);
 			break;
 		default:
 			Debug.LogWarning("Not a real collectible.");
@@ -74,32 +97,43 @@ public class ChromatoseManager : MonoBehaviour {
 	public int GetCollectibles(Couleur colour){
 		switch (colour){
 		case Couleur.red:
-			return collectibles.r;
+			return collectibles.r.Count;
 		case Couleur.green:
-			return collectibles.g;
+			return collectibles.g.Count;
 		case Couleur.blue:
-			return collectibles.b;
+			return collectibles.b.Count;
 		case Couleur.white:
-			return collectibles.w;
+			return collectibles.w.Count;
 		default:
 			Debug.LogWarning("Not a real collectible.");
 			return 0;
 		}
 	}
 	
-	public void RemoveCollectibles(Couleur colour, int value){
+	public void DropCollectibles(List<Collectible> list, int no, Vector3 pos){
+		
+		for (int i = 0; i < no; i ++){
+			Collectible inQuestion = list[list.Count - 1];
+			
+			inQuestion.PutBack(pos + (Vector3)Random.insideUnitCircle * 15);
+			list.Remove(inQuestion);
+		}
+		
+	}
+	
+	public void RemoveCollectibles(Couleur colour, int value, Vector3 pos){
 		switch (colour){
 		case Couleur.red:
-			collectibles.r -= value;
+			JettisonCollectibles(collectibles.r, value, pos);
 			return;
 		case Couleur.green:
-			collectibles.g -= value;
+			JettisonCollectibles(collectibles.g, value, pos);
 			return;
 		case Couleur.blue:
-			collectibles.b -= value;
+			JettisonCollectibles(collectibles.b, value, pos);
 			return;
 		case Couleur.white:
-			collectibles.w -= value;
+			JettisonCollectibles(collectibles.w, value, pos);
 			return;
 		default:
 			Debug.LogWarning("Not a real collectible.");
@@ -107,12 +141,22 @@ public class ChromatoseManager : MonoBehaviour {
 		}
 	}
 	
+	public void JettisonCollectibles(List<Collectible> list, int no, Vector3 pos){
+		for (int i = 0; i < no; i ++){
+			Collectible inQuestion = list[list.Count - 1];
+			roomStats[Application.loadedLevel].consumedCollectibles.Add(inQuestion);
+			inQuestion.Trigger();
+			inQuestion.transform.position = pos;
+			list.Remove(inQuestion);
+		}
+	}
+	
 	void OnGUI(){
 		GUI.TextArea(new Rect(Screen.width - 136, 8, 128, 80), "Collectibles"
-											+ "\nR = " + collectibles.r
-											+ "\nG = " + collectibles.g 
-											+ "\nB = " + collectibles.b
-											+ "\nW = " + collectibles.w);
+											+ "\nR = " + collectibles.r.Count
+											+ "\nG = " + collectibles.g.Count 
+											+ "\nB = " + collectibles.b.Count
+											+ "\nW = " + collectibles.w.Count);
 	}
 	
 	
@@ -121,7 +165,6 @@ public class ChromatoseManager : MonoBehaviour {
 		//<-------------STATIC FUNCTIONS!-------------->
 		//<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>
 	
-	public GameObject oneShotSpritePrefab;
 	
 	tk2dSprite spriteInfo;
 	public GameObject OneShotAnim( string animName, float time, Vector3 callerPosition){

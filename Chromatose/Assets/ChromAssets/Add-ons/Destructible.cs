@@ -8,9 +8,12 @@ public class Destructible : MonoBehaviour {
 	public int npcsToTrigger = 1;
 	public Transform myNode;
 	public string specificName = "";
+	public int NPCsNeeded{
+		get{ return npcsToTrigger - myNPCs.Count;}
+		
+	}
 	
 	List<Npc> myNPCs = new List<Npc>();
-	List<Npc> contributingNPCs;
 	
 	
 	Collider[] children = new Collider[2];
@@ -19,12 +22,6 @@ public class Destructible : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		anim = GetComponent<tk2dAnimatedSprite>();
-		/*
-		Object[] allNPCs = GameObject.FindObjectsOfType(typeof(Npc))
-		int totalNPCs = allNPCs.Length;
-		myNPCs = new Npc[totalNPCs];
-		contributingNPCs = new Npc[totalNPCs];
-		*/
 	}
 	
 	// Update is called once per frame
@@ -71,5 +68,6 @@ public class Destructible : MonoBehaviour {
 		print("It is " + identical + " that it's the same name");
 		return name == specificName;
 	}
+	
 	
 }

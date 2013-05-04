@@ -42,6 +42,8 @@ public class GizmoDad : MonoBehaviour {
 	
 	}
 	
+	
+	
 	void OnDrawGizmos(){
 		Transform t = GetComponent<Transform>();
 		BoxCollider collider = GetComponent<BoxCollider>();
