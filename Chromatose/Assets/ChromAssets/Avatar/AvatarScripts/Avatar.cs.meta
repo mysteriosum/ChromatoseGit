@@ -8,6 +8,14 @@ MonoImporter:
   - paleCollection: {fileID: 11400000, guid: 19bb53c07cfea3440a7c5a4d926577a4, type: 2}
   - afterImageCollection: {fileID: 11400000, guid: fb50c5ef5321ae24998dcc14a2431709,
       type: 2}
+  - particleCollection: {fileID: 11400000, guid: 2944f629e7e8f7145baa2a6b431d5567,
+      type: 2}
+  - accelPart: {instanceID: 0}
+  - turboPart: {instanceID: 0}
+  - givePart: {instanceID: 0}
+  - loseColourPart: {instanceID: 0}
+  - loseAllColourPart: {instanceID: 0}
+  - partAnimations: {fileID: 11400000, guid: df91173bdc531b847837a6fa7fb1e3ce, type: 2}
   - t: {instanceID: 0}
   - avatarOutlineTexture: {fileID: 2800000, guid: b9c71431cbbc0a34e80ff8506d6310b9,
       type: 3}
