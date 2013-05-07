@@ -4,16 +4,21 @@ using System.Collections;
 public class TollBooth : MonoBehaviour {
 	public int requiredPayment = 1;
 	
-	BoxCollider myCollider;
-	Transform colliderT;
-	Transform avatarT;
-	ChromatoseManager chroManager;
-	Transform collisionChild;
-	tk2dAnimatedSprite anim;
+	protected BoxCollider myCollider;
+	protected Transform colliderT;
+	protected Transform avatarT;
+	protected ChromatoseManager chroManager;
+	protected Transform collisionChild;
+	protected tk2dAnimatedSprite anim;
 	
-	bool triggered = false;
+	protected bool triggered = false;
 	// Use this for initialization
 	void Start () {
+		Setup();
+		
+	}
+	
+	protected void Setup(){
 		chroManager = GameObject.FindObjectOfType(typeof(ChromatoseManager)) as ChromatoseManager;
 		avatarT = GameObject.FindGameObjectWithTag("avatar").GetComponent<Transform>();
 		//Debug.Log("Did I find avatar? " + avatarT.name);
@@ -31,14 +36,17 @@ public class TollBooth : MonoBehaviour {
 		//Debug.Log("Got a collider " + myCollider.name + " and a transform: " + colliderT.name);
 		
 		anim = GetComponent<tk2dAnimatedSprite>();
-		
 	}
 	
 	// Update is called once per frame
 	void Update () {
+		Check(Couleur.blue);
+	}
+	
+	protected void Check(Couleur couleur){
 		if (triggered) return;
 		
-		if (chroManager.GetCollectibles(Couleur.blue) >= requiredPayment){
+		if (chroManager.GetCollectibles(couleur) >= requiredPayment){
 			if (avatarT.position.x > colliderT.position.x - myCollider.size.x/2 && 
 				avatarT.position.x < colliderT.position.x + myCollider.size.x/2 && 
 				avatarT.position.y > colliderT.position.y - myCollider.size.y/2 && 
@@ -48,11 +56,14 @@ public class TollBooth : MonoBehaviour {
 				triggered = true;
 				collisionChild.gameObject.SetActive(false);
 				if (anim)
-					anim.Play();
-					anim.CurrentClip.wrapMode = tk2dSpriteAnimationClip.WrapMode.Once;
+					Animate();
 			}
 		}
 	}
 	
+	void Animate(){
+		anim.Play();
+		anim.CurrentClip.wrapMode = tk2dSpriteAnimationClip.WrapMode.Once;
+	}
 	
 }
