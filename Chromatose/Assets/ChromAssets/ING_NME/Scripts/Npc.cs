@@ -14,6 +14,8 @@ public class Npc : ColourBeing {
 	private Buildable toBuild;
 	
 	
+	
+	
 	private bool losingColour = false;
 	private bool inMotion = false;
 	
@@ -54,6 +56,17 @@ public class Npc : ColourBeing {
 	private bool fuckingOff = false;
 	
 	
+											//vars about my animations and what they DO
+	private string greyToRed = "rNPC_greyToRed";
+	private string[] redFreakouts = new string[] {"rNPC_nervousColor", "rNPC_nervousPale"};
+	
+	//prolly gon' put some stuff here
+	
+	private GameObject shadow;
+	private tk2dAnimatedSprite shadowAnim;
+	
+	private bool _hasShadow;
+	private bool turningRed = false;
 	
 	
 	public class SpeechBubble{				//THE BUBBLE AND ITS DECLARATION!
@@ -154,6 +167,9 @@ public class Npc : ColourBeing {
 	public int initialSpeechRange = 400;
 	public string bubbleSpriteName = "";
 	public bool announceOtherNPCsRequired = false;
+	public bool waitForMessage = false;
+	public bool hasShadowBG = false;
+	public int shadowSpriteIndex;
 	
 	public Vector2 fuckOffReference = new Vector2(1, 1);
 	
@@ -168,6 +184,7 @@ public class Npc : ColourBeing {
 		movement = GetComponent<Movement>();
 		t = transform;
 		spriteInfo = GetComponent<tk2dSprite>();
+		anim = GetComponent<tk2dAnimatedSprite>();
 		
 		if (movement.target){
 			target = movement.target;
@@ -189,7 +206,6 @@ public class Npc : ColourBeing {
 		
 		initColour = new ColourBeing.Colour(colour.r, colour.g, colour.b);
 		
-		shownColour = new Color((float)initColour.r/255f, (float)initColour.g/255f, (float)initColour.b/255f, spriteInfo.color.a);
 		
 		
 		//My bubble!
@@ -205,9 +221,37 @@ public class Npc : ColourBeing {
 		}
 		
 		allNPCs = npcList.ToArray();
+		float animOffset = Random.Range(0f, 1f);
+		
+		int highestColour = 0;
+		if (colour.r > highestColour){
+			highestColour = colour.r;
+		}
+		if (colour.g > highestColour){
+			highestColour = colour.g;
+		}
+		if (colour.b > highestColour){
+			highestColour = colour.b;
+		}
+		if (highestColour > 220){
+			anim.Play(animOffset);
+		}
+		
+		//Do I have a shadow? instantiate it 		spriteInfo.GetSpriteIdByName("wNPC_bgBounce")
+		if (hasShadowBG){
+			_hasShadow = true;
+			shadow = new GameObject(name + "Shadow");
+			tk2dAnimatedSprite.AddComponent<tk2dAnimatedSprite>(shadow, anim.Collection, 10);
+			shadowAnim = shadow.GetComponent<tk2dAnimatedSprite>();
+			
+			string newAnimName = anim.CurrentClip.name + "BG";
+			shadowAnim.Play(anim.GetClipByName(newAnimName), animOffset);
+			shadowAnim.Build();
+		
+		}
 		
 		
-		Debug.Log(allNPCs);
+		
 	}
 	
 	// Update is called once per frame
@@ -270,6 +314,10 @@ public class Npc : ColourBeing {
 			goto move;
 		}
 		
+		if (waitForMessage){
+			goto move;
+		}
+		
 		//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
 		//<----------------BLUE SECTION!--------------->
 		//<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>
@@ -291,7 +339,6 @@ public class Npc : ColourBeing {
 					if (!saidFollow){
 						beginBySaying = false;
 						myBubble.ShowBubbleFor(followName, 4f);
-						myBubble.Blend(spriteInfo.color);
 						/*GameObject followBubble = ChromatoseManager.manager.OneShotAnim("bubbleIFollowYou", 4f, t.position);
 													//follow avatar here
 						followBubble.SetParent(gameObject);
@@ -345,7 +392,7 @@ public class Npc : ColourBeing {
 		//<----------------RED SECTION!---------------->
 		//<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>
 	red:
-		if (colour.r > anarchyConsiderMin){		//If I'm red enough to consider fighting
+		if (colour.r > anarchyConsiderMin && !turningRed){		//If I'm red enough to consider fighting
 			
 			if (target == null || target == avatar){  //find a target, and the nearest one, ideally
 				GameObject[] potentials = GameObject.FindGameObjectsWithTag("destructible");
@@ -388,6 +435,8 @@ public class Npc : ColourBeing {
 						inMotion = false;
 						breaking = true;
 						colour.r = initColour.r;
+						myPath.Clear();
+						currentNode = 0;
 					}
 					else{
 						currentNode ++;
@@ -398,10 +447,10 @@ public class Npc : ColourBeing {
 			
 			
 		}
-		else if (colour.r > 0){ //Absorb colour from Avatar. Don't want to do it if I have NO colour, just... little colour.
+		else if (colour.r > 0 && !turningRed){ //Absorb colour from Avatar. Don't want to do it if I have NO colour, just... little colour.
 			Vector2 diff = (Vector2) avatar.position - (Vector2)t.position;
 			if (diff.magnitude < detectRadius && avatarScript.colour.Red && !Physics.Linecast(avatar.position, t.position, out hit, mask)){
-				MaxRed();
+				TurnRed();
 				avatarScript.GiveColourTo(t, avatar);
 			}
 		}
@@ -465,29 +514,15 @@ public class Npc : ColourBeing {
 			}
 		}
 							//Was I red and now I'm not?
-		if (losingColour){
-			colour.r = colour.r > initColour.r? colour.r - 1 : colour.r;
-			shownColour.r -= 1f/255f;
-			
-			if ((float)colour.r /255f > (float)shownColour.r + 2f/255f){
-				losingColour = false;
-			}
-		}
-		if ((float)colour.r /255f > (float)shownColour.r + 2f/255f){
-			shownColour.r += 1f/255f;
-		}
 		
+		
+							//this is for IF I HAVE A SHADOW or whatever
+		if (_hasShadow){
+			shadow.transform.position = t.position + Vector3.forward;
+		}
 		
 							//Am I getting green? ...what is this for again? Hmm.... 
-		if (addingGreen){
-			Debug.Log("Adding green!");
-			colour.g ++;
-			shownColour.g += 1f/255f;
-			if (colour.g > 254){
-				addingGreen = false;
-				waitingForMaxGreen = false;
-			}
-		}
+		
 		
 		if (stoppingForever){
 			//movement.SlowToStop();
@@ -505,8 +540,8 @@ public class Npc : ColourBeing {
 		}
 		
 		if (fuckingOff){
-			shownColour = new Color(shownColour.r, shownColour.g, shownColour.b, shownColour.a * 0.95f);
-			if (shownColour.a < 0.01){
+			spriteInfo.color = new Color(spriteInfo.color.r, spriteInfo.color.g, spriteInfo.color.b, spriteInfo.color.a * 0.95f);
+			if (spriteInfo.color.a < 0.01){
 				Dead = true;
 				Gone = true;
 				StopAndDisable();
@@ -515,25 +550,9 @@ public class Npc : ColourBeing {
 		
 		
 		
-		spriteInfo.color = shownColour;
 		//end :)
 	}
 	
-	/// <summary>
-	/// Finds the closest object with the specified tag.
-	/// </summary>
-	/// <returns>
-	/// The closest of tag.
-	/// </returns>
-	/// <param name='mainTarget'>
-	/// Main target.
-	/// </param>
-	/// <param name='tag'>
-	/// Tag.
-	/// </param>
-	/// <param name='maxDistance'>
-	/// Max distance.
-	/// </param>
 	Transform FindClosestOfTag(Transform mainTarget, string tag, int maxDistance){
 		GameObject[] nodes = GameObject.FindGameObjectsWithTag(tag);
 		float closestDist = maxDistance;
@@ -569,15 +588,24 @@ public class Npc : ColourBeing {
 		
 	}
 	
-	Transform FindClosestOfTag(Transform mainTarget, string tag){
+	private Transform FindClosestOfTag(Transform mainTarget, string tag){
 		return FindClosestOfTag(mainTarget, tag, 10000000);
 	}
 	
-	public void MaxRed(){
+	public void MaxRed(tk2dAnimatedSprite sprite, int index){
 		colour.r = 255;
+		anim.Play(anim.GetClipByName(redFreakouts[Random.Range(0, 1)]), 0);
+		turningRed = false;
 		if (saidOK) return;
 		saidOK = true;
 		myBubble.ShowBubbleFor(destroyName, 2.5f);
+	}
+	
+	public void TurnRed(){
+		anim.Play(anim.GetClipByName(greyToRed), 0);
+		anim.CurrentClip.wrapMode = tk2dSpriteAnimationClip.WrapMode.Once;
+		anim.animationCompleteDelegate = MaxRed;
+		turningRed = true;
 		//ok.SetParent(gameObject);
 		//ok.transform.localPosition = new Vector3(20, 20, 0);
 	}

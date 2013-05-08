@@ -178,7 +178,6 @@ public class Avatar : ColourBeing
 		
 		public void Go(){
 			t.position = avatarT.position;
-			Debug.Log("GO!");
 			go.SetActive(true);
 		}
 		
@@ -431,8 +430,6 @@ public class Avatar : ColourBeing
 			int offset = 125;
 			speedBoostAreas[counter] = new Rect(xs[0] - offset, ys[0] - offset, xs[xs.Count - 1] - xs[0] + offset * 2, ys[ys.Count - 1] - ys[0] + offset * 2);		//make a rectangle encasing the speed boost areas
 			
-			
-			Debug.Log("biggest, smallest X values: " + xs[xs.Count - 1] + ", " + xs[0]);
 			counter ++;
 		}
 		
@@ -471,7 +468,7 @@ public class Avatar : ColourBeing
 		
 					//Check for inputs: WAD or Up, Left Right
 		if (highestColour > 0){
-			loseTimer += velocity.magnitude;
+			loseTimer += Mathf.Min(velocity.magnitude, basicMaxSpeed * Time.deltaTime);
 		}
 		if (loseTimer >= loseRate){
 			loseTimer = 0f;
@@ -482,7 +479,6 @@ public class Avatar : ColourBeing
 			
 		}
 		if (loseColourPartCounter >= loseColourPartDrop){
-			Debug.Log("counter " + loseColourPartCounter + " and drop " + loseColourPartDrop);
 			loseColourPartCounter = 0;
 			loseColourPartDrop = Random.Range(partDropMin, partDropMax);
 			loseColourPart.Add(new LoseColourParticle(particleCollection, t, partColor));
@@ -585,6 +581,7 @@ public class Avatar : ColourBeing
 			if (hurtTimer >= hurtTiming){
 				hurt = false;
 				invisible = false;
+				hurtTimer = 0;
 			}
 		}
 		

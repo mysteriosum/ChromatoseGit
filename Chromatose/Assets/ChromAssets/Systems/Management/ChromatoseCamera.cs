@@ -2,15 +2,18 @@ using UnityEngine;
 using System.Collections;
 
 public class ChromatoseCamera : MonoBehaviour {
-	Transform t;
+	private Transform t;
 	
 	public Transform avatar;
 	
-	tk2dCamera cam2d;
-	int width;
-	int height;
+	private tk2dCamera cam2d;
+	private int width;
+	private int height;
+	private ChromatoseManager manager;
+	
 	// Use this for initialization
 	void Start () {
+		manager = ChromatoseManager.manager;
 		if (!avatar){
 			avatar = GameObject.Find("Avatar").transform;
 		}
@@ -26,6 +29,12 @@ public class ChromatoseCamera : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		t.position = new Vector3(avatar.position.x - width/2, avatar.position.y - height/2, t.position.z);
+		
+		if (manager.InComic){
+			t.position = new Vector3(0, 0, t.position.z);
+		}
+		else{
+			t.position = new Vector3(avatar.position.x - width/2, avatar.position.y - height/2, t.position.z);
+		}
 	}
 }
