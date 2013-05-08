@@ -18,6 +18,7 @@ public class SpriteFader : MonoBehaviour {
 		
 		foreach (tk2dSprite sprite in spritesIn){
 			sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, inAlpha);
+			sprite.animation.Stop ();
 		}
 	}
 	
