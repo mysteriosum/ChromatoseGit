@@ -49,6 +49,8 @@ public class Collectible : ColourBeing {
 		t = transform;
 		avatarT = avatar.transform;
 		velocity = Random.insideUnitCircle * Random.Range(55, 80);
+		
+		anim = gameObject.GetComponent<tk2dAnimatedSprite>();
 	}
 	
 	// Update is called once per frame
@@ -79,15 +81,15 @@ public class Collectible : ColourBeing {
 			if (colour.Blue)
 				goto blue;
 		}
-		return;
+		return;		//if I'm not fading I'll skip this next
 	white:
 		t.Translate(velocity * Time.deltaTime);
-		spriteInfo.color = new Color(spriteInfo.color.r, spriteInfo.color.g, spriteInfo.color.b, spriteInfo.color.a - Time.deltaTime);
+		/*spriteInfo.color = new Color(spriteInfo.color.r, spriteInfo.color.g, spriteInfo.color.b, spriteInfo.color.a - Time.deltaTime);
 		if (spriteInfo.color.a <= 0){
 			Gone = true;
 			fading = false;
 			
-		}
+		}*/
 	
 		return;
 	blue:
@@ -118,13 +120,18 @@ public class Collectible : ColourBeing {
 	override public void Trigger(){
 		int direction = Random.Range(0, 359);
 		t.rotation = Quaternion.LookRotation(Vector3.forward, new Vector3(0, direction, 0));
-		fading = true;
 		Gone = false;
+		fading = true;
 		
 		if (colour.Blue){
 			collector = VectorFunctions.FindClosestOfTag(t.position, "blueCollector", 10000);
+			anim.Play(anim.GetClipByName("bColl_lose"), 0);
 		}
-			
+		if (colour.White){
+			anim.Play(anim.GetClipByName("wColl_lose"), 0);
+			anim.animationCompleteDelegate = GoneForever;
+			anim.CurrentClip.wrapMode = tk2dSpriteAnimationClip.WrapMode.Once;
+		}
 	}
 	
 	public void PutBack(Vector3 newPos){
@@ -134,4 +141,10 @@ public class Collectible : ColourBeing {
 		Gone = false;
 		Dead = true;
 	}
+	
+	public void GoneForever(tk2dAnimatedSprite sprite, int index){
+		Dead = true;
+		Gone = true;
+	}
+	
 }

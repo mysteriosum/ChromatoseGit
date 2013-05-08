@@ -274,7 +274,7 @@ public class Pather{		//Pather is the class that helps me find the path!
 		
 		if (!foundEnd){
 			counter ++;
-			if (counter < 25)
+			if (counter < 150)
 			goto open;
 		}
 		counter = 0;
@@ -291,7 +291,7 @@ public class Pather{		//Pather is the class that helps me find the path!
 		
 		thePath.Reverse();
 		//Debug.Log(underScrutiny + " and I did this " + counter + " times. There are " + thePath.Count + " nodes in the path");
-		
+		Debug.Log("Path is " + thePath.Count + " long");
 		
 		return thePath;
 		

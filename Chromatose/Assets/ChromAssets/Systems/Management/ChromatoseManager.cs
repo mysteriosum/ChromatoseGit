@@ -2,10 +2,6 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-enum ColourEnum{
-	
-}
-
 public class ChromatoseManager : MonoBehaviour {
 	private Avatar avatar;
 	private AvatarPointer avatarP;
@@ -20,15 +16,38 @@ public class ChromatoseManager : MonoBehaviour {
 	}
 	private class RoomStats{
 		public List<Collectible> consumedCollectibles = new List<Collectible>();
+		public List<Comic> comics = new List<Comic>();
+		
+		public bool[] thumbsFound = {false, false, false};
+		
+		public bool secretFound = false;
+		public bool comicComplete = false;
+	
+	
 	}
 	
 	private RoomStats[] roomStats = {new RoomStats(), new RoomStats(), new RoomStats(), new RoomStats(), new RoomStats(), new RoomStats(), new RoomStats(), new RoomStats(), new RoomStats()};
+	private int curRoom;
 	
 	private CollectiblesManager collectibles = new CollectiblesManager();
 	
+	
+	public GameObject comicCompleteAnim;
 	public GameObject oneShotSpritePrefab;
 	public tk2dSpriteCollectionData bubbleCollection;
 	public tk2dFontData chromatoseFont;
+	
+	public Texture backButton;
+	
+	private GameObject shavatarComicBlock;
+	private ComicTransition comicTransition;
+												//COMICS AND HOW TO USE THEM
+	private bool inComic = false;
+	public bool InComic{
+		get{ return inComic; }
+		
+	}
+	
 	
 												//GETTERS & SETTERS
 	public List<Collectible> WhiteCollectibles{
@@ -36,18 +55,61 @@ public class ChromatoseManager : MonoBehaviour {
 	}
 	
 	
+	
+	
 	// Use this for initialization
 	void Awake () {
 		manager = this;
-		Debug.Log("this level = " + Application.loadedLevel);
+			//comic frame dealings: TODO PUT IN ONLEVELWASLOADED
+		UpdateRoomStats();
 	}
 	
 	void OnLevelWasLoaded(){
 		
+		UpdateRoomStats();
+	}
+	
+	void UpdateRoomStats(){
+		avatar = GameObject.Find("Avatar").GetComponent<Avatar>();
+		curRoom = Application.loadedLevel;
+		GameObject[] frames = GameObject.FindGameObjectsWithTag("comicFrame");
+		int counter = 0;
+		do{
+			roomStats[curRoom].comics.Add(null);
+			counter ++;
+			if (counter > 50){
+				Debug.LogWarning("It's fucked up I know, but like, idk, there's just a lot going on in this level apparently");
+				break;
+			}
+		}
+		while(roomStats[curRoom].comics.Count < frames.Length);
+		
+		foreach (GameObject go in frames){
+			Comic strip = go.GetComponent<Comic>();
+			Debug.Log(strip);
+			roomStats[curRoom].comics[strip.mySlotIndex] = strip;
+			strip.gameObject.SetActive(false);
+		}
+		shavatarComicBlock = GameObject.Find("pre_shavatarComicBlock");
+		if (!shavatarComicBlock){
+			Debug.LogWarning("Hey loser! There's no Shavatar Comic Block in this level!");
+		}
+		
+		comicTransition = GameObject.Find("pre_comicLoader").GetComponent<ComicTransition>();
+		if (!shavatarComicBlock){
+			Debug.LogWarning("Hey loser! There's no comic loader in this level!");
+		}
 	}
 	
 	// Update is called once per frame
+	
 	void Update () {
+		
+		if (inComic){
+			if (roomStats[curRoom].comicComplete){
+				//com
+			}
+		}
 		
 		if (Input.GetKeyDown(KeyCode.PageUp)){
 			if (Application.loadedLevel == 0) return;
@@ -152,12 +214,75 @@ public class ChromatoseManager : MonoBehaviour {
 	}
 	
 	void OnGUI(){
-		GUI.TextArea(new Rect(Screen.width - 136, 8, 128, 80), "Collectibles"
-											+ "\nR = " + collectibles.r.Count
-											+ "\nG = " + collectibles.g.Count 
-											+ "\nB = " + collectibles.b.Count
-											+ "\nW = " + collectibles.w.Count);
+		
+		if (inComic){
+			
+			Rect backButtonArea = new Rect(48, Screen.height - 96, backButton.width, backButton.height);
+			
+			bool backButtonPressed = GUI.Button(backButtonArea, backButton, GUIStyle.none);
+			if (backButtonPressed){
+				comicTransition.Return();
+			}
+		}
+		else{
+			
+			GUI.TextArea(new Rect(Screen.width - 136, 8, 128, 80), "Collectibles"
+																+ "\nR = " + collectibles.r.Count
+																+ "\nG = " + collectibles.g.Count 
+																+ "\nB = " + collectibles.b.Count
+																+ "\nW = " + collectibles.w.Count);
+		}
 	}
+	
+	
+	
+																			//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
+																			//<-------------COMICS AND STUFF!-------------->
+																			//<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>
+	public void OpenComic(int index){
+		avatar.movement.SetVelocity(Vector2.zero);
+		
+		Time.timeScale = 0;
+		inComic = true;
+		int counter = 0;
+		foreach (Comic c in roomStats[curRoom].comics){
+			
+			if (roomStats[curRoom].thumbsFound[counter]){
+				c.gameObject.SetActive(true);
+			}
+			
+			counter ++;
+		}
+	}
+	
+	public void CloseComic(){
+		Time.timeScale = 1;
+		inComic = false;
+		
+	}
+	
+	
+	public void FindComic(int index){
+		roomStats[curRoom].thumbsFound[index] = true;
+	}
+	
+	public bool CheckComicStats(){
+		
+		foreach (Comic c in roomStats[curRoom].comics){
+			if (!c.InMySlot){
+				return false;
+			}
+		}
+								//turns out the comic is successful!
+		
+		shavatarComicBlock.SetActive(false);
+		
+		Instantiate(comicCompleteAnim);
+		return true;
+		
+	}
+	
+	
 	
 	
 		

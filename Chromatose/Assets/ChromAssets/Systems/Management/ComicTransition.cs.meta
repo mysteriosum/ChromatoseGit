@@ -1,0 +1,9 @@
+fileFormatVersion: 2
+guid: 7e1a1914d17b3e14db5da0675bb95e1b
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - blackBox: {fileID: 2800000, guid: 2b396c8147effb64c96da88fd784a773, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 

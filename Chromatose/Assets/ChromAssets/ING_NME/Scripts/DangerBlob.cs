@@ -4,9 +4,6 @@ using System.Collections;
 public class DangerBlob : ColourBeing {
 	public float knockback = 50f;
 	public bool diesOnImpact = false;
-	public bool respawns = false;
-	public float respawnTime = 3f;
-	public string deathClipName;
 	
 	[System.SerializableAttribute]
 	public class Movement{
@@ -71,20 +68,30 @@ public class DangerBlob : ColourBeing {
 		if (sameColour && diesOnImpact){
 			//Debug.Log("Bye bye");
 			Dead = true;
-			if (anim){
-				anim.Play(anim.GetClipIdByName(deathClipName));
-				anim.CurrentClip.wrapMode = tk2dSpriteAnimationClip.WrapMode.Once;
+				Debug.Log("We're the same colour!");
+			
+			if (colour.Red){														//THIS EXPLODES THE NPC BARRIER! (RED BARRIER) (NPC FIGHt) (THING, YOU KNOW)
+				Npc[] myNPCs = GetComponentsInChildren<Npc>(true);
+				Debug.Log("I've got some NPCS! This many: " + myNPCs.Length);
+				foreach (Npc npc in myNPCs){
+					npc.fuckOffReference = (Vector2)(npc.transform.position - transform.position);
+					npc.FuckOff();
+				}
 			}
 			
-			if (respawns){
-				Invoke("Respawn", respawnTime);
-			}
+			
 			return;
 		}
 		if (sameColour) return;
-		if (avatar.Hurt) return;
+		
+		if (anim != null && colour.Blue){
+			anim.Play();
+		}
 		Vector2 back = (Vector2) other.contacts[0].normal * -1;
 		avatar.transform.position += (Vector3)back * 12;
+		
+		if (avatar.Hurt) return;
+		
 		avatar.SendMessage("Ouch");
 		Vector2 diff = new Vector2(avatar.t.position.x, avatar.t.position.y) - new Vector2(transform.position.x, transform.position.y);
 		avatar.movement.SetVelocity(diff.normalized * knockback);
@@ -92,9 +99,6 @@ public class DangerBlob : ColourBeing {
 		//avatar.Damage();    //remove HP from the avatar, but this isn't implemented yet
 	}
 	
-	void Respawn(){
-		Dead = false;
-	}
 	
 	void DeadAndGone(){
 		Gone = true;
@@ -120,5 +124,6 @@ public class DangerBlob : ColourBeing {
 			nextIndex = (index + 1) % maxIndex;
 		}
 	}
+	
 }
 

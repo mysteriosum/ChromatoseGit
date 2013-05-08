@@ -87,7 +87,22 @@ public class Destructible : MonoBehaviour {		//move sprite @ 15 frames or 0.5f s
 	
 	protected void NextImage(tk2dAnimatedSprite sprite, tk2dSpriteAnimationClip clip, tk2dSpriteAnimationFrame frame, int frameNum){
 		Debug.Log("Next");
-		spriteInfo.spriteId ++;
+		string newName = spriteInfo.CurrentSprite.name;
+		string newNewName = "";
+		int counter = 0;
+		foreach (char c in newName){
+			if (counter < newName.Length - 1){
+				newNewName += c;
+				
+			}
+			else{
+				newNewName += "2";
+			}
+			counter ++;
+		}
+		Debug.Log("New name is " + newNewName);
+		spriteInfo.SetSprite(spriteInfo.GetSpriteIdByName(newNewName));
+		//spriteInfo.spriteId ++;
 	}
 	
 	protected void Done(tk2dAnimatedSprite sprite, int index){
