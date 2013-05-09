@@ -17,9 +17,9 @@ public class Avatar : ColourBeing
 	
 	[System.NonSerializedAttribute]
 	public Movement movement;
-	public float basicTurnSpeed;
-	public float basicMaxSpeed;
-	public float basicAccel;
+	private float basicTurnSpeed;
+	private float basicMaxSpeed;
+	private float basicAccel;
 	
 	public tk2dSpriteCollectionData normalCollection;
 	public tk2dSpriteCollectionData paleCollection;
@@ -83,10 +83,13 @@ public class Avatar : ColourBeing
 	private GameObject[] speedBoosts;
 	private Rect[] speedBoostAreas;
 	private bool canControl = true;
-	private int speedBoostDist = 40;
+	private int speedBoostDist = 55;
 	private float maxSpeedMod = 2.0f;
 	private float speedBoostMod = 2.0f;
 	private float speedBoostCur = 1f;
+	private int speedBoostCounter = 0;
+	private int speedBoostMax = 50;
+	
 	
 	
 	[System.NonSerializedAttribute]
@@ -143,7 +146,8 @@ public class Avatar : ColourBeing
 		}
 		
 		public bool Main(){
-			t.Translate(velocity, Space.World);
+			if (t)
+				t.Translate(velocity, Space.World);
 			
 			if (fadeAfter > 0){
 				fadeAfter -= Time.deltaTime;
@@ -351,12 +355,11 @@ public class Avatar : ColourBeing
 		public LoseColourParticle(tk2dSpriteCollectionData colData, Transform avatarT, Color blendColor){
 			t = go.transform;
 			this.avatarT = avatarT;
-			t.position = avatarT.position + (-avatarT.right) * offset + (Vector3)Random.insideUnitCircle * offset;
+			t.position = avatarT.position + (-avatarT.right) * offset + (Vector3)Random.insideUnitCircle * offset + Vector3.forward;
 			
 			
 			int index = Random.Range(1, maxNumber);
 			string spriteName = "part_avatarLosingColor00" + (index < 10? "0" + index.ToString() : index.ToString());
-			Debug.Log(spriteName + " is my name");
 			tk2dSprite.AddComponent<tk2dSprite>(go, colData, spriteName);
 			spriteInfo = go.GetComponent<tk2dSprite>();
 			
@@ -507,9 +510,16 @@ public class Avatar : ColourBeing
 			
 			rectCounter ++;
 		}
+		
 		if (detectedSB){
+			speedBoostCounter = Mathf.Min(speedBoostCounter + 1, speedBoostMax);
 			turboPart.Go();
-			movement.SetNewMoveStats(basicMaxSpeed * speedBoostMod, basicAccel * speedBoostMod, basicTurnSpeed / speedBoostMod * 2);
+			movement.SetNewMoveStats(Mathf.Min(basicMaxSpeed + speedBoostMod * speedBoostCounter, basicMaxSpeed * speedBoostMod), basicAccel * speedBoostMod, basicTurnSpeed / speedBoostMod * 2);
+		}
+		else if (speedBoostCounter > 0){
+			speedBoostCounter --;
+			movement.SetNewMoveStats(Mathf.Max(basicMaxSpeed + speedBoostMod * speedBoostCounter, basicMaxSpeed), basicAccel, basicTurnSpeed);
+			turboPart.Go();
 		}
 		else{
 			movement.SetNewMoveStats(basicMaxSpeed, basicAccel, basicTurnSpeed);

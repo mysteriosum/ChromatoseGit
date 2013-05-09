@@ -76,6 +76,8 @@ public class DangerBlob : ColourBeing {
 				foreach (Npc npc in myNPCs){
 					npc.fuckOffReference = (Vector2)(npc.transform.position - transform.position);
 					npc.FuckOff();
+					npc.SendMessage("Stop");
+					npc.transform.parent = null;
 				}
 			}
 			

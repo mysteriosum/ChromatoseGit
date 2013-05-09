@@ -24,7 +24,7 @@ public class ComicThumb : MonoBehaviour {
 		
 		//	TODO : put comic thumb get animation here
 		
-		Destroy(gameObject);
+		transform.Translate(Vector3.forward * -3000);
 	}
 	
 }

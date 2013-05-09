@@ -9,7 +9,7 @@ public class Collectible : ColourBeing {
 	Transform t;
 	Transform avatarT;
 	private float timer = 0.75f;
-	private bool fading = false;
+	private bool dropped = false;
 	private Vector2 velocity;
 	private Transform collector;
 	private float homeTiming = 0.7f;
@@ -56,7 +56,7 @@ public class Collectible : ColourBeing {
 	// Update is called once per frame
 	
 	void Update () {
-		if (!fading){
+		if (!dropped){
 			Vector3 dist = avatarT.position - t.position;
 			if (dist.magnitude < closeDist && !justPutBack){
 				if (CheckSameColour(avatar.colour) || colColour == Couleur.white){
@@ -80,6 +80,9 @@ public class Collectible : ColourBeing {
 				goto white;
 			if (colour.Blue)
 				goto blue;
+			if (colour.Red){
+				goto red;
+			}
 		}
 		return;		//if I'm not fading I'll skip this next
 	white:
@@ -101,11 +104,26 @@ public class Collectible : ColourBeing {
 		t.Translate((blueVector + velocity) * Time.deltaTime);
 		if (distanceToTarget.magnitude < 5){
 			Gone = true;
-			fading = false;
+			dropped = false;
 			
 		}
 		
 		return;
+		
+	red:
+		velocity = Vector2.Lerp(velocity, Vector2.zero, 0.0075f);
+		homeTimer += Time.deltaTime;
+		Vector2 distToTarget = (Vector2)(collector.position - t.position);
+		Vector2 redVector = Vector2.Lerp(distToTarget * 5, Vector2.zero, homeTiming / homeTimer);
+		t.Translate((redVector + velocity) * Time.deltaTime);
+		if (distToTarget.magnitude < 5){
+			Gone = true;
+			dropped = false;
+			
+		}
+		
+		return;
+		
 	}
 	/*
 	void OnTriggerEnter(Collider collider){
@@ -121,7 +139,7 @@ public class Collectible : ColourBeing {
 		int direction = Random.Range(0, 359);
 		t.rotation = Quaternion.LookRotation(Vector3.forward, new Vector3(0, direction, 0));
 		Gone = false;
-		fading = true;
+		dropped = true;
 		
 		if (colour.Blue){
 			collector = VectorFunctions.FindClosestOfTag(t.position, "blueCollector", 10000);
@@ -131,6 +149,10 @@ public class Collectible : ColourBeing {
 			anim.Play(anim.GetClipByName("wColl_lose"), 0);
 			anim.animationCompleteDelegate = GoneForever;
 			anim.CurrentClip.wrapMode = tk2dSpriteAnimationClip.WrapMode.Once;
+		}
+		if (colour.Red){
+			collector = VectorFunctions.FindClosestOfTag(t.position, "redCollector", 10000);
+			anim.Play(anim.GetClipByName("wColl_lose"), 0);		//TODO : CHANGE THIS TO RED COLLECTIBLE ANIM, PLEAZE
 		}
 	}
 	

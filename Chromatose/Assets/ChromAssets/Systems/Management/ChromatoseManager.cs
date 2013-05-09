@@ -18,7 +18,7 @@ public class ChromatoseManager : MonoBehaviour {
 		public List<Collectible> consumedCollectibles = new List<Collectible>();
 		public List<Comic> comics = new List<Comic>();
 		
-		public bool[] thumbsFound = {false, false, false};
+		public bool[] thumbsFound = {false, false, false, false, false, false};
 		
 		public bool secretFound = false;
 		public bool comicComplete = false;
@@ -70,6 +70,7 @@ public class ChromatoseManager : MonoBehaviour {
 	}
 	
 	void UpdateRoomStats(){
+		Debug.Log("Current room index is " + Application.loadedLevel);
 		avatar = GameObject.Find("Avatar").GetComponent<Avatar>();
 		curRoom = Application.loadedLevel;
 		GameObject[] frames = GameObject.FindGameObjectsWithTag("comicFrame");
@@ -77,6 +78,7 @@ public class ChromatoseManager : MonoBehaviour {
 		do{
 			roomStats[curRoom].comics.Add(null);
 			counter ++;
+			Debug.Log("There's some stuff going on in the roomStats thing");
 			if (counter > 50){
 				Debug.LogWarning("It's fucked up I know, but like, idk, there's just a lot going on in this level apparently");
 				break;
@@ -96,7 +98,7 @@ public class ChromatoseManager : MonoBehaviour {
 		}
 		
 		comicTransition = GameObject.Find("pre_comicLoader").GetComponent<ComicTransition>();
-		if (!shavatarComicBlock){
+		if (!comicTransition){
 			Debug.LogWarning("Hey loser! There's no comic loader in this level!");
 		}
 	}
