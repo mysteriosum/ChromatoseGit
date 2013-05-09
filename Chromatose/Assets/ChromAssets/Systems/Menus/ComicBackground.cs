@@ -58,7 +58,12 @@ public class ComicBackground : MonoBehaviour{
 	}
 	
 	public Vector2 PutInSlot(int index, Transform goingIn, out Transform goingOut){
-		
+		if (index < 0){
+			Debug.Log("The index is too low. This won't give you a slot!");
+			goingOut = null;
+			return (Vector2)goingIn.position;
+		}
+		Debug.Log("Index = " + index + " which is compared to the size of occupants: " + occupants.Length);
 		Debug.Log("0: Going in = " + goingIn.name + " and occupants[ind] = " + occupants[index].name);
 		
 		Rect slot = slots[index];

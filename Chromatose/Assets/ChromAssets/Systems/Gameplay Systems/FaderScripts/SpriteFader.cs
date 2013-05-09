@@ -3,8 +3,11 @@ using System.Collections;
 
 public class SpriteFader : MonoBehaviour {
 	
-	public tk2dSprite[] spritesIn;
-	public tk2dSprite[] spritesOut;
+	public GameObject[] spritesIn;
+	public GameObject[] spritesOut;
+	
+	private bool willPlayOut = false;
+	private bool willPlayIn = false;
 	
 	float fadeRate = 0.1f;
 	
@@ -16,20 +19,21 @@ public class SpriteFader : MonoBehaviour {
 		inAlpha = -fadeRate;
 		outAlpha = 1 + fadeRate;
 		
-		foreach (tk2dSprite sprite in spritesIn){
-			sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, inAlpha);
-			sprite.animation.Stop ();
+		foreach (GameObject sprite in spritesIn){
+			sprite.BroadcastMessage("FadeAlpha", inAlpha, SendMessageOptions.DontRequireReceiver);
+			
 		}
 	}
 	
 	// Update is called once per frame
 	void LateUpdate () {
 		if (!change) return;
-		foreach (tk2dSprite sprite in spritesIn){
-			sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, inAlpha);
+		foreach (GameObject go in spritesIn){
+			
+			go.BroadcastMessage("FadeAlpha", inAlpha, SendMessageOptions.DontRequireReceiver);
 		}
-		foreach (tk2dSprite sprite in spritesOut){
-			sprite.color = new Color(sprite.color.r, sprite.color.g, sprite.color.b, outAlpha);
+		foreach (GameObject go in spritesOut){
+			go.BroadcastMessage("FadeAlpha", outAlpha, SendMessageOptions.DontRequireReceiver);
 			
 		}
 		
@@ -43,18 +47,52 @@ public class SpriteFader : MonoBehaviour {
 		}
 	}
 	
-	void Out(){
+	void Out(){/*
+		if (inAlpha >= 1){
+			foreach (GameObject go in spritesIn){
+				go.BroadcastMessage("StopAndResetFrame", SendMessageOptions.DontRequireReceiver);
+			}
+			Debug.Log("Stopping in");
+		}*/
 		outAlpha = Mathf.Min(outAlpha + fadeRate, 1 + fadeRate);
 		inAlpha = Mathf.Max(inAlpha - fadeRate, -fadeRate);
 		
 		change = true;
+		/*
+		if (outAlpha >= 1 && willPlayOut){
+			willPlayOut = false;
+			foreach (GameObject go in spritesOut){
+				go.BroadcastMessage("Play", SendMessageOptions.DontRequireReceiver);
+			}
+			Debug.Log("Playing out");
+		}
+		else if (outAlpha < 1){
+			willPlayOut = true;
+		}*/
 	}
 	
 	void In(){
+		/*if (outAlpha >= 1){
+			foreach (GameObject go in spritesOut){
+				go.BroadcastMessage("StopAndResetFrame", SendMessageOptions.DontRequireReceiver);
+			}
+			Debug.Log("Stopping out");
+		}*/
+		
 		
 		outAlpha = Mathf.Max(outAlpha - fadeRate, -fadeRate);
 		inAlpha = Mathf.Min(inAlpha + fadeRate, 1 + fadeRate);
-		
+		/*
+		if (inAlpha >= 1 && willPlayIn){
+			willPlayIn = false;
+			foreach (GameObject go in spritesIn){
+				go.BroadcastMessage("Play", SendMessageOptions.DontRequireReceiver);
+			}
+			Debug.Log("Playing In");
+		}
+		else if (inAlpha < 1){
+			willPlayIn = true;
+		}*/
 		change = true;
 	}
 }

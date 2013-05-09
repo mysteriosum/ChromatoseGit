@@ -80,10 +80,14 @@ public class Npc : ColourBeing {
 		private float timer;
 		private tk2dTextMesh myNumber;
 		private Vector3 digitOffset = new Vector3(10, 3, -2);
-		public string Digit{
-			get{ return myNumber.text;}
-			set{ myNumber.text = value;
-				 myNumber.Commit();}
+		private GameObject myCollectible;
+		private string collectibleBubbleName = "redBubble_veryHappy";
+		private Vector2 collectibleOffset = new Vector2(10, 10);
+		private int myDigit = 0;
+		
+		public int Digit{
+			get{ return myDigit; }
+			set{ myDigit = value; }
 		}
 		
 		//getters & setters
@@ -92,7 +96,7 @@ public class Npc : ColourBeing {
 			set{ r.enabled = value;
 				 myNumber.renderer.enabled = value;
 				 if (value == false){
-					Digit = "";
+					Digit = 0;
 				}
 			}
 		}
@@ -107,7 +111,6 @@ public class Npc : ColourBeing {
 		public SpeechBubble(Transform toFollow){
 			
 			go = new GameObject(toFollow.name + "Bubble");
-			Debug.Log(go);
 			parent = toFollow;
 			tk2dSprite.AddComponent(go, ChromatoseManager.manager.bubbleCollection, 0);
 			spriteInfo = go.GetComponent<tk2dSprite>();
@@ -123,22 +126,33 @@ public class Npc : ColourBeing {
 		}
 		
 		public void Main(){
+			
+			
 			if (timer > 0){
 				timer -= Time.deltaTime;
 			}
 			else if (r.enabled){
 				r.enabled = false;
 				Blend(Color.white);
+				if (spriteInfo.CurrentSprite.name == collectibleBubbleName){
+					collectibleBubbleName = "";
+					myCollectible = GameObject.Instantiate(Resources.Load("pre_redCollectible"), t.position + (Vector3)collectibleOffset, Quaternion.identity) as GameObject;
+				}
 			}
 			t.position = parent.position + (Vector3)offset;
 			myNumber.transform.position = t.position + digitOffset;
 			
 		}
 		
-		public void ShowBubbleFor(string bubble, float time){
-			SpriteName = bubble;
+		public void ShowBubbleFor(string bubble, float time, int digit){
+			string myDigitString = digit > 0? digit.ToString() : "";
+			SpriteName = bubble + myDigitString;
 			timer = time;
 			r.enabled = true;
+		}
+		
+		public void ShowBubbleFor(string bubble, float time){
+			ShowBubbleFor(bubble, time, 0);
 		}
 		
 		public void Blend(Color color){
@@ -150,16 +164,16 @@ public class Npc : ColourBeing {
 		}
 		
 		
+		
+		
 	}
 	
 	private Npc.SpeechBubble myBubble;
 												//PRIVATE VARS TO DO WITH THE BUBBLE
-	private string followName = "ImFollowing";
-	private string destroyName = "bubbleOK";
-	private string blueNeedNPCs = "level4GoalNeed4NPC";
-	private string redNeedNPCs = "level1GoalIndicator";
-	
-	private bool announcingExtrasNeeded = false;
+	private string followName = "blueBubble_avatar";
+	private string destroyName = "redBubble_happy";
+	private string blueNeedNPCs = "blueBubble_x";
+	private string redNeedNPCs = "redBubble_x";
 	
 												//ALL THE PUBLIC VARIABLES
 	public int detectRadius = 250;
@@ -170,6 +184,7 @@ public class Npc : ColourBeing {
 	public bool waitForMessage = false;
 	public bool hasShadowBG = false;
 	public int shadowSpriteIndex;
+	public bool hasRedCol = false;
 	
 	public Vector2 fuckOffReference = new Vector2(1, 1);
 	
@@ -210,7 +225,6 @@ public class Npc : ColourBeing {
 		
 		//My bubble!
 		myBubble = new Npc.SpeechBubble(this.transform);
-		//Debug.Log(myBubble);
 		
 		//allNPCs = FindSceneObjectsOfType(typeof(Npc)) as Transform[];
 		GameObject[] allTheNPCs = GameObject.FindGameObjectsWithTag("npc");
@@ -243,7 +257,6 @@ public class Npc : ColourBeing {
 			shadow = new GameObject(name + "Shadow");
 			tk2dAnimatedSprite.AddComponent<tk2dAnimatedSprite>(shadow, anim.Collection, 10);
 			shadowAnim = shadow.GetComponent<tk2dAnimatedSprite>();
-			
 			string newAnimName = anim.CurrentClip.name + "BG";
 			shadowAnim.Play(anim.GetClipByName(newAnimName), animOffset);
 			shadowAnim.Build();
@@ -272,18 +285,13 @@ public class Npc : ColourBeing {
 		if (building){
 			if (toBuild){
 				if (announceOtherNPCsRequired){
-					announcingExtrasNeeded = true;
-					myBubble.Showing = true;
-					myBubble.SpriteName = blueNeedNPCs;
-					myBubble.Digit = toBuild.NPCsNeeded.ToString();
+					myBubble.ShowBubbleFor(blueNeedNPCs, -1f, toBuild.NPCsNeeded);
 				}
 				myBubble.Showing = true;
 				
 				goto update;
 			}
 			else{
-				announcingExtrasNeeded = false;
-				myBubble.Showing = false;
 				building = false;
 				
 			}
@@ -294,17 +302,12 @@ public class Npc : ColourBeing {
 			if (toDestroy){
 				
 				if (announceOtherNPCsRequired){
-					announcingExtrasNeeded = true;
-					myBubble.Showing = true;
-					myBubble.SpriteName = redNeedNPCs;
-					myBubble.Digit = toDestroy.NPCsNeeded.ToString();
+					myBubble.ShowBubbleFor(redNeedNPCs, 0.5f, toDestroy.NPCsNeeded);
 				}
 				
 				goto update;
 			}
 			else{
-				announcingExtrasNeeded = false;
-				myBubble.Showing = false;
 				breaking = false;
 				losingColour = true;
 			}
@@ -339,10 +342,6 @@ public class Npc : ColourBeing {
 					if (!saidFollow){
 						beginBySaying = false;
 						myBubble.ShowBubbleFor(followName, 4f);
-						/*GameObject followBubble = ChromatoseManager.manager.OneShotAnim("bubbleIFollowYou", 4f, t.position);
-													//follow avatar here
-						followBubble.SetParent(gameObject);
-						followBubble.transform.localPosition = new Vector3(20, 20, 0);*/
 						saidFollow = true;
 					}
 				}
@@ -359,10 +358,6 @@ public class Npc : ColourBeing {
 				toBuild = closestBuildable.GetComponent<Buildable>();
 				 
 				if (toBuild){
-					/*
-					closestNode = FindClosestOfTag(t, "node", closeRadius);
-					if (!closestNode) goto move;
-					target = closestNode;*/
 					closestNode = toBuild.myNode;
 					if ((closestNode.position - t.position).magnitude < closeRadius){
 						target = closestNode;
@@ -372,7 +367,6 @@ public class Npc : ColourBeing {
 			
 			if (target == closestNode){
 				if (diff.magnitude < closeRadius){
-					//Debug.Log("Now at build node");
 					bool isValid = toBuild.AddOne(this);
 					if (!isValid){
 						target = avatar;
@@ -401,7 +395,6 @@ public class Npc : ColourBeing {
 					closestDist = detectRadius;
 				}*/
 				Transform closest = null;
-				//Debug.Log("Amount of destructibles = " + potentials.Length);
 				foreach (GameObject p in potentials){
 					Vector2 tempDist = (Vector2)p.transform.position - (Vector2)t.position;
 					Destructible pScript = p.GetComponent<Destructible>();
@@ -412,7 +405,7 @@ public class Npc : ColourBeing {
 					}
 				}
 				if (closest){		//There's a destructible thing, I'ma find the closest Node to that
-					//Debug.Log("Closest guy is " + closest.name);
+					
 					toDestroy = closest.GetComponent<Destructible>();
 					closestNode = toDestroy.myNode;
 					
@@ -423,7 +416,6 @@ public class Npc : ColourBeing {
 				}
 			}
 			else if (target){
-				//Debug.Log("I should have a target...");
 				//0target = myPather.Seek(target);		//I have a target, so I'm going to look for it!
 				float distToTarget = ((Vector2)target.position - (Vector2)t.position).magnitude;
 				if (distToTarget < closeRadius){
@@ -475,7 +467,6 @@ public class Npc : ColourBeing {
 				goto update;
 			}
 			else{
-				//Debug.Log("Transform!");
 				transform.position += new Vector3(disp.x, disp.y, 0);
 			}
 		}
@@ -519,6 +510,8 @@ public class Npc : ColourBeing {
 							//this is for IF I HAVE A SHADOW or whatever
 		if (_hasShadow){
 			shadow.transform.position = t.position + Vector3.forward;
+			shadow.transform.rotation = t.rotation;
+			shadowAnim.color = spriteInfo.color;
 		}
 		
 							//Am I getting green? ...what is this for again? Hmm.... 
@@ -540,6 +533,8 @@ public class Npc : ColourBeing {
 		}
 		
 		if (fuckingOff){
+			target.position = t.position + (Vector3)fuckOffReference;
+			
 			spriteInfo.color = new Color(spriteInfo.color.r, spriteInfo.color.g, spriteInfo.color.b, spriteInfo.color.a * 0.95f);
 			if (spriteInfo.color.a < 0.01){
 				Dead = true;
@@ -575,7 +570,6 @@ public class Npc : ColourBeing {
 		//<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>
 	public void StopAndDisable(){
 		stoppingForever = true;
-		Debug.Log("Rawr, stop and disable!");
 	}
 	
 	public void AddGreenUntilMax(){
@@ -624,5 +618,10 @@ public class Npc : ColourBeing {
 	void OnDrawGizmosSelected(){
 		Gizmos.color = Color.white;
 		Gizmos.DrawWireSphere(transform.position + (Vector3)fuckOffReference, 10);
+	}
+	
+	public void PoopCollectible(){
+		if (!hasRedCol) return;
+		myBubble.ShowBubbleFor("redBubble_veryHappy", 1f);
 	}
 }

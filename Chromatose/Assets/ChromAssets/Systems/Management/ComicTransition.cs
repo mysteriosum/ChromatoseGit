@@ -69,6 +69,7 @@ public class ComicTransition : MonoBehaviour {
 				goto fadeIn;
 			}
 			else if (counter >= 1){
+				GameObject.Find("Avatar").transform.position = transform.position;
 				ChromatoseManager.manager.OpenComic(Application.loadedLevel);
 			}
 		}

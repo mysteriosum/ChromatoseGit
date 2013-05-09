@@ -44,6 +44,7 @@ public class tk2dAnimatedSprite : tk2dSprite
 			else state &= ~State.Paused;
 		}
 	}
+	
 
 
 	/// <summary>

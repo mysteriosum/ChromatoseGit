@@ -96,7 +96,8 @@ public class Comic : MonoBehaviour {
 				Comic.canDrag = true;
 				startPos = t.position;
 				currentSlot = bg.CheckForSlot((Vector2)t.position);
-				bg.PutInSlot(currentSlot, t);
+				if (currentSlot >= 0)
+					bg.PutInSlot(currentSlot, t);
 			}
 		}
 		

@@ -18,6 +18,8 @@ public class Destructible : MonoBehaviour {		//move sprite @ 15 frames or 0.5f s
 		
 	}
 	
+	public string messageToSendOnPoof = "";
+	
 	List<Npc> myNPCs = new List<Npc>();
 	
 	
@@ -56,7 +58,7 @@ public class Destructible : MonoBehaviour {		//move sprite @ 15 frames or 0.5f s
 		poof.transform.rotation = transform.rotation;
 		
 		anim.Play();
-			anim.CurrentClip.wrapMode = tk2dSpriteAnimationClip.WrapMode.Once;
+		anim.CurrentClip.wrapMode = tk2dSpriteAnimationClip.WrapMode.Once;
 	}
 	
 	public bool AddOne(Npc npc){
@@ -86,7 +88,7 @@ public class Destructible : MonoBehaviour {		//move sprite @ 15 frames or 0.5f s
 	}
 	
 	protected void NextImage(tk2dAnimatedSprite sprite, tk2dSpriteAnimationClip clip, tk2dSpriteAnimationFrame frame, int frameNum){
-		Debug.Log("Next");
+		
 		string newName = spriteInfo.CurrentSprite.name;
 		string newNewName = "";
 		int counter = 0;
@@ -100,7 +102,11 @@ public class Destructible : MonoBehaviour {		//move sprite @ 15 frames or 0.5f s
 			}
 			counter ++;
 		}
-		Debug.Log("New name is " + newNewName);
+		if (messageToSendOnPoof != ""){
+			foreach (Npc npc in myNPCs){
+				npc.SendMessage(messageToSendOnPoof);
+			}
+		}
 		spriteInfo.SetSprite(spriteInfo.GetSpriteIdByName(newNewName));
 		//spriteInfo.spriteId ++;
 	}

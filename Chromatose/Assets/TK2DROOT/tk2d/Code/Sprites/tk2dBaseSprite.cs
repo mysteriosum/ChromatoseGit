@@ -76,6 +76,10 @@ public abstract class tk2dBaseSprite : MonoBehaviour, tk2dRuntime.ISpriteCollect
 		} 
 	}
 	
+	void FadeAlpha(float newAlpha){
+		color = new Color(color.r, color.g, color.b, newAlpha);
+	}
+	
 	/// <summary>
 	/// Gets or sets the scale.
 	/// </summary>
