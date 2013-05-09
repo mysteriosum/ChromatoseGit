@@ -6,7 +6,7 @@ MonoImporter:
   - comicCompleteAnim: {fileID: 100000, guid: 4158e730c983b79408f9e5d1a1eb58a4, type: 2}
   - oneShotSpritePrefab: {fileID: 100000, guid: bf87ee7d5de87d7468a684aa3a9f6fc1,
       type: 2}
-  - bubbleCollection: {fileID: 11400000, guid: 469016621c6a59343a3449b22c5b9e26, type: 2}
+  - bubbleCollection: {fileID: 11400000, guid: b248a4805788f3f4d89ad3611a9881d3, type: 2}
   - chromatoseFont: {fileID: 11400000, guid: 44e006873ca04f741b2ac3ba5dec92ad, type: 2}
   - backButton: {fileID: 2800000, guid: d4e5a485a03332d48b917dc57aa70774, type: 3}
   executionOrder: 0

@@ -58,7 +58,6 @@ public class Pather{		//Pather is the class that helps me find the path!
 		nodes = new Transform[Nodes.GetLength(0)];
 		foreach (GameObject go in Nodes){
 			nodes[counter] = go.transform;
-			//Debug.Log(go);
 			counter ++;
 		}
 		int nodesNumber = nodes.GetLength(0);
@@ -291,7 +290,7 @@ public class Pather{		//Pather is the class that helps me find the path!
 		
 		thePath.Reverse();
 		//Debug.Log(underScrutiny + " and I did this " + counter + " times. There are " + thePath.Count + " nodes in the path");
-		Debug.Log("Path is " + thePath.Count + " long");
+		//Debug.Log("Path is " + thePath.Count + " long");
 		
 		return thePath;
 		

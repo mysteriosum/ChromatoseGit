@@ -19,5 +19,6 @@ public class FireBooth : TollBooth {
 	void Animate(){
 		anim.Play(anim.GetClipByName(newAnimName), 0);
 		anim.CurrentClip.wrapMode = tk2dSpriteAnimationClip.WrapMode.Loop;
+		Debug.Log("YEAAANIMATE");
 	}
 }
