@@ -68,11 +68,11 @@ public class DangerBlob : ColourBeing {
 		if (sameColour && diesOnImpact){
 			//Debug.Log("Bye bye");
 			Dead = true;
-				Debug.Log("We're the same colour!");
+				//Debug.Log("We're the same colour!");
 			
 			if (colour.Red){														//THIS EXPLODES THE NPC BARRIER! (RED BARRIER) (NPC FIGHt) (THING, YOU KNOW)
 				Npc[] myNPCs = GetComponentsInChildren<Npc>(true);
-				Debug.Log("I've got some NPCS! This many: " + myNPCs.Length);
+				//Debug.Log("I've got some NPCS! This many: " + myNPCs.Length);
 				foreach (Npc npc in myNPCs){
 					npc.fuckOffReference = (Vector2)(npc.transform.position - transform.position);
 					npc.FuckOff();
@@ -89,14 +89,15 @@ public class DangerBlob : ColourBeing {
 		if (anim != null && colour.Blue){
 			anim.Play();
 		}
+		/*
 		Vector2 back = (Vector2) other.contacts[0].normal * -1;
 		avatar.transform.position += (Vector3)back * 12;
-		
+		*/
+		avatar.Jolt(12f);
 		if (avatar.Hurt) return;
 		
 		avatar.SendMessage("Ouch");
-		Vector2 diff = new Vector2(avatar.t.position.x, avatar.t.position.y) - new Vector2(transform.position.x, transform.position.y);
-		avatar.movement.SetVelocity(diff.normalized * knockback);
+		avatar.Push(knockback);
 		
 		//avatar.Damage();    //remove HP from the avatar, but this isn't implemented yet
 	}

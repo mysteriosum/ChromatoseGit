@@ -28,6 +28,9 @@ public class Movement : MonoBehaviour {
 	public class Thruster{			//This is where I do all of my Translation
 		
 		public float maxSpeed = 100;
+		public float MaxSpeed{
+			get { return maxSpeed; }
+		}
 		public float accel = 5;
 		[System.NonSerialized]
 		public float magnitude;
@@ -71,8 +74,15 @@ public class Movement : MonoBehaviour {
 	void OnCollisionStay(Collision collision){
 		if (collision.gameObject.tag != "collision") return;
 		ContactPoint point = collision.contacts[0];
-		t.position += new Vector3(point.normal.x, point.normal.y, 0);
-		thruster.velocity += (Vector2)point.normal * thruster.accel * 2;
+		
+		if (this.name == "Avatar"){
+			t.position += new Vector3(point.normal.x, point.normal.y, 0);
+			thruster.velocity += (Vector2)point.normal * thruster.accel * 2;
+			/*
+			gameObject.SendMessage("Push", thruster.velocity.magnitude + thruster.accel);		//this tried to push the avatar away to a knockbackTrigger
+			gameObject.SendMessage("Jolt", 1f);														//but it felt weird and was very easy to break
+			*/
+		}
 	}
 	
 	//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>

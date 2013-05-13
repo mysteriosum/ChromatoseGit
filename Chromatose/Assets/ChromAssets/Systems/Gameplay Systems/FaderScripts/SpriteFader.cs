@@ -9,11 +9,15 @@ public class SpriteFader : MonoBehaviour {
 	private bool willPlayOut = false;
 	private bool willPlayIn = false;
 	
-	float fadeRate = 0.1f;
+	private float fadeRate = 0.1f;
 	
-	float inAlpha;
-	float outAlpha;
-	bool change;
+	private float inAlpha;
+	private float outAlpha;
+	
+	private float heldInAlpha;
+	private float heldOutAlpha;
+	
+	private bool change;
 	// Use this for initialization
 	void Start () {
 		inAlpha = -fadeRate;
@@ -93,6 +97,20 @@ public class SpriteFader : MonoBehaviour {
 		else if (inAlpha < 1){
 			willPlayIn = true;
 		}*/
+		change = true;
+	}
+	
+	void SaveState(){
+		heldInAlpha = inAlpha;
+		heldOutAlpha = outAlpha;
+	}
+	void LoadState(){
+		if (inAlpha == heldInAlpha && outAlpha == heldOutAlpha){
+			return;
+		}
+		inAlpha = heldInAlpha;
+		outAlpha = heldOutAlpha;
+		
 		change = true;
 	}
 }
