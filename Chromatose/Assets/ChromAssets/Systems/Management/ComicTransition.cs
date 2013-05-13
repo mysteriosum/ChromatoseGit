@@ -57,7 +57,7 @@ public class ComicTransition : MonoBehaviour {
 			}
 		}
 		else{
-			Debug.Log("not in comic");
+			//Debug.Log("not in comic");
 			if (!returning && counter < 1){
 				goto fadeOut;
 			}

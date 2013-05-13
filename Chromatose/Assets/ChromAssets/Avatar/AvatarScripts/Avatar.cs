@@ -79,6 +79,9 @@ public class Avatar : ColourBeing
 	public int Invisible{
 		get{ return invisible ? 0 : 1;}
 	}
+								//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
+								//<--------------Speed boosts!!-------------->
+								//<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>
 	
 	private GameObject[] speedBoosts;
 	private Rect[] speedBoostAreas;
@@ -91,13 +94,18 @@ public class Avatar : ColourBeing
 	private int speedBoostMax = 50;
 	
 	
+								//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
+								//<-----------Dependent objects!!------------>
+								//<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>
 	
-	[System.NonSerializedAttribute]
+	[System.NonSerializedAttribute]			//my transform and renderer and material info
 	public Transform t;
 	private Renderer r;
 	private Material mat;
 	private Shader s;
-	private GameObject outline;
+	
+	
+	private GameObject outline;				//my after-image (outline) info (and refill)
 	private GameObject outlinePointer;
 	private string outlineName = "Player1";
 	private string outlinePointerName = "Player6";
@@ -105,10 +113,12 @@ public class Avatar : ColourBeing
 	private int refillCost = 5;
 	private bool hasOutline = false;
 	
+	private GameObject[] allTheFaders;
+	
 	[System.NonSerializedAttribute]
 	public Texture avatarOutlineTexture;
-	
-	
+											//Keeping track of where I get knocked back to
+	private Transform myKnockTarget;
 	
 								//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
 								//<------------Particle classes!!------------>
@@ -248,7 +258,6 @@ public class Avatar : ColourBeing
 				spriteInfo.color = Color.red;
 		}
 	}
-	
 	
 	private class RefillColourParticle {
 		List<GameObject> gos = new List<GameObject>();
@@ -436,6 +445,13 @@ public class Avatar : ColourBeing
 			counter ++;
 		}
 		
+													//I WILL NOW FIND THE NEAREST KNOCKBACK TARGET!
+		myKnockTarget = VectorFunctions.FindClosestOfTag(t.position, "knockTarget", 1000000);
+		
+		allTheFaders = GameObject.FindGameObjectsWithTag("spriteFader");
+		
+		
+		
 	}
 	
 	// Update is called once per frame
@@ -598,7 +614,7 @@ public class Avatar : ColourBeing
 												//Self-made checkpoints! Or whatever you want to call it
 		
 		if (getS){
-			if (ChromatoseManager.manager.GetCollectibles(Couleur.white) < teleportCost){
+			if (ChromatoseManager.manager.GetCollectibles(Couleur.white) < teleportCost && !hasOutline){
 				Debug.Log("NOT ENOUGH COLLECTIBLES FOR AFTER_IMAGE!!!");		//	TODO Make this into an actual function! Play an animation or something, yano?
 				goto end;
 			}
@@ -607,22 +623,29 @@ public class Avatar : ColourBeing
 				outline = new GameObject("Outline");
 				outline.transform.rotation = t.rotation;
 				outline.transform.position = t.position;
-				//tk2dSprite.AddComponent<tk2dSprite>(outline, spriteInfo.Collection, outlineName);
+				tk2dSprite.AddComponent<tk2dSprite>(outline, afterImageCollection, spriteInfo.CurrentSprite.name);
 				
-				ChromatoseManager.manager.DropCollectibles(ChromatoseManager.manager.WhiteCollectibles, teleportCost, outline.transform.position);
+				//ChromatoseManager.manager.DropCollectibles(ChromatoseManager.manager.WhiteCollectibles, teleportCost, outline.transform.position);
 				
 				hasOutline = true;
-				
+				foreach (GameObject go in allTheFaders){
+					go.SendMessage("SaveState");
+				}
 				//spriteInfo.SwitchCollectionAndSprite()
 			}
 			else{
 				t.position = outline.transform.position;
 				t.rotation = outline.transform.rotation;
+				
 				ChromatoseManager.manager.RemoveCollectibles(Couleur.white, teleportCost, outline.transform.position);
 				Destroy(outline);
 				hasOutline = false;
 				//velocity = Vector2.zero;				//TEST For now I like the idea of keeping your current movement for when you go back. 
 				//movement.SetVelocity(velocity);		// But should we have you facing  the same direction?
+				
+				foreach (GameObject go in allTheFaders){
+					go.SendMessage("LoadState");
+				}
 			}
 		}
 		
@@ -800,21 +823,27 @@ public class Avatar : ColourBeing
 		TranslateInputs(1f);
 	}
 	
+															//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
+															//<---------Knockback Management!--------->
+															//<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>
 	
-	//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
-	//<--------Get/Setter functions----------->
-	//<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>
+	void OnTriggerEnter(Collider box){
+		if (box.tag == "knockTarget"){
+			myKnockTarget = box.transform;
+		}
+	}
+	
+	
+															//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
+															//<--------Get/Setter functions----------->
+															//<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>
+	
+	
 	
 	public void CannotControlFor(float t){
 		canControl = false;
 			
 		Invoke("CanControl", t);
-	}
-	
-	void Ouch(){
-		hurt = true;
-		CannotControlFor(0.5f);
-		invisible = true;
 	}
 	
 	public bool CheckIsBlue(){
@@ -845,6 +874,28 @@ public class Avatar : ColourBeing
 	
 	public void GiveColourTo(Transform target, Transform origin){
 		giveColourParts.Add(new GiveColourParticle(particleCollection, target, origin));
+	}
+	
+	
+															//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
+															//<-----------PAIN AND PUSHING!----------->
+															//<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>
+	
+	
+	private void Ouch(){
+		hurt = true;
+		CannotControlFor(0.5f);
+		invisible = true;
+	}
+	
+	public void Jolt(float amount){
+		Vector3 direction = myKnockTarget.position - t.position;
+		t.position += direction.normalized * amount;
+	}
+	
+	public void Push(float amount){
+		Vector2 diff = (Vector2)myKnockTarget.position - (Vector2)t.position;
+		movement.SetVelocity(diff.normalized * amount);
 	}
 	
 }

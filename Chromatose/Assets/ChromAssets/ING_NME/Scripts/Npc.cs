@@ -454,6 +454,10 @@ public class Npc : ColourBeing {
 		if (inMotion && target){
 			movement.target = target;
 			
+			if (target == avatar){
+				movement.SetNewMoveStats(avatarScript.movement.thruster.MaxSpeed - 2, movement.thruster.accel, movement.rotator.rotationRate);
+			}
+			
 			Vector2 diff = (Vector2) target.position - (Vector2)t.position;
 		
 			float angle = VectorFunctions.PointDirection(diff);
@@ -469,6 +473,7 @@ public class Npc : ColourBeing {
 			else{
 				transform.position += new Vector3(disp.x, disp.y, 0);
 			}
+			
 		}
 		else{
 			movement.SlowToStop();
