@@ -111,9 +111,9 @@ public class Destructible : MonoBehaviour {		//move sprite @ 15 frames or 0.5f s
 		//spriteInfo.spriteId ++;
 	}
 	
-	protected void Done(tk2dAnimatedSprite sprite, int index){
+	protected virtual void Done(tk2dAnimatedSprite sprite, int index){
 		
-		gameObject.RemoveComponent(typeof (Destructible));
+		gameObject.RemoveComponent(this.GetType());
 	}
 	
 	
