@@ -5,6 +5,7 @@ public class BuildaComic : Buildable {
 	private GameObject myThumb;
 	// Use this for initialization
 	void Start () {
+		Setup();
 		myThumb = VectorFunctions.FindClosestOfTag(transform.position, "comicThumb", 1000).gameObject;
 		myThumb.SetActive(false);
 	}

@@ -75,7 +75,7 @@ public class Movement : MonoBehaviour {
 		if (collision.gameObject.tag != "collision") return;
 		ContactPoint point = collision.contacts[0];
 		
-		if (this.name == "Avatar"){
+		if (this.name == "Avatar" || GetComponent<Npc>() != null){
 			t.position += new Vector3(point.normal.x, point.normal.y, 0);
 			thruster.velocity += (Vector2)point.normal * thruster.accel * 2;
 			/*

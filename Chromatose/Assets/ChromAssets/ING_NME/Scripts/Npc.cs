@@ -76,7 +76,7 @@ public class Npc : ColourBeing {
 		private Transform t;
 		private Renderer r;
 		private Transform parent;
-		private Vector2 offset = new Vector2(30, 30);
+		private Vector2 offset = new Vector2(64, 25);
 		private float timer;
 		private tk2dTextMesh myNumber;
 		private Vector3 digitOffset = new Vector3(10, 3, -2);
@@ -337,7 +337,9 @@ public class Npc : ColourBeing {
 			if (target == avatar){
 												//THIS IS WHERE I START FOLLOWING THE AVATAR
 				
-				if (diff.magnitude < detectRadius && avatar.GetComponent<Avatar>().colour.Blue && !inMotion){
+				if 	(diff.magnitude < detectRadius && avatar.GetComponent<Avatar>().colour.Blue
+					&& !inMotion && !Physics.Linecast(avatar.position, t.position, out hit, mask)
+					){
 					inMotion = true;
 					if (!saidFollow){
 						beginBySaying = false;
@@ -348,6 +350,7 @@ public class Npc : ColourBeing {
 				else if(inMotion){
 					inMotion = false;
 				}
+				
 			}
 			checkTimer += Time.deltaTime;
 			if (checkTimer >= checkTiming){		//check for node every [checktiming] seconds
@@ -539,7 +542,7 @@ public class Npc : ColourBeing {
 		
 		if (fuckingOff){
 			target.position = t.position + (Vector3)fuckOffReference;
-			
+			Debug.Log("Fuck Off");
 			spriteInfo.color = new Color(spriteInfo.color.r, spriteInfo.color.g, spriteInfo.color.b, spriteInfo.color.a * 0.95f);
 			if (spriteInfo.color.a < 0.01){
 				Dead = true;
@@ -614,6 +617,8 @@ public class Npc : ColourBeing {
 	}
 	
 	public void FuckOff(){
+		toBuild = null;
+		toDestroy = null;
 		fuckingOff = true;
 		target = new GameObject(name + "Target").GetComponent<Transform>();
 		target.position = t.position + (Vector3)fuckOffReference;

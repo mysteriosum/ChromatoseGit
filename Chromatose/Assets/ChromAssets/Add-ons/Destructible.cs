@@ -20,7 +20,7 @@ public class Destructible : MonoBehaviour {		//move sprite @ 15 frames or 0.5f s
 	
 	public string messageToSendOnPoof = "";
 	
-	List<Npc> myNPCs = new List<Npc>();
+	protected List<Npc> myNPCs = new List<Npc>();
 	
 	
 	Collider[] children = new Collider[2];
@@ -37,7 +37,7 @@ public class Destructible : MonoBehaviour {		//move sprite @ 15 frames or 0.5f s
 	
 	}
 	
-	protected void Setup(){
+	protected virtual void Setup(){
 		spriteInfo = GetComponent<tk2dSprite>();
 		poof = Instantiate(poof) as GameObject;
 		poof.SetActive(false);
@@ -46,7 +46,7 @@ public class Destructible : MonoBehaviour {		//move sprite @ 15 frames or 0.5f s
 		anim.animationCompleteDelegate = Done;	
 	}
 	
-	protected void Destroy(){
+	protected virtual void Destroy(){
 		
 		children = GetComponentsInChildren<Collider>(true);
 		
