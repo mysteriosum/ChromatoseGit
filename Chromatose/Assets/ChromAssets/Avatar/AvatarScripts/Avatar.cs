@@ -651,7 +651,7 @@ public class Avatar : ColourBeing
 		
 					//Do I refill my colour? =O
 		
-		if (getSpace){
+		if (getSpace && !colour.White){
 			if (colour.r > colour.g && colour.r > colour.b){
 				colour.r = 255;
 				ChromatoseManager.manager.RemoveCollectibles(Couleur.white, refillCost, t.position);
@@ -889,13 +889,23 @@ public class Avatar : ColourBeing
 	}
 	
 	public void Jolt(float amount){
+		if (!myKnockTarget){
+			Debug.LogWarning("There's no knockback targets in this level! NOOOOO!");
+			return;
+		}
 		Vector3 direction = myKnockTarget.position - t.position;
 		t.position += direction.normalized * amount;
 	}
 	
 	public void Push(float amount){
+		
+		if (!myKnockTarget){
+			Debug.LogWarning("There's no knockback targets in this level! NOOOOO!");
+			return;
+		}
 		Vector2 diff = (Vector2)myKnockTarget.position - (Vector2)t.position;
 		movement.SetVelocity(diff.normalized * amount);
+		Debug.Log("Diff is " + diff);
 	}
 	
 }
