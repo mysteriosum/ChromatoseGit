@@ -31,8 +31,8 @@ public class Spawner : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		
-		if (states[currentState].shooting) timer += Time.deltaTime;
+		if (!states[currentState].shooting) return;
+		timer += Time.deltaTime;
 		if (timer >= states[currentState].rateOfFire){
 			GameObject newGuy = Instantiate(original as Object, transform.position, transform.rotation) as GameObject;
 			newGuy.SetActive(true);

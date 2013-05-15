@@ -29,6 +29,7 @@ public class Killer : MonoBehaviour {
 		
 		if (thingsToTrigger.Length > 0){
 			foreach (GameObject thing in thingsToTrigger){
+				if (thing == null) continue;
 				thing.SendMessage("Trigger");
 			}
 		}

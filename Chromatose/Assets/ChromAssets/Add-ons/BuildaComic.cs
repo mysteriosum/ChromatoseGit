@@ -16,6 +16,9 @@ public class BuildaComic : Buildable {
 	}
 	
 	protected override void Done(tk2dAnimatedSprite sprite, int index){
+		foreach (TargetMessageReceivers tar in messagesOnFinished){
+			tar.Shoot();
+		}
 		myThumb.SetActive(true);
 							//TODO : SET A FUNCTION IN THE THUMB WHICH WILL MAKE IT APPEAR OVER TIME, SO THE PLAYER NECESSARILY KNOWS IT'S THERE BEFORE HE PICKS IT UP
 		gameObject.RemoveComponent(this.GetType());

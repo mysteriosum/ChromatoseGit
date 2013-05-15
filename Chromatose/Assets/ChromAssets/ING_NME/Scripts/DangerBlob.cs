@@ -58,7 +58,7 @@ public class DangerBlob : ColourBeing {
 	}
 
 	
-	void OnCollisionEnter(Collision other){
+	void OnCollisionStay(Collision other){
 		if (other.gameObject.tag != "avatar"){
 			return;
 		}
@@ -94,9 +94,9 @@ public class DangerBlob : ColourBeing {
 		avatar.transform.position += (Vector3)back * 12;
 		*/
 		avatar.Jolt(12f);
+		avatar.SendMessage("Ouch");
 		if (avatar.Hurt) return;
 		
-		avatar.SendMessage("Ouch");
 		avatar.Push(knockback);
 		
 		//avatar.Damage();    //remove HP from the avatar, but this isn't implemented yet

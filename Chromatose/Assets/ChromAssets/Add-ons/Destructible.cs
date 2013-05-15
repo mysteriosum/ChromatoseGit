@@ -13,12 +13,44 @@ public class Destructible : MonoBehaviour {		//move sprite @ 15 frames or 0.5f s
 	public int npcsToTrigger = 1;
 	public Transform myNode;
 	public string specificName = "";
+	public bool showNpcsNeeded = true;
 	public int NPCsNeeded{
 		get{ return npcsToTrigger - myNPCs.Count;}
 		
 	}
+	public string messageToSendNpcsOnPoof = "";
 	
-	public string messageToSendOnPoof = "";
+	[System.SerializableAttribute]
+	public class TargetMessageReceivers{
+		public GameObject target;
+		public string message;
+		public Object objectValue;
+		/// <summary>
+		/// The float value to give with the message. This will be overridden by any string value.
+		/// </summary>
+		public float floatValue = -1000f;
+		public string stringValue = "";
+		
+		public void Shoot(){
+			if (objectValue != null){
+				target.SendMessage(message, objectValue);
+			}
+			else if(stringValue != ""){
+				target.SendMessage(message, stringValue);
+			}
+			else if(floatValue != -1000f){
+				target.SendMessage(message, floatValue);
+			}
+			else{
+				target.SendMessage(message);
+			}
+			
+		}
+	}
+	
+	public TargetMessageReceivers[] messagesOnFinished;
+	
+	
 	
 	protected List<Npc> myNPCs = new List<Npc>();
 	
@@ -70,6 +102,10 @@ public class Destructible : MonoBehaviour {		//move sprite @ 15 frames or 0.5f s
 		myNPCs.Add(npc);
 		curNPCs ++;
 		
+		if (curNPCs == 1 && showNpcsNeeded){
+			myNPCs[0].AnnounceOtherNPCsRequired = true;
+		}
+		
 		if (curNPCs >= npcsToTrigger){
 			Destroy();
 		}
@@ -102,9 +138,9 @@ public class Destructible : MonoBehaviour {		//move sprite @ 15 frames or 0.5f s
 			}
 			counter ++;
 		}
-		if (messageToSendOnPoof != ""){
+		if (messageToSendNpcsOnPoof != ""){
 			foreach (Npc npc in myNPCs){
-				npc.SendMessage(messageToSendOnPoof);
+				npc.SendMessage(messageToSendNpcsOnPoof);
 			}
 		}
 		spriteInfo.SetSprite(spriteInfo.GetSpriteIdByName(newNewName));
@@ -112,7 +148,9 @@ public class Destructible : MonoBehaviour {		//move sprite @ 15 frames or 0.5f s
 	}
 	
 	protected virtual void Done(tk2dAnimatedSprite sprite, int index){
-		
+		foreach (TargetMessageReceivers tar in messagesOnFinished){
+			tar.Shoot();
+		}
 		gameObject.RemoveComponent(this.GetType());
 	}
 	

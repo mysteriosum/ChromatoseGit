@@ -52,6 +52,13 @@ public class Npc : ColourBeing {
 	private Vector3 elbowVector;
 	private Transform elbowee;
 	
+	private bool announceOtherNPCsRequired = false;
+		
+	public bool AnnounceOtherNPCsRequired {
+		get { return announceOtherNPCsRequired; }
+		set { announceOtherNPCsRequired = value; }
+	}
+	
 	//about fucking off and shit
 	private bool fuckingOff = false;
 	
@@ -106,6 +113,7 @@ public class Npc : ColourBeing {
 			set{ spriteInfo.SetSprite(value); }
 		}
 		
+	
 					//constructors
 		
 		public SpeechBubble(Transform toFollow){
@@ -178,9 +186,9 @@ public class Npc : ColourBeing {
 												//ALL THE PUBLIC VARIABLES
 	public int detectRadius = 250;
 	public bool beginBySaying = false;
+	public bool alwaysSayWhenIdle = false;
 	public int initialSpeechRange = 400;
 	public string bubbleSpriteName = "";
-	public bool announceOtherNPCsRequired = false;
 	public bool waitForMessage = false;
 	public bool hasShadowBG = false;
 	public int shadowSpriteIndex;
@@ -532,7 +540,7 @@ public class Npc : ColourBeing {
 			}
 		}
 		
-		if (beginBySaying){
+		if (beginBySaying || alwaysSayWhenIdle && movement.GetVelocity().magnitude < 1){
 			Vector3 diff = avatar.position - t.position;
 			if (diff.magnitude < initialSpeechRange){
 				myBubble.Showing = true;

@@ -743,6 +743,7 @@ public class Avatar : ColourBeing
 	end:
 		if (previousVelocity != velocity)
 			previousVelocity = velocity;
+		t.position = new Vector3(t.position.x, t.position.y, 0);
 		if (debug)
 			Debug.Log("Yea dawg, verily this be the end");
 		
@@ -883,9 +884,14 @@ public class Avatar : ColourBeing
 	
 	
 	private void Ouch(){
-		hurt = true;
-		CannotControlFor(0.5f);
-		invisible = true;
+		if (hurt){
+			hurtTimer = 0;
+		}
+		else{
+			hurt = true;
+			CannotControlFor(0.5f);
+			invisible = true;
+		}
 	}
 	
 	public void Jolt(float amount){
