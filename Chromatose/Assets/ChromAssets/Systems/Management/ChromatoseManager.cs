@@ -78,7 +78,7 @@ public class ChromatoseManager : MonoBehaviour {
 		do{
 			roomStats[curRoom].comics.Add(null);
 			counter ++;
-			Debug.Log("There's some stuff going on in the roomStats thing");
+//			Debug.Log("There's some stuff going on in the roomStats thing");
 			if (counter > 50){
 				Debug.LogWarning("It's fucked up I know, but like, idk, there's just a lot going on in this level apparently");
 				break;
@@ -88,7 +88,7 @@ public class ChromatoseManager : MonoBehaviour {
 		
 		foreach (GameObject go in frames){
 			Comic strip = go.GetComponent<Comic>();
-			Debug.Log(strip);
+//			Debug.Log(strip);
 			roomStats[curRoom].comics[strip.mySlotIndex] = strip;
 			strip.gameObject.SetActive(false);
 		}

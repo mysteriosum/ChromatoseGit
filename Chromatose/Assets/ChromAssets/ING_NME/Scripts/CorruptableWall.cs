@@ -4,10 +4,10 @@ using System.Collections;
 public class CorruptableWall : MonoBehaviour {
 	tk2dAnimatedSprite anim;
 	bool corrupted = true;
-	float timing = 5.0f;
+	float timing = 8.0f;
 	float timer = 0f;
 	bool started = false;
-	public GameObject[] myBlobbies;
+	//public GameObject[] myBlobbies;
 	
 	// Use this for initialization
 	void Start () {
@@ -34,9 +34,9 @@ public class CorruptableWall : MonoBehaviour {
 	}
 	
 	void StopAndDestroy(tk2dAnimatedSprite sprite, int clipId){
-		foreach (GameObject b in myBlobbies){
+		/*foreach (GameObject b in myBlobbies){
 			Destroy(b);
-		}
+		}*/
 		Destroy(gameObject);
 	}
 	
