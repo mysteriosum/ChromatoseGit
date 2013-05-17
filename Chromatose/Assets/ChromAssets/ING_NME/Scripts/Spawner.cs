@@ -24,7 +24,7 @@ public class Spawner : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		if (original){
-			original.SetActive(false);
+			original.SendMessage("Deactivate");
 		}
 		stateAmount = states.Length;
 	}
@@ -35,7 +35,8 @@ public class Spawner : MonoBehaviour {
 		timer += Time.deltaTime;
 		if (timer >= states[currentState].rateOfFire){
 			GameObject newGuy = Instantiate(original as Object, transform.position, transform.rotation) as GameObject;
-			newGuy.SetActive(true);
+			newGuy.SendMessage("Activate");
+			newGuy.transform.parent = transform;
 			timer = 0;
 		}
 	}
