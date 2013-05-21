@@ -48,7 +48,7 @@ public class Collectible : ColourBeing {
 		avatar = GameObject.FindGameObjectWithTag("avatar").GetComponent<Avatar>();
 		t = transform;
 		avatarT = avatar.transform;
-		velocity = Random.insideUnitCircle * Random.Range(55, 80);
+		velocity = Random.insideUnitCircle * Random.Range(90, 135);
 		
 		anim = gameObject.GetComponent<tk2dAnimatedSprite>();
 	}

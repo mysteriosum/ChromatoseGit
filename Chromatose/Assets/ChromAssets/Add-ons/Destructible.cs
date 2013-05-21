@@ -97,7 +97,6 @@ public class Destructible : MonoBehaviour {		//move sprite @ 15 frames or 0.5f s
 		if (specificName != ""){
 			if (npc.name != specificName)
 				return false;
-			Debug.Log("Same name");
 		}
 		myNPCs.Add(npc);
 		curNPCs ++;
@@ -119,7 +118,7 @@ public class Destructible : MonoBehaviour {		//move sprite @ 15 frames or 0.5f s
 	public bool CheckName(string name){
 		if (specificName == "") return true;
 		bool identical = specificName == name;
-		print("It is " + identical + " that it's the same name");
+		//print("It is " + identical + " that it's the same name");
 		return name == specificName;
 	}
 	

@@ -17,9 +17,9 @@ public class Avatar : ColourBeing
 	
 	[System.NonSerializedAttribute]
 	public Movement movement;
-	private float basicTurnSpeed;
-	private float basicMaxSpeed;
-	private float basicAccel;
+	protected float basicTurnSpeed;
+	protected float basicMaxSpeed;
+	protected float basicAccel;
 	
 	public tk2dSpriteCollectionData normalCollection;
 	public tk2dSpriteCollectionData paleCollection;
@@ -66,7 +66,7 @@ public class Avatar : ColourBeing
 	
 	
 	
-	private bool hurt;
+	private bool hurt;				//other properties! Getting hurt and stuff
 	public bool Hurt{
 		get{ return hurt;}
 		set{ hurt = value;}
@@ -75,9 +75,15 @@ public class Avatar : ColourBeing
 	private int hurtTiming = 60;
 	private int blinkOffAt = 20;
 	private int blinkOnAt = 10;
+	private List<GameObject> blobsHit = new List<GameObject>();
 	private bool invisible = false;
 	public int Invisible{
 		get{ return invisible ? 0 : 1;}
+	}
+	private bool inBlueLight = false;
+	public bool InBlueLight{
+		get { return inBlueLight; }
+		set { inBlueLight = value; }
 	}
 								//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
 								//<--------------Speed boosts!!-------------->
@@ -481,7 +487,17 @@ public class Avatar : ColourBeing
 			r -= colour.b;
 			partColor = Color.blue;
 		}
+		
+		if (inBlueLight){
+			r = colour.r;
+			g = colour.g;
+		}
+		
 		shownColour = new Color(r/255f, g/255f, b/255f, Invisible);		//TODO : proper colour on 
+		
+		if (inBlueLight){
+			partColor = shownColour;
+		}
 		//Debug.Log("I'm showing the colour " + shownColour);
 		spriteInfo.color = shownColour;
 		
@@ -883,11 +899,12 @@ public class Avatar : ColourBeing
 															//<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>
 	
 	
-	private void Ouch(){
+	private void Ouch(GameObject go){
 		if (hurt){
 			hurtTimer = 0;
 		}
 		else{
+			ChromatoseManager.manager.RemoveCollectibles(Couleur.white, 1, t.position);
 			hurt = true;
 			CannotControlFor(0.5f);
 			invisible = true;

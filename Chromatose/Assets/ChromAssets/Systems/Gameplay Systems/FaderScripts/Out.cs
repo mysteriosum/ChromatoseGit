@@ -17,6 +17,9 @@ public class Out : MonoBehaviour {
 			//Debug.Log("Trigger:");
 			transform.parent.SendMessage("Out");
 		}
+		else{
+			
+		}
 		/*
 		tk2dSprite otherSprite = other.GetComponent<tk2dSprite>();
 		if (otherSprite){

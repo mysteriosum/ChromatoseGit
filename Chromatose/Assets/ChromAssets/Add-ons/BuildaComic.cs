@@ -15,6 +15,16 @@ public class BuildaComic : Buildable {
 	
 	}
 	
+	protected override void Destroy(){
+		
+		poof.SetActive(true);
+		poof.transform.position = transform.position;
+		poof.transform.rotation = transform.rotation;
+		
+		anim.Play();
+		anim.CurrentClip.wrapMode = tk2dSpriteAnimationClip.WrapMode.Once;
+	}
+	
 	protected override void Done(tk2dAnimatedSprite sprite, int index){
 		foreach (TargetMessageReceivers tar in messagesOnFinished){
 			tar.Shoot();

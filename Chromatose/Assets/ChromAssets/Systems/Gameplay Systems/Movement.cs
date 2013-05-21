@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class Movement : MonoBehaviour {
 	
@@ -15,9 +16,9 @@ public class Movement : MonoBehaviour {
 	public Rotator rotator = new Rotator();
 	public Collider2d collider2d = new Collider2d();
 	
-	float collideTimer = 0f;
-	float collideTiming = 0.5f;
-	
+	private float collideTimer = 0f;
+	private float collideTiming = 0.5f;
+	private List<Collider> collidedWith = new List<Collider>();
 	[System.NonSerializedAttribute]
 	public Transform t;
 	//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
@@ -64,6 +65,10 @@ public class Movement : MonoBehaviour {
 		
 		if (collision.gameObject.tag == "collision"){
 			ContactPoint point = collision.contacts[0];
+			if (!collidedWith.Contains(collision.collider)){
+				collideTimer = -1;
+				collidedWith.Add(collision.collider);
+			}
 			if (collideTimer <= 0){
 				thruster.velocity = collider2d.Collide(point, thruster.velocity);
 				collideTimer = collideTiming;
@@ -75,7 +80,7 @@ public class Movement : MonoBehaviour {
 		if (collision.gameObject.tag != "collision") return;
 		ContactPoint point = collision.contacts[0];
 		
-		if (this.name == "Avatar" || GetComponent<Npc>() != null){
+		if (GetComponent<Avatar>() != null || GetComponent<Npc>() != null){
 			t.position += new Vector3(point.normal.x, point.normal.y, 0);
 			thruster.velocity += (Vector2)point.normal * thruster.accel * 2;
 			/*
@@ -217,6 +222,9 @@ public class Movement : MonoBehaviour {
 	void Update () {
 		if (collideTimer > 0){
 			collideTimer -= Time.deltaTime;
+			if (collideTimer <= 0){
+				collidedWith.Clear();
+			}
 		}
 	}
 	

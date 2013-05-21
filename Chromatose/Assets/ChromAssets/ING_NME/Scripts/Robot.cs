@@ -5,6 +5,7 @@ public class Robot : MonoBehaviour {
 	
 	public bool rotates = false;
 	public float turnRate = 1f;
+	public bool alternate = false;
 	int angle = 180;
 	/*[System.SerializableAttribute]
 	public class DirectionClass{
@@ -17,10 +18,11 @@ public class Robot : MonoBehaviour {
 	
 	//public DirectionClass directions;
 	
-	string[] sprites = new string[4] {"robotBack", "robotFront", "robotLeft", "robotRight"};
+	string[] sprites = new string[2] {"robot1", "robot2"};
 	int curSprite = 0;
 	int directionBin;
 	float timer = 0;
+	float delay;
 	Transform myLaser;
 	Transform t;
 	tk2dSprite spriteInfo;
@@ -33,8 +35,12 @@ public class Robot : MonoBehaviour {
 		
 		if (t.rotation.eulerAngles.z < -85 && t.rotation.eulerAngles.z > -95){
 			curSprite = 1;
+		
 		}
 		myLaser = GetComponentInChildren<Transform>();
+		if (alternate){
+			delay = turnRate;
+		}
 		/*
 		if (directions.up) directionBin ++;		//TODO : but probably for module 2, fix this so that it will accomodate more than 2 directions!
 		if (directions.down) directionBin += 2;
@@ -47,11 +53,20 @@ public class Robot : MonoBehaviour {
 	void Update () {
 		if (!rotates) return;
 		
-		
+		if (delay > 0){
+			delay -= Time.deltaTime;
+			return;
+		}
 		timer += Time.deltaTime;
 		if (timer >= turnRate){
 			curSprite = 1 - curSprite;
 			spriteInfo.SetSprite(sprites[curSprite]);
+			if (curSprite == 0){
+				transform.position = new Vector3(transform.position.x, transform.position.y, -2);
+			}
+			else{
+				transform.position = new Vector3(transform.position.x, transform.position.y, 2);
+			}
 			timer = 0;
 			transform.Rotate(new Vector3(0, 0, angle));
 		}

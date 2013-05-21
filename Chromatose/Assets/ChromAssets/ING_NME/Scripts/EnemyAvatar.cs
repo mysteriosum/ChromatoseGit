@@ -20,22 +20,30 @@ public class EnemyAvatar : Avatar {
 	
 	[System.NonSerialized]
 	public GameObject questionBubble;
-	bool returning;
-	bool hunting;
-	float checkTiming = 0.5f;
-	float timer = 0f;
+	private bool returning;
+	private bool hunting;
+	private float checkTiming = 0.5f;
+	private float timer = 0f;
 	
-	List<Transform> myPath = new List<Transform>();
-	int curNode = 0;
-	bool onPath = false;
-	int mask;		//for teh linecasts
-	RaycastHit hit;
+	private Vector3 initPosition;
+	private Quaternion initRotation;
+	
+	
+	private List<Transform> myPath = new List<Transform>();
+	private int curNode = 0;
+	private bool onPath = false;
+	private int mask;		//for teh linecasts
+	private RaycastHit hit;
 	
 	ColourBeing colourTarget;
 	Pather pather;
 	
 	// Use this for initialization
 	void Start () {
+		
+		spriteInfo = GetComponent<tk2dSprite>();
+		movement = GetComponent<Movement>();
+		t = this.transform;
 		
 		if (guardDuty){
 			target = guardPost;
@@ -49,15 +57,17 @@ public class EnemyAvatar : Avatar {
 				prey = avatarObject.transform;
 				colourTarget = prey.GetComponent<ColourBeing>();
 			}
+				basicAccel = movement.thruster.accel;
+				basicMaxSpeed = movement.thruster.maxSpeed;
+				basicTurnSpeed = movement.rotator.rotationRate;
+				movement.SetNewMoveStats(1f, 0.5f, basicTurnSpeed);
 		}
 		
-		movement = GetComponent<Movement>();
 		
 		for (int i = 0; i < angles.Length; i++){
 			angles[i] = i * 22.5f;
 		}
 		
-		t = this.transform;
 		
 		
 		getW = false;
@@ -69,6 +79,10 @@ public class EnemyAvatar : Avatar {
 		if (patrol && patrolRoute != null){
 			target = patrolRoute[0];
 		}
+		
+		
+		initPosition = t.position;
+		initRotation = t.rotation;
 		
 		mask = 1 << LayerMask.NameToLayer("collision");		//for teh linecasts
 	}
@@ -89,6 +103,7 @@ public class EnemyAvatar : Avatar {
 		float multiplier = 1f;
 		if (target != null){								//Here I'm going to figure out where I should be pointing, 
 			float curRot = VectorFunctions.Convert360(t.rotation.eulerAngles.z); 	//how to turn there, and whether I should be accelerating
+			
 			Vector2 pointA = t.position;
 			Vector2 pointB = target.position;
 			Vector2 dist = pointB - pointA;
@@ -97,9 +112,11 @@ public class EnemyAvatar : Avatar {
 			//float pointDir = Mathf.Rad2Deg * Mathf.Asin(dist.y / dist.magnitude);
 			
 			float diffAngle = curRot - angle;
+			Debug.Log("Diff angle: " + curRot + " - " + angle + " = " + diffAngle);
 			float targetAngle = diffAngle * 2;
-			getD = targetAngle > -20;
-			getA = targetAngle < 20;
+			
+			getD = targetAngle > -25 || targetAngle < -550; 	//positive difference = getD. negative difference = getA.
+			getA = targetAngle < 25 || targetAngle > 550;
 			getW = true;
 			if (target == guardPost && dist.magnitude < 75){
 				multiplier = 0.2f;
@@ -111,6 +128,7 @@ public class EnemyAvatar : Avatar {
 			if (Vector3.Distance(target.position, t.position) < 50){
 				if (target == guardPost){
 					returning = false;
+					movement.SetNewMoveStats(1f, 0.5f, basicTurnSpeed);
 				}
 				else{
 					curNode ++;
@@ -145,6 +163,7 @@ public class EnemyAvatar : Avatar {
 				target = prey;
 				hunting = true;
 				returning = false;
+					movement.SetNewMoveStats(basicMaxSpeed, basicAccel, basicTurnSpeed);
 				//Debug.Log("In ragne. GetW = " + getW + " getD = " + getD + " getA = " + getA);
 			}
 			

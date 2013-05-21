@@ -316,8 +316,16 @@ public class Npc : ColourBeing {
 				goto update;
 			}
 			else{
+				myPath.Clear();
+				inMotion = false;
+				target = null;
+				
 				breaking = false;
+				anim.Play(anim.GetClipByName("rNPC_redToGrey"), 0);
 				losingColour = true;
+				colour.r = initColour.r;
+							colour.r = initColour.r;
+							anim.animationCompleteDelegate = null;
 			}
 		}
 		
@@ -422,27 +430,36 @@ public class Npc : ColourBeing {
 					
 					myPather = new Pather(t, closestNode);
 					myPath = myPather.NewPath(t, closestNode);
+					/*foreach (Transform targ in myPath){
+						Debug.Log(targ.name);
+					}*/
 					inMotion = true;
 					target = myPath[0];
 				}
 			}
 			else if (target){
-				//0target = myPather.Seek(target);		//I have a target, so I'm going to look for it!
+				//target = myPather.Seek(target);		//I have a target, so I'm going to look for it!
 				float distToTarget = ((Vector2)target.position - (Vector2)t.position).magnitude;
 				if (distToTarget < closeRadius){
 					if (target == closestNode){
-						
-						toDestroy.AddOne(this);
+						if (toDestroy){
+							toDestroy.AddOne(this);
+						}
 						target = null;
 						closestNode = null;
 						inMotion = false;
 						breaking = true;
-						colour.r = initColour.r;
 						myPath.Clear();
 						currentNode = 0;
 					}
 					else{
 						currentNode ++;
+						if (currentNode >= myPath.Count){
+							Debug.Log("Count = " + myPath.Count + " and node = " + currentNode);
+							foreach (Transform targ in myPath){
+								Debug.Log(targ.name);
+							}
+						}
 						target = myPath[currentNode];
 					}
 				}

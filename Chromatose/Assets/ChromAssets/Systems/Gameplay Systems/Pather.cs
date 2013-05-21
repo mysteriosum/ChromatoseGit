@@ -264,6 +264,7 @@ public class Pather{		//Pather is the class that helps me find the path!
 				if (t == end){		//if I can see the end node, start to wrap it up
 					foundEnd = true;
 					underScrutiny = newNode;
+					Debug.Log(predator.name + " saw the end from " + underScrutiny);
 				}
 			}
 			else{
@@ -273,8 +274,12 @@ public class Pather{		//Pather is the class that helps me find the path!
 		
 		if (!foundEnd){
 			counter ++;
-			if (counter < 150)
-			goto open;
+			if (counter < 650){
+				goto open;
+			}
+			else{
+				Debug.Log(predator.name + "'s counter is hiiiigh");
+			}
 		}
 		counter = 0;
 		do {

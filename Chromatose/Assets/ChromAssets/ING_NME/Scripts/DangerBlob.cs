@@ -8,6 +8,7 @@ public class DangerBlob : ColourBeing {
 	[System.SerializableAttribute]
 	public class Movement{
 		public bool patrol = false;
+		public bool rotates = false;
 		public float speed = 75f;
 		public Transform[] targetNodes;
 		int currentIndex = 0;
@@ -20,11 +21,30 @@ public class DangerBlob : ColourBeing {
 		}
 		
 		public void Move(){
+			bool rotating = false;
 			int counter = 0;
 		top:
 			if (!patrol) return; //If I'm not moving I don't have much to update, do I
 			Vector2 traj = ((Vector2)targetNodes[currentIndex].position - (Vector2)t.position);
 			traj = traj.magnitude > speed * Time.deltaTime ? traj.normalized * speed * Time.deltaTime : Vector2.zero;		//Adjust the traj!
+			
+			//Debug.Log(traj);
+			Quaternion lookRot = Quaternion.LookRotation(Vector3.forward, traj);
+			
+			/*if (rotates){
+				float x = traj.x + traj.magnitude * (1 - Mathf.Pow(Mathf.Cos(Time.time), 2)
+												  / (1 - Mathf.Pow(Mathf.Cos(Time.time), 2)));
+				float y = traj.y + traj.magnitude * (2 * Mathf.Cos(Time.time))
+							 					  / (1 - Mathf.Pow(Mathf.Cos(Time.time), 2));
+				t.rotation = lookRot;
+				
+				traj = new Vector3(x, y, 0);
+				rotating = true;
+			}
+			else{*/
+						//if I'm closer enough, traj = 0 (next node)
+				//traj = traj.normalized * speed * Time.deltaTime;
+			//}
 			
 			if (traj == Vector2.zero){
 				currentIndex ++;
@@ -34,8 +54,12 @@ public class DangerBlob : ColourBeing {
 				
 			}
 		move:
-			t.Translate(traj, Space.World);
-			
+			if (rotates){
+				t.Translate(new Vector3(traj.y * -1, traj.x, 0), Space.Self);
+			}
+			else{
+				t.Translate(traj, Space.World);
+			}
 		}
 	}
 	
@@ -93,11 +117,13 @@ public class DangerBlob : ColourBeing {
 		Vector2 back = (Vector2) other.contacts[0].normal * -1;
 		avatar.transform.position += (Vector3)back * 12;
 		*/
-		avatar.Jolt(12f);
-		avatar.SendMessage("Ouch");
-		if (avatar.Hurt) return;
 		
-		avatar.Push(knockback);
+		avatar.Jolt(12f);
+		if (!avatar.Hurt){
+			avatar.Push(knockback);
+		}
+		avatar.SendMessage("Ouch"); //we're going to call this later, k? But with argumetns'
+		
 		
 		//avatar.Damage();    //remove HP from the avatar, but this isn't implemented yet
 	}
@@ -126,6 +152,19 @@ public class DangerBlob : ColourBeing {
 			index = (index + 1) % maxIndex;
 			nextIndex = (index + 1) % maxIndex;
 		}
+	}
+	
+	void Deactivate(){
+		this.collider.enabled = false;
+		this.renderer.enabled = false;
+		this.movement.patrol = false;
+	}
+	
+	void Activate(){
+		this.collider.enabled = true;
+		this.renderer.enabled = true;
+		if (this.movement.targetNodes[0] != null)
+			this.movement.patrol = true;
 	}
 	
 }
