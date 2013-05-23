@@ -641,7 +641,7 @@ public class Avatar : ColourBeing
 				outline.transform.position = t.position;
 				tk2dSprite.AddComponent<tk2dSprite>(outline, afterImageCollection, spriteInfo.CurrentSprite.name);
 				
-				//ChromatoseManager.manager.DropCollectibles(ChromatoseManager.manager.WhiteCollectibles, teleportCost, outline.transform.position);
+				ChromatoseManager.manager.DropCollectibles(ChromatoseManager.manager.WhiteCollectibles, teleportCost, outline.transform.position);
 				
 				hasOutline = true;
 				foreach (GameObject go in allTheFaders){
@@ -650,9 +650,10 @@ public class Avatar : ColourBeing
 				//spriteInfo.SwitchCollectionAndSprite()
 			}
 			else{
+				
 				t.position = outline.transform.position;
 				t.rotation = outline.transform.rotation;
-				
+				ChromatoseManager.manager.GrabHeldWhiteCols();
 				ChromatoseManager.manager.RemoveCollectibles(Couleur.white, teleportCost, outline.transform.position);
 				Destroy(outline);
 				hasOutline = false;
@@ -900,14 +901,16 @@ public class Avatar : ColourBeing
 	
 	
 	private void Ouch(GameObject go){
-		if (ChromatoseManager.manager.WhiteCollectibles.Count == 0){
-			canControl = false;
-			ChromatoseManager.manager.Death();
-		}
+		
 		if (hurt){
 			hurtTimer = 0;
 		}
 		else{
+			if (ChromatoseManager.manager.WhiteCollectibles.Count == 0){
+				canControl = false;
+				ChromatoseManager.manager.Death();
+				return;
+			}
 			ChromatoseManager.manager.RemoveCollectibles(Couleur.white, 1, t.position);
 			hurt = true;
 			CannotControlFor(0.5f);
