@@ -13,12 +13,13 @@ public class ChromatoseManager : MonoBehaviour {
 		public List<Collectible> r = new List<Collectible>();
 		public List<Collectible> g = new List<Collectible>();
 		public List<Collectible> b = new List<Collectible>();
+		public List<Collectible> held = new List<Collectible>();
 	}
 	private class RoomStats{
 		public List<Collectible> consumedCollectibles = new List<Collectible>();
 		public List<Comic> comics = new List<Comic>();
 		
-		public bool[] thumbsFound = {false, false, false, false, false, false};
+		public bool[] thumbsFound = {false, false, false, false, false, false, false};
 		
 		public bool secretFound = false;
 		public bool comicComplete = false;
@@ -118,7 +119,7 @@ public class ChromatoseManager : MonoBehaviour {
 			Application.LoadLevel(Application.loadedLevel - 1);
 		}
 		
-		if (Input.GetKeyDown(KeyCode.PageUp)){
+		if (Input.GetKeyDown(KeyCode.PageDown)){
 			if (Application.loadedLevel == Application.levelCount - 1) return;
 			Application.LoadLevel(Application.loadedLevel + 1);
 		}
@@ -181,8 +182,20 @@ public class ChromatoseManager : MonoBehaviour {
 			
 			inQuestion.PutBack(pos + (Vector3)Random.insideUnitCircle * 15);
 			list.Remove(inQuestion);
+			collectibles.held.Add(inQuestion);
 		}
 		
+	}
+	
+	public void GrabHeldWhiteCols(){
+		foreach(Collectible col in collectibles.held){
+			if (!col.colour.White){
+				Debug.Log("Turns out this one's not white...");
+				continue;
+			}
+			collectibles.w.Add(col);
+		}
+		collectibles.held.Clear();
 	}
 	
 	public void RemoveCollectibles(Couleur colour, int value, Vector3 pos){
@@ -212,7 +225,7 @@ public class ChromatoseManager : MonoBehaviour {
 			Collectible inQuestion = list[list.Count - 1];
 			roomStats[Application.loadedLevel].consumedCollectibles.Add(inQuestion);
 			inQuestion.Trigger();
-			inQuestion.transform.position = pos;
+			//inQuestion.transform.position = pos;
 			list.Remove(inQuestion);
 		}
 	}

@@ -9,15 +9,21 @@ public class DangerBlob : ColourBeing {
 	public class Movement{
 		public bool patrol = false;
 		public bool rotates = false;
+		public bool playAnimOnTurn = false;
 		public float speed = 75f;
 		public Transform[] targetNodes;
+		public GameObject gameObject;
+		
+		private tk2dAnimatedSprite anim;
 		int currentIndex = 0;
 		int maxIndex;
 		[System.NonSerialized]
 		public Transform t;
 		
-		public void Setup(){
+		public void Setup(GameObject gameObject){
 			maxIndex = targetNodes.Length;
+			this.gameObject = gameObject;
+			anim = this.gameObject.GetComponent<tk2dAnimatedSprite>();
 		}
 		
 		public void Move(){
@@ -48,6 +54,7 @@ public class DangerBlob : ColourBeing {
 			
 			if (traj == Vector2.zero){
 				currentIndex ++;
+				anim.Play();
 				if (currentIndex >= maxIndex){
 					currentIndex = 0;
 				}
@@ -67,7 +74,7 @@ public class DangerBlob : ColourBeing {
 	
 	// Use this for initialization
 	void Start () {
-		movement.Setup();
+		movement.Setup(gameObject);
 		movement.t = transform;
 		anim = GetComponent<tk2dAnimatedSprite>();
 		

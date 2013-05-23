@@ -63,7 +63,7 @@ public class Collectible : ColourBeing {
 				if (CheckSameColour(avatar.colour) || colColour == Couleur.white){
 					ChromatoseManager.manager.AddCollectible(this);
 					Gone = true;
-					
+					t.parent = null;
 					
 				}
 				if (isShadow){
@@ -87,7 +87,7 @@ public class Collectible : ColourBeing {
 		}
 		return;		//if I'm not fading I'll skip this next
 	white:
-			Debug.Log("velocity is " + velocity);
+		
 		t.Translate(velocity * Time.deltaTime);
 		Dead = true;
 		/*spriteInfo.color = new Color(spriteInfo.color.r, spriteInfo.color.g, spriteInfo.color.b, spriteInfo.color.a - Time.deltaTime);
@@ -149,8 +149,11 @@ public class Collectible : ColourBeing {
 		t.rotation = Quaternion.LookRotation(Vector3.forward, new Vector3(0, direction, 0));
 		Gone = false;
 		dropped = true;
-		
+		t.parent = null;
+		spriteInfo.SendMessage("FadeAlpha", 1f);
 		if (colour.Blue){
+			t.position = avatar.t.position + (Vector3) velocity / 4;
+			
 			collector = VectorFunctions.FindClosestOfTag(t.position, "blueCollector", 10000);
 			anim.Play(anim.GetClipByName("bColl_lose"), 0);
 		}
@@ -159,10 +162,12 @@ public class Collectible : ColourBeing {
 			anim.Play(anim.GetClipByName("wColl_lose"), 0);
 			anim.animationCompleteDelegate = GoneForever;
 			anim.CurrentClip.wrapMode = tk2dSpriteAnimationClip.WrapMode.Once;
+			t.position = avatar.t.position;
 		}
 		if (colour.Red){
 			collector = VectorFunctions.FindClosestOfTag(t.position, "redCollector", 10000);
 			anim.Play(anim.GetClipByName("wColl_lose"), 0);		//TODO : CHANGE THIS TO RED COLLECTIBLE ANIM, PLEAZE
+			t.position = avatar.t.position;
 		}
 	}
 	
