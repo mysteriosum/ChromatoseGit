@@ -122,7 +122,7 @@ public class DangerBlob : ColourBeing {
 		if (!avatar.Hurt){
 			avatar.Push(knockback);
 		}
-		avatar.SendMessage("Ouch"); //we're going to call this later, k? But with argumetns'
+		avatar.SendMessage("Ouch", gameObject); //we're going to call this later, k? But with argumetns'
 		
 		
 		//avatar.Damage();    //remove HP from the avatar, but this isn't implemented yet

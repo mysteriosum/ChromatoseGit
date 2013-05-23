@@ -94,12 +94,16 @@ public class Movement : MonoBehaviour {
 	//<-----------TRANSLATION FUNCTIONS!----------->
 	//<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>
 	
+	public Vector2 Displace(bool thrust){
+		float zRotR = t.rotation.eulerAngles.z * Mathf.Deg2Rad;
+		return Displace(thrust, zRotR);
+	}
 	
-	public Vector2 Displace(bool thrust){								//Displacement : Thrust, accel, stuff
+	public Vector2 Displace(bool thrust, float angle){								//Displacement : Thrust, accel, stuff
 		if (thrust){
 			
-			float zRotR = t.rotation.eulerAngles.z * Mathf.Deg2Rad;
-			Vector2 displacement = new Vector2(Mathf.Cos(zRotR) * thruster.accel, Mathf.Sin(zRotR) * thruster.accel);
+			
+			Vector2 displacement = new Vector2(Mathf.Cos(angle) * thruster.accel, Mathf.Sin(angle) * thruster.accel);
 			thruster.velocity += displacement;	
 			//Debug.Log(thruster.velocity);
 			if (thruster.velocity.magnitude > thruster.maxSpeed){

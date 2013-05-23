@@ -194,6 +194,7 @@ public class ChromatoseManager : MonoBehaviour {
 			JettisonCollectibles(collectibles.g, value, pos);
 			return;
 		case Couleur.blue:
+			Debug.Log("Removing " + value.ToString() + " cols from RemoveCollectibles in manager");
 			JettisonCollectibles(collectibles.b, value, pos);
 			return;
 		case Couleur.white:
@@ -207,6 +208,7 @@ public class ChromatoseManager : MonoBehaviour {
 	
 	public void JettisonCollectibles(List<Collectible> list, int no, Vector3 pos){
 		for (int i = 0; i < no; i ++){
+			Debug.Log("Jettisonning " + i.ToString() + " cols from JettisonCollectibles in manager");
 			Collectible inQuestion = list[list.Count - 1];
 			roomStats[Application.loadedLevel].consumedCollectibles.Add(inQuestion);
 			inQuestion.Trigger();
@@ -284,7 +286,9 @@ public class ChromatoseManager : MonoBehaviour {
 		
 	}
 	
-	
+	public void Death(){
+		Application.LoadLevel(Application.loadedLevel);
+	}
 	
 	
 		

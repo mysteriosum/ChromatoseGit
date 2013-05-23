@@ -19,4 +19,12 @@ public class In : MonoBehaviour {
 			transform.parent.SendMessage("In");
 		}
 	}
+	
+	void OnTriggerEnter(Collider other){
+		Npc npc = other.GetComponent<Npc>();
+		if (npc){
+			transform.parent.SendMessage("Enter", npc.gameObject);
+		}
+	}
+	
 }

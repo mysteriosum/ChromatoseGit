@@ -900,6 +900,10 @@ public class Avatar : ColourBeing
 	
 	
 	private void Ouch(GameObject go){
+		if (ChromatoseManager.manager.WhiteCollectibles.Count == 0){
+			canControl = false;
+			ChromatoseManager.manager.Death();
+		}
 		if (hurt){
 			hurtTimer = 0;
 		}

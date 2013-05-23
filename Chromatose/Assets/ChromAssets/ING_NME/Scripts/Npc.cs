@@ -43,6 +43,8 @@ public class Npc : ColourBeing {
 	private float checkTiming = 0.8f;
 	private List<Transform> myPath;
 	private Avatar avatarScript;
+	private float cantSeeTimer = 0f;
+	private float cantSeeTiming = 2f;
 	
 	//elbow room variables
 	private Transform[] allNPCs;
@@ -352,9 +354,15 @@ public class Npc : ColourBeing {
 			
 			if (target == avatar){
 												//THIS IS WHERE I START FOLLOWING THE AVATAR
-				
+				bool cantSee = Physics.Linecast(avatar.position, t.position, out hit, mask);
+				if (cantSee){
+					cantSeeTimer += Time.deltaTime;
+				}
+				else{
+					cantSeeTimer = 0f;
+				}
 				if 	(diff.magnitude < detectRadius && avatar.GetComponent<Avatar>().colour.Blue
-					&& !inMotion && !Physics.Linecast(avatar.position, t.position, out hit, mask)
+					&& !inMotion && cantSeeTimer <= cantSeeTimer
 					){
 					inMotion = true;
 					if (!saidFollow){
@@ -365,7 +373,9 @@ public class Npc : ColourBeing {
 				}
 				else if(inMotion){
 					inMotion = false;
+					cantSeeTimer = 0f;
 				}
+				
 				
 			}
 			checkTimer += Time.deltaTime;
@@ -482,6 +492,11 @@ public class Npc : ColourBeing {
 		if (inMotion && target){
 			movement.target = target;
 			
+										//gotta make sure my alpha stays the same if I'm moving, you know?
+			if (spriteInfo.color.a > 0.7f && !fuckingOff){
+				spriteInfo.SendMessage("FadeAlpha", 1f);
+			}
+			
 			if (target == avatar){
 				movement.SetNewMoveStats(avatarScript.movement.thruster.MaxSpeed - 2, movement.thruster.accel, movement.rotator.rotationRate);
 			}
@@ -492,8 +507,9 @@ public class Npc : ColourBeing {
 			
 			float zGoodFormat = VectorFunctions.Convert360(transform.rotation.eulerAngles.z);
 			
-			t.Rotate(0, 0, angle - zGoodFormat);
-			Vector2 disp = movement.Displace(true);
+			//t.Rotate(0, 0, angle - zGoodFormat);
+			Vector2 disp = movement.Displace(true, angle * Mathf.Deg2Rad);
+			//Vector2 disp = diff.normalized * movement.thruster.velocity.magnitude;
 			if (stoppingForever){
 				inMotion = false;
 				goto update;
@@ -567,7 +583,7 @@ public class Npc : ColourBeing {
 		
 		if (fuckingOff){
 			target.position = t.position + (Vector3)fuckOffReference;
-			Debug.Log("Fuck Off");
+			//Debug.Log("Fuck Off");
 			spriteInfo.color = new Color(spriteInfo.color.r, spriteInfo.color.g, spriteInfo.color.b, spriteInfo.color.a * 0.95f);
 			if (spriteInfo.color.a < 0.01){
 				Dead = true;

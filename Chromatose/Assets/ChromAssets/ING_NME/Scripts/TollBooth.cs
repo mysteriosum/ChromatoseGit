@@ -18,7 +18,7 @@ public class TollBooth : MonoBehaviour {
 	}
 	
 	protected void Setup(){
-		chroManager = GameObject.FindObjectOfType(typeof(ChromatoseManager)) as ChromatoseManager;
+		chroManager = ChromatoseManager.manager;
 		avatarT = GameObject.FindGameObjectWithTag("avatar").GetComponent<Transform>();
 		//Debug.Log("Did I find avatar? " + avatarT.name);
 		BoxCollider[] chilluns = gameObject.GetAllComponentsInChildren<BoxCollider>();
@@ -52,6 +52,7 @@ public class TollBooth : MonoBehaviour {
 				avatarT.position.y < colliderT.position.y + myCollider.size.y/2
 			){
 				chroManager.RemoveCollectibles(couleur, requiredPayment, avatarT.position);
+				Debug.Log("Removing " + requiredPayment + " cols from tollBooth");
 				triggered = true;
 				collisionChild.gameObject.SetActive(false);
 				if (anim)
