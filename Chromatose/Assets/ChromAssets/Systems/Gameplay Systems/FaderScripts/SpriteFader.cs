@@ -6,6 +6,8 @@ public class SpriteFader : MonoBehaviour {
 	
 	public GameObject[] spritesIn;
 	public GameObject[] spritesOut;
+	private List<GameObject> _spritesIn = new List<GameObject>();
+	private List<GameObject> _spritesOut = new List<GameObject>();
 	
 	private bool willPlayOut = false;
 	private bool willPlayIn = false;
@@ -24,20 +26,24 @@ public class SpriteFader : MonoBehaviour {
 		inAlpha = -fadeRate;
 		outAlpha = 1 + fadeRate;
 		
+		
 		foreach (GameObject sprite in spritesIn){
 			sprite.BroadcastMessage("FadeAlpha", inAlpha, SendMessageOptions.DontRequireReceiver);
-			
+			_spritesIn.Add(sprite);
+		}
+		foreach (GameObject sprite in spritesOut){
+			_spritesOut.Add(sprite);
 		}
 	}
 	
 	// Update is called once per frame
 	void LateUpdate () {
 		if (!change) return;
-		foreach (GameObject go in spritesIn){
+		foreach (GameObject go in _spritesIn){
 			
 			go.BroadcastMessage("FadeAlpha", inAlpha, SendMessageOptions.DontRequireReceiver);
 		}
-		foreach (GameObject go in spritesOut){
+		foreach (GameObject go in _spritesOut){
 			go.BroadcastMessage("FadeAlpha", outAlpha, SendMessageOptions.DontRequireReceiver);
 			
 		}
@@ -99,6 +105,16 @@ public class SpriteFader : MonoBehaviour {
 			willPlayIn = true;
 		}*/
 		change = true;
+	}
+	
+	void Enter(GameObject go){
+		_spritesIn.Add(go);
+		_spritesOut.Remove(go);
+	}
+	
+	void Exit(GameObject go){
+		_spritesOut.Add(go);
+		_spritesIn.Remove(go);
 	}
 	
 	void SaveState(){

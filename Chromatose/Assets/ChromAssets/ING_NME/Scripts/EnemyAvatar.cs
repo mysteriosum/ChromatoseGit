@@ -112,7 +112,6 @@ public class EnemyAvatar : Avatar {
 			//float pointDir = Mathf.Rad2Deg * Mathf.Asin(dist.y / dist.magnitude);
 			
 			float diffAngle = curRot - angle;
-			Debug.Log("Diff angle: " + curRot + " - " + angle + " = " + diffAngle);
 			float targetAngle = diffAngle * 2;
 			
 			getD = targetAngle > -25 || targetAngle < -550; 	//positive difference = getD. negative difference = getA.

@@ -48,7 +48,7 @@ public class Collectible : ColourBeing {
 		avatar = GameObject.FindGameObjectWithTag("avatar").GetComponent<Avatar>();
 		t = transform;
 		avatarT = avatar.transform;
-		velocity = Random.insideUnitCircle * Random.Range(90, 135);
+		velocity = Random.insideUnitCircle.normalized * Random.Range(90, 135);
 		
 		anim = gameObject.GetComponent<tk2dAnimatedSprite>();
 	}
@@ -56,6 +56,7 @@ public class Collectible : ColourBeing {
 	// Update is called once per frame
 	
 	void Update () {
+		if (Gone) return;
 		if (!dropped){
 			Vector3 dist = avatarT.position - t.position;
 			if (dist.magnitude < closeDist && !justPutBack){
@@ -86,7 +87,9 @@ public class Collectible : ColourBeing {
 		}
 		return;		//if I'm not fading I'll skip this next
 	white:
+			Debug.Log("velocity is " + velocity);
 		t.Translate(velocity * Time.deltaTime);
+		Dead = true;
 		/*spriteInfo.color = new Color(spriteInfo.color.r, spriteInfo.color.g, spriteInfo.color.b, spriteInfo.color.a - Time.deltaTime);
 		if (spriteInfo.color.a <= 0){
 			Gone = true;
@@ -96,13 +99,19 @@ public class Collectible : ColourBeing {
 	
 		return;
 	blue:
-		
-		velocity = Vector2.Lerp(velocity, Vector2.zero, 0.01f);
+		t.SetParent((Transform)null);
+		spriteInfo.color = new Color(spriteInfo.color.r, spriteInfo.color.g, spriteInfo.color.b, 1f);
+			//t.position = collector.position;
+		//velocity = Vector2.Lerp(velocity, Vector2.zero, 0.005f);
 		homeTimer += Time.deltaTime;
-		Vector2 distanceToTarget = (Vector2)(collector.position - t.position);
-		Vector2 blueVector = Vector2.Lerp(distanceToTarget * 40, Vector2.zero, homeTiming / homeTimer);
-		t.Translate((blueVector + velocity) * Time.deltaTime);
-		if (distanceToTarget.magnitude < 5){
+		//Vector2 distanceToTarget = (Vector2)(collector.position - t.position);
+		//Vector2 blueVector = Vector2.Lerp(distanceToTarget * 10, Vector2.zero, homeTiming / homeTimer);
+		//t.Translate((blueVector + velocity) * Time.deltaTime);
+		//t.Translate(velocity * Time.deltaTime);
+		
+		if (homeTimer >= 1.5f){
+		
+		//if (distanceToTarget.magnitude < 5){
 			Gone = true;
 			dropped = false;
 			
@@ -146,6 +155,7 @@ public class Collectible : ColourBeing {
 			anim.Play(anim.GetClipByName("bColl_lose"), 0);
 		}
 		if (colour.White){
+			Dead = true;
 			anim.Play(anim.GetClipByName("wColl_lose"), 0);
 			anim.animationCompleteDelegate = GoneForever;
 			anim.CurrentClip.wrapMode = tk2dSpriteAnimationClip.WrapMode.Once;

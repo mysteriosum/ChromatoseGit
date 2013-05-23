@@ -30,4 +30,13 @@ public class Out : MonoBehaviour {
 		}
 		*/
 	}
+	
+	
+	void OnTriggerEnter(Collider other){
+		Npc npc = other.GetComponent<Npc>();
+		if (npc){
+			npc.transform.parent = null;
+			transform.parent.SendMessage("Exit", npc.gameObject);
+		}
+	}
 }
