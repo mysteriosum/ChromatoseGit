@@ -54,10 +54,13 @@ public class DangerBlob : ColourBeing {
 			
 			if (traj == Vector2.zero){
 				currentIndex ++;
-				anim.Play();
+				
 				if (currentIndex >= maxIndex){
 					currentIndex = 0;
 				}
+				
+				if (playAnimOnTurn)
+					anim.Play();
 				
 			}
 		move:

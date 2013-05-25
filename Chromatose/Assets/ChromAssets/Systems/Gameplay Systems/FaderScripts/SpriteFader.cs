@@ -6,6 +6,10 @@ public class SpriteFader : MonoBehaviour {
 	
 	public GameObject[] spritesIn;
 	public GameObject[] spritesOut;
+	
+	public bool unchanging = false;
+	
+	
 	private List<GameObject> _spritesIn = new List<GameObject>();
 	private List<GameObject> _spritesOut = new List<GameObject>();
 	
@@ -108,11 +112,13 @@ public class SpriteFader : MonoBehaviour {
 	}
 	
 	void Enter(GameObject go){
+		if (unchanging) return;
 		_spritesIn.Add(go);
 		_spritesOut.Remove(go);
 	}
 	
 	void Exit(GameObject go){
+		if (unchanging) return;
 		_spritesOut.Add(go);
 		_spritesIn.Remove(go);
 	}

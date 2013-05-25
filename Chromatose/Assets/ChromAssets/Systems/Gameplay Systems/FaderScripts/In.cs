@@ -23,6 +23,7 @@ public class In : MonoBehaviour {
 	void OnTriggerEnter(Collider other){
 		Npc npc = other.GetComponent<Npc>();
 		if (npc){
+			Debug.Log("Yeah let's get in!");
 			transform.parent.SendMessage("Enter", npc.gameObject);
 		}
 	}
