@@ -432,7 +432,6 @@ public class Avatar : ColourBeing
 		speedBoostAreas = new Rect[speedBoosts.Length];
 		int counter = 0;
 		foreach (GameObject sb in speedBoosts){
-			
 			List<float> xs = new List<float>();
 			List<float> ys = new List<float>();
 			float w;
@@ -532,10 +531,13 @@ public class Avatar : ColourBeing
 		foreach (Rect rect in speedBoostAreas){
 			
 			if (rect.Contains((Vector2)t.position)){
-				
+				//Debug.Log("Found my speed boost! number " + rectCounter);
+				//Debug.Log("The speed boost itself is called " + speedBoosts[rectCounter]);
 				foreach (Transform node in speedBoosts[rectCounter].GetComponentsInChildren<Transform>()){
+					if (node == speedBoosts[rectCounter].transform) continue;
 					if (Vector2.Distance((Vector2)t.position, (Vector2)node.position) < speedBoostDist){
 						detectedSB = true;
+						//Debug.Log("The one I found is " + node.name);
 					}
 				}
 			}
