@@ -87,11 +87,14 @@ public class Npc : ColourBeing {
 		private Transform parent;
 		private Vector2 offset = new Vector2(64, 25);
 		private float timer;
+		private GameObject myCollectible;
+		private Vector2 collectibleOffset = new Vector2(10, 10);
+		
+		private string collectibleBubbleName = "redBubble_veryHappy";
+		public string CollectibleBubbleName{ get { return collectibleBubbleName; } }
+		
 		private tk2dTextMesh myNumber;
 		private Vector3 digitOffset = new Vector3(10, 3, -2);
-		private GameObject myCollectible;
-		private string collectibleBubbleName = "redBubble_veryHappy";
-		private Vector2 collectibleOffset = new Vector2(10, 10);
 		private int myDigit = 0;
 		
 		public int Digit{
@@ -115,10 +118,7 @@ public class Npc : ColourBeing {
 			set{ spriteInfo.SetSprite(value); }
 		}
 		
-	
-					//constructors
-		
-		public SpeechBubble(Transform toFollow){
+		public SpeechBubble(Transform toFollow){  //constructor!
 			
 			go = new GameObject(toFollow.name + "Bubble");
 			parent = toFollow;
@@ -147,6 +147,7 @@ public class Npc : ColourBeing {
 				if (spriteInfo.CurrentSprite.name == collectibleBubbleName){
 					collectibleBubbleName = "";
 					myCollectible = GameObject.Instantiate(Resources.Load("pre_redCollectible"), t.position + (Vector3)collectibleOffset, Quaternion.identity) as GameObject;
+					parent.SendMessage("NoMoreCollectible");
 				}
 			}
 			t.position = parent.position + (Vector3)offset;
@@ -195,6 +196,9 @@ public class Npc : ColourBeing {
 	public bool hasShadowBG = false;
 	public int shadowSpriteIndex;
 	public bool hasRedCol = false;
+	
+	
+	private bool poopingCol = false;
 	
 	public Vector2 fuckOffReference = new Vector2(1, 1);
 	
@@ -323,12 +327,15 @@ public class Npc : ColourBeing {
 				target = null;
 				
 				breaking = false;
-				anim.Play(anim.GetClipByName("rNPC_redToGrey"), 0);
-				losingColour = true;
-				colour.r = initColour.r;
-							colour.r = initColour.r;
-							anim.animationCompleteDelegate = null;
+				if (!poopingCol){
+					
+					
+				}
 			}
+		}
+		
+		if (poopingCol){
+			goto move;
 		}
 		
 		if (stoppingForever){
@@ -459,6 +466,7 @@ public class Npc : ColourBeing {
 						closestNode = null;
 						inMotion = false;
 						breaking = true;
+						movement.SetVelocity(Vector2.zero);
 						myPath.Clear();
 						currentNode = 0;
 					}
@@ -673,6 +681,19 @@ public class Npc : ColourBeing {
 	
 	public void PoopCollectible(){
 		if (!hasRedCol) return;
-		myBubble.ShowBubbleFor("redBubble_veryHappy", 1f);
+		myBubble.ShowBubbleFor(myBubble.CollectibleBubbleName, 1f);
+		poopingCol = true;
+	}
+	
+	public void NoMoreCollectible(){
+		hasRedCol = false;
+		poopingCol = false;
+	}
+	
+	void BackToGrey(){
+		anim.Play(anim.GetClipByName("rNPC_redToGrey"), 0);
+		losingColour = true;
+		colour.r = initColour.r;
+		anim.animationCompleteDelegate = null;
 	}
 }
