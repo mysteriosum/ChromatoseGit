@@ -10,6 +10,11 @@ public class Buildable : Destructible {
 	
 	// Update is called once per frame
 	void Update () {
-	
+		Checks();
+	}
+	protected override void Checks(){
+		if (goingToDestroy){
+			Destruct();
+		}
 	}
 }

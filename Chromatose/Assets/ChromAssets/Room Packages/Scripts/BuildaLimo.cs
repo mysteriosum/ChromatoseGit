@@ -10,7 +10,7 @@ public class BuildaLimo : Buildable {
 	
 	// Update is called once per frame
 	void Update () {
-	
+		Checks();
 	}
 	
 	protected override void Setup(){
@@ -22,7 +22,8 @@ public class BuildaLimo : Buildable {
 		anim.animationCompleteDelegate = SendLimo;	
 	}
 	
-	protected override void Destroy(){
+	protected override void Destruct(){
+		goingToDestroy = false;
 		
 		poof.SetActive(true);
 		poof.renderer.enabled = false;

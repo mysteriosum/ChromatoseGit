@@ -67,7 +67,7 @@ public class Npc : ColourBeing {
 	
 											//vars about my animations and what they DO
 	private string greyToRed = "rNPC_greyToRed";
-	private string[] redFreakouts = new string[] {"rNPC_nervousColor", "rNPC_nervousPale"};
+	private string[] redFreakouts = new string[] {"rNPC_bounce", "rNPC_nervousPale"};
 	
 	//prolly gon' put some stuff here
 	
@@ -127,6 +127,7 @@ public class Npc : ColourBeing {
 			
 			r = go.renderer;
 			t = go.transform;
+			t.parent = parent;
 			GameObject numberObj = new GameObject(go.name + "Number");
 			myNumber = numberObj.AddComponent<tk2dTextMesh>();
 			myNumber.font = ChromatoseManager.manager.chromatoseFont;
@@ -150,7 +151,7 @@ public class Npc : ColourBeing {
 					parent.SendMessage("NoMoreCollectible");
 				}
 			}
-			t.position = parent.position + (Vector3)offset;
+			//t.position = parent.position + (Vector3)offset;
 			myNumber.transform.position = t.position + digitOffset;
 			
 		}
