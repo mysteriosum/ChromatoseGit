@@ -86,8 +86,8 @@ public class Destructible : MonoBehaviour {		//move sprite @ 15 frames or 0.5f s
 			c.enabled = false;
 		}
 		poof.SetActive(true);
-		poof.transform.position = transform.position;
-		poof.transform.rotation = transform.rotation;
+		poof.transform.position = transform.position - Vector3.forward * 2;
+		poof.transform.rotation = Quaternion.identity;
 		
 		anim.Play();
 		anim.CurrentClip.wrapMode = tk2dSpriteAnimationClip.WrapMode.Once;
@@ -137,6 +137,7 @@ public class Destructible : MonoBehaviour {		//move sprite @ 15 frames or 0.5f s
 			}
 			counter ++;
 		}
+		Debug.Log(newNewName);
 		if (messageToSendNpcsOnPoof != ""){
 			foreach (Npc npc in myNPCs){
 				npc.SendMessage(messageToSendNpcsOnPoof);

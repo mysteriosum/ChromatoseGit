@@ -638,4 +638,23 @@ public abstract class tk2dBaseSprite : MonoBehaviour, tk2dRuntime.ISpriteCollect
 		tk2dBaseSprite.AddComponent<T>(spriteGo, data, 0);
 		return spriteGo;
 	}
+	//haha lawl I'm adding my own functions
+	public void NextFrame(){
+		string newName = CurrentSprite.name;
+		string newNewName = "";
+		int counter = 0;
+		foreach (char c in newName){
+			if (counter < newName.Length - 1){
+				newNewName += c;
+				
+			}
+			else{
+				newNewName += "2";
+			}
+			counter ++;
+		}
+		SetSprite(GetSpriteIdByName(newNewName));
+	}
+	
 }
+

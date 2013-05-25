@@ -24,7 +24,7 @@ public class ColourWell : ColourBeing {
 	
 	void OnTriggerStay(Collider collider){
 		
-		ColourBeing other = collider.gameObject.GetComponent<ColourBeing>();
+		Avatar other = collider.gameObject.GetComponent<Avatar>();
 		if (!other) return;
 		other.AddColour(colourToAdd, giveRate);
 		
