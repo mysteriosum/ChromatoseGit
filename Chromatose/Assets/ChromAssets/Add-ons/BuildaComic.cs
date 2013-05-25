@@ -12,10 +12,11 @@ public class BuildaComic : Buildable {
 	
 	// Update is called once per frame
 	void Update () {
-	
+		Checks();
 	}
 	
-	protected override void Destroy(){
+	protected override void Destruct(){
+		goingToDestroy = false;
 		
 		poof.SetActive(true);
 		poof.transform.position = transform.position;

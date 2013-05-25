@@ -14,11 +14,18 @@ public class Destructible : MonoBehaviour {		//move sprite @ 15 frames or 0.5f s
 	public Transform myNode;
 	public string specificName = "";
 	public bool showNpcsNeeded = true;
+	public Vector2 poofOffset = new Vector2(0, 0);
+	
 	public int NPCsNeeded{
 		get{ return npcsToTrigger - myNPCs.Count;}
 		
 	}
 	public string messageToSendNpcsOnPoof = "";
+	
+	
+	protected bool goingToDestroy = false;
+	protected int avatarMinDist = 400;
+	protected Transform avatar;
 	
 	[System.SerializableAttribute]
 	public class TargetMessageReceivers{
@@ -66,10 +73,21 @@ public class Destructible : MonoBehaviour {		//move sprite @ 15 frames or 0.5f s
 	
 	// Update is called once per frame
 	void Update () {
+		Checks();
+	}
 	
+	protected virtual void Checks(){
+		float dist = Vector3.Distance(avatar.position, myNode.position);
+		if (goingToDestroy && dist < avatarMinDist){
+			Destruct();
+		}
+		else if(goingToDestroy){
+			Debug.Log("avatar is " + dist + " away");
+		}
 	}
 	
 	protected virtual void Setup(){
+		avatar = GameObject.Find("Avatar").transform;
 		spriteInfo = GetComponent<tk2dSprite>();
 		poof = Instantiate(poof) as GameObject;
 		poof.SetActive(false);
@@ -78,15 +96,16 @@ public class Destructible : MonoBehaviour {		//move sprite @ 15 frames or 0.5f s
 		anim.animationCompleteDelegate = Done;	
 	}
 	
-	protected virtual void Destroy(){
+	protected virtual void Destruct(){
 		
+		goingToDestroy = false;
 		children = GetComponentsInChildren<Collider>(true);
 		
 		foreach (Collider c in children){
 			c.enabled = false;
 		}
 		poof.SetActive(true);
-		poof.transform.position = transform.position - Vector3.forward * 2;
+		poof.transform.position = transform.position - Vector3.forward * 2 + (Vector3) poofOffset;
 		poof.transform.rotation = Quaternion.identity;
 		
 		anim.Play();
@@ -106,7 +125,7 @@ public class Destructible : MonoBehaviour {		//move sprite @ 15 frames or 0.5f s
 		}
 		
 		if (curNPCs >= npcsToTrigger){
-			Destroy();
+			goingToDestroy = true;
 		}
 		return true;
 	}
@@ -154,5 +173,8 @@ public class Destructible : MonoBehaviour {		//move sprite @ 15 frames or 0.5f s
 		gameObject.RemoveComponent(this.GetType());
 	}
 	
-	
+	void OnDrawGizmosSelected(){
+		Gizmos.color = Color.yellow;
+		Gizmos.DrawWireSphere(transform.position + (Vector3) poofOffset, 10);
+	}
 }
