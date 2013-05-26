@@ -128,6 +128,7 @@ public class Npc : ColourBeing {
 			r = go.renderer;
 			t = go.transform;
 			t.parent = parent;
+			t.localPosition = (Vector3) offset;
 			GameObject numberObj = new GameObject(go.name + "Number");
 			myNumber = numberObj.AddComponent<tk2dTextMesh>();
 			myNumber.font = ChromatoseManager.manager.chromatoseFont;
@@ -148,7 +149,8 @@ public class Npc : ColourBeing {
 				if (spriteInfo.CurrentSprite.name == collectibleBubbleName){
 					collectibleBubbleName = "";
 					myCollectible = GameObject.Instantiate(Resources.Load("pre_redCollectible"), t.position + (Vector3)collectibleOffset, Quaternion.identity) as GameObject;
-					parent.SendMessage("NoMoreCollectible");
+					Debug.Log ("Here's some stuff");
+					parent.GetComponent<Npc>().NoMoreCollectible();
 				}
 			}
 			//t.position = parent.position + (Vector3)offset;
@@ -335,6 +337,7 @@ public class Npc : ColourBeing {
 				miscPart.renderer.enabled = false;
 				
 				breaking = false;
+				Debug.Log("turning red = " + turningRed);
 				if (!poopingCol){
 					
 					
@@ -437,7 +440,7 @@ public class Npc : ColourBeing {
 		//<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>
 	red:
 		if (colour.r > anarchyConsiderMin && !turningRed){		//If I'm red enough to consider fighting
-			
+			Debug.Log("SHould be checking...");
 			if (target == null || target == avatar){  //find a target, and the nearest one, ideally
 				GameObject[] potentials = GameObject.FindGameObjectsWithTag("destructible");
 				float closestDist = Mathf.Infinity;
@@ -597,7 +600,7 @@ public class Npc : ColourBeing {
 			}
 		}
 		
-		if (beginBySaying || alwaysSayWhenIdle && movement.GetVelocity().magnitude < 1){
+		if ((beginBySaying || alwaysSayWhenIdle) && movement.GetVelocity().magnitude < 1 && !poopingCol){
 			Vector3 diff = avatar.position - t.position;
 			if (diff.magnitude < initialSpeechRange){
 				myBubble.Showing = true;
