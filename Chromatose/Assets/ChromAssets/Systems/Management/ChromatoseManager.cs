@@ -8,7 +8,7 @@ public class ChromatoseManager : MonoBehaviour {
 	public static ChromatoseManager manager; 
 	
 	
-	private class CollectiblesManager{
+	public class CollectiblesManager{
 		public List<Collectible> w = new List<Collectible>();
 		public List<Collectible> r = new List<Collectible>();
 		public List<Collectible> g = new List<Collectible>();
@@ -31,7 +31,7 @@ public class ChromatoseManager : MonoBehaviour {
 	private int curRoom;
 	
 	private CollectiblesManager collectibles = new CollectiblesManager();
-	
+	public static CollectiblesManager statCols;
 	
 	public GameObject comicCompleteAnim;
 	public GameObject oneShotSpritePrefab;
@@ -55,15 +55,30 @@ public class ChromatoseManager : MonoBehaviour {
 		get{ return collectibles.w; }
 	}
 	
-	
+	void OnDestroy(){
+		Debug.Log ("Destroying" + name) ;
+	}
 	
 	
 	// Use this for initialization
 	void Awake () {
-		manager = this;
+		if (statCols == null){
+			statCols = collectibles;
+		}
+		else{
+			collectibles = statCols;
+		}
+		
+			manager = this;
 			//comic frame dealings: TODO PUT IN ONLEVELWASLOADED
 		UpdateRoomStats();
 	}
+	
+	void Start(){
+		DontDestroyOnLoad(manager);
+		Debug.Log(name + " should not be destroyed");
+	}
+	
 	
 	void OnLevelWasLoaded(){
 		

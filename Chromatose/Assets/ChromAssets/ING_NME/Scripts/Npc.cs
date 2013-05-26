@@ -128,6 +128,7 @@ public class Npc : ColourBeing {
 			r = go.renderer;
 			t = go.transform;
 			t.parent = parent;
+			t.localPosition = (Vector3) offset;
 			GameObject numberObj = new GameObject(go.name + "Number");
 			myNumber = numberObj.AddComponent<tk2dTextMesh>();
 			myNumber.font = ChromatoseManager.manager.chromatoseFont;
@@ -148,7 +149,8 @@ public class Npc : ColourBeing {
 				if (spriteInfo.CurrentSprite.name == collectibleBubbleName){
 					collectibleBubbleName = "";
 					myCollectible = GameObject.Instantiate(Resources.Load("pre_redCollectible"), t.position + (Vector3)collectibleOffset, Quaternion.identity) as GameObject;
-					parent.SendMessage("NoMoreCollectible");
+					Debug.Log ("Here's some stuff");
+					parent.GetComponent<Npc>().NoMoreCollectible();
 				}
 			}
 			//t.position = parent.position + (Vector3)offset;
@@ -186,7 +188,8 @@ public class Npc : ColourBeing {
 	private string destroyName = "redBubble_happy";
 	private string blueNeedNPCs = "blueBubble_x";
 	private string redNeedNPCs = "redBubble_x";
-	
+	private Vector3 followPartOffset = new Vector3(27, 17, -2);
+	private Vector3 goalPartOffset = Vector3.zero;
 												//ALL THE PUBLIC VARIABLES
 	public int detectRadius = 250;
 	public bool beginBySaying = false;
@@ -271,7 +274,7 @@ public class Npc : ColourBeing {
 		tk2dAnimatedSprite.AddComponent<tk2dAnimatedSprite>(miscPart, anim.Collection, 0);
 		miscPartAnim = miscPart.GetComponent<tk2dAnimatedSprite>();
 		miscPart.SetParent(gameObject);
-		miscPart.transform.position += new Vector3(27, 17, -2);
+		miscPart.transform.position += followPartOffset;
 		miscPartAnim.anim = anim.anim;
 		miscPartAnim.Play(followName);
 		miscPartAnim.renderer.enabled = false;
@@ -297,16 +300,20 @@ public class Npc : ColourBeing {
 		
 		if (building){
 			if (toBuild){
+				miscPart.renderer.enabled = true;
+				miscPartAnim.Play("partNPC_onGoal");
+				miscPart.transform.position = t.position + goalPartOffset;
 				if (announceOtherNPCsRequired){
 					myBubble.ShowBubbleFor(blueNeedNPCs, -1f, toBuild.NPCsNeeded);
 				}
-				myBubble.Showing = true;
+				//myBubble.Showing = true;
 				
 				goto update;
 			}
 			else{
 				building = false;
 				
+				miscPart.renderer.enabled = false;
 			}
 			
 		}
@@ -314,6 +321,9 @@ public class Npc : ColourBeing {
 		if (breaking){
 			if (toDestroy){
 				
+				miscPart.renderer.enabled = true;
+				miscPartAnim.Play("partNPC_onGoal");
+				miscPart.transform.position = t.position + goalPartOffset;
 				if (announceOtherNPCsRequired){
 					myBubble.ShowBubbleFor(redNeedNPCs, 0.5f, toDestroy.NPCsNeeded);
 				}
@@ -324,8 +334,10 @@ public class Npc : ColourBeing {
 				myPath.Clear();
 				inMotion = false;
 				target = null;
+				miscPart.renderer.enabled = false;
 				
 				breaking = false;
+				Debug.Log("turning red = " + turningRed);
 				if (!poopingCol){
 					
 					
@@ -372,6 +384,8 @@ public class Npc : ColourBeing {
 					){
 					inMotion = true;
 					showingMiscPart = true;
+					miscPartAnim.Play(followName);
+					miscPart.transform.position = t.position + followPartOffset;
 					miscPart.renderer.enabled = true;
 					if (!saidFollow){
 						beginBySaying = false;
@@ -426,7 +440,7 @@ public class Npc : ColourBeing {
 		//<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>
 	red:
 		if (colour.r > anarchyConsiderMin && !turningRed){		//If I'm red enough to consider fighting
-			
+			Debug.Log("SHould be checking...");
 			if (target == null || target == avatar){  //find a target, and the nearest one, ideally
 				GameObject[] potentials = GameObject.FindGameObjectsWithTag("destructible");
 				float closestDist = Mathf.Infinity;
@@ -586,7 +600,7 @@ public class Npc : ColourBeing {
 			}
 		}
 		
-		if (beginBySaying || alwaysSayWhenIdle && movement.GetVelocity().magnitude < 1){
+		if ((beginBySaying || alwaysSayWhenIdle) && movement.GetVelocity().magnitude < 1 && !poopingCol){
 			Vector3 diff = avatar.position - t.position;
 			if (diff.magnitude < initialSpeechRange){
 				myBubble.Showing = true;

@@ -346,7 +346,8 @@ public class Avatar : ColourBeing
 				fadeAfter -= Time.deltaTime;
 			}
 			else{
-				spriteInfo.color = new Color(spriteInfo.color.r, spriteInfo.color.g, spriteInfo.color.b, spriteInfo.color.a - fadeRate);
+				Color newCol = new Color(spriteInfo.color.r, spriteInfo.color.g, spriteInfo.color.b, spriteInfo.color.a - fadeRate);
+				spriteInfo.color = newCol;
 				if (spriteInfo.color.a <= 0){
 					GameObject.Destroy(go);
 					return true;
