@@ -71,10 +71,10 @@ public class Npc : ColourBeing {
 	
 	//prolly gon' put some stuff here
 	
-	private GameObject shadow;
-	private tk2dAnimatedSprite shadowAnim;
+	private GameObject miscPart;
+	private tk2dAnimatedSprite miscPartAnim;
 	
-	private bool _hasShadow;
+	private bool showingMiscPart;
 	private bool turningRed = false;
 	
 	
@@ -182,7 +182,7 @@ public class Npc : ColourBeing {
 	
 	private Npc.SpeechBubble myBubble;
 												//PRIVATE VARS TO DO WITH THE BUBBLE
-	private string followName = "blueBubble_avatar";
+	private string followName = "partNPC_following";
 	private string destroyName = "redBubble_happy";
 	private string blueNeedNPCs = "blueBubble_x";
 	private string redNeedNPCs = "redBubble_x";
@@ -194,7 +194,7 @@ public class Npc : ColourBeing {
 	public int initialSpeechRange = 400;
 	public string bubbleSpriteName = "";
 	public bool waitForMessage = false;
-	public bool hasShadowBG = false;
+	//public bool hasShadowBG = false;
 	public int shadowSpriteIndex;
 	public bool hasRedCol = false;
 	
@@ -266,17 +266,15 @@ public class Npc : ColourBeing {
 			anim.Play(animOffset);
 		}
 		
-		//Do I have a shadow? instantiate it 		spriteInfo.GetSpriteIdByName("wNPC_bgBounce")
-		if (hasShadowBG){
-			_hasShadow = true;
-			shadow = new GameObject(name + "Shadow");
-			tk2dAnimatedSprite.AddComponent<tk2dAnimatedSprite>(shadow, anim.Collection, 10);
-			shadowAnim = shadow.GetComponent<tk2dAnimatedSprite>();
-			string newAnimName = anim.CurrentClip.name + "BG";
-			shadowAnim.Play(anim.GetClipByName(newAnimName), animOffset);
-			shadowAnim.Build();
-		
-		}
+		//Particle:  instantiate it 
+		miscPart = new GameObject(name + "Shadow");
+		tk2dAnimatedSprite.AddComponent<tk2dAnimatedSprite>(miscPart, anim.Collection, 0);
+		miscPartAnim = miscPart.GetComponent<tk2dAnimatedSprite>();
+		miscPart.SetParent(gameObject);
+		miscPart.transform.position += new Vector3(27, 17, -2);
+		miscPartAnim.anim = anim.anim;
+		miscPartAnim.Play(followName);
+		miscPartAnim.renderer.enabled = false;
 		
 		
 		
@@ -370,20 +368,23 @@ public class Npc : ColourBeing {
 					cantSeeTimer = 0f;
 				}
 				if 	(diff.magnitude < detectRadius && avatar.GetComponent<Avatar>().colour.Blue
-					&& !inMotion && cantSeeTimer <= cantSeeTimer
+					 && cantSeeTimer <= cantSeeTiming && !cantSee
 					){
 					inMotion = true;
+					showingMiscPart = true;
+					miscPart.renderer.enabled = true;
 					if (!saidFollow){
 						beginBySaying = false;
-						myBubble.ShowBubbleFor(followName, 4f);
+						//myBubble.ShowBubbleFor(followName, 4f);
 						saidFollow = true;
 					}
 				}
 				else if(inMotion){
+					miscPart.renderer.enabled = false;
+					Debug.Log("Here");
 					inMotion = false;
 					cantSeeTimer = 0f;
 				}
-				
 				
 			}
 			checkTimer += Time.deltaTime;
@@ -413,7 +414,8 @@ public class Npc : ColourBeing {
 					building = true;
 					target = null;
 					closestNode = null;
-					
+					Debug.Log("tHere");
+					miscPart.renderer.enabled = false;
 				}
 			}
 				
@@ -565,12 +567,14 @@ public class Npc : ColourBeing {
 							//Was I red and now I'm not?
 		
 		
-							//this is for IF I HAVE A SHADOW or whatever
-		if (_hasShadow){
-			shadow.transform.position = t.position + Vector3.forward;
-			shadow.transform.rotation = t.rotation;
-			shadowAnim.color = spriteInfo.color;
-		}
+							//this is for if I'm showing my particles
+		/*
+		if (showingMiscPart){
+			miscPart.renderer.enabled = true;
+			miscPart.transform.position = t.position + Vector3.forward;
+			miscPart.transform.rotation = t.rotation;
+			miscPartAnim.color = spriteInfo.color;
+		}*/
 		
 							//Am I getting green? ...what is this for again? Hmm.... 
 		
