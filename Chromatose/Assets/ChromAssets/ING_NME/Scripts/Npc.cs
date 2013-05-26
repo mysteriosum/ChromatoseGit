@@ -186,7 +186,8 @@ public class Npc : ColourBeing {
 	private string destroyName = "redBubble_happy";
 	private string blueNeedNPCs = "blueBubble_x";
 	private string redNeedNPCs = "redBubble_x";
-	
+	private Vector3 followPartOffset = new Vector3(27, 17, -2);
+	private Vector3 goalPartOffset = Vector3.zero;
 												//ALL THE PUBLIC VARIABLES
 	public int detectRadius = 250;
 	public bool beginBySaying = false;
@@ -271,7 +272,7 @@ public class Npc : ColourBeing {
 		tk2dAnimatedSprite.AddComponent<tk2dAnimatedSprite>(miscPart, anim.Collection, 0);
 		miscPartAnim = miscPart.GetComponent<tk2dAnimatedSprite>();
 		miscPart.SetParent(gameObject);
-		miscPart.transform.position += new Vector3(27, 17, -2);
+		miscPart.transform.position += followPartOffset;
 		miscPartAnim.anim = anim.anim;
 		miscPartAnim.Play(followName);
 		miscPartAnim.renderer.enabled = false;
@@ -297,16 +298,20 @@ public class Npc : ColourBeing {
 		
 		if (building){
 			if (toBuild){
+				miscPart.renderer.enabled = true;
+				miscPartAnim.Play("partNPC_onGoal");
+				miscPart.transform.position = t.position + goalPartOffset;
 				if (announceOtherNPCsRequired){
 					myBubble.ShowBubbleFor(blueNeedNPCs, -1f, toBuild.NPCsNeeded);
 				}
-				myBubble.Showing = true;
+				//myBubble.Showing = true;
 				
 				goto update;
 			}
 			else{
 				building = false;
 				
+				miscPart.renderer.enabled = false;
 			}
 			
 		}
@@ -314,6 +319,9 @@ public class Npc : ColourBeing {
 		if (breaking){
 			if (toDestroy){
 				
+				miscPart.renderer.enabled = true;
+				miscPartAnim.Play("partNPC_onGoal");
+				miscPart.transform.position = t.position + goalPartOffset;
 				if (announceOtherNPCsRequired){
 					myBubble.ShowBubbleFor(redNeedNPCs, 0.5f, toDestroy.NPCsNeeded);
 				}
@@ -324,6 +332,7 @@ public class Npc : ColourBeing {
 				myPath.Clear();
 				inMotion = false;
 				target = null;
+				miscPart.renderer.enabled = false;
 				
 				breaking = false;
 				if (!poopingCol){
@@ -372,6 +381,8 @@ public class Npc : ColourBeing {
 					){
 					inMotion = true;
 					showingMiscPart = true;
+					miscPartAnim.Play(followName);
+					miscPart.transform.position = t.position + followPartOffset;
 					miscPart.renderer.enabled = true;
 					if (!saidFollow){
 						beginBySaying = false;
