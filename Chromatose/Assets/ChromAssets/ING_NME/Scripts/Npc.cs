@@ -440,7 +440,6 @@ public class Npc : ColourBeing {
 		//<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>
 	red:
 		if (colour.r > anarchyConsiderMin && !turningRed){		//If I'm red enough to consider fighting
-			Debug.Log("SHould be checking...");
 			if (target == null || target == avatar){  //find a target, and the nearest one, ideally
 				GameObject[] potentials = GameObject.FindGameObjectsWithTag("destructible");
 				float closestDist = Mathf.Infinity;
