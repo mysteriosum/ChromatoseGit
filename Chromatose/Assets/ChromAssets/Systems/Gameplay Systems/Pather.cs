@@ -187,10 +187,9 @@ public class Pather{		//Pather is the class that helps me find the path!
 	}
 	
 	public List<Transform> NewPath(Transform begin, Transform end){
-	init:
+		
 		List<Node> openList = new List<Node>();
 		List<Node> closedList = new List<Node>();
-		List<Node> toAdd = new List<Node>();
 		List<Transform> thePath = new List<Transform>();
 		int smallestF;
 		int mask = 1 << LayerMask.NameToLayer("collision");		//for teh linecasts

@@ -57,7 +57,7 @@ public class TollBooth : MonoBehaviour {
 		
 		if (triggered) return;
 		
-		string clipName = indicator.CurrentClip == null? "" : indicator.CurrentClip.name;
+		//string clipName = indicator.CurrentClip == null? "" : indicator.CurrentClip.name;
 		float dist = Vector3.Distance(avatarT.position, transform.position);
 		if (dist < avatarCloseDist && isIn){
 			StartOut();

@@ -29,7 +29,6 @@ public class Avatar : ColourBeing
 	
 	public tk2dSpriteAnimation partAnimations;
 	
-	private RefillColourParticle refillPart;
 	private LoseAllColourParticle loseAllColourPart;
 	private List<MovementLines> accelParts = new List<MovementLines>();
 	private TurboParticle turboPart = null;
@@ -93,7 +92,6 @@ public class Avatar : ColourBeing
 	private Rect[] speedBoostAreas;
 	private bool canControl = true;
 	private int speedBoostDist = 55;
-	private float maxSpeedMod = 2.0f;
 	private float speedBoostMod = 2.0f;
 	private float speedBoostCur = 1f;
 	private int speedBoostCounter = 0;
@@ -106,17 +104,10 @@ public class Avatar : ColourBeing
 	
 	[System.NonSerializedAttribute]			//my transform and renderer and material info
 	public Transform t;
-	private Renderer r;
-	private Material mat;
-	private Shader s;
-	
 	
 	private GameObject outline;				//my after-image (outline) info (and refill)
 	private GameObject outlinePointer;
-	private string outlineName = "Player1";
-	private string outlinePointerName = "Player6";
 	private int teleportCost = 2;
-	private int refillCost = 5;
 	private bool hasOutline = false;
 	
 	private GameObject[] allTheFaders;
@@ -140,16 +131,13 @@ public class Avatar : ColourBeing
 		GameObject go;
 		Transform t;
 		tk2dAnimatedSprite spriteInfo;
-		Transform avatarT;
 		
-		List<Avatar.MovementLines> theList;
 		
-		public MovementLines(Transform avatarT, Vector3 direction, float speedModifier, tk2dSpriteCollectionData spriteData, tk2dSpriteAnimation anim, List<Avatar.MovementLines> theList){
+		public MovementLines(Transform avatarT, Vector3 direction, float speedModifier, tk2dSpriteCollectionData spriteData, tk2dSpriteAnimation anim){
 			velocity = direction.normalized * baseSpeed * speedModifier * Time.deltaTime;
 			go = new GameObject("MovementLine");
 			t = go.transform;
-			this.avatarT = avatarT;
-			t.position = avatarT.position + direction.normalized * offset;
+			t.position = avatarT.position + direction.normalized * offset + Vector3.forward;
 			
 			t.rotation = avatarT.rotation;
 			tk2dAnimatedSprite.AddComponent<tk2dAnimatedSprite>(go, spriteData, "part_avatarAccel0001");
@@ -158,7 +146,6 @@ public class Avatar : ColourBeing
 			spriteInfo.clipId = spriteInfo.GetClipIdByName("clip_avatarAccel");
 			spriteInfo.Play();
 			spriteInfo.CurrentClip.wrapMode = tk2dSpriteAnimationClip.WrapMode.Loop;
-			this.theList = theList;
 		}
 		
 		public bool Main(){
@@ -210,7 +197,6 @@ public class Avatar : ColourBeing
 		List<GameObject> gos = new List<GameObject>();
 		Transform target;
 		Transform origin;
-		Vector3 velocity;
 		//tk2dAnimatedSprite spriteInfo;
 		int shotsLeft = 4;
 		float timer = 0f;
@@ -223,7 +209,6 @@ public class Avatar : ColourBeing
 			this.colData = colData;
 			this.target = target;
 			this.origin = origin;
-			this.velocity = (target.position - origin.position).normalized * speed;
 		}
 		
 		public bool Main(){
@@ -264,7 +249,7 @@ public class Avatar : ColourBeing
 				spriteInfo.color = Color.red;
 		}
 	}
-	
+					//NOT BEING USED ATM
 	private class RefillColourParticle {
 		List<GameObject> gos = new List<GameObject>();
 		Transform avatarT;
@@ -320,7 +305,6 @@ public class Avatar : ColourBeing
 	private class LoseAllColourParticle {
 		GameObject go = new GameObject("LoseColourPart");
 		Transform t;
-		Transform avatarT;
 		tk2dAnimatedSprite spriteInfo;
 		int offset = 17;
 		float fadeRate = 0.05f;
@@ -328,7 +312,6 @@ public class Avatar : ColourBeing
 		
 		public LoseAllColourParticle(tk2dSpriteCollectionData colData, tk2dSpriteAnimation anim, Transform avatarT, Color blendColor){
 			t = go.transform;
-			this.avatarT = avatarT;
 			t.position = avatarT.position + (-avatarT.right) * offset + (Vector3)Random.insideUnitCircle * offset;
 			
 			
@@ -360,7 +343,6 @@ public class Avatar : ColourBeing
 	private class LoseColourParticle {
 		GameObject go = new GameObject("LoseColourPart");
 		Transform t;
-		Transform avatarT;
 		tk2dSprite spriteInfo;
 		int offset = 17;
 		float fadeRate = 0.05f;
@@ -370,7 +352,6 @@ public class Avatar : ColourBeing
 		
 		public LoseColourParticle(tk2dSpriteCollectionData colData, Transform avatarT, Color blendColor){
 			t = go.transform;
-			this.avatarT = avatarT;
 			t.position = avatarT.position + (-avatarT.right) * offset + (Vector3)Random.insideUnitCircle * offset + Vector3.forward;
 			
 			
@@ -414,14 +395,10 @@ public class Avatar : ColourBeing
 			angles[i] = i * 22.5f;
 		}
 		t = this.transform;
-		r = this.renderer;
-		mat = this.renderer.materials[0];
-		s = mat.shader;
 												//initializing my particle objects, as necessary
 		spriteInfo = GetComponent<tk2dSprite>();
 		turboPart = new TurboParticle(particleCollection, partAnimations, t);
 		accelPartTiming = basicAccel * Time.deltaTime;
-		refillPart = new RefillColourParticle(particleCollection, partAnimations, t);
 		
 		/*
 		outlinePointer = new GameObject("OutlinePointer");		//make my outline pointer thing	TODO remove this and other references to it. Martine hates it a lot... <_<
@@ -435,8 +412,6 @@ public class Avatar : ColourBeing
 		foreach (GameObject sb in speedBoosts){
 			List<float> xs = new List<float>();
 			List<float> ys = new List<float>();
-			float w;
-			float h;
 			Transform[] nodes = sb.GetAllComponentsInChildren<Transform>();
 			foreach (Transform n in nodes){
 				xs.Add(n.transform.position.x);
@@ -588,11 +563,7 @@ public class Avatar : ColourBeing
 			
 			getSpace = Input.GetKeyDown(KeyCode.Space);
 			if (getSpace){
-				bool enoughCols = ChromatoseManager.manager.GetCollectibles(Couleur.white) >= 5;
-				if (!enoughCols){
-					getSpace = false;
-					Debug.Log("Not enough collectibles for refill!"); 			//TODO: Make this into a real function! Like an anim or something
-				}
+				
 			}
 				
 		}
@@ -672,20 +643,7 @@ public class Avatar : ColourBeing
 					//Do I refill my colour? =O
 		
 		if (getSpace && !colour.White){
-			if (colour.r > colour.g && colour.r > colour.b){
-				colour.r = 255;
-				ChromatoseManager.manager.RemoveCollectibles(Couleur.white, refillCost, t.position);
-			}
-			if (colour.b > colour.g && colour.b > colour.r){
-				colour.b = 255;
-				ChromatoseManager.manager.RemoveCollectibles(Couleur.white, refillCost, t.position);
-			}
-			if (colour.g > colour.r && colour.r > colour.b){
-				colour.g = 255;
-				ChromatoseManager.manager.RemoveCollectibles(Couleur.white, refillCost, t.position);
-			}
 			
-			refillPart.Emit(partColor);
 		}
 		
 					//Update my little pointer man!  TODO put this guy at the edge of the screen if the shadow is off-screen
@@ -712,7 +670,7 @@ public class Avatar : ColourBeing
 			accelPartTimer += Time.deltaTime;
 			if (accelPartTimer >= accelPartTiming){
 				//accelParts.Add(new MovementLines())
-				accelParts.Add(new MovementLines(t,-t.right, 1f, particleCollection, partAnimations, accelParts));
+				accelParts.Add(new MovementLines(t,-t.right, 1f, particleCollection, partAnimations));
 				accelPartTimer = 0;
 				accelPartTiming = velocity.magnitude *accelPartTimingBase;
 			}
@@ -753,7 +711,7 @@ public class Avatar : ColourBeing
 				loseAllColourPart = null;
 			}
 		}
-		GiveColourParticle giveToRemove = null;
+		
 		foreach (GiveColourParticle part in giveColourParts){
 			part.Main();
 		}

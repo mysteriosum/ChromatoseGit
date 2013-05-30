@@ -11,6 +11,8 @@ abstract public class ColourBeing : MonoBehaviour {		//base class for all living
 	protected Colour tempColour = new Colour(-1, -1, -1);
 	protected tk2dAnimatedSprite anim;
 	
+	protected ChromHUD hud;
+	
 	[System.SerializableAttribute]
 	public class Colour{
 		

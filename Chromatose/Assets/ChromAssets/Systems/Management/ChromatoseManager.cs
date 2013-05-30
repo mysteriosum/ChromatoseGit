@@ -6,6 +6,7 @@ public class ChromatoseManager : MonoBehaviour {
 	private Avatar avatar;
 	private AvatarPointer avatarP;
 	public static ChromatoseManager manager; 
+	public ChromHUD hud;
 	
 	
 	public class CollectiblesManager{
@@ -55,10 +56,6 @@ public class ChromatoseManager : MonoBehaviour {
 		get{ return collectibles.w; }
 	}
 	
-	void OnDestroy(){
-		Debug.Log ("Destroying" + name) ;
-	}
-	
 	
 	// Use this for initialization
 	void Awake () {
@@ -69,6 +66,10 @@ public class ChromatoseManager : MonoBehaviour {
 			collectibles = statCols;
 		}
 		
+		if (hud == null){
+			hud = new ChromHUD();
+		}
+		
 			manager = this;
 			//comic frame dealings: TODO PUT IN ONLEVELWASLOADED
 		UpdateRoomStats();
@@ -76,7 +77,7 @@ public class ChromatoseManager : MonoBehaviour {
 	
 	void Start(){
 		DontDestroyOnLoad(manager);
-		Debug.Log(name + " should not be destroyed");
+		
 	}
 	
 	
@@ -142,7 +143,12 @@ public class ChromatoseManager : MonoBehaviour {
 		if (Input.GetKeyDown(KeyCode.Escape)){
 			Application.Quit();
 		}
+		
 	
+	}
+	
+	void LateUpdate(){
+		hud.UpdateHUD();
 	}
 	
 	public void AddCollectible(Collectible col){
@@ -205,7 +211,7 @@ public class ChromatoseManager : MonoBehaviour {
 	public void GrabHeldWhiteCols(){
 		foreach(Collectible col in collectibles.held){
 			if (!col.colour.White){
-				Debug.Log("Turns out this one's not white...");
+				Debug.LogWarning("Turns out this one's not white...");
 				continue;
 			}
 			collectibles.w.Add(col);
@@ -236,7 +242,7 @@ public class ChromatoseManager : MonoBehaviour {
 	
 	public void JettisonCollectibles(List<Collectible> list, int no, Vector3 pos){
 		for (int i = 0; i < no; i ++){
-			Debug.Log("Jettisonning " + i.ToString() + " cols from JettisonCollectibles in manager");
+			
 			Collectible inQuestion = list[list.Count - 1];
 			roomStats[Application.loadedLevel].consumedCollectibles.Add(inQuestion);
 			inQuestion.Trigger();
@@ -247,6 +253,9 @@ public class ChromatoseManager : MonoBehaviour {
 	
 	void OnGUI(){
 		
+				//UPDATE HUD
+		
+				//FOR COMICS
 		if (inComic){
 			
 			Rect backButtonArea = new Rect(48, Screen.height - 96, backButton.width, backButton.height);
@@ -256,14 +265,19 @@ public class ChromatoseManager : MonoBehaviour {
 				comicTransition.Return();
 			}
 		}
-		else{
+		else{		//TODO MAKE THIS NOT STUPID AND UGLY! (ie delete it and handle this stuff in the hud draw thing guy)
 			
 			GUI.TextArea(new Rect(Screen.width - 136, 8, 128, 80), "Collectibles"
 																+ "\nR = " + collectibles.r.Count
 																+ "\nG = " + collectibles.g.Count 
 																+ "\nB = " + collectibles.b.Count
 																+ "\nW = " + collectibles.w.Count);
+			float x = Screen.width;
+			float y = Screen.height;
+			GUI.TextArea(new Rect(0, 0, 128, 64), "Resolution: " + x.ToString () + " x " + y.ToString());
 		}
+		
+		hud.Draw();
 	}
 	
 	
