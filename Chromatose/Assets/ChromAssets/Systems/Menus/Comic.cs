@@ -65,6 +65,7 @@ public class Comic : MonoBehaviour {
 			Debug.Log("HERE!");
 			startPos = t.position;
 			bg.RemoveFromSlot(currentSlot);
+		
 		}
 		
 		if (beingDragged){
