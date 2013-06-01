@@ -10,21 +10,14 @@ public class Destructible : MonoBehaviour {		//move sprite @ 15 frames or 0.5f s
 	public GameObject poof;
 	
 	
-	public int npcsToTrigger = 1;
 	public Transform myNode;
 	public string specificName = "";
-	public bool showNpcsNeeded = true;
-	public Vector2 poofOffset = new Vector2(0, 0);
 	
-	public int NPCsNeeded{
-		get{ return npcsToTrigger - myNPCs.Count;}
-		
-	}
-	public string messageToSendNpcsOnPoof = "";
+	public Vector2 poofOffset = new Vector2(0, 0);
 	
 	
 	protected bool goingToDestroy = false;
-	protected int avatarMinDist = 400;
+	protected int avatarMinDist = 85;
 	protected Transform avatar;
 	
 	[System.SerializableAttribute]
@@ -59,11 +52,7 @@ public class Destructible : MonoBehaviour {		//move sprite @ 15 frames or 0.5f s
 	
 	
 	
-	protected List<Npc> myNPCs = new List<Npc>();
-	
-	
 	Collider[] children = new Collider[2];
-	int curNPCs = 0;
 	
 	// Use this for initialization
 	void Start () {
@@ -90,12 +79,11 @@ public class Destructible : MonoBehaviour {		//move sprite @ 15 frames or 0.5f s
 	protected virtual void Checks(){
 		float dist = Vector3.Distance(avatar.position, myNode.position);
 		if (!avatarScript.colour.Red) return;
-		if (goingToDestroy && dist < avatarMinDist){
-			Destruct();
+		
+		if (dist < avatarMinDist){
+			ChromatoseManager.manager.UpdateAction(Actions.Destroy, Destruct);
 		}
-		else if(goingToDestroy){
-			Debug.Log("avatar is " + dist + " away");
-		}
+		
 	}
 	
 	protected virtual void Destruct(){
@@ -140,11 +128,6 @@ public class Destructible : MonoBehaviour {		//move sprite @ 15 frames or 0.5f s
 			counter ++;
 		}
 		Debug.Log(newNewName);
-		if (messageToSendNpcsOnPoof != ""){
-			foreach (Npc npc in myNPCs){
-				npc.SendMessage(messageToSendNpcsOnPoof);
-			}
-		}
 		spriteInfo.SetSprite(spriteInfo.GetSpriteIdByName(newNewName));
 		//spriteInfo.spriteId ++;
 	}
