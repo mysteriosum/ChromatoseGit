@@ -232,11 +232,6 @@ public class Movement : MonoBehaviour {
 		}
 	}
 	
-	void OnGUI(){
-		float x = Screen.width;
-		float y = Screen.height;
-		GUI.TextArea(new Rect(0, 0, 128, 64), "Resolution: " + x.ToString () + " x " + y.ToString());
-	}
 	
 	public void SetNewMoveStats(float newMax, float newAccel, float newRotRate){
 		thruster.maxSpeed = newMax;

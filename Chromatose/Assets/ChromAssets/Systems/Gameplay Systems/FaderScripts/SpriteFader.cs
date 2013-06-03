@@ -13,9 +13,6 @@ public class SpriteFader : MonoBehaviour {
 	private List<GameObject> _spritesIn = new List<GameObject>();
 	private List<GameObject> _spritesOut = new List<GameObject>();
 	
-	private bool willPlayOut = false;
-	private bool willPlayIn = false;
-	
 	private float fadeRate = 0.1f;
 	
 	private float inAlpha;

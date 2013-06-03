@@ -10,9 +10,10 @@ public class ComicBackground : MonoBehaviour{
 	
 	void Start(){
 		List<Transform> tList = new List<Transform>();
-		foreach(Rect s in slots){
+		for (int i = 0; i < slots.Length; i ++){
 			tList.Add(transform);
 		}
+		
 		occupants = tList.ToArray();
 	}
 	

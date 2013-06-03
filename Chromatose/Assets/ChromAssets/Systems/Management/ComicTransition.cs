@@ -6,9 +6,6 @@ public class ComicTransition : MonoBehaviour {
 	private bool returning = false;
 	
 	private float counter = 0f;
-	private bool fadingOut = false;
-	private bool fadingIn = false;
-	private bool poppable = true;
 	
 	public Texture blackBox;
 	
@@ -34,7 +31,6 @@ public class ComicTransition : MonoBehaviour {
 	void OnTriggerExit(Collider other){
 		
 		if (other.name == "Avatar" && counter <= 0){
-			poppable = false;
 			popped = false;
 		}
 	}
