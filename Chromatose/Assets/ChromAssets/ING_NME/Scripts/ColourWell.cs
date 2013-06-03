@@ -4,7 +4,6 @@ using System.Collections;
 public class ColourWell : ColourBeing {
 	int colourToAdd;
 	public int giveRate = 8;
-	private ChromatoseManager manager;
 	protected Avatar avatar;
 	
 	// Use this for initialization
@@ -19,7 +18,7 @@ public class ColourWell : ColourBeing {
 			colourToAdd = 2;
 		}
 		
-		hud = ChromatoseManager.manager.hud;
+		manager = ChromatoseManager.manager;
 		avatar = GameObject.Find("Avatar").GetComponent<Avatar>();
 	}
 	
@@ -32,7 +31,7 @@ public class ColourWell : ColourBeing {
 		
 		if (collider != avatar.collider) return;
 		
-		hud.UpdateAction(Actions.Absorb, Trigger);		//this tells the hud that I want to do something. But I'll have to wait in line!
+		manager.UpdateAction(Actions.Absorb, Trigger);		//this tells the manager that I want to do something. But I'll have to wait in line!
 		
 		
 	}
@@ -40,7 +39,6 @@ public class ColourWell : ColourBeing {
 	
 	override public void Trigger(){
 		Debug.Log("Should be setting colour");
-		avatar.SetColour(Mathf.Max(avatar.colour.r + colour.r, 255), Mathf.Max(avatar.colour.g + colour.g, 255),Mathf.Max(avatar.colour.b + colour.b, 255));
-		
+		avatar.TakeColour(colour);
 	}
 }

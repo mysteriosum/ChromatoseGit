@@ -14,6 +14,8 @@ public class Avatar : ColourBeing
 	protected int direction;
 	protected float[] angles = new float[16];
 	
+	public static int curEnergy = 50;				//MY HP (ENERGY)
+	public static TankStates[,] tankStates;
 	
 	[System.NonSerializedAttribute]
 	public Movement movement;
@@ -430,10 +432,17 @@ public class Avatar : ColourBeing
 		myKnockTarget = VectorFunctions.FindClosestOfTag(t.position, "knockTarget", 1000000);
 		
 		allTheFaders = GameObject.FindGameObjectsWithTag("spriteFader");
+		if (tankStates == null){
 		
-		
-		
+			tankStates = new TankStates[3, 5]
+				{{TankStates.Full, TankStates.Full, TankStates.None, TankStates.None, TankStates.None}, 
+					{TankStates.None, TankStates.None, TankStates.None, TankStates.None, TankStates.None}, 
+					{TankStates.None, TankStates.None, TankStates.None, TankStates.None, TankStates.None} 
+				};
+			
+		}
 	}
+	
 	
 	// Update is called once per frame
 	void Update ()
@@ -540,23 +549,24 @@ public class Avatar : ColourBeing
 								//<-------------Getting Inputs!-------------->
 								//<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>
 		if (canControl){
-			getW = Input.GetKey(KeyCode.W);
+			getW = Input.GetKey(KeyCode.J);
 			if (Input.GetKey (KeyCode.UpArrow)){
 				getW = true;
 				
 			}
 			
-			getA = Input.GetKey(KeyCode.A);
+			
+			getA = Input.GetKey(KeyCode.D);
 			if (Input.GetKey (KeyCode.LeftArrow)){
 				getA = true;
 			}
 			
-			getD = Input.GetKey(KeyCode.D);
+			getD = Input.GetKey(KeyCode.F);
 			if (Input.GetKey (KeyCode.RightArrow)){
 				getD = true;
 			}
 			
-			getS = Input.GetKeyDown(KeyCode.S);
+			getS = Input.GetKeyDown(KeyCode.K);
 			if (Input.GetKeyDown(KeyCode.DownArrow)){
 				getS = true;
 			}
@@ -716,12 +726,59 @@ public class Avatar : ColourBeing
 			part.Main();
 		}
 		
+						//checking to see if my ENERGY is below the healthy threshold
+		if (curEnergy < 0){
+			bool foundOne = false;
+			for (int i = 0; i < 3; i ++){
+				
+				if (tankStates[0, 0] == TankStates.Empty) break;		//This checks right away if I'm out of HP
+				
+				for (int j = 0; j < 5; j ++){					//Iterate through each tank state 
+					if (Avatar.tankStates[i, j] == TankStates.Full) continue;
+					Vector2 index;
+					if (j == 0) index = new Vector2 (i - 1, 4);
+					else index = new Vector2(i, j - 1);
+					Avatar.tankStates[(int) index.x, (int) index.y] = TankStates.Empty;
+					foundOne = true;
+					curEnergy = 100 + curEnergy;
+					break;
+				}	
+				if (foundOne) break;
+			}
+			
+			if (!foundOne){
+				canControl = false;
+				ChromatoseManager.manager.Death();
+			}
+			
+		}
 		
+		
+		if (curEnergy > 100){
+			bool foundOne = false;
+			for (int i = 0; i < 3; i ++){
+				
+				for (int j = 0; j < 5; j ++){					//Iterate through each tank state 
+					if (Avatar.tankStates[i, j] != TankStates.Empty) continue;
+					Avatar.tankStates[i, j] = TankStates.Full;
+					foundOne = true;
+					curEnergy = curEnergy - 100;
+					break;
+				}	
+				if (foundOne) break;
+			}
+			if (!foundOne){
+				curEnergy = 100;
+			}
+			
+		}
 		
 	end:
 		if (previousVelocity != velocity)
 			previousVelocity = velocity;
 		t.position = new Vector3(t.position.x, t.position.y, 0);
+		
+		
 		if (debug)
 			Debug.Log("Yea dawg, verily this be the end");
 		
@@ -867,12 +924,7 @@ public class Avatar : ColourBeing
 			hurtTimer = 0;
 		}
 		else{
-			if (ChromatoseManager.manager.WhiteCollectibles.Count == 0){
-				canControl = false;
-				ChromatoseManager.manager.Death();
-				return;
-			}
-			ChromatoseManager.manager.RemoveCollectibles(Couleur.white, 1, t.position);
+			curEnergy -= 10;
 			hurt = true;
 			CannotControlFor(0.5f);
 			invisible = true;
