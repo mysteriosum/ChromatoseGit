@@ -3,7 +3,6 @@ using System.Collections;
 
 public class CorruptableWall : MonoBehaviour {
 	tk2dAnimatedSprite anim;
-	bool corrupted = true;
 	float timing = 8.0f;
 	float timer = 0f;
 	bool started = false;

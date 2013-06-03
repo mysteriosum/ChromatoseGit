@@ -13,6 +13,7 @@ public class Buildable : Destructible {
 		Checks();
 	}
 	protected override void Checks(){
+		
 		if (goingToDestroy){
 			Destruct();
 		}

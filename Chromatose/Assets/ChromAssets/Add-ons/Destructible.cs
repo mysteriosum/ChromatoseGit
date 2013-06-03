@@ -6,25 +6,18 @@ public class Destructible : MonoBehaviour {		//move sprite @ 15 frames or 0.5f s
 	
 	protected tk2dAnimatedSprite anim;
 	protected tk2dSprite spriteInfo;
-	
+	protected Avatar avatarScript;
 	public GameObject poof;
 	
 	
-	public int npcsToTrigger = 1;
 	public Transform myNode;
 	public string specificName = "";
-	public bool showNpcsNeeded = true;
-	public Vector2 poofOffset = new Vector2(0, 0);
 	
-	public int NPCsNeeded{
-		get{ return npcsToTrigger - myNPCs.Count;}
-		
-	}
-	public string messageToSendNpcsOnPoof = "";
+	public Vector2 poofOffset = new Vector2(0, 0);
 	
 	
 	protected bool goingToDestroy = false;
-	protected int avatarMinDist = 400;
+	protected int avatarMinDist = 85;
 	protected Transform avatar;
 	
 	[System.SerializableAttribute]
@@ -59,11 +52,7 @@ public class Destructible : MonoBehaviour {		//move sprite @ 15 frames or 0.5f s
 	
 	
 	
-	protected List<Npc> myNPCs = new List<Npc>();
-	
-	
 	Collider[] children = new Collider[2];
-	int curNPCs = 0;
 	
 	// Use this for initialization
 	void Start () {
@@ -76,24 +65,25 @@ public class Destructible : MonoBehaviour {		//move sprite @ 15 frames or 0.5f s
 		Checks();
 	}
 	
-	protected virtual void Checks(){
-		float dist = Vector3.Distance(avatar.position, myNode.position);
-		if (goingToDestroy && dist < avatarMinDist){
-			Destruct();
-		}
-		else if(goingToDestroy){
-			Debug.Log("avatar is " + dist + " away");
-		}
-	}
-	
 	protected virtual void Setup(){
 		avatar = GameObject.Find("Avatar").transform;
+		avatarScript = avatar.GetComponent<Avatar>();
 		spriteInfo = GetComponent<tk2dSprite>();
 		poof = Instantiate(poof) as GameObject;
 		poof.SetActive(false);
 		anim = poof.GetComponent<tk2dAnimatedSprite>();
 		anim.animationEventDelegate = NextImage/*(anim, anim.CurrentClip, anim.CurrentClip.frames[14], 14)*/;
 		anim.animationCompleteDelegate = Done;	
+	}
+	
+	protected virtual void Checks(){
+		float dist = Vector3.Distance(avatar.position, myNode.position);
+		if (!avatarScript.colour.Red) return;
+		
+		if (dist < avatarMinDist){
+			ChromatoseManager.manager.UpdateAction(Actions.Destroy, Destruct);
+		}
+		
 	}
 	
 	protected virtual void Destruct(){
@@ -112,23 +102,6 @@ public class Destructible : MonoBehaviour {		//move sprite @ 15 frames or 0.5f s
 		anim.CurrentClip.wrapMode = tk2dSpriteAnimationClip.WrapMode.Once;
 	}
 	
-	public bool AddOne(Npc npc){
-		if (specificName != ""){
-			if (npc.name != specificName)
-				return false;
-		}
-		myNPCs.Add(npc);
-		curNPCs ++;
-		
-		if (curNPCs == 1 && showNpcsNeeded){
-			myNPCs[0].AnnounceOtherNPCsRequired = true;
-		}
-		
-		if (curNPCs >= npcsToTrigger){
-			goingToDestroy = true;
-		}
-		return true;
-	}
 	
 	protected void DeadAndGone(){
 		transform.position = new Vector3(transform.position.x, transform.position.y, -2000);
@@ -136,8 +109,6 @@ public class Destructible : MonoBehaviour {		//move sprite @ 15 frames or 0.5f s
 	
 	public bool CheckName(string name){
 		if (specificName == "") return true;
-		bool identical = specificName == name;
-		//print("It is " + identical + " that it's the same name");
 		return name == specificName;
 	}
 	
@@ -157,11 +128,6 @@ public class Destructible : MonoBehaviour {		//move sprite @ 15 frames or 0.5f s
 			counter ++;
 		}
 		Debug.Log(newNewName);
-		if (messageToSendNpcsOnPoof != ""){
-			foreach (Npc npc in myNPCs){
-				npc.SendMessage(messageToSendNpcsOnPoof);
-			}
-		}
 		spriteInfo.SetSprite(spriteInfo.GetSpriteIdByName(newNewName));
 		//spriteInfo.spriteId ++;
 	}

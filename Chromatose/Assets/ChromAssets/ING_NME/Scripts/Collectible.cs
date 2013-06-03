@@ -8,7 +8,6 @@ public class Collectible : ColourBeing {
 	Avatar avatar;
 	Transform t;
 	Transform avatarT;
-	private float timer = 0.75f;
 	private bool dropped = false;
 	private Vector2 velocity;
 	private Transform collector;

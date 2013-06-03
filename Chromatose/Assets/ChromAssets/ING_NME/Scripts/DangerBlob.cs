@@ -27,30 +27,9 @@ public class DangerBlob : ColourBeing {
 		}
 		
 		public void Move(){
-			bool rotating = false;
-			int counter = 0;
-		top:
 			if (!patrol) return; //If I'm not moving I don't have much to update, do I
 			Vector2 traj = ((Vector2)targetNodes[currentIndex].position - (Vector2)t.position);
 			traj = traj.magnitude > speed * Time.deltaTime ? traj.normalized * speed * Time.deltaTime : Vector2.zero;		//Adjust the traj!
-			
-			//Debug.Log(traj);
-			Quaternion lookRot = Quaternion.LookRotation(Vector3.forward, traj);
-			
-			/*if (rotates){
-				float x = traj.x + traj.magnitude * (1 - Mathf.Pow(Mathf.Cos(Time.time), 2)
-												  / (1 - Mathf.Pow(Mathf.Cos(Time.time), 2)));
-				float y = traj.y + traj.magnitude * (2 * Mathf.Cos(Time.time))
-							 					  / (1 - Mathf.Pow(Mathf.Cos(Time.time), 2));
-				t.rotation = lookRot;
-				
-				traj = new Vector3(x, y, 0);
-				rotating = true;
-			}
-			else{*/
-						//if I'm closer enough, traj = 0 (next node)
-				//traj = traj.normalized * speed * Time.deltaTime;
-			//}
 			
 			if (traj == Vector2.zero){
 				currentIndex ++;
@@ -63,7 +42,6 @@ public class DangerBlob : ColourBeing {
 					anim.Play();
 				
 			}
-		move:
 			if (rotates){
 				t.Translate(new Vector3(traj.y * -1, traj.x, 0), Space.Self);
 			}
@@ -103,19 +81,6 @@ public class DangerBlob : ColourBeing {
 			//Debug.Log("Bye bye");
 			Dead = true;
 				//Debug.Log("We're the same colour!");
-			
-			if (colour.Red){														//THIS EXPLODES THE NPC BARRIER! (RED BARRIER) (NPC FIGHt) (THING, YOU KNOW)
-				Npc[] myNPCs = GetComponentsInChildren<Npc>(true);
-				//Debug.Log("I've got some NPCS! This many: " + myNPCs.Length);
-				foreach (Npc npc in myNPCs){
-					npc.fuckOffReference = (Vector2)(npc.transform.position - transform.position);
-					npc.FuckOff();
-					npc.SendMessage("Stop");
-					npc.transform.parent = null;
-				}
-			}
-			
-			
 			return;
 		}
 		if (sameColour) return;

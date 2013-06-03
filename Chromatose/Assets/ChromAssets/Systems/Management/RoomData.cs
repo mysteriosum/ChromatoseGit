@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 
 public class RoomData : MonoBehaviour {
-	
+	/*
 	public GameObject collisionMom;
 	public GameObject ingredientMom;
 	public GameObject artMom;
@@ -26,14 +26,11 @@ public class RoomData : MonoBehaviour {
 		artElements = artMom.GetComponentsInChildren<Transform>(true);
 		ingredients = ingredientMom.GetComponentsInChildren<ColourBeing>(true);
 		
-		foreach(ColourBeing cb in ingredients){
-			
-		}
 	}
 	
 	// Update is called once per frame
 	void Update () {
 	
 	}
-	
+	*/
 }
