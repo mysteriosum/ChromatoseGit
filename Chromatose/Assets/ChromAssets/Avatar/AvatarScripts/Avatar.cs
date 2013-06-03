@@ -304,7 +304,7 @@ public class Avatar : ColourBeing
 		
 	}
 	
-	private class LoseAllColourParticle {
+	public class LoseAllColourParticle {
 		GameObject go = new GameObject("LoseColourPart");
 		Transform t;
 		tk2dAnimatedSprite spriteInfo;
@@ -314,7 +314,7 @@ public class Avatar : ColourBeing
 		
 		public LoseAllColourParticle(tk2dSpriteCollectionData colData, tk2dSpriteAnimation anim, Transform avatarT, Color blendColor){
 			t = go.transform;
-			t.position = avatarT.position + (-avatarT.right) * offset + (Vector3)Random.insideUnitCircle * offset;
+			t.position = avatarT.position + (-avatarT.right) * offset + (Vector3)Random.insideUnitCircle * offset + Vector3.forward;
 			
 			
 			string spriteName = "part_avatarLosingAllColor0001";
@@ -614,8 +614,8 @@ public class Avatar : ColourBeing
 												//Self-made checkpoints! Or whatever you want to call it
 		
 		if (getS){
-			if (ChromatoseManager.manager.GetCollectibles(Couleur.white) < teleportCost && !hasOutline){
-				Debug.Log("NOT ENOUGH COLLECTIBLES FOR AFTER_IMAGE!!!");		//	TODO Make this into an actual function! Play an animation or something, yano?
+			if (tankStates[0, 0] != TankStates.Full){
+				Debug.Log("NOT ENOUGH NRJ FOR AFTER_IMAGE!!!");		//	TODO Make this into an actual function! Play an animation or something, yano?
 				goto end;
 			}
 			
@@ -625,7 +625,6 @@ public class Avatar : ColourBeing
 				outline.transform.position = t.position;
 				tk2dSprite.AddComponent<tk2dSprite>(outline, afterImageCollection, spriteInfo.CurrentSprite.name);
 				
-				ChromatoseManager.manager.DropCollectibles(ChromatoseManager.manager.WhiteCollectibles, teleportCost, outline.transform.position);
 				
 				hasOutline = true;
 				foreach (GameObject go in allTheFaders){
@@ -637,8 +636,7 @@ public class Avatar : ColourBeing
 				
 				t.position = outline.transform.position;
 				t.rotation = outline.transform.rotation;
-				ChromatoseManager.manager.GrabHeldWhiteCols();
-				ChromatoseManager.manager.RemoveCollectibles(Couleur.white, teleportCost, outline.transform.position);
+				curEnergy = -10;
 				Destroy(outline);
 				hasOutline = false;
 				//velocity = Vector2.zero;				//TEST For now I like the idea of keeping your current movement for when you go back. 
@@ -729,6 +727,11 @@ public class Avatar : ColourBeing
 						//checking to see if my ENERGY is below the healthy threshold
 		if (curEnergy < 0){
 			bool foundOne = false;
+			if (tankStates[0, 0] == TankStates.Full && tankStates[0, 1] == TankStates.Empty && hasOutline){
+				hasOutline = false;
+				Destroy(outline);
+							//TODO : PUT A SOUND AND/OR ANIMATION SHOWING THAT THE OUTLINE IS NOW GOOOOONE
+			}
 			for (int i = 0; i < 3; i ++){
 				
 				if (tankStates[0, 0] == TankStates.Empty) break;		//This checks right away if I'm out of HP
@@ -745,6 +748,7 @@ public class Avatar : ColourBeing
 				}	
 				if (foundOne) break;
 			}
+			
 			
 			if (!foundOne){
 				canControl = false;

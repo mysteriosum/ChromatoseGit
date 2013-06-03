@@ -17,6 +17,10 @@ public class Collectible : ColourBeing {
 	private int clearDist = 150;
 	private bool isShadow = false;
 	
+	private string idleAnim;
+	private string takeAnim;
+	private string loseAnim;
+	
 	
 	// Use this for initialization
 	void Start () {
@@ -26,21 +30,29 @@ public class Collectible : ColourBeing {
 			colour.r = 0;
 			colour.g = 0;
 			colour.b = 0;
+			idleAnim = "wColl_idle";
+			takeAnim = "wColl_pickedUp";
 			break;
 		case Couleur.red:
 			colour.r = 255;
 			colour.g = 0;
 			colour.b = 0;
+			idleAnim = "rColl_idle";
+			takeAnim = "rColl_pickedUp";
 			break;
 		case Couleur.green:
 			colour.r = 0;
 			colour.g = 255;
 			colour.b = 0;
+			idleAnim = "gColl_idle";
+			takeAnim = "gColl_pickedUp";
 			break;
 		case Couleur.blue:
 			colour.r = 0;
 			colour.g = 0;
 			colour.b = 255;
+			idleAnim = "bColl_idle";
+			takeAnim = "bColl_pickedUp";
 			break;
 		
 		}
@@ -61,7 +73,10 @@ public class Collectible : ColourBeing {
 			if (dist.magnitude < closeDist && !justPutBack){
 				if (CheckSameColour(avatar.colour) || colColour == Couleur.white){
 					ChromatoseManager.manager.AddCollectible(this);
-					Gone = true;
+					Dead = true;
+					anim.Play(takeAnim);
+					anim.CurrentClip.wrapMode = tk2dSpriteAnimationClip.WrapMode.Once;
+					anim.animationCompleteDelegate = GoneForever;
 					t.parent = null;
 					
 				}
@@ -89,31 +104,17 @@ public class Collectible : ColourBeing {
 		
 		t.Translate(velocity * Time.deltaTime);
 		Dead = true;
-		/*spriteInfo.color = new Color(spriteInfo.color.r, spriteInfo.color.g, spriteInfo.color.b, spriteInfo.color.a - Time.deltaTime);
-		if (spriteInfo.color.a <= 0){
-			Gone = true;
-			fading = false;
-			
-		}*/
 	
 		return;
 	blue:
 		t.SetParent((Transform)null);
 		spriteInfo.color = new Color(spriteInfo.color.r, spriteInfo.color.g, spriteInfo.color.b, 1f);
-			//t.position = collector.position;
-		//velocity = Vector2.Lerp(velocity, Vector2.zero, 0.005f);
-		homeTimer += Time.deltaTime;
-		//Vector2 distanceToTarget = (Vector2)(collector.position - t.position);
-		//Vector2 blueVector = Vector2.Lerp(distanceToTarget * 10, Vector2.zero, homeTiming / homeTimer);
-		//t.Translate((blueVector + velocity) * Time.deltaTime);
-		//t.Translate(velocity * Time.deltaTime);
+		anim.Play(loseAnim);
 		
+		homeTimer += Time.deltaTime;	
 		if (homeTimer >= 1.5f){
-		
-		//if (distanceToTarget.magnitude < 5){
 			Gone = true;
 			dropped = false;
-			
 		}
 		
 		return;
@@ -127,22 +128,13 @@ public class Collectible : ColourBeing {
 		if (distToTarget.magnitude < 5){
 			Gone = true;
 			dropped = false;
-			
 		}
 		
 		return;
 		
 	}
-	/*
-	void OnTriggerEnter(Collider collider){
-		if (collider.gameObject.tag == "avatar"){
-			if (CheckSameColour(collider.gameObject.GetComponent<Avatar>().colour) || colColour == Couleur.white){
-				ChromatoseManager.manager.AddCollectible(colColour);
-				Gone = true;
-			}
-		}
-	}
-	*/
+	
+	
 	override public void Trigger(){
 		int direction = Random.Range(0, 359);
 		t.rotation = Quaternion.LookRotation(Vector3.forward, new Vector3(0, direction, 0));
