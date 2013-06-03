@@ -18,7 +18,6 @@ public class BuildaLimo : Buildable {
 		poof = Instantiate(poof) as GameObject;
 		poof.SetActive(false);
 		anim = poof.GetComponent<tk2dAnimatedSprite>();
-		anim.animationEventDelegate = NpcFuckOff;
 		anim.animationCompleteDelegate = SendLimo;	
 	}
 	
@@ -32,10 +31,6 @@ public class BuildaLimo : Buildable {
 		
 		anim.Play();
 		anim.CurrentClip.wrapMode = tk2dSpriteAnimationClip.WrapMode.Once;
-	}
-	
-	private void NpcFuckOff(tk2dAnimatedSprite sprite, tk2dSpriteAnimationClip clip, tk2dSpriteAnimationFrame frame, int frameNum){
-		myNPCs[0].SendMessage("FuckOff");
 	}
 	
 	private void SendLimo(tk2dAnimatedSprite sprite, int index){

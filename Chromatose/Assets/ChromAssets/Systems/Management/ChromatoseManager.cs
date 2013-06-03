@@ -2,11 +2,65 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
+
+public enum Actions{
+	Back,
+	Absorb,
+	Destroy,
+	Build,
+	Pay,
+	Release,
+	
+	Nothing,
+	
+}
+
+public enum TankStates{
+	None,
+	Empty,
+	Full,
+}
+
 public class ChromatoseManager : MonoBehaviour {
 	private Avatar avatar;
 	private AvatarPointer avatarP;
 	public static ChromatoseManager manager; 
-	public ChromHUD hud;
+	public ChromHUD hud = new ChromHUD();
+	private GUISkin skin;
+	
+										//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
+										//<--------------ACTION BUTTON!---------------->
+										//<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>
+	private bool actionPressed;
+	
+	private Actions currentAction = Actions.Nothing;
+	
+	private Texture actionTexture;
+	private Texture shownActionTexture;
+	
+	public delegate void ActionDelegate();
+	public ActionDelegate actionMethod;
+	
+	public void UpdateAction(Actions action, ActionDelegate method){
+		if (action <= currentAction || action == Actions.Nothing){
+			currentAction = action;
+			actionMethod = method;
+			showingAction = true;
+		}
+	}
+	
+	public void UpdateActionTexture(){
+		
+		shownActionTexture = actionTexture;
+	}
+	
+	
+	private bool showingAction;
+	private float actionSlideSpeed = 10f;
+	
+										//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
+										//<--------------DATA TRACKING!---------------->
+										//<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>
 	
 	
 	public class CollectiblesManager{
@@ -16,19 +70,22 @@ public class ChromatoseManager : MonoBehaviour {
 		public List<Collectible> b = new List<Collectible>();
 		public List<Collectible> held = new List<Collectible>();
 	}
+	
 	private class RoomStats{
 		public List<Collectible> consumedCollectibles = new List<Collectible>();
 		public List<Comic> comics = new List<Comic>();
 		
 		public bool[] thumbsFound = {false, false, false, false, false, false, false};
-		
+		public int thumbNumber = 0;
 		public bool secretFound = false;
 		public bool comicComplete = false;
-	
+		
 	
 	}
 	
-	private RoomStats[] roomStats = {new RoomStats(), new RoomStats(), new RoomStats(), new RoomStats(), new RoomStats(), new RoomStats(), new RoomStats(), new RoomStats(), new RoomStats()};
+	
+	
+	private static RoomStats[] roomStats = {new RoomStats(), new RoomStats(), new RoomStats(), new RoomStats(), new RoomStats(), new RoomStats(), new RoomStats(), new RoomStats(), new RoomStats()};
 	private int curRoom;
 	
 	private CollectiblesManager collectibles = new CollectiblesManager();
@@ -59,25 +116,89 @@ public class ChromatoseManager : MonoBehaviour {
 	
 	// Use this for initialization
 	void Awake () {
+		
 		if (statCols == null){
 			statCols = collectibles;
 		}
 		else{
 			collectibles = statCols;
 		}
-		
+		/*
 		if (hud == null){
 			hud = new ChromHUD();
-		}
+		}*/
 		
-			manager = this;
+		manager = this;
 			//comic frame dealings: TODO PUT IN ONLEVELWASLOADED
 		UpdateRoomStats();
+		
 	}
 	
 	void Start(){
-		DontDestroyOnLoad(manager);
 		
+		DontDestroyOnLoad(manager);
+		if (!hud.mainBox){
+			Debug.LogWarning("There are some missing textures....");
+		}
+		
+		rN = collectibles.r.Count;
+		gN = collectibles.g.Count;
+		bN = collectibles.b.Count;
+		wN = collectibles.w.Count;
+		
+		colX[0] = Screen.width; 		//the red one
+		colY[0] = hud.mainBox.height + 90f;
+		colX[1] = Screen.width;			//the blue one
+		colY[1] = hud.mainBox.height + 135f;
+		colX[2] = Screen.width;			//the green one
+		colY[2] = hud.mainBox.height + 180f;
+		colX[3] = Screen.width;			//the white one
+		colY[3] = hud.mainBox.height + 45f;
+		colX[4] = Screen.width; 		//the comics
+		colY[4] = hud.mainBox.height;	
+		
+		
+		for (int i = 0; i < showingCol.Length; i++){
+			showingCol[i] = true;
+		}
+		
+		
+		float mainAnchor = Screen.width - hud.mainBox.width;
+		float dummy = Screen.width;
+		List<float> tempTrack = new List<float>();
+		float initSpeed = 6f;
+		float increment = 1.5f;
+		
+		while (dummy >= mainAnchor){		//move my dummy toward the main anchor
+			dummy -= initSpeed;
+			tempTrack.Add(dummy);
+			if (dummy <= 0){
+				break;
+			}
+		}
+		
+		do{
+			initSpeed -= increment;
+			dummy -= initSpeed;
+			tempTrack.Add(dummy);
+		}
+		while (initSpeed > 0 || dummy < mainAnchor);
+		
+		track = tempTrack.ToArray();
+		track[track.Length - 1] = mainAnchor;
+						//HACK Getting a HUD_skin from the Resources folder
+		skin = Resources.Load("Menus/HUD_skin") as GUISkin;
+		
+		
+		barMinY = 23;
+		barMaxY = barMinY + hud.energyBar.height;
+		barX = 1192;
+		barY = barMinY;
+		
+		aX = hud.absorbAction.width;
+		
+		actionTexture = hud.absorbAction;
+		shownActionTexture = actionTexture;
 	}
 	
 	
@@ -144,32 +265,390 @@ public class ChromatoseManager : MonoBehaviour {
 			Application.Quit();
 		}
 		
-	
+		
+										//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
+										//<-----------SHOWING COLLECTIBLES!------------>
+										//<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>
+		for (int i = 0; i < colCouleurs.Length; i++){
+			if (showingCol[i]){
+				colTimers[i] ++;
+				if (colTimers[i] > refreshTiming){
+					bool identical = UpdateCollectible(colCouleurs[i]);
+					if (!identical){
+						colTimers[i] = track.Length;
+					}
+					else{
+						showingCol[i] = false;
+					}
+				}
+			}
+			
+			if (!showingCol[i] && colTimers[i] > 0){
+				colTimers[i] --;
+			}
+			
+			if (colTimers[i] >= 0 && colTimers[i] < track.Length){
+				colX[i] = track[colTimers[i]];
+			}
+		}
+		
+		
+										//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
+										//<------------UPDATING ENERGY BAR!------------>
+										//<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>
+		float barDiffY = Avatar.curEnergy * hud.energyBar.height / 100;
+		barY = barMaxY - (int) barDiffY;
+		
+		/*
+		if (showingW){
+			wTimer ++;
+			if (wTimer > refreshTiming){
+				bool identical = UpdateCollectible(Couleur.white);
+				if (!identical){
+					wTimer = track.Length;
+				}
+				else{
+					showingW = false;
+				}
+			}
+		}
+		
+		if (!showingW && wTimer > 0){
+			wTimer --;
+		}
+		
+		if (wTimer >= 0 && wTimer < track.Length){
+			wX = track[wTimer];
+		}*/
+		
+		//Mathf.Clamp(wTimer, 0, track.Length - 1);
 	}
 	
 	void LateUpdate(){
-		hud.UpdateHUD();
+		
+										//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
+										//<--------------ACTION BUTTON!---------------->
+										//<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>
+								
+		switch (currentAction){
+		case Actions.Back:
+			actionTexture = hud.returnAction;
+			break;
+		case Actions.Absorb:
+			actionTexture = hud.absorbAction;
+			break;
+		case Actions.Destroy:
+			actionTexture = hud.destroyAction;
+			break;
+		case Actions.Build:
+			actionTexture = hud.buildAction;
+			break;
+		case Actions.Pay:
+			actionTexture = hud.payAction;
+			break;
+		case Actions.Release:
+			actionTexture = hud.releaseAction;
+			break;
+			
+		default:
+			actionMethod = null;
+			break;
+		}
+		
+		/*
+		Debug.Log("Some state info: " +
+			"showingAction = " + showingAction + 
+			"shownActionTexture = " + shownActionTexture.name + 
+			"actionTexture = " + actionTexture);*/
+		if (currentAction == Actions.Nothing && aX < hud.absorbAction.width){
+			aX -= actionSlideSpeed;
+			if (aX < -hud.absorbAction.width){
+				aX = Mathf.Abs(aX);
+			}
+			Debug.Log("Wiping away the Tears");
+		}
+		if (!showingAction){
+			currentAction = Actions.Nothing;
+		}
+		
+		if (showingAction && aX != 0 && shownActionTexture == actionTexture){
+			
+			aX -= actionSlideSpeed;
+			if (aX > -9 && aX < 9) aX = 0;
+			if (aX < -hud.absorbAction.width){
+				aX = Mathf.Abs(aX);
+			}
+		}
+		
+		if (showingAction && shownActionTexture != actionTexture){
+			Debug.Log("Should be working to update the action texture");
+			if (aX >= hud.absorbAction.width){
+				UpdateActionTexture();
+			}
+			else{
+				aX -= actionSlideSpeed;
+			}
+		}
+		
+		if (Input.GetKeyDown(KeyCode.Space) && currentAction > 0 && actionMethod != null){
+			actionMethod();
+		}
+		showingAction = false;
+		
 	}
+	
+	
+	
+	[System.Serializable]
+	public class ChromHUD {
+		
+		public Texture mainBox;
+		public Texture smallBox;
+		public Texture[] energyTank;
+		public Texture energyBar;
+		public Texture actionButton;
+		public Texture absorbAction;
+		public Texture buildAction;
+		public Texture destroyAction;
+		public Texture payAction;
+		public Texture releaseAction;
+		public Texture returnAction;
+		
+		
+		public Texture redCollectible;
+		public Texture greenCollectible;
+		public Texture blueCollectible;
+		public Texture whiteCollectible;
+		public Texture comicCounter;
+		
+		public Texture[] pauseButton;
+		
+		public tk2dFontData chromFont;
+		
+		private tk2dTextMesh rColMesh;
+		private tk2dTextMesh gColMesh;
+		private tk2dTextMesh bColMesh;
+		
+		
+		
+	}
+	
+	
+	private float[] colX = {0, 0, 0, 0, 0};
+	private float[] colY = {0, 0, 0, 0, 0};
+	
+	private float aX;
+	
+	private int rN;
+	private int gN;
+	private int bN;
+	private int wN;
+	private int cN;
+	
+	private int barX;
+	private int barY;
+	private int barMinY;
+	private int barMaxY;
+	
+	private int tankX = 1216;
+	private int tankY = 23;
+	
+	
+	private Vector2 textOffset = new Vector2 (55f, 8);
+	
+	private Couleur[] colCouleurs = {Couleur.red, Couleur.green, Couleur.blue, Couleur.white, Couleur.black};		//the black is for the comics
+	
+	private bool[] showingCol = {false, false, false, false, false};
+	private int[] colTimers = {0, 0, 0, 0, 0};
+
+	
+	private int showTiming = 1;
+	private float defaultSpeed = 1.2f;
+	private int refreshTiming = 75;
+	
+	private float[] track;
+	
+	private int rTimer = 0;
+	private float rSpeed = 0;
+	private int gTimer = 0;
+	private float gSpeed = 0;
+	private int bTimer = 0;
+	private float bSpeed = 0;
+	private int wTimer = 0;
+	private float wSpeed = 0;
+	
+	
+	void OnGUI(){
+		
+				//UPDATE HUD
+		
+				//FOR COMICS
+		if (inComic){
+			
+			Rect backButtonArea = new Rect(48, Screen.height - 96, backButton.width, backButton.height);
+			
+			bool backButtonPressed = GUI.Button(backButtonArea, backButton, GUIStyle.none);
+			if (backButtonPressed){
+				comicTransition.Return();
+			}
+		}
+		else{		//TODO MAKE THIS NOT STUPID AND UGLY! (ie delete it and handle this stuff in the hud draw thing guy)
+			
+			Rect mainRect = new Rect(Screen.width - hud.mainBox.width, 0, hud.mainBox.width, hud.mainBox.height);
+			GUI.skin = skin;
+			
+			Rect rColRect = new Rect(colX[0], colY[0], hud.redCollectible.width, hud.redCollectible.height);
+			Rect gColRect = new Rect(colX[1], colY[1], hud.greenCollectible.width, hud.greenCollectible.height);
+			Rect bColRect = new Rect(colX[2], colY[2], hud.blueCollectible.width, hud.blueCollectible.height);
+			Rect wColRect = new Rect(colX[3], colY[3], hud.whiteCollectible.width, hud.whiteCollectible.height);
+			Rect comicRect = new Rect(colX[4], colY[4], hud.comicCounter.width, hud.comicCounter.height);
+			Rect actionRect = new Rect(1194, 130, 60, 60);
+			Rect energyRect = new Rect(barX, barY, hud.energyBar.width, barMaxY - barY);
+			Rect tankRect = new Rect(tankX, tankY, 80, 128);
+			
+			GUI.DrawTexture(mainRect, hud.mainBox);
+			
+			
+			GUI.BeginGroup(comicRect);										//comic counter
+				GUI.skin.textArea.normal.textColor = Color.black;
+				GUI.DrawTexture(new Rect(0, 0, hud.comicCounter.width, hud.comicCounter.height), hud.comicCounter);
+				GUI.TextArea(new Rect(textOffset.x, textOffset.y, 80, 40), cN.ToString() + " / " + roomStats[curRoom].comics.Count.ToString());
+				
+			GUI.EndGroup();
+			
+			GUI.BeginGroup(wColRect);										//white collectible
+				GUI.skin.textArea.normal.textColor = Color.white;
+				GUI.DrawTexture(new Rect(0, 0, hud.whiteCollectible.width, hud.whiteCollectible.height), hud.whiteCollectible);
+				GUI.TextArea(new Rect(textOffset.x, textOffset.y, 80, 40), wN.ToString());
+				
+			GUI.EndGroup();
+			
+			GUI.BeginGroup(rColRect);										//red collectible
+				GUI.skin.textArea.normal.textColor = Color.red;
+				GUI.DrawTexture(new Rect(0, 0, hud.redCollectible.width, hud.redCollectible.height), hud.redCollectible);
+				GUI.TextArea(new Rect(textOffset.x, textOffset.y, 80, 40), rN.ToString());
+				
+			GUI.EndGroup();
+			
+			GUI.BeginGroup(gColRect);										//green collectible
+				GUI.skin.textArea.normal.textColor = Color.green;
+				GUI.DrawTexture(new Rect(0, 0, hud.greenCollectible.width, hud.greenCollectible.height), hud.greenCollectible);
+				GUI.TextArea(new Rect(textOffset.x, textOffset.y, 80, 40), gN.ToString());
+				
+			GUI.EndGroup();
+			
+			GUI.BeginGroup(bColRect);										//blue collectible
+				GUI.skin.textArea.normal.textColor = Color.blue;
+				GUI.DrawTexture(new Rect(0, 0, hud.blueCollectible.width, hud.blueCollectible.height), hud.blueCollectible);
+				GUI.TextArea(new Rect(textOffset.x, textOffset.y, 80, 40), wN.ToString());
+				
+			GUI.EndGroup();
+			
+			
+			GUI.BeginGroup(actionRect);										//Action icon
+				
+				GUI.DrawTexture(new Rect(aX, 0, hud.absorbAction.width, hud.absorbAction.height), actionTexture);
+			
+			GUI.EndGroup();
+			
+			GUI.BeginGroup(energyRect);
+				Rect drawRect = new Rect(0, barMinY - barY, hud.energyBar.width, hud.energyBar.height);
+			
+				GUI.DrawTexture(drawRect, hud.energyBar);
+			GUI.EndGroup();
+			
+			GUI.BeginGroup(tankRect);
+				for (int i = 0; i < 3; i ++){
+					for (int j = 0; j < 5; j ++){
+						if (Avatar.tankStates[i, j] == TankStates.None) continue;
+						int index = Avatar.tankStates[i, j] == TankStates.Empty? 0 : 1;
+						GUI.DrawTexture(new Rect(i * hud.energyTank[0].width, j * hud.energyTank[0].height, hud.energyTank[0].width, hud.energyTank[0].height), hud.energyTank[index]);
+					}	
+				
+				}
+			GUI.EndGroup();
+			
+			
+			//GUI.Box(new Rect(Screen.width - 128, Screen.height / 2, 96, 32), actionString);
+		}
+	}
+	
 	
 	public void AddCollectible(Collectible col){
 		switch (col.colColour){
 		case Couleur.red:
 			collectibles.r.Add(col);
+			showingCol[0] = true;
 			break;
 		case Couleur.green:
 			collectibles.g.Add(col);
+			showingCol[1] = true;
 			break;
 		case Couleur.blue:
 			collectibles.b.Add(col);
+			showingCol[2] = true;
 			break;
 		case Couleur.white:
 			collectibles.w.Add(col);
+			showingCol[3] = true;
 			break;
 		default:
 			Debug.LogWarning("Not a real collectible.");
 			break;
 		}
 		//Debug.Log(collectibles);
+	}
+	
+	public bool UpdateCollectible(Couleur colour){
+		switch (colour){
+		case Couleur.red:
+			if (rN > collectibles.r.Count){
+				rN --;
+			}
+			if (rN < collectibles.r.Count){
+				rN ++;
+			}
+			
+			return rN == collectibles.r.Count;
+		case Couleur.green:
+			if (gN > collectibles.g.Count){
+				gN --;
+			}
+			if (gN < collectibles.g.Count){
+				gN ++;
+			}
+			
+			return gN == collectibles.g.Count;
+		case Couleur.blue:
+			if (bN > collectibles.b.Count){
+				bN --;
+			}
+			if (bN < collectibles.b.Count){
+				bN ++;
+			}
+			
+			return bN == collectibles.b.Count;
+		case Couleur.white:
+			if (wN > collectibles.w.Count){
+				wN --;
+			}
+			if (wN < collectibles.w.Count){
+				wN ++;
+			}
+			
+			return wN == collectibles.w.Count;
+		default:
+			
+			if (cN > roomStats[curRoom].thumbNumber){
+				cN --;
+				
+			}
+			if (cN < roomStats[curRoom].thumbNumber){
+				cN ++;
+			}
+			
+			return cN == roomStats[curRoom].thumbNumber;
+		}
 	}
 	/// <summary>
 	/// Gets the number of a specific type of collectible.
@@ -223,16 +702,19 @@ public class ChromatoseManager : MonoBehaviour {
 		switch (colour){
 		case Couleur.red:
 			JettisonCollectibles(collectibles.r, value, pos);
+			showingCol[0] = true;
 			return;
 		case Couleur.green:
 			JettisonCollectibles(collectibles.g, value, pos);
+			showingCol[1] = true;
 			return;
 		case Couleur.blue:
-			Debug.Log("Removing " + value.ToString() + " cols from RemoveCollectibles in manager");
 			JettisonCollectibles(collectibles.b, value, pos);
+			showingCol[2] = true;
 			return;
 		case Couleur.white:
 			JettisonCollectibles(collectibles.w, value, pos);
+			showingCol[3] = true;
 			return;
 		default:
 			Debug.LogWarning("Not a real collectible.");
@@ -250,36 +732,6 @@ public class ChromatoseManager : MonoBehaviour {
 			list.Remove(inQuestion);
 		}
 	}
-	
-	void OnGUI(){
-		
-				//UPDATE HUD
-		
-				//FOR COMICS
-		if (inComic){
-			
-			Rect backButtonArea = new Rect(48, Screen.height - 96, backButton.width, backButton.height);
-			
-			bool backButtonPressed = GUI.Button(backButtonArea, backButton, GUIStyle.none);
-			if (backButtonPressed){
-				comicTransition.Return();
-			}
-		}
-		else{		//TODO MAKE THIS NOT STUPID AND UGLY! (ie delete it and handle this stuff in the hud draw thing guy)
-			
-			GUI.TextArea(new Rect(Screen.width - 136, 8, 128, 80), "Collectibles"
-																+ "\nR = " + collectibles.r.Count
-																+ "\nG = " + collectibles.g.Count 
-																+ "\nB = " + collectibles.b.Count
-																+ "\nW = " + collectibles.w.Count);
-			float x = Screen.width;
-			float y = Screen.height;
-			GUI.TextArea(new Rect(0, 0, 128, 64), "Resolution: " + x.ToString () + " x " + y.ToString());
-		}
-		
-		hud.Draw();
-	}
-	
 	
 	
 																			//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
@@ -310,6 +762,8 @@ public class ChromatoseManager : MonoBehaviour {
 	
 	public void FindComic(int index){
 		roomStats[curRoom].thumbsFound[index] = true;
+		roomStats[curRoom].thumbNumber ++;
+		showingCol[4] = true;
 	}
 	
 	public bool CheckComicStats(){
@@ -329,6 +783,9 @@ public class ChromatoseManager : MonoBehaviour {
 	}
 	
 	public void Death(){
+		Avatar.tankStates[0, 0] = TankStates.Full;
+		Avatar.tankStates[0, 1] = TankStates.Full;
+		Avatar.curEnergy = 50;
 		Application.LoadLevel(Application.loadedLevel);
 	}
 	

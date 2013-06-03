@@ -11,7 +11,8 @@ abstract public class ColourBeing : MonoBehaviour {		//base class for all living
 	protected Colour tempColour = new Colour(-1, -1, -1);
 	protected tk2dAnimatedSprite anim;
 	
-	protected ChromHUD hud;
+	protected ChromatoseManager manager;
+	
 	
 	[System.SerializableAttribute]
 	public class Colour{
@@ -94,6 +95,13 @@ abstract public class ColourBeing : MonoBehaviour {		//base class for all living
 		colour.r = newR;
 		colour.g = newG;
 		colour.b = newB;
+	}
+	
+	public void TakeColour(Colour newColour){
+		this.colour.r = Mathf.Min(colour.r + newColour.r, 255);
+		this.colour.g = Mathf.Min(colour.g + newColour.g, 255);
+		this.colour.b = Mathf.Min(colour.b + newColour.b, 255);
+		
 	}
 	
 	public bool CheckSameColour(Colour otherColour){					//Are we the same colour? Answer me! >=C

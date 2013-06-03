@@ -3,48 +3,23 @@ using System.Collections;
 using System.Collections.Generic;
 
 [RequireComponent(typeof(Movement))]
-public class Npc : ColourBeing {
+public class Npc : ColourWell {
 	
 	private Movement movement;
 	private Transform t;
 	private Transform target;
 	private Transform closestNode;
-	private Transform avatar;
-	private Destructible toDestroy;
-	private Buildable toBuild;
-	
-	
-	
-	
-	private bool losingColour = false;
-	private bool inMotion = false;
-	
-	private bool building = false;
-	private bool breaking = false;
-	private int anarchyConsiderMin = 200;
 	
 	//for the cyan guy
-	private bool stoppingForever = false;
 	private bool addingGreen;
 	private bool waitingForMaxGreen;
-	private bool saidOK = false;
-	private bool saidFollow = false;
 	
 	
 	private ColourBeing.Colour initColour;
 	private Pather myPather;
 	private int currentNode = 0;
-	
-	
-	private int closeRadius = 100;
-	private int mask;
-	private RaycastHit hit;
-	private float checkTimer = 0;
-	private float checkTiming = 0.8f;
+
 	private List<Transform> myPath;
-	private Avatar avatarScript;
-	private float cantSeeTimer = 0f;
-	private float cantSeeTiming = 2f;
 	
 	//elbow room variables
 	private Transform[] allNPCs;
@@ -62,12 +37,9 @@ public class Npc : ColourBeing {
 	}
 	
 	//about fucking off and shit
-	private bool fuckingOff = false;
-	
 	
 											//vars about my animations and what they DO
-	private string greyToRed = "rNPC_greyToRed";
-	private string[] redFreakouts = new string[] {"rNPC_bounce", "rNPC_nervousPale"};
+	
 	
 	//prolly gon' put some stuff here
 	
@@ -75,8 +47,6 @@ public class Npc : ColourBeing {
 	private tk2dAnimatedSprite miscPartAnim;
 	
 	private bool showingMiscPart;
-	private bool turningRed = false;
-	
 	
 	public class SpeechBubble{				//THE BUBBLE AND ITS DECLARATION!
 		//variables of various types
@@ -87,8 +57,6 @@ public class Npc : ColourBeing {
 		private Transform parent;
 		private Vector2 offset = new Vector2(64, 25);
 		private float timer;
-		private GameObject myCollectible;
-		private Vector2 collectibleOffset = new Vector2(10, 10);
 		
 		private string collectibleBubbleName = "redBubble_veryHappy";
 		public string CollectibleBubbleName{ get { return collectibleBubbleName; } }
@@ -146,12 +114,6 @@ public class Npc : ColourBeing {
 			else if (r.enabled){
 				r.enabled = false;
 				Blend(Color.white);
-				if (spriteInfo.CurrentSprite.name == collectibleBubbleName){
-					collectibleBubbleName = "";
-					myCollectible = GameObject.Instantiate(Resources.Load("pre_redCollectible"), t.position + (Vector3)collectibleOffset, Quaternion.identity) as GameObject;
-					Debug.Log ("Here's some stuff");
-					parent.GetComponent<Npc>().NoMoreCollectible();
-				}
 			}
 			//t.position = parent.position + (Vector3)offset;
 			myNumber.transform.position = t.position + digitOffset;
@@ -184,25 +146,15 @@ public class Npc : ColourBeing {
 	
 	private Npc.SpeechBubble myBubble;
 												//PRIVATE VARS TO DO WITH THE BUBBLE
-	private string followName = "partNPC_following";
-	private string destroyName = "redBubble_happy";
-	private string blueNeedNPCs = "blueBubble_x";
-	private string redNeedNPCs = "redBubble_x";
-	private Vector3 followPartOffset = new Vector3(27, 17, -2);
-	private Vector3 goalPartOffset = Vector3.zero;
 												//ALL THE PUBLIC VARIABLES
 	public int detectRadius = 250;
-	public bool beginBySaying = false;
-	public bool alwaysSayWhenIdle = false;
 	public int initialSpeechRange = 400;
-	public string bubbleSpriteName = "";
+	public string happyBubbleName = "";
+	public string sadBubbleName = "";
 	public bool waitForMessage = false;
 	//public bool hasShadowBG = false;
 	public int shadowSpriteIndex;
-	public bool hasRedCol = false;
-	
-	
-	private bool poopingCol = false;
+
 	
 	public Vector2 fuckOffReference = new Vector2(1, 1);
 	
@@ -213,29 +165,14 @@ public class Npc : ColourBeing {
 	void Start () {
 		
 	//	tk2dSprite.AddComponent<tk2dSprite>(myBubble.go, ChromatoseManager.manager.bubbleCollection, bubbleName);
-		mask = 1 << LayerMask.NameToLayer("collision");		//for teh linecasts
 		movement = GetComponent<Movement>();
 		t = transform;
 		spriteInfo = GetComponent<tk2dSprite>();
 		anim = GetComponent<tk2dAnimatedSprite>();
+		manager = ChromatoseManager.manager;
 		
-		if (movement.target){
-			target = movement.target;
-			
-		}
+		avatar = GameObject.FindGameObjectWithTag("avatar").GetComponent<Avatar>();
 		
-		avatar = GameObject.FindGameObjectWithTag("avatar").transform;
-		if (!target && colour.b > colourConsiderMin){
-			target = avatar;
-			
-			
-		}
-		if (avatar){
-			avatarScript = avatar.GetComponent<Avatar>();
-		}
-		else{
-			Debug.Log("Can't find the Avatar! He ain't here I tells ya!");
-		}
 		
 		initColour = new ColourBeing.Colour(colour.r, colour.g, colour.b);
 		
@@ -255,28 +192,15 @@ public class Npc : ColourBeing {
 		allNPCs = npcList.ToArray();
 		float animOffset = Random.Range(0f, 1f);
 		
-		int highestColour = 0;
-		if (colour.r > highestColour){
-			highestColour = colour.r;
-		}
-		if (colour.g > highestColour){
-			highestColour = colour.g;
-		}
-		if (colour.b > highestColour){
-			highestColour = colour.b;
-		}
-		if (highestColour > 220){
-			anim.Play(animOffset);
-		}
+		anim.Play(animOffset);
+		
 		
 		//Particle:  instantiate it 
 		miscPart = new GameObject(name + "Shadow");
 		tk2dAnimatedSprite.AddComponent<tk2dAnimatedSprite>(miscPart, anim.Collection, 0);
 		miscPartAnim = miscPart.GetComponent<tk2dAnimatedSprite>();
 		miscPart.SetParent(gameObject);
-		miscPart.transform.position += followPartOffset;
 		miscPartAnim.anim = anim.anim;
-		miscPartAnim.Play(followName);
 		miscPartAnim.renderer.enabled = false;
 		
 		
@@ -298,262 +222,10 @@ public class Npc : ColourBeing {
 		//<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>
 		
 		
-		if (building){
-			if (toBuild){
-				miscPart.renderer.enabled = true;
-				miscPartAnim.Play("partNPC_onGoal");
-				miscPart.transform.position = t.position + goalPartOffset;
-				if (announceOtherNPCsRequired){
-					myBubble.ShowBubbleFor(blueNeedNPCs, -1f, toBuild.NPCsNeeded);
-				}
-				//myBubble.Showing = true;
-				
-				goto update;
-			}
-			else{
-				building = false;
-				
-				miscPart.renderer.enabled = false;
-			}
-			
-		}
-		
-		if (breaking){
-			if (toDestroy){
-				
-				miscPart.renderer.enabled = true;
-				miscPartAnim.Play("partNPC_onGoal");
-				miscPart.transform.position = t.position + goalPartOffset;
-				if (announceOtherNPCsRequired){
-					myBubble.ShowBubbleFor(redNeedNPCs, 0.5f, toDestroy.NPCsNeeded);
-				}
-				
-				goto update;
-			}
-			else{
-				myPath.Clear();
-				inMotion = false;
-				target = null;
-				miscPart.renderer.enabled = false;
-				
-				breaking = false;
-				Debug.Log("turning red = " + turningRed);
-				if (!poopingCol){
-					
-					
-				}
-			}
-		}
-		
-		if (poopingCol){
-			goto move;
-		}
-		
-		if (stoppingForever){
-			goto move;
-		}
-		
-		if (waitForMessage){
-			goto move;
-		}
-		
-		//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
-		//<----------------BLUE SECTION!--------------->
-		//<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>
-		
-	blue:
-		if (colour.b > colourConsiderMin){			//What do I do if I'm blue enough to be considered blue by the blues?
-			if (colour.r > anarchyConsiderMin) goto red;
-			if (!target){
-				target = avatar;
-			}
-			
-			Vector2 diff = (Vector2) target.position - (Vector2)t.position;
-			
-			if (target == avatar){
-												//THIS IS WHERE I START FOLLOWING THE AVATAR
-				bool cantSee = Physics.Linecast(avatar.position, t.position, out hit, mask);
-				if (cantSee){
-					cantSeeTimer += Time.deltaTime;
-				}
-				else{
-					cantSeeTimer = 0f;
-				}
-				if 	(diff.magnitude < detectRadius && avatar.GetComponent<Avatar>().colour.Blue
-					 && cantSeeTimer <= cantSeeTiming && !cantSee
-					){
-					inMotion = true;
-					showingMiscPart = true;
-					miscPartAnim.Play(followName);
-					miscPart.transform.position = t.position + followPartOffset;
-					miscPart.renderer.enabled = true;
-					if (!saidFollow){
-						beginBySaying = false;
-						//myBubble.ShowBubbleFor(followName, 4f);
-						saidFollow = true;
-					}
-				}
-				else if(inMotion){
-					miscPart.renderer.enabled = false;
-					Debug.Log("Here");
-					inMotion = false;
-					cantSeeTimer = 0f;
-				}
-				
-			}
-			checkTimer += Time.deltaTime;
-			if (checkTimer >= checkTiming){		//check for node every [checktiming] seconds
-					
-				checkTimer = 0;
-				Transform closestBuildable = FindClosestOfTag(t, "buildable");
-				if (!closestBuildable) goto red;
-				toBuild = closestBuildable.GetComponent<Buildable>();
-				 
-				if (toBuild){
-					closestNode = toBuild.myNode;
-					if ((closestNode.position - t.position).magnitude < closeRadius){
-						target = closestNode;
-					}
-				}
-			}
-			
-			if (target == closestNode){
-				if (diff.magnitude < closeRadius){
-					bool isValid = toBuild.AddOne(this);
-					if (!isValid){
-						target = avatar;
-						goto red;
-					}
-					inMotion = false;
-					building = true;
-					target = null;
-					closestNode = null;
-					Debug.Log("tHere");
-					miscPart.renderer.enabled = false;
-				}
-			}
-				
-		}//last bracket of 'if blue'
-		
-		//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
-		//<----------------RED SECTION!---------------->
-		//<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>
-	red:
-		if (colour.r > anarchyConsiderMin && !turningRed){		//If I'm red enough to consider fighting
-			if (target == null || target == avatar){  //find a target, and the nearest one, ideally
-				GameObject[] potentials = GameObject.FindGameObjectsWithTag("destructible");
-				float closestDist = Mathf.Infinity;
-				/*if (colour.b > colourConsiderMin){
-					closestDist = detectRadius;
-				}*/
-				Transform closest = null;
-				foreach (GameObject p in potentials){
-					Vector2 tempDist = (Vector2)p.transform.position - (Vector2)t.position;
-					Destructible pScript = p.GetComponent<Destructible>();
-					if (tempDist.magnitude < closestDist && pScript != null){
-						if (!pScript.CheckName(name)) continue;				//If the Destructible is picky, it might not want you
-						closestDist = tempDist.magnitude;
-						closest = p.transform;
-					}
-				}
-				if (closest){		//There's a destructible thing, I'ma find the closest Node to that
-					
-					toDestroy = closest.GetComponent<Destructible>();
-					closestNode = toDestroy.myNode;
-					
-					myPather = new Pather(t, closestNode);
-					myPath = myPather.NewPath(t, closestNode);
-					/*foreach (Transform targ in myPath){
-						Debug.Log(targ.name);
-					}*/
-					inMotion = true;
-					target = myPath[0];
-				}
-			}
-			else if (target){
-				//target = myPather.Seek(target);		//I have a target, so I'm going to look for it!
-				float distToTarget = ((Vector2)target.position - (Vector2)t.position).magnitude;
-				if (distToTarget < closeRadius){
-					if (target == closestNode){
-						if (toDestroy){
-							toDestroy.AddOne(this);
-						}
-						target = null;
-						closestNode = null;
-						inMotion = false;
-						breaking = true;
-						movement.SetVelocity(Vector2.zero);
-						myPath.Clear();
-						currentNode = 0;
-					}
-					else{
-						currentNode ++;
-						if (currentNode >= myPath.Count){
-							Debug.Log("Count = " + myPath.Count + " and node = " + currentNode);
-							foreach (Transform targ in myPath){
-								Debug.Log(targ.name);
-							}
-						}
-						target = myPath[currentNode];
-					}
-				}
-			}
-			
-			
-		}
-		else if (colour.r > 0 && !turningRed){ //Absorb colour from Avatar. Don't want to do it if I have NO colour, just... little colour.
-			Vector2 diff = (Vector2) avatar.position - (Vector2)t.position;
-			if (diff.magnitude < detectRadius && avatarScript.colour.Red && !Physics.Linecast(avatar.position, t.position, out hit, mask)){
-				TurnRed();
-				avatarScript.GiveColourTo(t, avatar);
-			}
-		}
-	move:
-		//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
-		//<----------------MOVE SECTION!--------------->
-		//<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>
-		
-		if (inMotion && target){
-			movement.target = target;
-			
-										//gotta make sure my alpha stays the same if I'm moving, you know?
-			if (spriteInfo.color.a > 0.7f && !fuckingOff){
-				spriteInfo.SendMessage("FadeAlpha", 1f);
-			}
-			
-			if (target == avatar){
-				movement.SetNewMoveStats(avatarScript.movement.thruster.MaxSpeed - 2, movement.thruster.accel, movement.rotator.rotationRate);
-			}
-			
-			Vector2 diff = (Vector2) target.position - (Vector2)t.position;
-		
-			float angle = VectorFunctions.PointDirection(diff);
-			
-			float zGoodFormat = VectorFunctions.Convert360(transform.rotation.eulerAngles.z);
-			
-			//t.Rotate(0, 0, angle - zGoodFormat);
-			Vector2 disp = movement.Displace(true, angle * Mathf.Deg2Rad);
-			//Vector2 disp = diff.normalized * movement.thruster.velocity.magnitude;
-			if (stoppingForever){
-				inMotion = false;
-				goto update;
-			}
-			else{
-				transform.position += new Vector3(disp.x, disp.y, 0);
-			}
-			
-		}
-		else{
-			movement.SlowToStop();
-		}
-										//move me out of the way of another NPC
-		
-		
 		
 		//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
 		//<--------------UPDATE SECTION!--------------->
 		//<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>
-	update:
 		
 							//Don't want you NPCs all on top of each other and everything!
 		
@@ -591,127 +263,37 @@ public class Npc : ColourBeing {
 		
 							//Am I getting green? ...what is this for again? Hmm.... 
 		
+		string toShow = colour.White ? sadBubbleName : happyBubbleName;
+		Vector3 diff = avatar.transform.position - t.position;
 		
-		if (stoppingForever){
-			//movement.SlowToStop();
-			if (movement.GetVelocity().magnitude < 5 && !waitingForMaxGreen){
-				this.enabled = false;
-			}
+		if (diff.magnitude < initialSpeechRange && toShow != ""){
+			myBubble.Showing = true;
+			myBubble.SpriteName = toShow;
 		}
 		
-		if ((beginBySaying || alwaysSayWhenIdle) && movement.GetVelocity().magnitude < 1 && !poopingCol){
-			Vector3 diff = avatar.position - t.position;
-			if (diff.magnitude < initialSpeechRange){
-				myBubble.Showing = true;
-				myBubble.SpriteName = bubbleSpriteName;
-			}
-		}
-		
-		if (fuckingOff){
-			target.position = t.position + (Vector3)fuckOffReference;
-			//Debug.Log("Fuck Off");
-			spriteInfo.color = new Color(spriteInfo.color.r, spriteInfo.color.g, spriteInfo.color.b, spriteInfo.color.a * 0.95f);
-			if (spriteInfo.color.a < 0.01){
-				Dead = true;
-				Gone = true;
-				StopAndDisable();
-			}
-		}
 		
 		
 		
 		//end :)
 	}
 	
-	Transform FindClosestOfTag(Transform mainTarget, string tag, int maxDistance){
-		GameObject[] nodes = GameObject.FindGameObjectsWithTag(tag);
-		float closestDist = maxDistance;
-		Transform closestHere = null;
-		foreach (GameObject n in nodes){
-			float tempDist = ((Vector2) mainTarget.position - (Vector2)n.transform.position).magnitude;
-			
-			if (tempDist < closestDist){
-				closestDist = tempDist;
-				closestHere = n.transform;
-			}
-		}
+	void OnTriggerStay(Collider collider){
 		
-		return closestHere;
+		if (collider != avatar.collider || colour.White) return;
 		
-	}
-	
-		//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
-		//<============SPECIFIC FUNCTIONS!!============>
-		//<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>
-	public void StopAndDisable(){
-		stoppingForever = true;
-	}
-	
-	public void AddGreenUntilMax(){
-		waitingForMaxGreen = true;
-		addingGreen = true;
-	}
-	
-	public void SetNewTarget(Transform newTarget){
-		target = newTarget;
+		manager.UpdateAction(Actions.Absorb, Trigger);		//this tells the hud that I want to do something. But I'll have to wait in line!
 		
-	}
-	
-	private Transform FindClosestOfTag(Transform mainTarget, string tag){
-		return FindClosestOfTag(mainTarget, tag, 10000000);
-	}
-	
-	public void MaxRed(tk2dAnimatedSprite sprite, int index){
-		colour.r = 255;
-		anim.Play(anim.GetClipByName(redFreakouts[Random.Range(0, 1)]), 0);
-		turningRed = false;
-		if (saidOK) return;
-		saidOK = true;
-		myBubble.ShowBubbleFor(destroyName, 2.5f);
-	}
-	
-	public void TurnRed(){
-		anim.Play(anim.GetClipByName(greyToRed), 0);
-		anim.CurrentClip.wrapMode = tk2dSpriteAnimationClip.WrapMode.Once;
-		anim.animationCompleteDelegate = MaxRed;
-		turningRed = true;
-		//ok.SetParent(gameObject);
-		//ok.transform.localPosition = new Vector3(20, 20, 0);
+		
 	}
 	
 	override public void Trigger(){
-		
+		avatar.TakeColour(colour);
+		colour = new Colour();
+		anim.Play("rNPC_redToGrey");
+		anim.animationCompleteDelegate = GreyBounce;
 	}
 	
-	public void FuckOff(){
-		toBuild = null;
-		toDestroy = null;
-		fuckingOff = true;
-		target = new GameObject(name + "Target").GetComponent<Transform>();
-		target.position = t.position + (Vector3)fuckOffReference;
-		inMotion = true;
-	}
-	
-	void OnDrawGizmosSelected(){
-		Gizmos.color = Color.white;
-		Gizmos.DrawWireSphere(transform.position + (Vector3)fuckOffReference, 10);
-	}
-	
-	public void PoopCollectible(){
-		if (!hasRedCol) return;
-		myBubble.ShowBubbleFor(myBubble.CollectibleBubbleName, 1f);
-		poopingCol = true;
-	}
-	
-	public void NoMoreCollectible(){
-		hasRedCol = false;
-		poopingCol = false;
-	}
-	
-	void BackToGrey(){
-		anim.Play(anim.GetClipByName("rNPC_redToGrey"), 0);
-		losingColour = true;
-		colour.r = initColour.r;
-		anim.animationCompleteDelegate = null;
+	public void GreyBounce(tk2dAnimatedSprite clip, int index){
+		anim.Play("rNPC_bounceGrey");
 	}
 }

@@ -8,11 +8,8 @@ public class Comic : MonoBehaviour {
 		get{ return inMySlot;}
 	}
 	
-	private bool menuOpen = false;
-	
 	private GameObject go;
 	private Transform t;
-	private Renderer r;
 	private tk2dSprite spr;
 	private BoxCollider bc;
 	private bool beingDragged = false;
@@ -38,7 +35,6 @@ public class Comic : MonoBehaviour {
 		
 		go = gameObject;
 		t = go.GetComponent<Transform>();
-		r = renderer;
 		spr = GetComponent<tk2dSprite>();
 		bc = GetComponent<BoxCollider>();
 		manager = ChromatoseManager.manager;
@@ -65,7 +61,6 @@ public class Comic : MonoBehaviour {
 			Debug.Log("HERE!");
 			startPos = t.position;
 			bg.RemoveFromSlot(currentSlot);
-		
 		}
 		
 		if (beingDragged){
@@ -118,6 +113,5 @@ public class Comic : MonoBehaviour {
 	public void OpenInMenu(Vector3 pos){
 		t.position = pos;
 		spr.SetSprite(name);
-		menuOpen = true;
 	}
 }

@@ -1,9 +1,17 @@
 using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
+
 
 public class DangerBlob : ColourBeing {
 	public float knockback = 50f;
 	public bool diesOnImpact = false;
+	private tk2dSprite[] myFlames;
+	private bool beingExtinguished = false;
+	private List<tk2dSprite> dyingFlames = new List<tk2dSprite>();
+	private List<float> dyingAlphas = new List<float>();
+	private float fadeRate = 0.05f;
+	private Transform avatarT;
 	
 	[System.SerializableAttribute]
 	public class Movement{
@@ -57,15 +65,45 @@ public class DangerBlob : ColourBeing {
 	void Start () {
 		movement.Setup(gameObject);
 		movement.t = transform;
+		avatarT = GameObject.FindWithTag("avatar").transform;
 		anim = GetComponent<tk2dAnimatedSprite>();
-		
+		if (colour.Red){
+			myFlames = GetComponentsInChildren<tk2dSprite>();
+		}
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		if (colour.White)
 		movement.Move();
-		
+		if (beingExtinguished){
+			tk2dSprite next = null;
+			float shortestDist = 1000;
+			foreach (tk2dSprite sprite in myFlames){
+				float dist = Vector3.Distance(sprite.transform.position, avatarT.position);
+				if (dist < shortestDist && !dyingFlames.Contains(sprite)){
+					next = sprite;
+					shortestDist = dist;
+				}
+			}
+			if (next){
+				dyingFlames.Add(next);
+				dyingAlphas.Add(1f);
+					Debug.Log("Next is next! its name is + " + next.name);
+			}
+			float highestAlpha = 0;
+			for(int i = 0; i < dyingFlames.Count; i ++){
+				dyingAlphas[i] -= fadeRate;
+				if (dyingAlphas[i] > highestAlpha){
+					highestAlpha = dyingAlphas[i];
+				}
+				dyingFlames[i].SendMessage("FadeAlpha", dyingAlphas[i]);
+				
+			}
+			if (highestAlpha <= 0){
+				beingExtinguished = false;
+			}
+		}
 		
 	}
 
@@ -78,9 +116,12 @@ public class DangerBlob : ColourBeing {
 		Avatar avatar = other.gameObject.GetComponent<Avatar>();
 		bool sameColour = CheckSameColour(avatar.colour);
 		if (sameColour && diesOnImpact){
-			//Debug.Log("Bye bye");
+			Debug.Log("Bye bye");
 			Dead = true;
-				//Debug.Log("We're the same colour!");
+			if (colour.Red)
+				beingExtinguished = true;
+			
+				Debug.Log("We're the same colour!");
 			return;
 		}
 		if (sameColour) return;
@@ -88,11 +129,6 @@ public class DangerBlob : ColourBeing {
 		if (anim != null && colour.Blue){
 			anim.Play();
 		}
-		/*
-		Vector2 back = (Vector2) other.contacts[0].normal * -1;
-		avatar.transform.position += (Vector3)back * 12;
-		*/
-		
 		avatar.Jolt(12f);
 		if (!avatar.Hurt){
 			avatar.Push(knockback);
