@@ -51,6 +51,9 @@ public class ComicTransition : MonoBehaviour {
 			else if (counter > 0){
 				goto fadeIn;
 			}
+			else{
+				ChromatoseManager.manager.AnimsReady = true;
+			}
 		}
 		else{
 			//Debug.Log("not in comic");
