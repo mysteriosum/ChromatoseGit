@@ -128,7 +128,7 @@ public class Avatar : ColourBeing
 		float fadeAfter = 0.7f;
 		Vector3 velocity;
 		
-		int offset = 15;
+		int offset = 55;
 		
 		GameObject go;
 		Transform t;
@@ -566,15 +566,12 @@ public class Avatar : ColourBeing
 				getD = true;
 			}
 			
-			getS = Input.GetKeyDown(KeyCode.K);
+			getS = Input.GetKeyDown(KeyCode.Space);
 			if (Input.GetKeyDown(KeyCode.DownArrow)){
 				getS = true;
 			}
 			
-			getSpace = Input.GetKeyDown(KeyCode.Space);
-			if (getSpace){
-				
-			}
+			
 				
 		}
 			
@@ -650,9 +647,6 @@ public class Avatar : ColourBeing
 		
 					//Do I refill my colour? =O
 		
-		if (getSpace && !colour.White){
-			
-		}
 		
 					//Update my little pointer man!  TODO put this guy at the edge of the screen if the shadow is off-screen
 		/*
@@ -674,7 +668,7 @@ public class Avatar : ColourBeing
 		
 		
 															//drop particles where necessary
-		if (getW){
+		if (getW && ((!getA && !getD) || (getA && getD))){
 			accelPartTimer += Time.deltaTime;
 			if (accelPartTimer >= accelPartTiming){
 				//accelParts.Add(new MovementLines())

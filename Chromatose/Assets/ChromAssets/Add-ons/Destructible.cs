@@ -14,7 +14,7 @@ public class Destructible : MonoBehaviour {		//move sprite @ 15 frames or 0.5f s
 	public string specificName = "";
 	
 	public Vector2 poofOffset = new Vector2(0, 0);
-	
+	public Rect myColRect;
 	
 	protected bool goingToDestroy = false;
 	protected int avatarMinDist = 85;
@@ -80,8 +80,8 @@ public class Destructible : MonoBehaviour {		//move sprite @ 15 frames or 0.5f s
 		float dist = Vector3.Distance(avatar.position, myNode.position);
 		if (!avatarScript.colour.Red) return;
 		
-		if (dist < avatarMinDist){
-			ChromatoseManager.manager.UpdateAction(Actions.Destroy, Destruct);
+		if (collider.bounds.Contains(avatar.position)){
+			ChromatoseManager.manager.UpdateAction(Actions.Destroy, Action);
 		}
 		
 	}
@@ -100,6 +100,15 @@ public class Destructible : MonoBehaviour {		//move sprite @ 15 frames or 0.5f s
 		
 		anim.Play();
 		anim.CurrentClip.wrapMode = tk2dSpriteAnimationClip.WrapMode.Once;
+		
+		//TODO PUT AN ANIMATION SHOWING LOSS OF COLOUR!
+	}
+	
+	protected virtual void Action(){
+		
+		avatarScript.GiveColourTo(transform, avatar);
+		avatarScript.SetColour(0, avatarScript.colour.g, avatarScript.colour.b);
+		Invoke("Destruct", 0.5f);
 	}
 	
 	
