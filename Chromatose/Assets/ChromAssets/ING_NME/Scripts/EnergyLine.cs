@@ -52,8 +52,13 @@ public class EnergyLine : MonoBehaviour {
 		}
 		
 		if (foundAll){
-			Avatar.curEnergy += hpProvided;
-			Destroy(gameObject);
+			registered[registered.Count - 1].animationCompleteDelegate = EndAndProvideComfort;
 		}
+	}
+	
+	public void EndAndProvideComfort(tk2dAnimatedSprite sprite, int index){
+		Avatar.curEnergy += hpProvided;
+		Destroy(gameObject);
+		
 	}
 }

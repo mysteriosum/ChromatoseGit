@@ -10,6 +10,8 @@ public class Npc : ColourWell {
 	private Transform target;
 	private Transform closestNode;
 	
+	private Avatar.LoseAllColourParticle losePart;
+	
 	//for the cyan guy
 	private bool addingGreen;
 	private bool waitingForMaxGreen;
@@ -139,7 +141,12 @@ public class Npc : ColourWell {
 			return SpriteName;
 		}
 		
-		
+		public void Flip(bool left, bool bottom){
+			
+			offset = new Vector2(left? -offset.x : offset.x, bottom? -offset.y : offset.y);
+			
+			t.localPosition = (Vector3) offset;
+		}
 		
 		
 	}
@@ -152,9 +159,8 @@ public class Npc : ColourWell {
 	public string happyBubbleName = "";
 	public string sadBubbleName = "";
 	public bool waitForMessage = false;
-	//public bool hasShadowBG = false;
-	public int shadowSpriteIndex;
-
+	public bool bubbleOnLeftSide = false;
+	public bool bubbleOnBottomSide = false;
 	
 	public Vector2 fuckOffReference = new Vector2(1, 1);
 	
@@ -181,6 +187,9 @@ public class Npc : ColourWell {
 		//My bubble!
 		myBubble = new Npc.SpeechBubble(this.transform);
 		
+		if (bubbleOnLeftSide || bubbleOnBottomSide)
+			myBubble.Flip(bubbleOnLeftSide, bubbleOnBottomSide);
+		
 		//allNPCs = FindSceneObjectsOfType(typeof(Npc)) as Transform[];
 		GameObject[] allTheNPCs = GameObject.FindGameObjectsWithTag("npc");
 		List<Transform> npcList = new List<Transform>();
@@ -204,7 +213,6 @@ public class Npc : ColourWell {
 		miscPartAnim.renderer.enabled = false;
 		
 		
-		
 	}
 	
 	// Update is called once per frame
@@ -215,13 +223,16 @@ public class Npc : ColourWell {
 		//<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>
 		
 		myBubble.Main();
+		if (losePart != null){
+			losePart.Fade();
+		}
 		//.....................................................................tumbleweed
 		
 		//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
 		//<--------------CHECKS SECTION!--------------->
 		//<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>
 		
-		
+		//sad, lonely, formerly glorious section...
 		
 		//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
 		//<--------------UPDATE SECTION!--------------->
@@ -261,8 +272,7 @@ public class Npc : ColourWell {
 			miscPartAnim.color = spriteInfo.color;
 		}*/
 		
-							//Am I getting green? ...what is this for again? Hmm.... 
-		
+						//show speech bubbles! If I have a happy one or a sad one and I'm happy or sad, respectively, show that shit
 		string toShow = colour.White ? sadBubbleName : happyBubbleName;
 		Vector3 diff = avatar.transform.position - t.position;
 		
@@ -287,6 +297,21 @@ public class Npc : ColourWell {
 	}
 	
 	override public void Trigger(){
+		
+		
+		Color blendColor;
+		if (colour.Red){
+			blendColor = Color.red;
+		}
+		else if (colour.Green){
+			blendColor = Color.green;
+		}
+		else {
+			blendColor = Color.blue;
+		}
+		losePart = new Avatar.LoseAllColourParticle(avatar.particleCollection, avatar.partAnimations, t, blendColor);
+		
+		
 		avatar.TakeColour(colour);
 		colour = new Colour();
 		anim.Play("rNPC_redToGrey");

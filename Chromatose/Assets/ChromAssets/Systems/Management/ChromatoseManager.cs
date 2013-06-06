@@ -74,18 +74,34 @@ public class ChromatoseManager : MonoBehaviour {
 	private class RoomStats{
 		public List<Collectible> consumedCollectibles = new List<Collectible>();
 		public List<Comic> comics = new List<Comic>();
+		public Comic secretComic;
 		
 		public bool[] thumbsFound = {false, false, false, false, false, false, false};
 		public int thumbNumber = 0;
 		public bool secretFound = false;
 		public bool comicComplete = false;
 		
+		public int redColsUsed;
+		public int greenColsUsed;
+		public int blueColsUsed;
+		public int afterImagesUsed;
+		public float timeTaken;
+		
+		public int redColsIn;
+		public int greenColsIn;
+		public int blueColsIn;
+		public int whiteColsIn;
+		
+		public int redColsFound;
+		public int greenColsFound;
+		public int blueColsFound;
+		public int whiteColsFound;
 	
 	}
 	
 	
 	
-	private static RoomStats[] roomStats = {new RoomStats(), new RoomStats(), new RoomStats(), new RoomStats(), new RoomStats(), new RoomStats(), new RoomStats(), new RoomStats(), new RoomStats()};
+	private static RoomStats[] roomStats;
 	private int curRoom;
 	
 	private CollectiblesManager collectibles = new CollectiblesManager();
@@ -96,9 +112,22 @@ public class ChromatoseManager : MonoBehaviour {
 	public tk2dSpriteCollectionData bubbleCollection;
 	public tk2dFontData chromatoseFont;
 	
+	private bool checkedComicStats = false;
+	
+	public bool playedCompleteFlourish = false;
+	public bool playedSecretFlourish = false;
+	
+	public bool givenCols = false;
+	public GameObject rewardsGuy;
+	
+	public bool animsReady = false;
+	public bool AnimsReady{
+		set { animsReady = value; }
+	}
+	
 	public Texture backButton;
 	
-	private GameObject shavatarComicBlock;
+	//private GameObject shavatarComicBlock;
 	private ComicTransition comicTransition;
 												//COMICS AND HOW TO USE THEM
 	private bool inComic = false;
@@ -122,6 +151,9 @@ public class ChromatoseManager : MonoBehaviour {
 		}
 		else{
 			collectibles = statCols;
+		}
+		if (roomStats == null){
+			roomStats = new RoomStats[9]{new RoomStats(), new RoomStats(), new RoomStats(), new RoomStats(), new RoomStats(), new RoomStats(), new RoomStats(), new RoomStats(), new RoomStats()};
 		}
 		/*
 		if (hud == null){
@@ -199,6 +231,11 @@ public class ChromatoseManager : MonoBehaviour {
 		
 		actionTexture = hud.absorbAction;
 		shownActionTexture = actionTexture;
+		
+		rewardsGuy = GameObject.FindWithTag("rewardsGuy");
+		if (!rewardsGuy){
+			Debug.LogWarning("Hey doofus! There's no rewards guy in this level! Is there even a comic!?");
+		}
 	}
 	
 	
@@ -213,6 +250,7 @@ public class ChromatoseManager : MonoBehaviour {
 		curRoom = Application.loadedLevel;
 		GameObject[] frames = GameObject.FindGameObjectsWithTag("comicFrame");
 		int counter = 0;
+		/*
 		do{
 			roomStats[curRoom].comics.Add(null);
 			counter ++;
@@ -223,16 +261,17 @@ public class ChromatoseManager : MonoBehaviour {
 			}
 		}
 		while(roomStats[curRoom].comics.Count < frames.Length);
-		
+		*/
 		foreach (GameObject go in frames){
 			Comic strip = go.GetComponent<Comic>();
-//			Debug.Log(strip);
-			roomStats[curRoom].comics[strip.mySlotIndex] = strip;
-			strip.gameObject.SetActive(false);
-		}
-		shavatarComicBlock = GameObject.Find("pre_shavatarComicBlock");
-		if (!shavatarComicBlock){
-			Debug.LogWarning("Hey loser! There's no Shavatar Comic Block in this level!");
+			if (strip.isSecret){
+				roomStats[curRoom].secretComic = strip;
+			}
+			else{
+				roomStats[curRoom].comics.Add(strip);
+				strip.gameObject.SetActive(false);
+			}
+			
 		}
 		
 		comicTransition = GameObject.Find("pre_comicLoader").GetComponent<ComicTransition>();
@@ -242,13 +281,41 @@ public class ChromatoseManager : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	
+	void TriggerQuestionMark(){
+		
+		GameObject question = GameObject.FindWithTag("questionMark");
+		question.SendMessage("Trigger");
+	}
 	void Update () {
 		
-		if (inComic){
+		if (inComic && animsReady && !checkedComicStats){
+			
+			roomStats[curRoom].comicComplete = CheckComicStats();
+			checkedComicStats = true;
+			
 			if (roomStats[curRoom].comicComplete){
-				//com
+				//TODO PUT ANIMATION COMPLETE ANIMATION!
+				// do I have the secret too? play special anim : play normal anim;
+				
+				if (!roomStats[curRoom].secretFound){
+					Instantiate(comicCompleteAnim);
+					tk2dAnimatedSprite anim = comicCompleteAnim.GetComponent<tk2dAnimatedSprite>();
+					anim.Play();
+					TriggerQuestionMark();
+				}
+				else{
+					//SUPER SECRET ANIM TIME!
+				}
+				
+				if (!givenCols){
+					givenCols = true;
+					rewardsGuy.SendMessage("Trigger");
+				}
 			}
+		}
+		else if (!inComic){
+			animsReady = false;
+			checkedComicStats = false;
 		}
 		
 		if (Input.GetKeyDown(KeyCode.PageUp)){
@@ -450,7 +517,7 @@ public class ChromatoseManager : MonoBehaviour {
 	private int barMinY;
 	private int barMaxY;
 	
-	private int tankX = 1216;
+	private int tankX = 1219;
 	private int tankY = 23;
 	
 	
@@ -751,6 +818,9 @@ public class ChromatoseManager : MonoBehaviour {
 			
 			counter ++;
 		}
+		if (roomStats[curRoom].secretFound){
+			roomStats[curRoom].secretComic.gameObject.SetActive(true);
+		}
 	}
 	
 	public void CloseComic(){
@@ -761,23 +831,70 @@ public class ChromatoseManager : MonoBehaviour {
 	
 	
 	public void FindComic(int index){
-		roomStats[curRoom].thumbsFound[index] = true;
-		roomStats[curRoom].thumbNumber ++;
-		showingCol[4] = true;
+		//roomStats[curRoom].comics[index].SendMessage("FadeAlpha", 1f);
+		
+		if (index == roomStats[curRoom].comics.Count){
+			
+			roomStats[curRoom].secretFound = true;
+			//TODO PLAY SUPER ANIMATION OF GETTING A NEW HEALTH CONTAINER
+			
+			bool foundEmpty = false;
+			bool foundNone = false;
+			
+			for (int i = 0; i < 3; i ++){
+				for (int j = 0; j < 5; j ++){
+					if (Avatar.tankStates[i, j] == TankStates.Empty && !foundEmpty){
+						Avatar.tankStates[i, j] = TankStates.Full;
+						foundEmpty = true;
+					}
+					if (Avatar.tankStates[i, j] == TankStates.None){
+						foundNone = true;
+						Avatar.tankStates[i, j] = foundEmpty? TankStates.Empty : TankStates.Full;
+						break;
+					}
+				}
+				if (foundEmpty && foundNone) break;
+			}
+			
+			if (!foundEmpty && !foundNone){
+				Avatar.curEnergy = 100;
+				Debug.LogWarning("You fucked up because there isn't enough room for all these tanks. WTH! I Warned you!");
+			}
+		}
+		else{
+			roomStats[curRoom].thumbsFound[index] = true;
+			roomStats[curRoom].thumbNumber ++;
+			showingCol[4] = true;
+		}
+		
 	}
 	
 	public bool CheckComicStats(){
+		
+		int i = 0;
+		foreach (Comic comic in roomStats[curRoom].comics){
+			if (roomStats[curRoom].thumbsFound[i] && !comic.InMySlot){
+				comic.InMySlot = true;
+				//TODO PLAY ANIMATION FOR COMIC COMPLETE!
+			}
+				
+			i++;
+		}
+		
+		if (roomStats[curRoom].secretFound){
+			roomStats[curRoom].secretComic.InMySlot = true;
+		}
 		
 		foreach (Comic c in roomStats[curRoom].comics){
 			if (!c.InMySlot){
 				return false;
 			}
 		}
+		roomStats[curRoom].comicComplete = true;
 								//turns out the comic is successful!
+		//TODO PUT COLLECTIBLE ACTIVATION HERE
+		//shavatarComicBlock.SetActive(false);
 		
-		shavatarComicBlock.SetActive(false);
-		
-		Instantiate(comicCompleteAnim);
 		return true;
 		
 	}

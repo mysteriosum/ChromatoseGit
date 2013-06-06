@@ -6,12 +6,14 @@ using System.Collections.Generic;
 public class DangerBlob : ColourBeing {
 	public float knockback = 50f;
 	public bool diesOnImpact = false;
-	private tk2dSprite[] myFlames;
+	private tk2dAnimatedSprite[] myFlames;
 	private bool beingExtinguished = false;
-	private List<tk2dSprite> dyingFlames = new List<tk2dSprite>();
+	private List<tk2dAnimatedSprite> dyingFlames = new List<tk2dAnimatedSprite>();
 	private List<float> dyingAlphas = new List<float>();
 	private float fadeRate = 0.05f;
 	private Transform avatarT;
+	private string flameName = "flame";
+	private int flameNumber = 11;
 	
 	[System.SerializableAttribute]
 	public class Movement{
@@ -68,7 +70,16 @@ public class DangerBlob : ColourBeing {
 		avatarT = GameObject.FindWithTag("avatar").transform;
 		anim = GetComponent<tk2dAnimatedSprite>();
 		if (colour.Red){
-			myFlames = GetComponentsInChildren<tk2dSprite>();
+			myFlames = GetComponentsInChildren<tk2dAnimatedSprite>();
+			
+			GameObject obj = Resources.Load("animref_nme") as GameObject;
+			tk2dSpriteAnimation nmeAnim = obj.GetComponent<tk2dAnimatedSprite>().anim;
+			foreach (tk2dAnimatedSprite flanim in myFlames){
+				int i = Random.Range(1, 11);
+				flanim.anim = nmeAnim;
+				flanim.Play(flameName + i.ToString());
+				flanim.transform.rotation = Quaternion.identity;
+			}
 		}
 	}
 	
@@ -77,9 +88,9 @@ public class DangerBlob : ColourBeing {
 		if (colour.White)
 		movement.Move();
 		if (beingExtinguished){
-			tk2dSprite next = null;
+			tk2dAnimatedSprite next = null;
 			float shortestDist = 1000;
-			foreach (tk2dSprite sprite in myFlames){
+			foreach (tk2dAnimatedSprite sprite in myFlames){
 				float dist = Vector3.Distance(sprite.transform.position, avatarT.position);
 				if (dist < shortestDist && !dyingFlames.Contains(sprite)){
 					next = sprite;

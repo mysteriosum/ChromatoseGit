@@ -5,8 +5,14 @@ public class Comic : MonoBehaviour {
 
 	private bool inMySlot;
 	public bool InMySlot{
-		get{ return inMySlot;}
+		get { return inMySlot; }
+		set { 
+			inMySlot = value; 
+			fading = value;
+		}
 	}
+	private bool fading = false;
+	private float fadeRate = 0.05f;
 	
 	private GameObject go;
 	private Transform t;
@@ -14,6 +20,8 @@ public class Comic : MonoBehaviour {
 	private BoxCollider bc;
 	private bool beingDragged = false;
 	private int currentSlot = -1;
+	
+	
 	
 	private ChromatoseManager manager;
 	private Rect myRect;
@@ -26,6 +34,7 @@ public class Comic : MonoBehaviour {
 	
 	
 	public int mySlotIndex = 0;
+	public bool isSecret = false;
 	
 	public static bool comicSelected = false;
 	public static bool canDrag = true;
@@ -39,11 +48,18 @@ public class Comic : MonoBehaviour {
 		bc = GetComponent<BoxCollider>();
 		manager = ChromatoseManager.manager;
 		bg = GameObject.Find("pre_comicBG").GetComponent<ComicBackground>();
-		
+		spr.SendMessage("FadeAlpha", 0f);
 		myRect = new Rect(transform.position.x - bc.size.x / 2, transform.position.y - bc.size.y / 2, bc.size.x, bc.size.y);
 	}
 	
 	void Update(){
+		if (fading){
+			spr.SendMessage("FadeAlpha", spr.color.a + fadeRate);
+			if (spr.color.a >= 1f){
+				fading = false;
+			}
+		}
+		/*
 		if (Comic.comicComplete){
 			return;
 		}
@@ -98,7 +114,7 @@ public class Comic : MonoBehaviour {
 		}
 		
 		inMySlot = currentSlot == mySlotIndex;			//a check to see if I'm in the right slot
-		
+		*/
 		
 	}
 	
