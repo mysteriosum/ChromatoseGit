@@ -73,6 +73,5 @@ public class EnergyLine : MonoBehaviour {
 	
 	void FadeOut(tk2dAnimatedSprite sprite, int index){
 		sprite.gameObject.SendMessage("Trigger");
-		Debug.Log("Should prolly trigger");
 	}
 }

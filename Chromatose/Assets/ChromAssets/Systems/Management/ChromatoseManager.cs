@@ -19,6 +19,7 @@ public enum TankStates{
 	None,
 	Empty,
 	Full,
+	Flashing,
 }
 
 public class ChromatoseManager : MonoBehaviour {
@@ -222,7 +223,7 @@ public class ChromatoseManager : MonoBehaviour {
 		skin = Resources.Load("Menus/HUD_skin") as GUISkin;
 		
 		
-		barMinY = 23;
+		barMinY = 28;
 		barMaxY = barMinY + hud.energyBar.height;
 		barX = 1192;
 		barY = barMinY;
@@ -531,15 +532,16 @@ public class ChromatoseManager : MonoBehaviour {
 	
 	private bool flashyBar = false;
 	private int flashyBarTimer = 0;
-	private int flashyBarTiming = 3;
+	private int flashyBarTiming = 20;
 	
 	public void Healed(){
 		flashyBar = true;
 		flashyBarTimer = flashyBarTiming;
+		Debug.Log("HEYR");
 	}
 	
 	private int tankX = 1219;
-	private int tankY = 23;
+	private int tankY = 28;
 	
 	
 	private Vector2 textOffset = new Vector2 (55f, 8);
@@ -590,9 +592,9 @@ public class ChromatoseManager : MonoBehaviour {
 			Rect bColRect = new Rect(colX[2], colY[2], hud.blueCollectible.width, hud.blueCollectible.height);
 			Rect wColRect = new Rect(colX[3], colY[3], hud.whiteCollectible.width, hud.whiteCollectible.height);
 			Rect comicRect = new Rect(colX[4], colY[4], hud.comicCounter.width, hud.comicCounter.height);
-			Rect actionRect = new Rect(1199, 134, 50, 52);
+			Rect actionRect = new Rect(1199, 141, 50, 52);
 			Rect energyRect = new Rect(barX, barY, hud.energyBar.width, barMaxY - barY);
-			Rect flashyRect = new Rect(barX, barMinY, hud.energyBarFlash.width, hud.energyBarFlash.height);
+			Rect flashyRect = new Rect(barX - 7, barMinY - 8, hud.energyBarFlash.width, hud.energyBarFlash.height);
 			Rect tankRect = new Rect(tankX, tankY, 80, 128);
 			
 			GUI.DrawTexture(mainRect, hud.mainBox);
@@ -647,8 +649,9 @@ public class ChromatoseManager : MonoBehaviour {
 			GUI.EndGroup();
 			
 			if (flashyBar){
+				Debug.Log("HAR HAR");
 				GUI.BeginGroup(flashyRect);
-					GUI.DrawTexture(flashyRect, hud.energyBarFlash);
+					GUI.DrawTexture(new Rect(0, 0, hud.energyBarFlash.width, hud.energyBarFlash.height), hud.energyBarFlash);
 				GUI.EndGroup();
 			}
 			
