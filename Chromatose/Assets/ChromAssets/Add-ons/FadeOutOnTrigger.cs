@@ -21,7 +21,6 @@ public class FadeOutOnTrigger : MonoBehaviour {
 	}
 	
 	void Trigger(){
-		Debug.Log("Yep:)");
 		fadingOut = true;
 	}
 }
