@@ -10,7 +10,7 @@ public class EnergyLine : MonoBehaviour {
 	private Transform avatarT;
 	public int hpProvided = 50;
 	
-	
+	private bool finished = false;
 	
 	private bool active = false;
 	public bool Active{
@@ -26,7 +26,7 @@ public class EnergyLine : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if (!active) return;
+		if (!active || finished) return;
 		bool foundOne = false;
 		bool foundAll = false;
 		foreach(tk2dAnimatedSprite anim in chilluns){
@@ -49,6 +49,7 @@ public class EnergyLine : MonoBehaviour {
 			active = false;
 			registered.Clear();
 			BroadcastMessage("StopAndResetFrame");
+			Debug.Log("Didn't find, reseting");
 		}
 		
 		if (foundAll){
@@ -58,7 +59,20 @@ public class EnergyLine : MonoBehaviour {
 	
 	public void EndAndProvideComfort(tk2dAnimatedSprite sprite, int index){
 		Avatar.curEnergy += hpProvided;
-		Destroy(gameObject);
+		ChromatoseManager.manager.Healed();
+		active = false;
+		foreach (tk2dAnimatedSprite anim in chilluns){
+			anim.Play("energyLines_complete");
+			anim.CurrentClip.wrapMode = tk2dSpriteAnimationClip.WrapMode.Once;
+			anim.gameObject.AddComponent("FadeOutOnTrigger");
+			anim.animationCompleteDelegate = FadeOut;
+			anim.collider.enabled = false;
+		}
 		
+	}
+	
+	void FadeOut(tk2dAnimatedSprite sprite, int index){
+		sprite.gameObject.SendMessage("Trigger");
+		Debug.Log("Should prolly trigger");
 	}
 }

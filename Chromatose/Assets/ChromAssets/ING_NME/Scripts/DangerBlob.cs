@@ -113,6 +113,7 @@ public class DangerBlob : ColourBeing {
 			}
 			if (highestAlpha <= 0){
 				beingExtinguished = false;
+				DeadAndGone();
 			}
 		}
 		
