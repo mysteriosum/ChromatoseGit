@@ -46,7 +46,7 @@ public class Avatar : ColourBeing
 	public float accelPartTiming = 0.3f;
 	public float accelPartTimingBase = 0.3f;
 	
-	
+	private Eye travisMcGee;
 	//inputs. Up, left and right will also work, but getW seems intuitive to me
 	protected bool getW;
 	protected bool getA;
@@ -122,6 +122,28 @@ public class Avatar : ColourBeing
 								//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
 								//<------------Particle classes!!------------>
 								//<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>
+	private class Eye {
+		private tk2dSprite spriteInfo;
+		private GameObject go;
+		private Transform t;
+		private Transform avatarT;
+		private Vector3 offset = new Vector3(-6, -2, -2);
+		
+		public Eye (Transform avatarT, tk2dSpriteCollectionData spriteData){
+			go = new GameObject("AvatarEye");
+			t = go.transform;
+			tk2dSprite.AddComponent<tk2dSprite>(go, spriteData, "eye");
+			spriteInfo = go.GetComponent<tk2dSprite>();
+			this.avatarT = avatarT;
+			t.parent = avatarT;
+			t.localPosition = offset;
+			t.localRotation = Quaternion.identity;
+		}
+		
+		public void Blend(float r, float g, float b){
+			spriteInfo.color = new Color(r, g, b, 1f);
+		}
+	}
 	private class MovementLines {
 		float baseSpeed = 50f;
 		float fadeRate = 0.05f;
@@ -441,6 +463,9 @@ public class Avatar : ColourBeing
 				};
 			
 		}
+		
+		//MAKE ME AN EYE BABY
+		travisMcGee = new Eye(t, particleCollection);
 	}
 	
 	
@@ -476,6 +501,8 @@ public class Avatar : ColourBeing
 			r = colour.r;
 			g = colour.g;
 		}
+		
+		travisMcGee.Blend(r, g, b);
 		
 		shownColour = new Color(r/255f, g/255f, b/255f, Invisible);		//TODO : proper colour on 
 		
@@ -713,6 +740,7 @@ public class Avatar : ColourBeing
 				loseAllColourPart = null;
 			}
 		}
+		
 		
 		foreach (GiveColourParticle part in giveColourParts){
 			part.Main();
