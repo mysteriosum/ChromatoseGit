@@ -576,19 +576,19 @@ public class Avatar : ColourBeing
 								//<-------------Getting Inputs!-------------->
 								//<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>
 		if (canControl){
-			getW = Input.GetKey(KeyCode.J);
+			getW = Input.GetKey(KeyCode.O);
 			if (Input.GetKey (KeyCode.UpArrow)){
 				getW = true;
 				
 			}
 			
 			
-			getA = Input.GetKey(KeyCode.D);
+			getA = Input.GetKey(KeyCode.Q);
 			if (Input.GetKey (KeyCode.LeftArrow)){
 				getA = true;
 			}
 			
-			getD = Input.GetKey(KeyCode.F);
+			getD = Input.GetKey(KeyCode.W);
 			if (Input.GetKey (KeyCode.RightArrow)){
 				getD = true;
 			}

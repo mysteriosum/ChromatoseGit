@@ -120,7 +120,7 @@ public class DangerBlob : ColourBeing {
 	}
 
 	
-	void OnCollisionStay(Collision other){
+	void OnCollisionEnter(Collision other){
 		if (other.gameObject.tag != "avatar"){
 			return;
 		}
@@ -141,12 +141,7 @@ public class DangerBlob : ColourBeing {
 		if (anim != null && colour.Blue){
 			anim.Play();
 		}
-		avatar.Jolt(12f);
-		if (!avatar.Hurt){
-			avatar.Push(knockback);
-		}
-		avatar.SendMessage("Ouch", gameObject); //we're going to call this later, k? But with argumetns'
-		
+		ChromatoseManager.manager.Death();
 		
 		//avatar.Damage();    //remove HP from the avatar, but this isn't implemented yet
 	}
