@@ -15,7 +15,7 @@ public class ChromatoseCamera : MonoBehaviour {
 	void Start () {
 		manager = ChromatoseManager.manager;
 		if (!avatar){
-			avatar = GameObject.Find("Avatar").transform;
+			avatar = GameObject.FindWithTag("avatar").transform;
 		}
 		t = GetComponent<Transform>();
 		cam2d = GetComponent<tk2dCamera>();
