@@ -53,7 +53,7 @@ public class Npc : ColourWell {
 	public class SpeechBubble{				//THE BUBBLE AND ITS DECLARATION!
 		//variables of various types
 		public GameObject go;
-		public tk2dSprite spriteInfo;
+		public tk2dSprite spriteInfo;		//TODO MAKE THIS AN ANIMATION!
 		private Transform t;
 		private Renderer r;
 		private Transform parent;
@@ -88,23 +88,27 @@ public class Npc : ColourWell {
 			set{ spriteInfo.SetSprite(value); }
 		}
 		
-		public SpeechBubble(Transform toFollow){  //constructor!
+		public SpeechBubble(Transform toFollow, tk2dSpriteCollectionData sprcol){  //constructor!
 			
 			go = new GameObject(toFollow.name + "Bubble");
 			parent = toFollow;
-			tk2dSprite.AddComponent(go, ChromatoseManager.manager.bubbleCollection, 0);
+			tk2dSprite.AddComponent(go, sprcol, 0);
 			spriteInfo = go.GetComponent<tk2dSprite>();
 			
 			r = go.renderer;
 			t = go.transform;
-			t.parent = parent;
-			t.localPosition = (Vector3) offset;
+			//t.parent = parent;
+			//t.localPosition = (Vector3) offset;
 			GameObject numberObj = new GameObject(go.name + "Number");
 			myNumber = numberObj.AddComponent<tk2dTextMesh>();
 			myNumber.font = ChromatoseManager.manager.chromatoseFont;
 			myNumber.anchor = TextAnchor.MiddleCenter;
 			myNumber.maxChars = 1;
 			myNumber.Commit();
+		}
+		
+		public SpeechBubble(Transform toFollow): this(toFollow, ChromatoseManager.manager.bubbleCollection)
+		{
 		}
 		
 		public void Main(){
@@ -117,12 +121,12 @@ public class Npc : ColourWell {
 				r.enabled = false;
 				Blend(Color.white);
 			}
-			//t.position = parent.position + (Vector3)offset;
+			t.position = parent.position + (Vector3)offset;
 			myNumber.transform.position = t.position + digitOffset;
 			
 		}
 		
-		public void ShowBubbleFor(string bubble, float time, int digit){
+		public void ShowBubbleFor(string bubble, float time, int digit){		//TODO THIS SHOULD ANIMATE THE BUBBLE
 			string myDigitString = digit > 0? digit.ToString() : "";
 			SpriteName = bubble + myDigitString;
 			timer = time;

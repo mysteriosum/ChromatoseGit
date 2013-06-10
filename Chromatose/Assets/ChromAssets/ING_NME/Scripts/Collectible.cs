@@ -16,6 +16,8 @@ public class Collectible : ColourBeing {
 	private bool justPutBack = false;
 	private int clearDist = 150;
 	private bool isShadow = false;
+	private Transform originalPosition;
+	private Transform target;
 	
 	private string idleAnim;
 	private string takeAnim;
@@ -59,7 +61,7 @@ public class Collectible : ColourBeing {
 		avatar = GameObject.FindGameObjectWithTag("avatar").GetComponent<Avatar>();
 		t = transform;
 		avatarT = avatar.transform;
-		velocity = Random.insideUnitCircle.normalized * Random.Range(90, 135);
+		velocity = Random.insideUnitCircle.normalized * Random.Range(60, 85);
 		
 		anim = gameObject.GetComponent<tk2dAnimatedSprite>();
 	}
@@ -79,6 +81,11 @@ public class Collectible : ColourBeing {
 					anim.animationCompleteDelegate = GoneForever;
 					t.parent = null;
 					
+				}
+				else{
+					if (colour.Red){
+						avatar.OnRedCol = true;
+					}
 				}
 				if (isShadow){
 					avatar.CancelOutline();
@@ -121,13 +128,30 @@ public class Collectible : ColourBeing {
 		
 	red:
 		velocity = Vector2.Lerp(velocity, Vector2.zero, 0.0075f);
+		if (velocity.magnitude < 1){
+			velocity = Vector2.zero;
+		}
 		homeTimer += Time.deltaTime;
-		Vector2 distToTarget = (Vector2)(collector.position - t.position);
+		Vector2 distToTarget = (Vector2)(target.position - t.position);
 		Vector2 redVector = Vector2.Lerp(distToTarget * 5, Vector2.zero, homeTiming / homeTimer);
-		t.Translate((redVector + velocity) * Time.deltaTime);
-		if (distToTarget.magnitude < 5){
-			Gone = true;
-			dropped = false;
+		Vector2 displacement = (redVector + velocity) * Time.deltaTime;
+		if (displacement.magnitude < 1){
+			displacement.Normalize();
+			displacement *= 1;
+		}
+		
+		t.Translate(displacement);
+		Debug.Log(displacement + " is how far I'm moving, and " + distToTarget + " is how far I am from my target");
+		if (distToTarget.magnitude < 10){
+			if (target == collector){
+				velocity = Random.insideUnitCircle.normalized * Random.Range(90, 135);
+				target = originalPosition;
+				collector.parent.SendMessage("TurnRed");
+			}
+			else{
+				dropped = false;
+				homeTimer = 0;
+			}
 		}
 		
 		return;
@@ -157,8 +181,12 @@ public class Collectible : ColourBeing {
 		}
 		if (colour.Red){
 			collector = VectorFunctions.FindClosestOfTag(t.position, "redCollector", 10000);
-			anim.Play(anim.GetClipByName("wColl_lose"), 0);		//TODO : CHANGE THIS TO RED COLLECTIBLE ANIM, PLEAZE
+			anim.Play(anim.GetClipByName("rColl_idle"), 0);		//TODO : CHANGE THIS TO RED COLLECTIBLE ANIM, PLEAZE
 			t.position = avatar.t.position;
+			originalPosition = new GameObject(name + " start point").transform;
+			originalPosition.position = t.position + (Vector3) velocity.normalized * 10;
+			target = collector;
+			//TODO : Make the velocity start by pointing away from the target
 		}
 	}
 	

@@ -47,6 +47,7 @@ public class Avatar : ColourBeing
 	public float accelPartTimingBase = 0.3f;
 	
 	private Eye travisMcGee;
+	private Npc.SpeechBubble bubble;
 	//inputs. Up, left and right will also work, but getW seems intuitive to me
 	protected bool getW;
 	protected bool getA;
@@ -98,7 +99,36 @@ public class Avatar : ColourBeing
 	private float speedBoostCur = 1f;
 	private int speedBoostCounter = 0;
 	private int speedBoostMax = 50;
-	
+		
+								//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
+								//<-----------Check for bubbles!------------->
+								//<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>
+	private bool onRedCol;
+	public bool OnRedCol{
+		get { return onRedCol; }
+		set { onRedCol = value; }
+	}
+	private bool onRedWell;
+	public bool OnRedWell{
+		get { return onRedWell; }
+		set { onRedWell = value; }
+	}
+	private bool hasChangedColour = false;
+	private bool atDestructible = false;
+	public bool AtDestructible{
+		get { return atDestructible; }
+		set { atDestructible = value; }
+	}
+	private bool hasDestroyed = false;
+	public bool HasDestroyed{
+		get { return hasDestroyed; }
+		set { hasDestroyed = false; }
+	}
+	private bool wantsToRelease = false;
+	public bool WantsToRelease{
+		get { return wantsToRelease; }
+		set { wantsToRelease = value; }
+	}
 	
 								//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
 								//<-----------Dependent objects!!------------>
@@ -111,6 +141,9 @@ public class Avatar : ColourBeing
 	private GameObject outlinePointer;
 	private int teleportCost = 2;
 	private bool hasOutline = false;
+	public bool HasOutline{
+		get { return hasOutline; }
+	}
 	
 	private GameObject[] allTheFaders;
 	
@@ -144,6 +177,7 @@ public class Avatar : ColourBeing
 			spriteInfo.color = new Color(r, g, b, 1f);
 		}
 	}
+	
 	private class MovementLines {
 		float baseSpeed = 50f;
 		float fadeRate = 0.05f;
@@ -409,7 +443,7 @@ public class Avatar : ColourBeing
 	{
 		
 		
-		
+		manager = ChromatoseManager.manager;
 		movement = GetComponent<Movement>();
 		basicTurnSpeed = movement.rotator.rotationRate;
 		basicAccel = movement.thruster.accel;
@@ -418,7 +452,9 @@ public class Avatar : ColourBeing
 		for (int i = 0; i < angles.Length; i++){
 			angles[i] = i * 22.5f;
 		}
+		
 		t = this.transform;
+		t.rotation = Quaternion.identity;
 												//initializing my particle objects, as necessary
 		spriteInfo = GetComponent<tk2dSprite>();
 		turboPart = new TurboParticle(particleCollection, partAnimations, t);
@@ -466,6 +502,8 @@ public class Avatar : ColourBeing
 		
 		//MAKE ME AN EYE BABY
 		travisMcGee = new Eye(t, particleCollection);
+		bubble = new Npc.SpeechBubble (t, particleCollection);
+		
 	}
 	
 	
@@ -638,10 +676,11 @@ public class Avatar : ColourBeing
 												//Self-made checkpoints! Or whatever you want to call it
 		
 		if (getS){
+			/*
 			if (tankStates[0, 0] != TankStates.Full){
 				Debug.Log("NOT ENOUGH NRJ FOR AFTER_IMAGE!!!");		//	TODO Make this into an actual function! Play an animation or something, yano?
 				goto end;
-			}
+			}*/
 			
 			if (!hasOutline){
 				outline = new GameObject("Outline");
@@ -651,6 +690,7 @@ public class Avatar : ColourBeing
 				
 				
 				hasOutline = true;
+				
 				foreach (GameObject go in allTheFaders){
 					go.SendMessage("SaveState");
 				}
@@ -660,7 +700,7 @@ public class Avatar : ColourBeing
 				
 				t.position = outline.transform.position;
 				t.rotation = outline.transform.rotation;
-				curEnergy = -10;
+				
 				Destroy(outline);
 				hasOutline = false;
 				//velocity = Vector2.zero;				//TEST For now I like the idea of keeping your current movement for when you go back. 
@@ -798,6 +838,38 @@ public class Avatar : ColourBeing
 			}
 			
 		}
+		
+								//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
+								//<------------Update my bubble!------------->
+								//<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>
+		switch(Application.loadedLevelName){
+		case ("Module1_Scene1"):
+			if (onRedCol && manager.GetCollectibles(Couleur.red) == 0){
+				bubble.ShowBubbleFor("avatarBubble_redColor1", 0.3f);
+				onRedCol = false;
+			}
+			
+			if (!colour.White && !hasChangedColour){
+				hasChangedColour = true;
+			}
+			if (onRedWell && !hasChangedColour){
+				bubble.ShowBubbleFor("avatarBubble_P1", 0.4f);
+				onRedWell = false;
+			}
+			
+			if (atDestructible && !hasDestroyed){
+				bubble.ShowBubbleFor(colour.Red? "avatarBubble_P1" : "avatarBubble_redColor2", 0.2f);
+				atDestructible = false;
+			}
+			
+			if (wantsToRelease){
+				bubble.ShowBubbleFor("avatarBubble_fire1", 0.3f);
+				wantsToRelease = false;
+			}
+			
+			break;
+		}
+		bubble.Main();
 		
 	end:
 		if (previousVelocity != velocity)

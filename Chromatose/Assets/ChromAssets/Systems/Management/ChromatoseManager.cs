@@ -291,7 +291,8 @@ public class ChromatoseManager : MonoBehaviour {
 	void TriggerQuestionMark(){
 		
 		GameObject question = GameObject.FindWithTag("questionMark");
-		question.SendMessage("Trigger");
+		if (question)
+			question.SendMessage("Trigger");
 	}
 	void Update () {
 		
@@ -594,7 +595,7 @@ public class ChromatoseManager : MonoBehaviour {
 			Rect wColRect = new Rect(colX[3], colY[3], hud.whiteCollectible.width, hud.whiteCollectible.height);
 			Rect comicRect = new Rect(colX[4], colY[4], hud.comicCounter.width, hud.comicCounter.height);
 			Rect actionRect = new Rect(1199, 141, 50, 52);
-			Rect energyRect = new Rect(barX, barY, hud.energyBar.width, barMaxY - barY);
+			Rect energyRect = new Rect(barX, barMinY, hud.energyBar.width, hud.energyBar.height);
 			Rect flashyRect = new Rect(barX - 7, barMinY - 8, hud.energyBarFlash.width, hud.energyBarFlash.height);
 			Rect tankRect = new Rect(tankX, tankY, 80, 128);
 			
@@ -643,18 +644,21 @@ public class ChromatoseManager : MonoBehaviour {
 			
 			GUI.EndGroup();
 			
-			GUI.BeginGroup(energyRect);
-				Rect drawRect = new Rect(0, barMinY - barY, hud.energyBar.width, hud.energyBar.height);
-			
-				GUI.DrawTexture(drawRect, hud.energyBar);
-			GUI.EndGroup();
-			
+			if (!avatar.HasOutline){
+				
+				GUI.BeginGroup(energyRect);
+					Rect drawRect = new Rect(0, 0, hud.energyBar.width, hud.energyBar.height);
+				
+					GUI.DrawTexture(drawRect, hud.energyBar);
+				GUI.EndGroup();
+			}
+			/*
 			if (flashyBar){
 				GUI.BeginGroup(flashyRect);
 					GUI.DrawTexture(new Rect(0, 0, hud.energyBarFlash.width, hud.energyBarFlash.height), hud.energyBarFlash);
 				GUI.EndGroup();
 			}
-			/*
+			
 			GUI.BeginGroup(tankRect);
 				for (int i = 0; i < 3; i ++){
 					for (int j = 0; j < 5; j ++){
