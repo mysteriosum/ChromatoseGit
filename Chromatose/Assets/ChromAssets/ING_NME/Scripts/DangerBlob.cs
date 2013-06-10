@@ -6,6 +6,7 @@ using System.Collections.Generic;
 public class DangerBlob : ColourBeing {
 	public float knockback = 50f;
 	public bool diesOnImpact = false;
+	public bool isBlackFlame = false;
 	private tk2dAnimatedSprite[] myFlames;
 	private bool beingExtinguished = false;
 	private List<tk2dAnimatedSprite> dyingFlames = new List<tk2dAnimatedSprite>();
@@ -14,6 +15,7 @@ public class DangerBlob : ColourBeing {
 	private Transform avatarT;
 	private string flameName = "flame";
 	private int flameNumber = 11;
+	
 	
 	[System.SerializableAttribute]
 	public class Movement{
@@ -69,12 +71,13 @@ public class DangerBlob : ColourBeing {
 		movement.t = transform;
 		avatarT = GameObject.FindWithTag("avatar").transform;
 		anim = GetComponent<tk2dAnimatedSprite>();
-		if (colour.Red){
+		if (colour.Red || isBlackFlame){
 			myFlames = GetComponentsInChildren<tk2dAnimatedSprite>();
 			
 			GameObject obj = Resources.Load("animref_nme") as GameObject;
 			tk2dSpriteAnimation nmeAnim = obj.GetComponent<tk2dAnimatedSprite>().anim;
 			foreach (tk2dAnimatedSprite flanim in myFlames){
+				if (flanim == GetComponent<tk2dAnimatedSprite>()) continue;
 				int i = Random.Range(1, 11);
 				flanim.anim = nmeAnim;
 				flanim.Play(flameName + i.ToString());

@@ -34,7 +34,11 @@ public class FireBooth : TollBooth {
 	}
 	
 	void TurnRed(){
-		
+		gameObject.SendMessage("Trigger");
+		foreach (Transform t in GetComponentsInChildren<Transform>(true)){
+			if (t == transform) continue;
+			t.SendMessage("Trigger");
+		}
 		reddening = true;
 		GetComponent<DangerBlob>().SetColour(255, 0, 0);
 		anim.color = Color.red;

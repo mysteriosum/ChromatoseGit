@@ -30,5 +30,9 @@ public class GenericTrigger : MonoBehaviour {
 	
 	}
 	
+	void Trigger(){
+		triggered = triggered? false : true;
+	}
+	
 	
 }
