@@ -72,18 +72,20 @@ public class Destructible : MonoBehaviour {		//move sprite @ 15 frames or 0.5f s
 		poof = Instantiate(poof) as GameObject;
 		poof.SetActive(false);
 		anim = poof.GetComponent<tk2dAnimatedSprite>();
-		anim.animationEventDelegate = NextImage/*(anim, anim.CurrentClip, anim.CurrentClip.frames[14], 14)*/;
+		anim.animationEventDelegate = NextImage;
 		anim.animationCompleteDelegate = Done;	
 	}
 	
 	protected virtual void Checks(){
 		float dist = Vector3.Distance(avatar.position, myNode.position);
-		if (!avatarScript.colour.Red) return;
 		
 		if (collider.bounds.Contains(avatar.position)){
 			ChromatoseManager.manager.UpdateAction(Actions.Destroy, Action);
+			avatarScript.AtDestructible = true;
 		}
 		
+		
+		if (!avatarScript.colour.Red) return;
 	}
 	
 	protected virtual void Destruct(){
@@ -105,7 +107,7 @@ public class Destructible : MonoBehaviour {		//move sprite @ 15 frames or 0.5f s
 	}
 	
 	protected virtual void Action(){
-		
+		avatarScript.HasDestroyed = true;
 		avatarScript.GiveColourTo(transform, avatar);
 		avatarScript.SetColour(0, avatarScript.colour.g, avatarScript.colour.b);
 		Invoke("Destruct", 0.5f);

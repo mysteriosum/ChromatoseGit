@@ -30,6 +30,8 @@ public class ColourWell : ColourBeing {
 	void OnTriggerStay(Collider collider){
 		
 		if (collider != avatar.collider) return;
+		if (colour.Red)
+			avatar.OnRedWell = true;
 		
 		manager.UpdateAction(Actions.Absorb, Trigger);		//this tells the manager that I want to do something. But I'll have to wait in line!
 		

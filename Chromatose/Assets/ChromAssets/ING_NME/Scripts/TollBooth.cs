@@ -10,6 +10,7 @@ public class TollBooth : MonoBehaviour {
 	protected ChromatoseManager chroManager;
 	protected Transform collisionChild;
 	protected tk2dAnimatedSprite anim;
+	protected Couleur myCouleur;
 	
 	private tk2dAnimatedSprite indicator;
 	private string inString;
@@ -22,6 +23,7 @@ public class TollBooth : MonoBehaviour {
 	protected bool waiting = false;
 	// Use this for initialization
 	void Start () {
+		myCouleur = Couleur.blue;
 		Setup();
 	}
 	
@@ -53,7 +55,7 @@ public class TollBooth : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		Check(Couleur.blue);
+		Check(Actions.Pay);
 		
 		if (triggered) return;
 		
@@ -68,23 +70,25 @@ public class TollBooth : MonoBehaviour {
 		
 	}
 	
-	protected void Check(Couleur couleur){
+	protected bool Check(Actions action){
 		if (triggered){
 			
-				
-			return;
+			return false;
 		}
+		if (myCollider.bounds.Contains(avatarT.position)){
+			chroManager.UpdateAction(action, Pay);
+			return true;
+		}
+		return false;
+	}
+	
+	void Pay(){
+		if (chroManager.GetCollectibles(myCouleur) >= requiredPayment){
+			
+			StartIn();
+			waiting = true;
+			triggered = true;
 		
-		if (chroManager.GetCollectibles(couleur) >= requiredPayment){
-			if (avatarT.position.x > colliderT.position.x - myCollider.size.x/2 && 
-				avatarT.position.x < colliderT.position.x + myCollider.size.x/2 && 
-				avatarT.position.y > colliderT.position.y - myCollider.size.y/2 && 
-				avatarT.position.y < colliderT.position.y + myCollider.size.y/2
-			){
-				StartIn();
-				waiting = true;
-				triggered = true;
-			}
 		}
 	}
 	
@@ -102,7 +106,7 @@ public class TollBooth : MonoBehaviour {
 		Debug.Log("Play! Up!");
 	}
 	
-	void StartIn(){
+	virtual protected void StartIn(){
 		indicator.Play(inString);
 		indicator.CurrentClip.wrapMode = tk2dSpriteAnimationClip.WrapMode.Once;
 		isOut = false;
