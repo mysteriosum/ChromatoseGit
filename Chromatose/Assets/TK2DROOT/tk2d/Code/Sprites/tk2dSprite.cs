@@ -136,11 +136,11 @@ public class tk2dSprite : tk2dBaseSprite
 	
 	protected void UpdateColorsImpl()
 	{
-#if UNITY_EDITOR
+		
 		// This can happen with prefabs in the inspector
 		if (mesh == null || meshColors == null || meshColors.Length == 0)
 			return;
-#endif
+
 		
 		SetColors(meshColors);
 		mesh.colors = meshColors;

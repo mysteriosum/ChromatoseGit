@@ -155,7 +155,11 @@ public class ChromatoseManager : MonoBehaviour {
 			collectibles = statCols;
 		}
 		if (roomStats == null){
-			roomStats = new RoomStats[9]{new RoomStats(), new RoomStats(), new RoomStats(), new RoomStats(), new RoomStats(), new RoomStats(), new RoomStats(), new RoomStats(), new RoomStats()};
+			roomStats = new RoomStats[10]
+			{	new RoomStats(), new RoomStats(), new RoomStats(), new RoomStats(), 
+				new RoomStats(), new RoomStats(), new RoomStats(), new RoomStats(), 
+				new RoomStats(), new RoomStats()
+			};
 		}
 		/*
 		if (hud == null){
@@ -256,6 +260,7 @@ public class ChromatoseManager : MonoBehaviour {
 		avatar = GameObject.Find("Avatar").GetComponent<Avatar>();
 		curRoom = Application.loadedLevel;
 		GameObject[] frames = GameObject.FindGameObjectsWithTag("comicFrame");
+		GameObject[] thumbs = GameObject.FindGameObjectsWithTag("comicThumb");
 		int counter = 0;
 		/*
 		do{
@@ -269,16 +274,25 @@ public class ChromatoseManager : MonoBehaviour {
 		}
 		while(roomStats[curRoom].comics.Count < frames.Length);
 		*/
-		foreach (GameObject go in frames){
-			Comic strip = go.GetComponent<Comic>();
-			if (strip.isSecret){
-				roomStats[curRoom].secretComic = strip;
+		if (roomStats[curRoom].comics.Count == 0){
+			foreach (GameObject go in frames){
+				Comic strip = go.GetComponent<Comic>();
+				if (strip.isSecret){
+					roomStats[curRoom].secretComic = strip;
+				}
+				else{
+					roomStats[curRoom].comics.Add(strip);
+					strip.gameObject.SetActive(false);
+				}
 			}
-			else{
-				roomStats[curRoom].comics.Add(strip);
-				strip.gameObject.SetActive(false);
+		}
+		else{
+			foreach (GameObject go in thumbs){
+				ComicThumb thumb = go.GetComponent<ComicThumb>();
+				if (roomStats[curRoom].thumbsFound[counter]){
+					thumb.SendMessage("Trigger");
+				}
 			}
-			
 		}
 		
 		comicTransition = GameObject.Find("pre_comicLoader").GetComponent<ComicTransition>();
@@ -933,7 +947,7 @@ public class ChromatoseManager : MonoBehaviour {
 		return true;
 		
 	}
-	
+	Avatar.DeathAnim danim;		//avatar's death animation
 	public void Death(){
 		//Archaic
 		/*
@@ -941,7 +955,18 @@ public class ChromatoseManager : MonoBehaviour {
 		Avatar.tankStates[0, 1] = TankStates.Full;
 		Avatar.curEnergy = 50;
 		Application.LoadLevel(Application.loadedLevel);*/
-		
+		danim = new Avatar.DeathAnim();
+		danim.PlayDeath(Reset);
+		avatar.SendMessage("FadeAlpha", 0f);
+		avatar.movement.SetVelocity(Vector2.zero);
+		avatar.Gone = true;
+		//avatar.renderer.enabled = false;
+	}
+	
+	public void Reset(tk2dAnimatedSprite anim, int index){
+		Destroy(danim.go);
+		//avatar.renderer.enabled = true;
+		avatar.Gone = false;
 		avatar.transform.position = curCheckpoint.transform.position;
 		avatar.transform.rotation = Quaternion.identity;
 		avatar.movement.SetVelocity(Vector2.zero);

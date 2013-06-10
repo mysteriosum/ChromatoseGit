@@ -79,6 +79,9 @@ public class Avatar : ColourBeing
 	private int blinkOnAt = 10;
 	private List<GameObject> blobsHit = new List<GameObject>();
 	private bool invisible = false;
+	public bool SetInvisible{
+		set{ invisible = value; }
+	}
 	public int Invisible{
 		get{ return invisible ? 0 : 1;}
 	}
@@ -155,6 +158,30 @@ public class Avatar : ColourBeing
 								//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
 								//<------------Particle classes!!------------>
 								//<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>
+	public class DeathAnim {
+		tk2dAnimatedSprite anim;
+		public GameObject go;
+		Transform t;
+		Avatar avatar;
+		public DeathAnim (){
+			go = new GameObject("Death Animation!");
+			t = go.transform;
+			avatar = GameObject.FindWithTag("avatar").GetComponent<Avatar>();
+			t.position = avatar.transform.position;
+			t.rotation = avatar.transform.rotation;
+			tk2dAnimatedSprite.AddComponent<tk2dAnimatedSprite>(go, avatar.particleCollection, 0);
+			anim = go.GetComponent<tk2dAnimatedSprite>();
+			anim.anim = avatar.partAnimations;
+		}
+		public void PlayDeath(tk2dAnimatedSprite.AnimationCompleteDelegate deleMethod){
+			anim.color = Color.white;
+			anim.Play("clip_avatarDeath");
+			anim.animationCompleteDelegate = deleMethod;
+			anim.CurrentClip.wrapMode = tk2dSpriteAnimationClip.WrapMode.Once;
+			avatar.CannotControlFor(0.5f);
+		}
+	}
+	
 	private class Eye {
 		private tk2dSprite spriteInfo;
 		private GameObject go;
@@ -174,8 +201,50 @@ public class Avatar : ColourBeing
 		}
 		
 		public void Blend(float r, float g, float b){
+			float red = r;
+			float green = g;
+			float blue = b;
 			
-			spriteInfo.color = new Color(r - 254, g - 254, b - 254);
+			float lowest = Mathf.Min(r, g, b);
+			Color blendColor;
+			int colourIndex = (r == 255? 1 : 0) + (g == 255? 2 : 0) + (b == 255? 4 : 0);
+			switch (colourIndex){
+			case 0:
+				blendColor = Color.white;
+				break;
+			case 1:
+				blendColor = Color.red;
+				break;
+			case 2:
+				blendColor = Color.green;
+				break;
+			case 3:
+				blendColor = new Color(1f, 1f, 0, 1f);
+				break;
+			case 4:
+				blendColor = Color.blue;
+				break;
+			case 5:
+				blendColor = Color.magenta;
+				break;
+			case 6:
+				blendColor = Color.cyan;
+				break;
+			case 7:
+				blendColor = Color.white;
+				break;
+			default:
+				blendColor = Color.white;
+				Debug.LogWarning("I'm making it white but I really don't understand how you got here tbh");
+				break;
+			}
+			if (lowest > 220){
+				if (lowest % 10 < 4){
+					blendColor = Color.white;
+				}
+			}
+			spriteInfo.color = blendColor;
+			
 		}
 	}
 	
@@ -540,7 +609,7 @@ public class Avatar : ColourBeing
 			r = colour.r;
 			g = colour.g;
 		}
-		Debug.Log("Blending " + r + ", " + g + ", and " + b);
+		
 		travisMcGee.Blend(r, g, b);
 		
 		shownColour = new Color(r/255f, g/255f, b/255f, Invisible);		//TODO : proper colour on 
@@ -766,9 +835,15 @@ public class Avatar : ColourBeing
 		LoseColourParticle blotchToRemove = null;
 		
 		foreach (LoseColourParticle m in loseColourPart){
-			bool removeBlotch = m.Fade();
-			if (removeBlotch)
-				blotchToRemove = m;
+			try{
+				bool removeBlotch = m.Fade();
+				if (removeBlotch)
+					blotchToRemove = m;
+			}
+			catch{
+				Debug.Log("There was an error and I caught it!");
+			}
+			
 		}
 		
 		if (blotchToRemove != null){
@@ -875,7 +950,9 @@ public class Avatar : ColourBeing
 	end:
 		if (previousVelocity != velocity)
 			previousVelocity = velocity;
-		t.position = new Vector3(t.position.x, t.position.y, 0);
+		if (!Gone){
+			t.position = new Vector3(t.position.x, t.position.y, 0);
+		}
 		
 		
 		if (debug)
@@ -977,7 +1054,9 @@ public class Avatar : ColourBeing
 	
 	public void CannotControlFor(float t){
 		canControl = false;
-			
+		getW = false;
+		getA = false;
+		getD = false;
 		Invoke("CanControl", t);
 	}
 	
