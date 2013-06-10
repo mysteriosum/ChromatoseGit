@@ -104,6 +104,7 @@ public class ChromatoseManager : MonoBehaviour {
 	
 	private static RoomStats[] roomStats;
 	private int curRoom;
+	private Transform curCheckpoint;
 	
 	private CollectiblesManager collectibles = new CollectiblesManager();
 	public static CollectiblesManager statCols;
@@ -469,7 +470,7 @@ public class ChromatoseManager : MonoBehaviour {
 			}
 		}
 		
-		if (Input.GetKeyDown(KeyCode.K) && currentAction > 0 && actionMethod != null){
+		if (Input.GetKeyDown(KeyCode.P) && currentAction > 0 && actionMethod != null){
 			actionMethod();
 		}
 		showingAction = false;
@@ -649,12 +650,11 @@ public class ChromatoseManager : MonoBehaviour {
 			GUI.EndGroup();
 			
 			if (flashyBar){
-				Debug.Log("HAR HAR");
 				GUI.BeginGroup(flashyRect);
 					GUI.DrawTexture(new Rect(0, 0, hud.energyBarFlash.width, hud.energyBarFlash.height), hud.energyBarFlash);
 				GUI.EndGroup();
 			}
-			
+			/*
 			GUI.BeginGroup(tankRect);
 				for (int i = 0; i < 3; i ++){
 					for (int j = 0; j < 5; j ++){
@@ -665,7 +665,7 @@ public class ChromatoseManager : MonoBehaviour {
 				
 				}
 			GUI.EndGroup();
-			
+			*/
 			
 			//GUI.Box(new Rect(Screen.width - 128, Screen.height / 2, 96, 32), actionString);
 		}
@@ -931,10 +931,31 @@ public class ChromatoseManager : MonoBehaviour {
 	}
 	
 	public void Death(){
+		//Archaic
+		/*
 		Avatar.tankStates[0, 0] = TankStates.Full;
 		Avatar.tankStates[0, 1] = TankStates.Full;
 		Avatar.curEnergy = 50;
-		Application.LoadLevel(Application.loadedLevel);
+		Application.LoadLevel(Application.loadedLevel);*/
+		
+		avatar.transform.position = curCheckpoint.transform.position;
+		avatar.transform.rotation = Quaternion.identity;
+		avatar.movement.SetVelocity(Vector2.zero);
+		avatar.SetColour(0, 0, 0);
+	}
+	
+	public void NewCheckpoint(Transform cp){
+		curCheckpoint = cp;
+		GameObject[] cps = GameObject.FindGameObjectsWithTag("checkpoint");
+		foreach (GameObject check in cps){
+			Checkpoint script = check.GetComponent<Checkpoint>();
+			if (check.transform == cp){
+				script.Active = true;
+			}
+			else{
+				script.Active = false;
+			}
+		}
 	}
 	
 	
