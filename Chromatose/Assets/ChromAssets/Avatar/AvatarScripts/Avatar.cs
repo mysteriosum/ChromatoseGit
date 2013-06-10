@@ -174,7 +174,8 @@ public class Avatar : ColourBeing
 		}
 		
 		public void Blend(float r, float g, float b){
-			spriteInfo.color = new Color(r, g, b, 1f);
+			
+			spriteInfo.color = new Color(r - 254, g - 254, b - 254);
 		}
 	}
 	
@@ -539,7 +540,7 @@ public class Avatar : ColourBeing
 			r = colour.r;
 			g = colour.g;
 		}
-		
+		Debug.Log("Blending " + r + ", " + g + ", and " + b);
 		travisMcGee.Blend(r, g, b);
 		
 		shownColour = new Color(r/255f, g/255f, b/255f, Invisible);		//TODO : proper colour on 
