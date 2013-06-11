@@ -13,6 +13,7 @@ public class ChromatoseCamera : MonoBehaviour {
 	
 	// Use this for initialization
 	void Start () {
+		if (Application.loadedLevelName == "Menu") return;
 		manager = ChromatoseManager.manager;
 		if (!avatar){
 			avatar = GameObject.FindWithTag("avatar").transform;
@@ -29,6 +30,7 @@ public class ChromatoseCamera : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		if (Application.loadedLevelName == "Menu") return;
 		
 		if (manager.InComic){
 			t.position = new Vector3(0, 0, t.position.z);
