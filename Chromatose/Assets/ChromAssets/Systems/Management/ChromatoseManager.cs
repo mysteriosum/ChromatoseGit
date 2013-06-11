@@ -101,7 +101,10 @@ public class ChromatoseManager : MonoBehaviour {
 	}
 	
 	
-	
+	private string[] roomNames = 
+		{
+		"Tutorial", "Module1_Scene1", "Module1_Scene2", "Module1_Scene3", "Module1_Scene4", "Module1_Scene5,",
+		"Module1_Scene6", "Module1_Scene7", "Module1_Scene8", "Module1_Scene9"};
 	private static RoomStats[] roomStats;
 	private int curRoom;
 	private Transform curCheckpoint;
@@ -161,13 +164,10 @@ public class ChromatoseManager : MonoBehaviour {
 				new RoomStats(), new RoomStats()
 			};
 		}
-		/*
-		if (hud == null){
-			hud = new ChromHUD();
-		}*/
+		
 		
 		manager = this;
-			//comic frame dealings: TODO PUT IN ONLEVELWASLOADED
+		
 		UpdateRoomStats();
 		
 	}
@@ -256,24 +256,23 @@ public class ChromatoseManager : MonoBehaviour {
 	}
 	
 	void UpdateRoomStats(){
-		Debug.Log("Current room index is " + Application.loadedLevel);
+		
 		avatar = GameObject.Find("Avatar").GetComponent<Avatar>();
-		curRoom = Application.loadedLevel;
-		GameObject[] frames = GameObject.FindGameObjectsWithTag("comicFrame");
-		GameObject[] thumbs = GameObject.FindGameObjectsWithTag("comicThumb");
-		int counter = 0;
-		/*
-		do{
-			roomStats[curRoom].comics.Add(null);
-			counter ++;
-//			Debug.Log("There's some stuff going on in the roomStats thing");
-			if (counter > 50){
-				Debug.LogWarning("It's fucked up I know, but like, idk, there's just a lot going on in this level apparently");
+		curRoom = -1;
+		for (int i = 0; i < roomNames.Length; i ++){
+			if (Application.loadedLevelName == roomNames[i]){
+				curRoom = i;
+				
 				break;
 			}
 		}
-		while(roomStats[curRoom].comics.Count < frames.Length);
-		*/
+		if (curRoom == -1 && Application.loadedLevelName != "Menu"){
+			Debug.LogWarning("This room is not named properly, or shouldn't be in the build at all.");
+		}
+		GameObject[] frames = GameObject.FindGameObjectsWithTag("comicFrame");
+		GameObject[] thumbs = GameObject.FindGameObjectsWithTag("comicThumb");
+		int counter = 0;
+		
 		if (roomStats[curRoom].comics.Count == 0){
 			foreach (GameObject go in frames){
 				Comic strip = go.GetComponent<Comic>();
