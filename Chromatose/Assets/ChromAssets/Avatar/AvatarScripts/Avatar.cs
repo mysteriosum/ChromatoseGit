@@ -4,6 +4,8 @@ using System.Collections.Generic;
 
 public class Avatar : ColourBeing
 {
+	
+	//Commentaire du Chu
 	private bool debug = false;
 	
 	private float loseRate = 6f;
