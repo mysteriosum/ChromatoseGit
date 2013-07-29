@@ -133,4 +133,18 @@ public class SpriteFader : MonoBehaviour {
 		
 		change = true;
 	}
+	
+	void ResetState(){
+		inAlpha = -fadeRate;
+		outAlpha = 1 + fadeRate;
+		
+		
+		foreach (GameObject sprite in spritesIn){
+			sprite.BroadcastMessage("FadeAlpha", inAlpha, SendMessageOptions.DontRequireReceiver);
+			_spritesIn.Add(sprite);
+		}
+		foreach (GameObject sprite in spritesOut){
+			_spritesOut.Add(sprite);
+		}
+	}
 }
