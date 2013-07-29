@@ -8,6 +8,7 @@ public class TransitionTrigger : MonoBehaviour {
 	public Texture blackBox;
 	public bool nextLevel = true;
 	public Transform localTarget;		//this is for if you just want to teleport the avatar. OVERRIDDEN by 'NextLevel'
+	private Avatar _AvatarScript;
 	private Transform avatarT;
 	private delegate void TriggerMethod();
 	private TriggerMethod myTrigger;
@@ -20,6 +21,7 @@ public class TransitionTrigger : MonoBehaviour {
 		else if (localTarget){
 			myTrigger = ToTarget;
 		}
+		_AvatarScript = GameObject.FindGameObjectWithTag("avatar").GetComponent<Avatar>();
 		avatarT = GameObject.FindWithTag("avatar").transform;
 	}
 	
@@ -56,8 +58,18 @@ public class TransitionTrigger : MonoBehaviour {
 		avatarT.rotation = localTarget.rotation;
 		avatarT.SendMessage ("SetVelocity", Vector2.zero);
 		lightening = true;
+		
+		_AvatarScript.CallFromFar();
+				
+		if(_AvatarScript.HasOutline){
+			_AvatarScript.CancelOutline();
+		}
 	}
 	void NextLevel(){
 		Application.LoadLevel(Application.loadedLevel + 1);
+		
+		if(_AvatarScript.HasOutline){
+			_AvatarScript.CancelOutline();
+		}
 	}
 }
