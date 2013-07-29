@@ -24,6 +24,7 @@ public class Checkpoint : MonoBehaviour {
 	
 	void Start () {
 		transform.position = new Vector3(transform.position.x, transform.position.y, 2);
+		
 		if (onSpriteName == "" || offSpriteName == ""){
 			Debug.LogWarning("Hey doofus, there's no name for the on/off of the checkpoint! Destroying!");
 			Destroy(this.gameObject);
@@ -41,8 +42,11 @@ public class Checkpoint : MonoBehaviour {
 	
 	void OnTriggerEnter(Collider other){
 		if (other.tag != "avatar") return;
-		
+
 		ChromatoseManager.manager.NewCheckpoint(transform);
 		
+	}
+	public void CallOnStart(GameObject newCP){
+		ChromatoseManager.manager.NewFirstCheckPoint(newCP.transform);
 	}
 }

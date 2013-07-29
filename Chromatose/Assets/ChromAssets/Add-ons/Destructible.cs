@@ -78,14 +78,11 @@ public class Destructible : MonoBehaviour {		//move sprite @ 15 frames or 0.5f s
 	
 	protected virtual void Checks(){
 		float dist = Vector3.Distance(avatar.position, myNode.position);
-		
+		if (!avatarScript.colour.Red) return;
 		if (collider.bounds.Contains(avatar.position)){
 			ChromatoseManager.manager.UpdateAction(Actions.Destroy, Action);
 			avatarScript.AtDestructible = true;
 		}
-		
-		
-		if (!avatarScript.colour.Red) return;
 	}
 	
 	protected virtual void Destruct(){

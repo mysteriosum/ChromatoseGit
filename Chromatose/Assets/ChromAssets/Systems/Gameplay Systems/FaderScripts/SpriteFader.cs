@@ -21,6 +21,9 @@ public class SpriteFader : MonoBehaviour {
 	private float heldInAlpha;
 	private float heldOutAlpha;
 	
+	private float _TpheldInAlpha;
+	private float _TpheldOutAlpha;
+	
 	private bool change;
 	// Use this for initialization
 	void Start () {
@@ -120,10 +123,17 @@ public class SpriteFader : MonoBehaviour {
 		_spritesIn.Remove(go);
 	}
 	
-	void SaveState(){
+	public void SaveState(){
 		heldInAlpha = inAlpha;
 		heldOutAlpha = outAlpha;
+		//Debug.Log("Saving The Alpha");
 	}
+	public void SaveStateForTP(){
+		_TpheldInAlpha = inAlpha;
+		_TpheldOutAlpha = outAlpha;
+		//Debug.Log("Saving The AlphaForTP");
+	}
+	
 	void LoadState(){
 		if (inAlpha == heldInAlpha && outAlpha == heldOutAlpha){
 			return;
@@ -132,19 +142,22 @@ public class SpriteFader : MonoBehaviour {
 		outAlpha = heldOutAlpha;
 		
 		change = true;
+		//Debug.Log("Yepp, I Load It");
 	}
-	
-	void ResetState(){
-		inAlpha = -fadeRate;
-		outAlpha = 1 + fadeRate;
-		
-		
-		foreach (GameObject sprite in spritesIn){
-			sprite.BroadcastMessage("FadeAlpha", inAlpha, SendMessageOptions.DontRequireReceiver);
-			_spritesIn.Add(sprite);
+	void LoadStateForTP(){
+		if (inAlpha == _TpheldInAlpha && outAlpha == _TpheldOutAlpha){
+			return;
 		}
-		foreach (GameObject sprite in spritesOut){
-			_spritesOut.Add(sprite);
-		}
+		inAlpha = _TpheldInAlpha;
+		outAlpha = _TpheldOutAlpha;
+		
+		change = true;
+		//Debug.Log("Yepp, I Load It For TP");
+	}
+	public void ResetState(){
+		LoadState();
+	}
+	public void ResetStateForTP(){
+		LoadStateForTP();
 	}
 }

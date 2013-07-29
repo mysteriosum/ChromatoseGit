@@ -42,6 +42,8 @@ public class ChromatoseManager : MonoBehaviour {
 	public delegate void ActionDelegate();
 	public ActionDelegate actionMethod;
 	
+	private SpriteFader[] _FaderList;
+	
 	public void UpdateAction(Actions action, ActionDelegate method){
 		if (action <= currentAction || action == Actions.Nothing){
 			currentAction = action;
@@ -59,10 +61,18 @@ public class ChromatoseManager : MonoBehaviour {
 	private bool showingAction;
 	private float actionSlideSpeed = 10f;
 	
+	private bool _CollAlreadyAdded = false;
+	private bool _NewLevel = false;
+	private bool _FirstLevelCPDone = false;
+	public bool FirstLevelCPDone {
+		get{return _FirstLevelCPDone;}
+		set{_FirstLevelCPDone = value;}
+	}
+	
 										//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
 										//<--------------DATA TRACKING!---------------->
 										//<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>
-	
+
 	
 	public class CollectiblesManager{
 		public List<Collectible> w = new List<Collectible>();
@@ -174,6 +184,9 @@ public class ChromatoseManager : MonoBehaviour {
 	
 	void Start(){
 		
+		//Initialise pour la premiere la security pour le FirstCP
+		_FirstLevelCPDone = false;
+		
 		DontDestroyOnLoad(manager);
 		if (!hud.mainBox){
 			Debug.LogWarning("There are some missing textures....");
@@ -247,15 +260,20 @@ public class ChromatoseManager : MonoBehaviour {
 		else{
 			
 		}
+		
+		
 	}
 	
 	
 	void OnLevelWasLoaded(){
 		
-		UpdateRoomStats();
+		UpdateRoomStats();	
 	}
 	
 	void UpdateRoomStats(){
+		
+		//Start Du Chu
+		_FaderList = FindObjectsOfType(typeof(SpriteFader)) as SpriteFader[];
 		
 		avatar = GameObject.Find("Avatar").GetComponent<Avatar>();
 		curRoom = -1;
@@ -309,6 +327,7 @@ public class ChromatoseManager : MonoBehaviour {
 	}
 	void Update () {
 		
+		
 		if (inComic && animsReady && !checkedComicStats){
 			
 			roomStats[curRoom].comicComplete = CheckComicStats();
@@ -353,6 +372,12 @@ public class ChromatoseManager : MonoBehaviour {
 			Application.Quit();
 		}
 		
+		if (inComic){
+			if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.P)){
+				comicTransition.Return();
+			}
+		}
+		
 		
 										//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
 										//<-----------SHOWING COLLECTIBLES!------------>
@@ -392,6 +417,8 @@ public class ChromatoseManager : MonoBehaviour {
 		else{
 			flashyBar = false;
 		}
+		
+		
 		
 		/*
 		if (showingW){
@@ -690,28 +717,32 @@ public class ChromatoseManager : MonoBehaviour {
 	
 	
 	public void AddCollectible(Collectible col){
-		switch (col.colColour){
-		case Couleur.red:
-			collectibles.r.Add(col);
-			showingCol[0] = true;
-			break;
-		case Couleur.green:
-			collectibles.g.Add(col);
-			showingCol[1] = true;
-			break;
-		case Couleur.blue:
-			collectibles.b.Add(col);
-			showingCol[2] = true;
-			break;
-		case Couleur.white:
-			collectibles.w.Add(col);
-			showingCol[3] = true;
-			break;
-		default:
-			Debug.LogWarning("Not a real collectible.");
-			break;
+		if(!_CollAlreadyAdded){
+			_CollAlreadyAdded = true;
+			switch (col.colColour){
+			case Couleur.red:
+				collectibles.r.Add(col);
+				showingCol[0] = true;
+				break;
+			case Couleur.green:
+				collectibles.g.Add(col);
+				showingCol[1] = true;
+				break;
+			case Couleur.blue:
+				collectibles.b.Add(col);
+				showingCol[2] = true;
+				break;
+			case Couleur.white:
+				collectibles.w.Add(col);
+				showingCol[3] = true;
+				break;
+			default:
+				Debug.LogWarning("Not a real collectible.");
+				break;
+			}
+			StartCoroutine(ResetCanGrabCollectibles(0.15f));
+			
 		}
-		//Debug.Log(collectibles);
 	}
 	
 	public bool UpdateCollectible(Couleur colour){
@@ -734,6 +765,7 @@ public class ChromatoseManager : MonoBehaviour {
 			}
 			
 			return gN == collectibles.g.Count;
+			
 		case Couleur.blue:
 			if (bN > collectibles.b.Count){
 				bN --;
@@ -743,6 +775,7 @@ public class ChromatoseManager : MonoBehaviour {
 			}
 			
 			return bN == collectibles.b.Count;
+			
 		case Couleur.white:
 			if (wN > collectibles.w.Count){
 				wN --;
@@ -958,6 +991,8 @@ public class ChromatoseManager : MonoBehaviour {
 		danim.PlayDeath(Reset);
 		avatar.SendMessage("FadeAlpha", 0f);
 		avatar.movement.SetVelocity(Vector2.zero);
+		StartCoroutine(OnDeath(0.15f));
+		avatar.CancelOutline();
 		avatar.Gone = true;
 		//avatar.renderer.enabled = false;
 	}
@@ -972,6 +1007,14 @@ public class ChromatoseManager : MonoBehaviour {
 		avatar.SetColour(0, 0, 0);
 	}
 	
+	public void NewFirstCheckPoint(Transform cp){
+		curCheckpoint = cp;
+		
+		foreach(SpriteFader _SFader in _FaderList){
+			_SFader.SaveState();
+		}
+	}
+	
 	public void NewCheckpoint(Transform cp){
 		curCheckpoint = cp;
 		GameObject[] cps = GameObject.FindGameObjectsWithTag("checkpoint");
@@ -983,6 +1026,11 @@ public class ChromatoseManager : MonoBehaviour {
 			else{
 				script.Active = false;
 			}
+		}
+		
+		foreach(SpriteFader _SFader in _FaderList){
+			_SFader.SaveState();
+			//Debug.Log("SaveState in CP");
 		}
 	}
 	
@@ -1006,4 +1054,20 @@ public class ChromatoseManager : MonoBehaviour {
 		
 	}
 	
+		//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
+		//<-------------FONCTION DU CHU!--------------->
+		//<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>	
+	
+	IEnumerator OnDeath(float _wait){
+		yield return new WaitForSeconds(_wait);
+		
+		foreach(SpriteFader _SFader in _FaderList){
+			_SFader.ResetState();
+		}
+	}	
+	IEnumerator ResetCanGrabCollectibles(float _wait){
+		yield return new WaitForSeconds(_wait);
+		Debug.Log("collectiblesResetStart");
+		_CollAlreadyAdded = false;
+	}
 }

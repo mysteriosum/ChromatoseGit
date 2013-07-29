@@ -512,9 +512,7 @@ public class Avatar : ColourBeing
 	
 	// Use this for initialization
 	void Start ()
-	{
-		
-		
+	{		
 		manager = ChromatoseManager.manager;
 		movement = GetComponent<Movement>();
 		basicTurnSpeed = movement.rotator.rotationRate;
@@ -575,6 +573,8 @@ public class Avatar : ColourBeing
 		//MAKE ME AN EYE BABY
 		travisMcGee = new Eye(t, particleCollection);
 		bubble = new Npc.SpeechBubble (t, particleCollection);
+		
+		StartCoroutine(LateCPCreation(1.0f));
 		
 	}
 	
@@ -703,9 +703,11 @@ public class Avatar : ColourBeing
 				getD = true;
 			}
 			
-			getS = Input.GetKeyDown(KeyCode.Space);
-			if (Input.GetKeyDown(KeyCode.DownArrow)){
-				getS = true;
+			if (!manager.InComic){
+				getS = Input.GetKeyDown(KeyCode.Space);
+				if (Input.GetKeyDown(KeyCode.DownArrow)){
+					getS = true;
+				}
 			}
 			
 			
@@ -759,12 +761,11 @@ public class Avatar : ColourBeing
 				outline.transform.rotation = t.rotation;
 				outline.transform.position = t.position;
 				tk2dSprite.AddComponent<tk2dSprite>(outline, afterImageCollection, spriteInfo.CurrentSprite.name);
-				
-				
+
 				hasOutline = true;
 				
 				foreach (GameObject go in allTheFaders){
-					go.SendMessage("SaveState");
+					go.SendMessage("SaveStateForTP");
 				}
 				//spriteInfo.SwitchCollectionAndSprite()
 			}
@@ -779,7 +780,7 @@ public class Avatar : ColourBeing
 				//movement.SetVelocity(velocity);		// But should we have you facing  the same direction?
 				
 				foreach (GameObject go in allTheFaders){
-					go.SendMessage("LoadState");
+					go.SendMessage("LoadStateForTP");
 				}
 			}
 		}
@@ -893,6 +894,9 @@ public class Avatar : ColourBeing
 			if (!foundOne){
 				canControl = false;
 				ChromatoseManager.manager.Death();
+				foreach (GameObject go in allTheFaders){
+					go.SendMessage("LoadState");
+				}
 			}
 			
 		}
@@ -1111,6 +1115,34 @@ public class Avatar : ColourBeing
 		}
 	}
 	
+	void CreateCP(){
+		GameObject _NewCP = GameObject.Find("pre_checkpoint");
+			GameObject _NewLevelCP = Instantiate(_NewCP, this.transform.position, Quaternion.identity)as GameObject;
+			
+			_NewLevelCP.transform.position = new Vector3(_NewLevelCP.transform.position.x, _NewLevelCP.transform.position.y, 2);	
+		
+			_NewLevelCP.GetComponent<BoxCollider>().enabled = false;
+			//_NewLevelCP.GetComponent<MeshRenderer>().enabled = false;
+			
+			_NewLevelCP.GetComponent<Checkpoint>().CallOnStart(_NewLevelCP);
+	}
+	
+	void CreatFirstCP(){
+		if(!manager.FirstLevelCPDone){
+			GameObject _NewCP = GameObject.Find("pre_checkpoint");
+			GameObject _FirstLevelCP = Instantiate(_NewCP, this.transform.position, this.transform.rotation)as GameObject;
+			
+			_FirstLevelCP.transform.position = new Vector3(_FirstLevelCP.transform.position.x, _FirstLevelCP.transform.position.y, 2);
+			
+			_FirstLevelCP.GetComponent<BoxCollider>().enabled = false;
+			_FirstLevelCP.GetComponent<MeshRenderer>().enabled = false;
+			
+			_FirstLevelCP.GetComponent<Checkpoint>().CallOnStart(_FirstLevelCP);
+			
+			manager.FirstLevelCPDone = true;
+		}
+	}
+	
 	public void Jolt(float amount){
 		if (!myKnockTarget){
 			Debug.LogWarning("There's no knockback targets in this level! NOOOOO!");
@@ -1130,6 +1162,18 @@ public class Avatar : ColourBeing
 		movement.SetVelocity(diff.normalized * amount);
 		Debug.Log("Diff is " + diff);
 	}
+	public void CallFromFar(){
+		StartCoroutine(CPCreationForRoom(1.5f));
+	}
 	
+	// COROUTINE DU CHU YEEEE
+	public IEnumerator LateCPCreation(float _wait){
+		yield return new WaitForSeconds(_wait);
+		CreatFirstCP();
+	}
+	public IEnumerator CPCreationForRoom(float _wait){
+		yield return new WaitForSeconds(_wait);
+		CreateCP();
+	}
 }
 
