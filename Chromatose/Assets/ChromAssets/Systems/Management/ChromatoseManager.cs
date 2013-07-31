@@ -68,6 +68,19 @@ public class ChromatoseManager : MonoBehaviour {
 		get{return _FirstLevelCPDone;}
 		set{_FirstLevelCPDone = value;}
 	}
+										//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
+										//<----------------DIFFICULTY------------------>
+										//<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>
+	public bool _SpeedModeActivated = false;
+	public bool SpeedMode{
+		get{return _SpeedModeActivated;}
+	}
+	public bool _NoDeathModeActivated = false;
+	public bool NoDeathMode{
+		get{return _NoDeathModeActivated;}
+	}
+	
+	
 	
 										//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
 										//<--------------DATA TRACKING!---------------->
@@ -270,6 +283,14 @@ public class ChromatoseManager : MonoBehaviour {
 		UpdateRoomStats();	
 	}
 	
+	void ResetStats(){
+		roomStats = new RoomStats[10]{	new RoomStats(), new RoomStats(), new RoomStats(), new RoomStats(), 
+										new RoomStats(), new RoomStats(), new RoomStats(), new RoomStats(), 
+										new RoomStats(), new RoomStats()};
+		statCols = null;
+		collectibles = statCols;
+	}
+	
 	void UpdateRoomStats(){
 		
 		//Start Du Chu
@@ -327,6 +348,7 @@ public class ChromatoseManager : MonoBehaviour {
 	}
 	void Update () {
 		
+		Debug.Log("I have " + collectibles.b.Count + " Blue Coll");
 		
 		if (inComic && animsReady && !checkedComicStats){
 			
@@ -382,6 +404,13 @@ public class ChromatoseManager : MonoBehaviour {
 										//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
 										//<-----------SHOWING COLLECTIBLES!------------>
 										//<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>
+		/*
+		for (int i=0; i < colCouleurs.Length; i++){
+			bool identical = UpdateCollectible(colCouleurs[i]);
+		}*/
+		
+		
+		
 		for (int i = 0; i < colCouleurs.Length; i++){
 			if (showingCol[i]){
 				colTimers[i] ++;
@@ -391,7 +420,10 @@ public class ChromatoseManager : MonoBehaviour {
 						colTimers[i] = track.Length;
 					}
 					else{
-						showingCol[i] = false;
+						//Desactiver Pour Laisse le HUD de collectibles toujours afficher
+						//On peut quand meme se servir de "showingCol[i] = false;" pour le faire disparaitre, ex: A la findes Niv
+						//
+						//showingCol[i] = false;
 					}
 				}
 			}
@@ -511,7 +543,7 @@ public class ChromatoseManager : MonoBehaviour {
 			}
 		}
 		
-		if (Input.GetKeyDown(KeyCode.P) && currentAction > 0 && actionMethod != null){
+		if (Input.GetKeyDown(KeyCode.P) && currentAction > 0 && actionMethod != null && !inComic){
 			actionMethod();
 		}
 		showingAction = false;
@@ -673,7 +705,7 @@ public class ChromatoseManager : MonoBehaviour {
 			GUI.BeginGroup(bColRect);										//blue collectible
 				GUI.skin.textArea.normal.textColor = Color.blue;
 				GUI.DrawTexture(new Rect(0, 0, hud.blueCollectible.width, hud.blueCollectible.height), hud.blueCollectible);
-				GUI.TextArea(new Rect(textOffset.x, textOffset.y, 80, 40), wN.ToString());
+				GUI.TextArea(new Rect(textOffset.x, textOffset.y, 80, 40), bN.ToString());
 				
 			GUI.EndGroup();
 			
@@ -987,13 +1019,28 @@ public class ChromatoseManager : MonoBehaviour {
 		Avatar.tankStates[0, 1] = TankStates.Full;
 		Avatar.curEnergy = 50;
 		Application.LoadLevel(Application.loadedLevel);*/
-		danim = new Avatar.DeathAnim();
-		danim.PlayDeath(Reset);
-		avatar.SendMessage("FadeAlpha", 0f);
-		avatar.movement.SetVelocity(Vector2.zero);
-		StartCoroutine(OnDeath(0.15f));
-		avatar.CancelOutline();
-		avatar.Gone = true;
+		
+		if(!_NoDeathModeActivated){
+			danim = new Avatar.DeathAnim();
+			danim.PlayDeath(Reset);
+			avatar.SendMessage("FadeAlpha", 0f);
+			avatar.movement.SetVelocity(Vector2.zero);
+			StartCoroutine(OnDeath(0.15f));
+			avatar.CancelOutline();
+			avatar.Gone = true;
+		}
+		else{
+			danim = new Avatar.DeathAnim();
+			danim.PlayDeath(Reset);
+			avatar.SendMessage("FadeAlpha", 0f);
+			avatar.movement.SetVelocity(Vector2.zero);
+			StartCoroutine(OnDeath(0.15f));
+			avatar.CancelOutline();
+			avatar.Gone = true;
+			Application.LoadLevel(2);
+			ResetStats();
+		}
+		
 		//avatar.renderer.enabled = false;
 	}
 	

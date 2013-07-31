@@ -40,7 +40,21 @@ public class ColourWell : ColourBeing {
 	
 	
 	override public void Trigger(){
+		
+		
+		
+		
+		/*****************************************************/
+		avatar.TakeColour(colour);		//A remettre si sa fonctionne pas
+		
+		if (colour.Red){				//<--- A Dupliquer pour le Bleu t le Vert
+			avatar.colour.b = 0;
+			avatar.colour.g = 0;
+		}
+		if (colour.Blue){
+			avatar.colour.r = 0;
+			avatar.colour.g = 0;
+		}
 		Debug.Log("Should be setting colour");
-		avatar.TakeColour(colour);
 	}
 }

@@ -7,6 +7,9 @@ public class ComicThumb : MonoBehaviour {
 	private tk2dAnimatedSprite anim;
 	private tk2dAnimatedSprite myCircle;
 	
+	private bool _CanGoBig = false;
+	private float _GoBiggerRate = 0.05f;
+	
 	// Use this for initialization
 	void Start () {
 		anim = GetComponent<tk2dAnimatedSprite>();
@@ -21,6 +24,9 @@ public class ComicThumb : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 	
+		if(_CanGoBig){ThumbGoBigger();}
+
+		
 	}
 	
 	void OnTriggerEnter(Collider other){
@@ -44,6 +50,24 @@ public class ComicThumb : MonoBehaviour {
 		ChromatoseManager.manager.FindComic(myIndex);
 		
 		myCircle.renderer.enabled = false;
+		
+		ThumbStartGoBig();
+	}
+	
+	void ThumbStartGoBig(){
+		
+		transform.localScale = new Vector3(1.2f, 1.2f, 1.2f);
+		_CanGoBig = true;
+		
+		StartCoroutine(DestroyWhenImBig(0.5f));
+	}
+	void ThumbGoBigger(){
+		transform.localScale = new Vector3(transform.localScale.x + _GoBiggerRate, transform.localScale.y + _GoBiggerRate, transform.localScale.z + _GoBiggerRate);
+	}
+	
+	IEnumerator DestroyWhenImBig(float _time){
+		yield return new WaitForSeconds(_time);
+		//Destroy(this.gameObject);
 		transform.Translate(Vector3.forward * -3000);
 	}
 	

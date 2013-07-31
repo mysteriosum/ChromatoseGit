@@ -10,6 +10,7 @@ public class SpriteFader : MonoBehaviour {
 	public bool unchanging = false;
 	
 	
+	
 	private List<GameObject> _spritesIn = new List<GameObject>();
 	private List<GameObject> _spritesOut = new List<GameObject>();
 	
@@ -24,9 +25,20 @@ public class SpriteFader : MonoBehaviour {
 	private float _TpheldInAlpha;
 	private float _TpheldOutAlpha;
 	
+	private Camera _Chromera;
+	private Color _InitialBGColor;
+	
 	private bool change;
-	// Use this for initialization
+	private bool _ImBlacky = false;
+
+	
+	
+	
 	void Start () {
+		
+		_Chromera = Camera.mainCamera;
+		_InitialBGColor = _Chromera.backgroundColor;
+		
 		inAlpha = -fadeRate;
 		outAlpha = 1 + fadeRate;
 		
@@ -73,6 +85,14 @@ public class SpriteFader : MonoBehaviour {
 		inAlpha = Mathf.Max(inAlpha - fadeRate, -fadeRate);
 		
 		change = true;
+		
+		if(_ImBlacky){
+			_ImBlacky = false;
+			StartCoroutine(ReturnWhite());
+		}
+		
+		
+		
 		/*
 		if (outAlpha >= 1 && willPlayOut){
 			willPlayOut = false;
@@ -97,6 +117,12 @@ public class SpriteFader : MonoBehaviour {
 		
 		outAlpha = Mathf.Max(outAlpha - fadeRate, -fadeRate);
 		inAlpha = Mathf.Min(inAlpha + fadeRate, 1 + fadeRate);
+		
+		if(!_ImBlacky){
+			_ImBlacky = true;
+			StartCoroutine(GoBlack());
+		}
+		
 		/*
 		if (inAlpha >= 1 && willPlayIn){
 			willPlayIn = false;
@@ -159,5 +185,13 @@ public class SpriteFader : MonoBehaviour {
 	}
 	public void ResetStateForTP(){
 		LoadStateForTP();
+	}
+	IEnumerator GoBlack(){
+		yield return new WaitForSeconds(0.05f);
+		_Chromera.backgroundColor = Color.black;
+	}
+	IEnumerator ReturnWhite(){
+		yield return new WaitForSeconds(0.05f);
+		_Chromera.backgroundColor = _InitialBGColor;
 	}
 }

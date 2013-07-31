@@ -75,7 +75,7 @@ public class Collectible : ColourBeing {
 			if (dist.magnitude < closeDist && !justPutBack){
 				if (CheckSameColour(avatar.colour) || colColour == Couleur.white){
 					ChromatoseManager.manager.AddCollectible(this);
-					Debug.Log("Collectibles Added !");
+					Debug.Log("Collectibles Added ! it's a " + colColour + "Coll");
 					Dead = true;
 					anim.Play(takeAnim);
 					anim.CurrentClip.wrapMode = tk2dSpriteAnimationClip.WrapMode.Once;

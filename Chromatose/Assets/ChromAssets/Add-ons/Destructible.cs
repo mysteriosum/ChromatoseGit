@@ -77,12 +77,17 @@ public class Destructible : MonoBehaviour {		//move sprite @ 15 frames or 0.5f s
 	}
 	
 	protected virtual void Checks(){
+		
+		if(Vector3.Distance(avatar.position, myNode.position) > 100){return;}
+			
 		float dist = Vector3.Distance(avatar.position, myNode.position);
-		if (!avatarScript.colour.Red) return;
+		Debug.Log("Ma Couleur est Rouge = " + avatarScript.colour.Red);
+		if (!avatarScript.colour.Red || avatarScript.colour.Blue || avatarScript.colour.Green) {return;}									//<----C'est ici que le check se fait mal
 		if (collider.bounds.Contains(avatar.position)){
-			ChromatoseManager.manager.UpdateAction(Actions.Destroy, Action);
-			avatarScript.AtDestructible = true;
+			ChromatoseManager.manager.UpdateAction(Actions.Destroy, Action);	//<----Peut que si on a pas fait d'autre action, le trigger se ne se reinitialise pas
+			avatarScript.AtDestructible = true;									//<----sert que pour la Bubble
 		}
+		
 	}
 	
 	protected virtual void Destruct(){
@@ -104,6 +109,7 @@ public class Destructible : MonoBehaviour {		//move sprite @ 15 frames or 0.5f s
 	}
 	
 	protected virtual void Action(){
+		Debug.Log("Wanna Destroy Me?");
 		avatarScript.HasDestroyed = true;
 		avatarScript.GiveColourTo(transform, avatar);
 		avatarScript.SetColour(0, avatarScript.colour.g, avatarScript.colour.b);
