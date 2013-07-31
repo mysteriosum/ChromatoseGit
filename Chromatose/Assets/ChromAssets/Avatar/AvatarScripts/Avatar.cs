@@ -93,6 +93,21 @@ public class Avatar : ColourBeing
 		set { inBlueLight = value; }
 	}
 								//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
+								//<----------Variable Diff. Speed++---------->
+								//<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>
+	
+	private bool _SpeedModeActivated = false;
+	
+	
+								//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
+								//<----------Variable Diff. NoDeath---------->
+								//<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>
+	
+	private bool _NoDeathModeActivated = false;
+	
+	
+	
+								//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
 								//<--------------Speed boosts!!-------------->
 								//<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>
 	
@@ -515,9 +530,21 @@ public class Avatar : ColourBeing
 	{		
 		manager = ChromatoseManager.manager;
 		movement = GetComponent<Movement>();
-		basicTurnSpeed = movement.rotator.rotationRate;
-		basicAccel = movement.thruster.accel;
-		basicMaxSpeed = movement.thruster.maxSpeed;
+		
+		
+		_SpeedModeActivated = manager.SpeedMode;
+		_NoDeathModeActivated = manager.NoDeathMode;
+		
+		if(!_SpeedModeActivated){
+			basicTurnSpeed = movement.rotator.rotationRate;
+			basicAccel = movement.thruster.accel;
+			basicMaxSpeed = movement.thruster.maxSpeed;
+		}
+		else{
+			basicTurnSpeed = movement.rotator.rotationRate * 1.2f;
+			basicAccel = movement.thruster.accel * 1.3f;
+			basicMaxSpeed = movement.thruster.maxSpeed * 2;
+		}
 		
 		for (int i = 0; i < angles.Length; i++){
 			angles[i] = i * 22.5f;
@@ -632,6 +659,7 @@ public class Avatar : ColourBeing
 			colour.g = tempColour.g >= 0 ? colour.g : colour.g - 1;
 			colour.b = tempColour.b >= 0 ? colour.b : colour.b - 1;
 			loseColourPartCounter ++;
+			//Debug.Log("Je passe ici");
 			
 		}
 		if (loseColourPartCounter >= loseColourPartDrop){
@@ -1122,7 +1150,7 @@ public class Avatar : ColourBeing
 			_NewLevelCP.transform.position = new Vector3(_NewLevelCP.transform.position.x, _NewLevelCP.transform.position.y, 2);	
 		
 			_NewLevelCP.GetComponent<BoxCollider>().enabled = false;
-			//_NewLevelCP.GetComponent<MeshRenderer>().enabled = false;
+			_NewLevelCP.GetComponent<MeshRenderer>().enabled = false;
 			
 			_NewLevelCP.GetComponent<Checkpoint>().CallOnStart(_NewLevelCP);
 	}
