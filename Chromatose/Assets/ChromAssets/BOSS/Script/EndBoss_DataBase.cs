@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class EndBoss_DataBase : ColourBeing {
+public class EndBoss_DataBase : MonoBehaviour {
 	
 	
 #region DATABASE VARIABLES
@@ -18,8 +18,8 @@ public class EndBoss_DataBase : ColourBeing {
 	
 	private tk2dAnimatedSprite[] _MyFlames;
 
-	private List<tk2dAnimatedSprite> _DyingFlames = new List<tk2dAnimatedSprite>();
-	private List<float> _DyingAlphas = new List<float>();
+	//private List<tk2dAnimatedSprite> _DyingFlames = new List<tk2dAnimatedSprite>();
+	//private List<float> _DyingAlphas = new List<float>();
 	
 	private string flameName = "";		//default: flameName = "flame";
 	private int flameNumber;			//default: flameNumber = 11;	
