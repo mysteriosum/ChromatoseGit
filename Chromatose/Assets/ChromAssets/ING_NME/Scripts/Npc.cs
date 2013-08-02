@@ -53,7 +53,7 @@ public class Npc : ColourWell {
 	public class SpeechBubble{				//THE BUBBLE AND ITS DECLARATION!
 		//variables of various types
 		public GameObject go;
-		public tk2dSprite spriteInfo;		//TODO MAKE THIS AN ANIMATION!
+		public tk2dSprite spriteInfo;
 		private Transform t;
 		private Renderer r;
 		private Transform parent;
@@ -126,7 +126,7 @@ public class Npc : ColourWell {
 			
 		}
 		
-		public void ShowBubbleFor(string bubble, float time, int digit){		//TODO THIS SHOULD ANIMATE THE BUBBLE
+		public void ShowBubbleFor(string bubble, float time, int digit){
 			string myDigitString = digit > 0? digit.ToString() : "";
 			SpriteName = bubble + myDigitString;
 			timer = time;

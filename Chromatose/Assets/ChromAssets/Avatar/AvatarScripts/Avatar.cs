@@ -93,10 +93,10 @@ public class Avatar : ColourBeing
 		set { inBlueLight = value; }
 	}
 								//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
-								//<----------Variable Diff. Speed++---------->
+								//<---------Variable Diff. TimeTrial--------->
 								//<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>
 	
-	private bool _SpeedModeActivated = false;
+	private bool _TimeTrialActivated = false;
 	
 	
 								//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
@@ -531,20 +531,13 @@ public class Avatar : ColourBeing
 		manager = ChromatoseManager.manager;
 		movement = GetComponent<Movement>();
 		
-		
-		_SpeedModeActivated = manager.SpeedMode;
+		_TimeTrialActivated = manager.TimeTrialMode;
 		_NoDeathModeActivated = manager.NoDeathMode;
-		
-		if(!_SpeedModeActivated){
-			basicTurnSpeed = movement.rotator.rotationRate;
-			basicAccel = movement.thruster.accel;
-			basicMaxSpeed = movement.thruster.maxSpeed;
-		}
-		else{
-			basicTurnSpeed = movement.rotator.rotationRate * 1.2f;
-			basicAccel = movement.thruster.accel * 1.3f;
-			basicMaxSpeed = movement.thruster.maxSpeed * 2;
-		}
+
+		basicTurnSpeed = movement.rotator.rotationRate;
+		basicAccel = movement.thruster.accel;
+		basicMaxSpeed = movement.thruster.maxSpeed;
+
 		
 		for (int i = 0; i < angles.Length; i++){
 			angles[i] = i * 22.5f;
@@ -641,7 +634,7 @@ public class Avatar : ColourBeing
 		
 		travisMcGee.Blend(r, g, b);
 		
-		shownColour = new Color(r/255f, g/255f, b/255f, Invisible);		//TODO : proper colour on 
+		shownColour = new Color(r/255f, g/255f, b/255f, Invisible);		//CHU Note: Applique la bonne couleur sur l'avatar
 		
 		if (inBlueLight){
 			partColor = shownColour;
@@ -778,11 +771,6 @@ public class Avatar : ColourBeing
 												//Self-made checkpoints! Or whatever you want to call it
 		
 		if (getS){
-			/*
-			if (tankStates[0, 0] != TankStates.Full){
-				Debug.Log("NOT ENOUGH NRJ FOR AFTER_IMAGE!!!");		//	TODO Make this into an actual function! Play an animation or something, yano?
-				goto end;
-			}*/
 			
 			if (!hasOutline){
 				outline = new GameObject("Outline");
@@ -816,7 +804,7 @@ public class Avatar : ColourBeing
 					//Do I refill my colour? =O
 		
 		
-					//Update my little pointer man!  TODO put this guy at the edge of the screen if the shadow is off-screen
+					//Update my little pointer man!
 		/*
 		if (!hasOutline && outlinePointer.renderer.enabled){
 			outlinePointer.renderer.enabled = false;
@@ -899,7 +887,8 @@ public class Avatar : ColourBeing
 			if (tankStates[0, 0] == TankStates.Full && tankStates[0, 1] == TankStates.Empty && hasOutline){
 				hasOutline = false;
 				Destroy(outline);
-							//TODO : PUT A SOUND AND/OR ANIMATION SHOWING THAT THE OUTLINE IS NOW GOOOOONE
+							//TODO Ajouter du feedback pour indiquer que l'afterimage est parti
+							//Peut-etre pas necessaire, vieille note
 			}
 			for (int i = 0; i < 3; i ++){
 				

@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
+//TODEL Deleter le Script BlueEyeGuy, ne semble plus servir
 public class BlueEyeGuy : MonoBehaviour {
 	
 	public float controlLockTime = 1.3f;
@@ -11,18 +12,15 @@ public class BlueEyeGuy : MonoBehaviour {
 	private bool looking = true;
 	private Avatar avatar;
 	private Transform t;
-	
-	// Use this for initialization
+
 	void Start () {
 		t = GetComponent<Transform>();
 		avatar = (Avatar) FindObjectOfType(typeof (Avatar));
-		Debug.Log(avatar);
 	}
 	
-	// Update is called once per frame
 	void Update () {
-		//TODO make this guy rotate better
 		if (looking){
+			Debug.Log("BlueEyeScript was here");
 			t.Rotate(new Vector3(0,0,1));
 			Vector2 dist = avatar.t.position - t.position;
 			if (dist.magnitude <= lookDist){
@@ -35,7 +33,6 @@ public class BlueEyeGuy : MonoBehaviour {
 				}
 			}
 		}
-		
 	}
 	
 	void KeepLooking(){

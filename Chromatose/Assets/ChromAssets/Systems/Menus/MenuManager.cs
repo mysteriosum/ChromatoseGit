@@ -26,9 +26,7 @@ public class MenuManager : MonoBehaviour {
 	private string levelButtonName = "btn_level";
 	private string tutorialButtonName = "btn_tutorial";
 	
-	// Use this for initialization
 	void Start () {
-		//TODO Make this start somewhere that's not the level select
 		menuState = MenuStates.LevelSelect1;
 	}
 	

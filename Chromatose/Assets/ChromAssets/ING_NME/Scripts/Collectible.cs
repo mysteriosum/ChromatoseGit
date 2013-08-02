@@ -179,15 +179,15 @@ public class Collectible : ColourBeing {
 			anim.animationCompleteDelegate = GoneForever;
 			anim.CurrentClip.wrapMode = tk2dSpriteAnimationClip.WrapMode.Once;
 			t.position = avatar.t.position;
+			Debug.Log("Yeh?");
 		}
 		if (colour.Red){
 			collector = VectorFunctions.FindClosestOfTag(t.position, "redCollector", 10000);
-			anim.Play(anim.GetClipByName("rColl_idle"), 0);		//TODO : CHANGE THIS TO RED COLLECTIBLE ANIM, PLEAZE
+			anim.Play(anim.GetClipByName("rColl_idle"), 0);
 			t.position = avatar.t.position;
 			originalPosition = new GameObject(name + " start point").transform;
 			originalPosition.position = t.position + (Vector3) velocity.normalized * 10;
 			target = collector;
-			//TODO : Make the velocity start by pointing away from the target
 		}
 	}
 	

@@ -104,8 +104,7 @@ public class Destructible : MonoBehaviour {		//move sprite @ 15 frames or 0.5f s
 		
 		anim.Play();
 		anim.CurrentClip.wrapMode = tk2dSpriteAnimationClip.WrapMode.Once;
-		
-		//TODO PUT AN ANIMATION SHOWING LOSS OF COLOUR!
+
 	}
 	
 	protected virtual void Action(){
