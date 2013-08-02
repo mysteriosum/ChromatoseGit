@@ -78,7 +78,7 @@ public class DangerBlob : ColourBeing {
 			tk2dSpriteAnimation nmeAnim = obj.GetComponent<tk2dAnimatedSprite>().anim;
 			foreach (tk2dAnimatedSprite flanim in myFlames){
 				if (flanim == GetComponent<tk2dAnimatedSprite>()) continue;
-				int i = Random.Range(1, 11);
+				int i = 1;//Random.Range(1, 11);
 				flanim.anim = nmeAnim;
 				flanim.Play(flameName + i.ToString());
 				flanim.transform.rotation = Quaternion.identity;

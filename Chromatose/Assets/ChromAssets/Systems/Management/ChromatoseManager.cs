@@ -26,6 +26,7 @@ public class ChromatoseManager : MonoBehaviour {
 	private Avatar avatar;
 	private AvatarPointer avatarP;
 	public static ChromatoseManager manager; 
+	public TimeTrialTimes _TTT = new TimeTrialTimes();
 	public ChromHUD hud = new ChromHUD();
 	private GUISkin skin;
 	
@@ -71,21 +72,159 @@ public class ChromatoseManager : MonoBehaviour {
 										//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
 										//<----------------DIFFICULTY------------------>
 										//<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>
+	//TOBEDELETED [juste le speedmode]
+	/*
 	public bool _SpeedModeActivated = false;
 	public bool SpeedMode{
 		get{return _SpeedModeActivated;}
+	}*/
+	
+	public bool _TimeTrialModeActivated = false;
+	public bool TimeTrialMode{
+		get{return _TimeTrialModeActivated;}
 	}
+	
 	public bool _NoDeathModeActivated = false;
 	public bool NoDeathMode{
 		get{return _NoDeathModeActivated;}
 	}
 	
+										//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
+										//<------------TIME TRIAL CHALLENGE------------>
+										//<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>
+
 	
+
 	
+	[System.Serializable]
+	public class TimeTrialTimes {
+		
+		private ChromatoseManager _Manager;
+		
+		
+		private float _TimeSinceStart = 0f;
+		private float _SecCounter = 0f;
+		private float _MinCounter = 0f;
+		private float _FractionCounter = 0f;
+
+		public static string _TimeString = "";
+			public string TimeString{
+				get{return _TimeString;}
+				set{_TimeString = value;}
+			}
+
+
+		
+			
+		
+		public static List<float> _TimesList;// = new List<float>(10);
+			public List<float> TimeList{
+				get{return _TimesList;}
+			}
+		
+		public float _Tuto_Time2Beat = 93;
+		public float _Lev1_Time2Beat = 121;
+		public float _Lev2_Time2Beat = 0;
+		public float _Lev3_Time2Beat = 0;
+		public float _Lev4_Time2Beat = 0;
+		public float _Lev5_Time2Beat = 0;
+		public float _Lev6_Time2Beat = 0;
+		public float _Lev7_Time2Beat = 0;
+		public float _Lev8_Time2Beat = 0;
+		public float _Lev9_Time2Beat = 0;
+		
+		
+		public static List<float> _RecordsList;// = new List<float>(10);
+			public List<float> RecordsList{
+				get{return _RecordsList;}
+			}
+		
+		private float _NEW_Tuto_Time2Beat = 0;
+		private float _NEW_Lev1_Time2Beat = 0;
+		private float _NEW_Lev2_Time2Beat = 0;
+		private float _NEW_Lev3_Time2Beat = 0;
+		private float _NEW_Lev4_Time2Beat = 0;
+		private float _NEW_Lev5_Time2Beat = 0;
+		private float _NEW_Lev6_Time2Beat = 0;
+		private float _NEW_Lev7_Time2Beat = 0;
+		private float _NEW_Lev8_Time2Beat = 0;
+		private float _NEW_Lev9_Time2Beat = 0;
+		
+		private float _Min2Beat = 0;
+		private float _Sec2Beat = 0;
+		private float _Fraction2Beat = 000;
+		
+		public static string _Time2BeatString = "";
+			public string Time2BeatString{
+				get{return _Time2BeatString;}
+				set{_Time2BeatString = value;}
+			}
+		
+		
+		public void SetupTTT(){
+			//_TimesList = 
+			_Manager = ChromatoseManager.manager;
+			
+			//TODO Finir remplir les tableau contenant les temps a battre	
+			if (_TimesList == null){
+				_TimesList = new List<float>(10){ 	_Tuto_Time2Beat, _Lev1_Time2Beat, _Lev2_Time2Beat, 
+													_Lev3_Time2Beat, _Lev4_Time2Beat, _Lev5_Time2Beat, 
+													_Lev6_Time2Beat, _Lev7_Time2Beat, _Lev8_Time2Beat, _Lev9_Time2Beat };
+			}	
+			
+			//TODO Creer les tableau contenant les nouveau record	
+			if (_RecordsList == null){
+				_RecordsList = new List<float>(10){ _NEW_Tuto_Time2Beat, _NEW_Lev1_Time2Beat, _NEW_Lev2_Time2Beat, 
+													_NEW_Lev3_Time2Beat, _NEW_Lev4_Time2Beat, _NEW_Lev5_Time2Beat, 
+													_NEW_Lev6_Time2Beat, _NEW_Lev7_Time2Beat, _NEW_Lev8_Time2Beat, _NEW_Lev9_Time2Beat };
+			}
+		}
+		
+		public void DisplayTimes2Beat(){
+			
+			//TODO Si un New Record existe, affichez le New Record plutot que le temps a battre par defaut
+			
+			_Min2Beat = _TimesList[_Manager.CurRoom]% 60f;		//TOFIX Fixer l'affichage des temps a battre
+			_Sec2Beat = _TimesList[_Manager.CurRoom] - (_Min2Beat * 60);
+			_Fraction2Beat = 000;
+			
+			_Time2BeatString = _Min2Beat + ":" + _Sec2Beat + ":" + _Fraction2Beat;
+			
+			_Time2BeatString = string.Format("{00:00}:{1:00}:{2:000}",_Min2Beat,_Sec2Beat,_Fraction2Beat);
+			
+		}
+										//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
+										//<-------------TIME TRIAL COUNTER------------->
+										//<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>
+		public void TimeTrialCounter(){
+				
+			_TimeSinceStart = Time.fixedTime;		// - starttime
+	
+			_MinCounter = Mathf.Floor(_TimeSinceStart/60f);
+			_SecCounter = Mathf.RoundToInt(_TimeSinceStart % 60f);
+			_FractionCounter = (_TimeSinceStart * 1000)%1000;
+			_TimeString = _MinCounter + ":" + _SecCounter + ":" + _FractionCounter;
+			
+			_TimeString = string.Format("{00:00}:{1:00}:{2:000}",_MinCounter,_SecCounter,_FractionCounter);	
+		
+		}	
+		
+		//TODO Faire Fonction Comparaison entre le TimeTrial Counter et le temps a battre
+		
+		//TODO Faire Fonction Check si New Record existe
+		
+		//TODO Faire Fonction Save/Load les records sur un XML
+		
+	}
+
+	
+
 										//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
 										//<--------------DATA TRACKING!---------------->
 										//<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>
 
+	
+	private int _CurrentThumbOnAdd = 0;
 	
 	public class CollectiblesManager{
 		public List<Collectible> w = new List<Collectible>();
@@ -123,6 +262,43 @@ public class ChromatoseManager : MonoBehaviour {
 	
 	}
 	
+	[System.Serializable]
+	public class ChromHUD {
+		
+		public Texture mainBox;
+		public Texture smallBox;
+		public Texture[] energyTank;
+		public Texture energyBar;
+		public Texture actionButton;
+		public Texture absorbAction;
+		public Texture buildAction;
+		public Texture destroyAction;
+		public Texture payAction;
+		public Texture releaseAction;
+		public Texture returnAction;
+		public Texture energyBarFlash;
+		
+		
+		public Texture redCollectible;
+		public Texture greenCollectible;
+		public Texture blueCollectible;
+		public Texture whiteCollectible;
+		public Texture comicCounter;
+		
+		public Texture _TimeTrialBox;
+		
+		public Texture[] pauseButton;
+		
+		public tk2dFontData chromFont;
+		
+		private tk2dTextMesh rColMesh;
+		private tk2dTextMesh gColMesh;
+		private tk2dTextMesh bColMesh;
+		
+		
+		
+	}
+	
 	
 	private string[] roomNames = 
 		{
@@ -130,6 +306,9 @@ public class ChromatoseManager : MonoBehaviour {
 		"Module1_Scene6", "Module1_Scene7", "Module1_Scene8", "Module1_Scene9"};
 	private static RoomStats[] roomStats;
 	private int curRoom;
+		public int CurRoom{
+			get{ return curRoom; }
+		}
 	private Transform curCheckpoint;
 	
 	private CollectiblesManager collectibles = new CollectiblesManager();
@@ -197,6 +376,11 @@ public class ChromatoseManager : MonoBehaviour {
 	
 	void Start(){
 		
+		if(_TimeTrialModeActivated){
+			_TTT.SetupTTT();
+			_TTT.DisplayTimes2Beat();
+		}
+		
 		//Initialise pour la premiere la security pour le FirstCP
 		_FirstLevelCPDone = false;
 		
@@ -213,19 +397,19 @@ public class ChromatoseManager : MonoBehaviour {
 		colX[0] = Screen.width; 		//the red one
 		colY[0] = hud.mainBox.height + 90f;
 		colX[1] = Screen.width;			//the blue one
-		colY[1] = hud.mainBox.height + 135f;
+		colY[1] = hud.mainBox.height + 180f;
 		colX[2] = Screen.width;			//the green one
-		colY[2] = hud.mainBox.height + 180f;
+		colY[2] = hud.mainBox.height + 135f;
 		colX[3] = Screen.width;			//the white one
 		colY[3] = hud.mainBox.height + 45f;
 		colX[4] = Screen.width; 		//the comics
 		colY[4] = hud.mainBox.height;	
 		
 		
+		
 		for (int i = 0; i < showingCol.Length; i++){
 			showingCol[i] = true;
 		}
-		
 		
 		float mainAnchor = Screen.width - hud.mainBox.width;
 		float dummy = Screen.width;
@@ -273,8 +457,6 @@ public class ChromatoseManager : MonoBehaviour {
 		else{
 			
 		}
-		
-		
 	}
 	
 	
@@ -290,6 +472,8 @@ public class ChromatoseManager : MonoBehaviour {
 		statCols = null;
 		collectibles = statCols;
 	}
+	
+	//TODO Faire Fonction qui Save/Load les RoomStats, faire en XML pour pouvoir l'utiliser avec les checkpoint et pesistant
 	
 	void UpdateRoomStats(){
 		
@@ -338,8 +522,8 @@ public class ChromatoseManager : MonoBehaviour {
 			Debug.LogWarning("Hey loser! There's no comic loader in this level!");
 		}
 	}
+
 	
-	// Update is called once per frame
 	void TriggerQuestionMark(){
 		
 		GameObject question = GameObject.FindWithTag("questionMark");
@@ -348,15 +532,12 @@ public class ChromatoseManager : MonoBehaviour {
 	}
 	void Update () {
 		
-		Debug.Log("I have " + collectibles.b.Count + " Blue Coll");
-		
 		if (inComic && animsReady && !checkedComicStats){
 			
 			roomStats[curRoom].comicComplete = CheckComicStats();
 			checkedComicStats = true;
 			
 			if (roomStats[curRoom].comicComplete){
-				//TODO PUT ANIMATION COMPLETE ANIMATION!
 				// do I have the secret too? play special anim : play normal anim;
 				
 				if (!roomStats[curRoom].secretFound){
@@ -400,6 +581,7 @@ public class ChromatoseManager : MonoBehaviour {
 			}
 		}
 		
+	
 		
 										//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
 										//<-----------SHOWING COLLECTIBLES!------------>
@@ -449,32 +631,13 @@ public class ChromatoseManager : MonoBehaviour {
 		else{
 			flashyBar = false;
 		}
-		
-		
-		
-		/*
-		if (showingW){
-			wTimer ++;
-			if (wTimer > refreshTiming){
-				bool identical = UpdateCollectible(Couleur.white);
-				if (!identical){
-					wTimer = track.Length;
-				}
-				else{
-					showingW = false;
-				}
-			}
+	
+		//Appel du timeTrial
+		if(_TimeTrialModeActivated){
+			_TTT.TimeTrialCounter();
 		}
 		
-		if (!showingW && wTimer > 0){
-			wTimer --;
-		}
 		
-		if (wTimer >= 0 && wTimer < track.Length){
-			wX = track[wTimer];
-		}*/
-		
-		//Mathf.Clamp(wTimer, 0, track.Length - 1);
 	}
 	
 	void LateUpdate(){
@@ -513,6 +676,7 @@ public class ChromatoseManager : MonoBehaviour {
 			"showingAction = " + showingAction + 
 			"shownActionTexture = " + shownActionTexture.name + 
 			"actionTexture = " + actionTexture);*/
+		
 		if (currentAction == Actions.Nothing && aX < hud.absorbAction.width){
 			aX -= actionSlideSpeed;
 			if (aX < -hud.absorbAction.width){
@@ -551,43 +715,6 @@ public class ChromatoseManager : MonoBehaviour {
 	}
 	
 	
-	
-	[System.Serializable]
-	public class ChromHUD {
-		
-		public Texture mainBox;
-		public Texture smallBox;
-		public Texture[] energyTank;
-		public Texture energyBar;
-		public Texture actionButton;
-		public Texture absorbAction;
-		public Texture buildAction;
-		public Texture destroyAction;
-		public Texture payAction;
-		public Texture releaseAction;
-		public Texture returnAction;
-		public Texture energyBarFlash;
-		
-		
-		public Texture redCollectible;
-		public Texture greenCollectible;
-		public Texture blueCollectible;
-		public Texture whiteCollectible;
-		public Texture comicCounter;
-		
-		public Texture[] pauseButton;
-		
-		public tk2dFontData chromFont;
-		
-		private tk2dTextMesh rColMesh;
-		private tk2dTextMesh gColMesh;
-		private tk2dTextMesh bColMesh;
-		
-		
-		
-	}
-	
-	
 	private float[] colX = {0, 0, 0, 0, 0};
 	private float[] colY = {0, 0, 0, 0, 0};
 	
@@ -607,6 +734,8 @@ public class ChromatoseManager : MonoBehaviour {
 	private bool flashyBar = false;
 	private int flashyBarTimer = 0;
 	private int flashyBarTiming = 20;
+	
+	
 	
 	public void Healed(){
 		flashyBar = true;
@@ -656,10 +785,11 @@ public class ChromatoseManager : MonoBehaviour {
 				comicTransition.Return();
 			}
 		}
-		else{		//TODO MAKE THIS NOT STUPID AND UGLY! (ie delete it and handle this stuff in the hud draw thing guy)
+		else{
 			
 			Rect mainRect = new Rect(Screen.width - hud.mainBox.width, 0, hud.mainBox.width, hud.mainBox.height);
 			GUI.skin = skin;
+			
 			
 			Rect rColRect = new Rect(colX[0], colY[0], hud.redCollectible.width, hud.redCollectible.height);
 			Rect gColRect = new Rect(colX[1], colY[1], hud.greenCollectible.width, hud.greenCollectible.height);
@@ -670,9 +800,20 @@ public class ChromatoseManager : MonoBehaviour {
 			Rect energyRect = new Rect(barX, barMinY, hud.energyBar.width, hud.energyBar.height);
 			Rect flashyRect = new Rect(barX - 7, barMinY - 8, hud.energyBarFlash.width, hud.energyBarFlash.height);
 			Rect tankRect = new Rect(tankX, tankY, 80, 128);
+			Rect timeTrialRect = new Rect(25, 20, hud._TimeTrialBox.width + 100f, hud._TimeTrialBox.height + 10f);
 			
 			GUI.DrawTexture(mainRect, hud.mainBox);
 			
+			
+			//TODO Afficher le Temps a battre selon le niveau
+			if(_TimeTrialModeActivated){
+				GUI.BeginGroup(timeTrialRect);												//TimeTrial Counter
+					GUI.skin.textArea.normal.textColor = Color.black;
+					GUI.DrawTexture(new Rect(0, 0, hud._TimeTrialBox.width + 100f, hud._TimeTrialBox.height + 10f), hud._TimeTrialBox);
+					GUI.TextArea(new Rect(textOffset.x - 20f, textOffset.y, 250, 40), "Time To Beat : " + "'" + _TTT.Time2BeatString +"'");
+					GUI.TextArea(new Rect(textOffset.x - 20f, textOffset.y + 30f, 250, 40), "Your Time : " + "'" + _TTT.TimeString + "'");
+				GUI.EndGroup();
+			}
 			
 			GUI.BeginGroup(comicRect);										//comic counter
 				GUI.skin.textArea.normal.textColor = Color.black;
@@ -694,13 +835,15 @@ public class ChromatoseManager : MonoBehaviour {
 				GUI.TextArea(new Rect(textOffset.x, textOffset.y, 80, 40), rN.ToString());
 				
 			GUI.EndGroup();
-			
+
+			/*
 			GUI.BeginGroup(gColRect);										//green collectible
 				GUI.skin.textArea.normal.textColor = Color.green;
 				GUI.DrawTexture(new Rect(0, 0, hud.greenCollectible.width, hud.greenCollectible.height), hud.greenCollectible);
 				GUI.TextArea(new Rect(textOffset.x, textOffset.y, 80, 40), gN.ToString());
 				
 			GUI.EndGroup();
+			*/
 			
 			GUI.BeginGroup(bColRect);										//blue collectible
 				GUI.skin.textArea.normal.textColor = Color.blue;
@@ -799,6 +942,7 @@ public class ChromatoseManager : MonoBehaviour {
 			return gN == collectibles.g.Count;
 			
 		case Couleur.blue:
+			
 			if (bN > collectibles.b.Count){
 				bN --;
 			}
@@ -819,12 +963,13 @@ public class ChromatoseManager : MonoBehaviour {
 			return wN == collectibles.w.Count;
 		default:
 			
+			
 			if (cN > roomStats[curRoom].thumbNumber){
 				cN --;
 				
 			}
 			if (cN < roomStats[curRoom].thumbNumber){
-				cN ++;
+				cN++;
 			}
 			
 			return cN == roomStats[curRoom].thumbNumber;
@@ -949,7 +1094,6 @@ public class ChromatoseManager : MonoBehaviour {
 		if (index == roomStats[curRoom].comics.Count){
 			
 			roomStats[curRoom].secretFound = true;
-			//TODO PLAY SUPER ANIMATION OF GETTING A NEW HEALTH CONTAINER
 			
 			bool foundEmpty = false;
 			bool foundNone = false;
@@ -988,7 +1132,7 @@ public class ChromatoseManager : MonoBehaviour {
 		foreach (Comic comic in roomStats[curRoom].comics){
 			if (roomStats[curRoom].thumbsFound[i] && !comic.InMySlot){
 				comic.InMySlot = true;
-				//TODO PLAY ANIMATION FOR COMIC COMPLETE!
+				//TODO Ajouter Anim ou Feedback pour indiquer que l'on a tous les comics
 			}
 				
 			i++;
@@ -1005,9 +1149,9 @@ public class ChromatoseManager : MonoBehaviour {
 		}
 		roomStats[curRoom].comicComplete = true;
 								//turns out the comic is successful!
-		//TODO PUT COLLECTIBLE ACTIVATION HERE
+		//CHU Note: si necessaire activer le ramassage de collectible
 		//shavatarComicBlock.SetActive(false);
-		
+		Debug.Log("J'ai un comic ou tous les comics ?");
 		return true;
 		
 	}
@@ -1116,5 +1260,9 @@ public class ChromatoseManager : MonoBehaviour {
 		yield return new WaitForSeconds(_wait);
 		Debug.Log("collectiblesResetStart");
 		_CollAlreadyAdded = false;
+	}
+	IEnumerator DelaiToAddComic(float _delai){
+		yield return new WaitForSeconds(_delai);
+		cN ++;
 	}
 }

@@ -1,6 +1,8 @@
 using UnityEngine;
 using System.Collections;
 
+
+//TODEl Script a deleter si le module 2 ne voit pas le jour
 public class Robot : MonoBehaviour {
 	
 	public bool rotates = false;
@@ -42,7 +44,7 @@ public class Robot : MonoBehaviour {
 			delay = turnRate;
 		}
 		/*
-		if (directions.up) directionBin ++;		//TODO : but probably for module 2, fix this so that it will accomodate more than 2 directions!
+		if (directions.up) directionBin ++;
 		if (directions.down) directionBin += 2;
 		if (directions.left) directionBin += 4;
 		if (directions.right) directionBin += 8;

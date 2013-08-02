@@ -11,6 +11,9 @@ public class ChromatoseCamera : MonoBehaviour {
 	private int height;
 	private ChromatoseManager manager;
 	
+	
+	public GameObject _HUDHelper_Comics = null;
+	
 	// Use this for initialization
 	void Start () {
 		if (Application.loadedLevelName == "Menu") return;

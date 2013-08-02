@@ -31,7 +31,6 @@ public class BuildaComic : Buildable {
 			tar.Shoot();
 		}
 		myThumb.SetActive(true);
-							//TODO : SET A FUNCTION IN THE THUMB WHICH WILL MAKE IT APPEAR OVER TIME, SO THE PLAYER NECESSARILY KNOWS IT'S THERE BEFORE HE PICKS IT UP
 		gameObject.RemoveComponent(this.GetType());
 	}
 }
