@@ -535,7 +535,6 @@ public static class Radical
 		gameObject.audio.Play();
 	}
 	
-	//TOFIX Trouvez le probleme des default parameter specifier du RADICAL
 	public static void FadeVolume(this GameObject component, float toLevel = 1, float time = 1f, float? fromLevel = null)
 	{
 		component.gameObject.StartExtendedCoroutine(VolumeFader(component.audio, toLevel, time, fromLevel));

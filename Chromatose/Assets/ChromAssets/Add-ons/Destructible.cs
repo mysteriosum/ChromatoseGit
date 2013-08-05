@@ -80,7 +80,7 @@ public class Destructible : MonoBehaviour {		//move sprite @ 15 frames or 0.5f s
 		
 		if(Vector3.Distance(avatar.position, myNode.position) > 100){return;}
 			
-		float dist = Vector3.Distance(avatar.position, myNode.position);
+		//float dist = Vector3.Distance(avatar.position, myNode.position);
 		Debug.Log("Ma Couleur est Rouge = " + avatarScript.colour.Red);
 		if (!avatarScript.colour.Red || avatarScript.colour.Blue || avatarScript.colour.Green) {return;}									//<----C'est ici que le check se fait mal
 		if (collider.bounds.Contains(avatar.position)){

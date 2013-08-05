@@ -35,6 +35,7 @@ public class BuildaLimo : Buildable {
 	
 	private void SendLimo(tk2dAnimatedSprite sprite, int index){
 		limo.SendMessage("Trigger");
+		
 		gameObject.RemoveComponent(this.GetType());
 	}
 }

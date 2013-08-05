@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
+#pragma warning disable 0414
 [RequireComponent(typeof(Movement))]
 public class Npc : ColourWell {
 	
@@ -212,7 +213,7 @@ public class Npc : ColourWell {
 		miscPart = new GameObject(name + "Shadow");
 		tk2dAnimatedSprite.AddComponent<tk2dAnimatedSprite>(miscPart, anim.Collection, 0);
 		miscPartAnim = miscPart.GetComponent<tk2dAnimatedSprite>();
-		miscPart.SetParent(gameObject);
+		miscPart.transform.SetParent(gameObject);
 		miscPartAnim.anim = anim.anim;
 		miscPartAnim.renderer.enabled = false;
 		
@@ -226,7 +227,7 @@ public class Npc : ColourWell {
 		//<---------------SETUP SECTION!--------------->
 		//<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>
 		
-		myBubble.Main();
+		//myBubble.Main();
 		if (losePart != null){
 			losePart.Fade();
 		}
@@ -243,7 +244,7 @@ public class Npc : ColourWell {
 		//<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>
 		
 							//Don't want you NPCs all on top of each other and everything!
-		
+		/*
 		if (!elbowing){
 			foreach (Transform tr in allNPCs){
 				if (tr == t) continue;
@@ -263,7 +264,7 @@ public class Npc : ColourWell {
 				elbowee = null;
 				elbowVector = Vector3.zero;
 			}
-		}
+		}*/
 							//Was I red and now I'm not?
 		
 		
