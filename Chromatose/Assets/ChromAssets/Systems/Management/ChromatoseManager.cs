@@ -5,6 +5,8 @@ using System.Xml;
 using System.Xml.Serialization;
 using System.IO;
 
+//comms pour le push
+
 #pragma warning disable 0168
 #pragma warning disable 0219
 #pragma warning disable 0414
