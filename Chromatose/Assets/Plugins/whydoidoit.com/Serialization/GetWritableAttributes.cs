@@ -36,7 +36,6 @@ namespace Serialization
 			
             return (from a in accessors[seen ? 0 : 2]
                     let value = a.Get(obj)
-                    where (a.IsStatic || (value != null  && !value.Equals(a.Vanilla)) || (value==null && a.Vanilla != null))
                     select new Entry()
                                {
                                    PropertyInfo = a.Info,
@@ -45,7 +44,8 @@ namespace Serialization
 				                   IsStatic = a.IsStatic
                                }).ToArray();
         }
-
+		
+		
         public static Entry[] GetFields(object obj, bool seen)
         {
             var type = obj.GetType();
@@ -64,7 +64,6 @@ namespace Serialization
 
             return (from a in accessors[seen ? 1 : 3]
                     let value = a.Get(obj)
-                    where (a.IsStatic || (value != null  && !value.Equals(a.Vanilla)) || (value==null && a.Vanilla != null))
                     select new Entry()
                                {
                                    FieldInfo = a.FieldInfo,
