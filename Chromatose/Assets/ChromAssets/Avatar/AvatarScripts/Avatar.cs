@@ -551,7 +551,7 @@ public class Avatar : ColourBeing
 		accelPartTiming = basicAccel * Time.deltaTime;
 		
 		/*
-		outlinePointer = new GameObject("OutlinePointer");		//make my outline pointer thing	TODO remove this and other references to it. Martine hates it a lot... <_<
+		outlinePointer = new GameObject("OutlinePointer");		//make my outline pointer thing	TO DO remove this and other references to it. Martine hates it a lot... <_<
 		tk2dSprite.AddComponent<tk2dSprite>(outlinePointer, spriteInfo.Collection, outlinePointerName);
 		outlinePointer.renderer.enabled = false;*/
 		//outlinePointer.transform.localScale = new Vector3(0.3f, 0.3f, 1f);
@@ -1082,6 +1082,16 @@ public class Avatar : ColourBeing
 		getD = false;
 		Invoke("CanControl", t);
 	}
+	//Overriding the methods
+	public void CannotControlFor(bool needTimes, float t){
+		canControl = false;
+		getW = false;
+		getA = false;
+		getD = false;
+		if(needTimes){
+			Invoke("CanControl", t);
+		}
+	}
 	
 	public bool CheckIsBlue(){
 		return colour.b > 0;
@@ -1179,9 +1189,20 @@ public class Avatar : ColourBeing
 		movement.SetVelocity(diff.normalized * amount);
 		Debug.Log("Diff is " + diff);
 	}
+	/// <summary>
+	/// Calls from far. Appel la creation d'un checkpoint depuis l'exterieur
+	/// </summary>
 	public void CallFromFar(){
 		StartCoroutine(CPCreationForRoom(1.5f));
 	}
+	
+	/// <summary>
+	/// Pause or Unpause this instance.
+	/// </summary>
+	public void Pause(){
+		canControl = !canControl;
+	}
+	
 	
 	// COROUTINE DU CHU YEEEE
 	public IEnumerator LateCPCreation(float _wait){

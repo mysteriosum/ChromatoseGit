@@ -1,6 +1,11 @@
 using UnityEngine;
 using System.Collections;
 
+
+#pragma warning disable 0414 // private field assigned but not used.
+
+//TODO Faire menage dans le script ComicThumb
+//Mettre pragma en commentaire pour voir
 public class ComicThumb : MonoBehaviour {
 	
 	public int myIndex;

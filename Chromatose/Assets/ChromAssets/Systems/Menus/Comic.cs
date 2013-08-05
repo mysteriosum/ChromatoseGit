@@ -1,6 +1,8 @@
 using UnityEngine;
 using System.Collections;
 
+#pragma warning disable 0414 // private field assigned but not used.
+
 public class Comic : MonoBehaviour {
 
 	private bool inMySlot;

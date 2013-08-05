@@ -9,20 +9,29 @@ public class TransitionTrigger : MonoBehaviour {
 	public bool nextLevel = true;
 	public Transform localTarget;		//this is for if you just want to teleport the avatar. OVERRIDDEN by 'NextLevel'
 	private Avatar _AvatarScript;
+	private ChromatoseManager _Manager;
 	private Transform avatarT;
 	private delegate void TriggerMethod();
 	private TriggerMethod myTrigger;
 	
 	// Use this for initialization
 	void Start () {
-		if (nextLevel){
-			myTrigger = NextLevel;
-		}
-		else if (localTarget){
-			myTrigger = ToTarget;
-		}
+		
+		_Manager = ChromatoseManager.manager;
 		_AvatarScript = GameObject.FindGameObjectWithTag("avatar").GetComponent<Avatar>();
 		avatarT = GameObject.FindWithTag("avatar").transform;
+		
+		if(!_Manager._TimeTrialModeActivated){
+			if (nextLevel){
+				myTrigger = NextLevel;
+			}
+			else if (localTarget){
+				myTrigger = ToTarget;
+			}
+		}
+		else{
+			myTrigger = FinishTimeTrialChallenge;
+		}
 	}
 	
 	// Update is called once per frame
@@ -42,8 +51,15 @@ public class TransitionTrigger : MonoBehaviour {
 	}
 	
 	void OnTriggerEnter(Collider other){
-		if (other.name == "Avatar")
-			popped = true;
+		if (other.name == "Avatar"){
+			
+			if(!_Manager._TimeTrialModeActivated){
+				popped = true;
+			}
+			else{
+				FinishTimeTrialChallenge();
+			}
+		}
 	}
 	
 	void OnGUI(){
@@ -51,6 +67,10 @@ public class TransitionTrigger : MonoBehaviour {
 		
 		GUI.color = new Color(0, 0, 0, counter);
 		GUI.DrawTexture(new Rect(0, 0, Screen.width, Screen.height), blackBox);
+	}
+	
+	public void ExternalCall(){
+		myTrigger();
 	}
 
 	void ToTarget(){
@@ -71,5 +91,18 @@ public class TransitionTrigger : MonoBehaviour {
 		if(_AvatarScript.HasOutline){
 			_AvatarScript.CancelOutline();
 		}
+	}
+	
+	void FinishTimeTrialChallenge(){
+		if(_Manager._TTT.StopChallenge()){
+			//Faire afficher la fenetre de reussite du TimeTrial
+			_Manager._TTT.DisplayWinWindows = true;
+		}
+		StartCoroutine(DelaiToDisplay());
+	}
+	
+	IEnumerator DelaiToDisplay(){
+		yield return new WaitForSeconds(0.5f);
+		_Manager._TTT.DisplayScore = true;
 	}
 }

@@ -1,6 +1,8 @@
 using UnityEngine;
 using System.Collections;
 
+#pragma warning disable 0414 
+
 public class Collectible : ColourBeing {
 	
 	public Couleur colColour = Couleur.white;
@@ -73,24 +75,27 @@ public class Collectible : ColourBeing {
 		if (!dropped){
 			Vector3 dist = avatarT.position - t.position;
 			if (dist.magnitude < closeDist && !justPutBack){
-				if (CheckSameColour(avatar.colour) || colColour == Couleur.white){
-					ChromatoseManager.manager.AddCollectible(this);
-					Debug.Log("Collectibles Added ! it's a " + colColour + "Coll");
-					Dead = true;
-					anim.Play(takeAnim);
-					anim.CurrentClip.wrapMode = tk2dSpriteAnimationClip.WrapMode.Once;
-					anim.animationCompleteDelegate = GoneForever;
-					t.parent = null;
-					
-				}
-				else{
-					if (colour.Red){
-						avatar.OnRedCol = true;
+				
+				if(!ChromatoseManager.manager.CollAlreadyAdded){
+					if (CheckSameColour(avatar.colour) || colColour == Couleur.white){
+						ChromatoseManager.manager.AddCollectible(this);
+						Debug.Log("Collectibles Added ! it's a " + colColour + "Coll");
+						Dead = true;
+						anim.Play(takeAnim);
+						anim.CurrentClip.wrapMode = tk2dSpriteAnimationClip.WrapMode.Once;
+						anim.animationCompleteDelegate = GoneForever;
+						t.parent = null;
+						
 					}
-				}
-				if (isShadow){
-					avatar.CancelOutline();
-				}
+					else{
+						if (colour.Red){
+							avatar.OnRedCol = true;
+						}
+					}
+					if (isShadow){
+						avatar.CancelOutline();
+					}
+				}				
 			}
 			else if (dist.magnitude > clearDist && justPutBack){
 				justPutBack = false;
@@ -156,7 +161,6 @@ public class Collectible : ColourBeing {
 		}
 		
 		return;
-		
 	}
 	
 	
@@ -203,5 +207,4 @@ public class Collectible : ColourBeing {
 		Dead = true;
 		Gone = true;
 	}
-	
 }

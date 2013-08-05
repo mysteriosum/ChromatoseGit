@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
+#pragma warning disable 0414 
 public class EnemyAvatar : Avatar {
 	
 	int wTiming;
