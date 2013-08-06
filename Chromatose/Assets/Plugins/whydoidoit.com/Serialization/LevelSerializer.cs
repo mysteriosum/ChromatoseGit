@@ -138,7 +138,7 @@ public static class LevelSerializer
     /// <summary>
     ///   The max games that will be stored.
     /// </summary>
-    public static int MaxGames = 20;
+    public static int MaxGames = 1;
 
     /// <summary>
     ///   The saved games.

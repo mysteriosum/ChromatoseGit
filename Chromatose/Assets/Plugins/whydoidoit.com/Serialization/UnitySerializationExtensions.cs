@@ -239,7 +239,9 @@ public class SerializeBoxCollider : ComponentSerializerExtensionBase<BoxCollider
 	}
 	public override void LoadInto (object[] data, BoxCollider instance)
 	{
+		//Debug.Log(instance.gameObject.name);
 		instance.isTrigger = (bool)data[0];
+		//Debug.Log(instance.gameObject.name);
 		instance.size = new Vector3((float)data[1], (float)data[2], (float)data[3]);
 		instance.center = new Vector3((float)data[4], (float)data[5], (float)data[6]);
 		instance.enabled = (bool)data[7];

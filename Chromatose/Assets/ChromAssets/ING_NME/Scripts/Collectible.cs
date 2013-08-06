@@ -79,7 +79,7 @@ public class Collectible : ColourBeing {
 				if(!ChromatoseManager.manager.CollAlreadyAdded){
 					if (CheckSameColour(avatar.colour) || colColour == Couleur.white){
 						ChromatoseManager.manager.AddCollectible(this);
-						Debug.Log("Collectibles Added ! it's a " + colColour + "Coll");
+						//Debug.Log("Collectibles Added ! it's a " + colColour + "Coll");
 						Dead = true;
 						anim.Play(takeAnim);
 						anim.CurrentClip.wrapMode = tk2dSpriteAnimationClip.WrapMode.Once;
