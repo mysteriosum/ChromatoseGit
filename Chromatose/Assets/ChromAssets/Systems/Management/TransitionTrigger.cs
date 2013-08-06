@@ -4,7 +4,7 @@ using System.Collections;
 public class TransitionTrigger : MonoBehaviour {
 	
 	public enum transitionVers{
-		 NextLevel, LocalTarget, StaticComic, DynamicComic, TimeTrial
+		 NextLevel, LocalTarget, DynamicComic, TimeTrial
 	}
 	public transitionVers _TransitEnum;
 	
@@ -49,7 +49,7 @@ public class TransitionTrigger : MonoBehaviour {
 		case transitionVers.LocalTarget:
 			
 			if(localTarget != null){
-					myTrigger = ToStaticComic;
+					myTrigger = ToTarget;
 				}
 				else{
 					myTrigger = NextLevel;
@@ -59,19 +59,6 @@ public class TransitionTrigger : MonoBehaviour {
 		case transitionVers.TimeTrial:
 			
 			myTrigger = FinishTimeTrialChallenge;
-			
-			break;
-		case transitionVers.StaticComic:
-			
-			Debug.Log("Transition vers StaticComic non-prete");
-				myTrigger = NextLevel;
-			
-				/*if(staticComic != null){
-					myTrigger = ToStaticComic;
-				}
-				else{
-					myTrigger = NextLevel;
-				}*/
 			
 			break;
 		case transitionVers.DynamicComic:
@@ -114,12 +101,6 @@ public class TransitionTrigger : MonoBehaviour {
 			
 			if (!_Popped) return;
 			myTrigger();
-			
-			break;
-		case transitionVers.StaticComic:
-			
-			if (!_Popped) return;
-			_OnStaticComic = true;
 			
 			break;
 		case transitionVers.DynamicComic:
@@ -207,19 +188,16 @@ public class TransitionTrigger : MonoBehaviour {
 		StartCoroutine(DelaiToDisplay());
 	}
 	
-	void ToStaticComic(){
-		
-	}
-	
 	void ToDynamicComic(){
 		avatarT.position = dynamicComicTarget.position;
 		avatarT.rotation = dynamicComicTarget.rotation;
 		avatarT.SendMessage ("SetVelocity", Vector2.zero);
 		
+		/*
 		_AvatarScript.LoseAllColour();		
 		if(_AvatarScript.HasOutline){
 			_AvatarScript.CancelOutline();
-		}
+		}*/
 	}
 #endregion	
 	
