@@ -4,9 +4,12 @@ using System.Collections.Generic;
 
 
 public class DangerBlob : ColourBeing {
+	
+	private Rigidbody _AvatarRigid;
 	public float knockback = 50f;
 	public bool diesOnImpact = false;
 	public bool isBlackFlame = false;
+	public bool _WaitAvatarMove = false;
 	private tk2dAnimatedSprite[] myFlames;
 	private bool beingExtinguished = false;
 	private List<tk2dAnimatedSprite> dyingFlames = new List<tk2dAnimatedSprite>();
@@ -67,6 +70,7 @@ public class DangerBlob : ColourBeing {
 	
 	// Use this for initialization
 	void Start () {
+		_AvatarRigid = GameObject.FindWithTag("avatar").GetComponent<Rigidbody>();
 		movement.Setup(gameObject);
 		movement.t = transform;
 		avatarT = GameObject.FindWithTag("avatar").transform;
@@ -88,38 +92,45 @@ public class DangerBlob : ColourBeing {
 	
 	// Update is called once per frame
 	void Update () {
-		if (colour.White)
-		movement.Move();
-		if (beingExtinguished){
-			tk2dAnimatedSprite next = null;
-			float shortestDist = 1000;
-			foreach (tk2dAnimatedSprite sprite in myFlames){
-				float dist = Vector3.Distance(sprite.transform.position, avatarT.position);
-				if (dist < shortestDist && !dyingFlames.Contains(sprite)){
-					next = sprite;
-					shortestDist = dist;
+		if(!_WaitAvatarMove){
+			if (colour.White)
+			movement.Move();
+			if (beingExtinguished){
+				tk2dAnimatedSprite next = null;
+				float shortestDist = 1000;
+				foreach (tk2dAnimatedSprite sprite in myFlames){
+					float dist = Vector3.Distance(sprite.transform.position, avatarT.position);
+					if (dist < shortestDist && !dyingFlames.Contains(sprite)){
+						next = sprite;
+						shortestDist = dist;
+					}
+				}
+				if (next){
+					dyingFlames.Add(next);
+					dyingAlphas.Add(1f);
+						Debug.Log("Next is next! its name is + " + next.name);
+				}
+				float highestAlpha = 0;
+				for(int i = 0; i < dyingFlames.Count; i ++){
+					dyingAlphas[i] -= fadeRate;
+					if (dyingAlphas[i] > highestAlpha){
+						highestAlpha = dyingAlphas[i];
+					}
+					dyingFlames[i].SendMessage("FadeAlpha", dyingAlphas[i]);
+					
+				}
+				if (highestAlpha <= 0){
+					beingExtinguished = false;
+					DeadAndGone();
 				}
 			}
-			if (next){
-				dyingFlames.Add(next);
-				dyingAlphas.Add(1f);
-					Debug.Log("Next is next! its name is + " + next.name);
-			}
-			float highestAlpha = 0;
-			for(int i = 0; i < dyingFlames.Count; i ++){
-				dyingAlphas[i] -= fadeRate;
-				if (dyingAlphas[i] > highestAlpha){
-					highestAlpha = dyingAlphas[i];
-				}
-				dyingFlames[i].SendMessage("FadeAlpha", dyingAlphas[i]);
-				
-			}
-			if (highestAlpha <= 0){
-				beingExtinguished = false;
-				DeadAndGone();
+			
+		}
+		else{
+			if(_AvatarRigid.velocity.x > 0.5f || _AvatarRigid.velocity.y > 0.5f || _AvatarRigid.velocity.x < -0.5f || _AvatarRigid.velocity.y < -0.5f){
+				_WaitAvatarMove = false;
 			}
 		}
-		
 	}
 
 	
