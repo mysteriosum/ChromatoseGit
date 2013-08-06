@@ -121,9 +121,6 @@ public class ChromatoseManager : MonoBehaviour {
 	}
 	
 	public Texture backButton;
-	
-	//private GameObject shavatarComicBlock;
-	private ComicTransition comicTransition;
 												//COMICS AND HOW TO USE THEM
 	private bool inComic = false;
 	public bool InComic{
@@ -737,13 +734,6 @@ public class ChromatoseManager : MonoBehaviour {
 				}
 			}
 		}
-		
-		
-			comicTransition = GameObject.Find("pre_comicLoader").GetComponent<ComicTransition>();
-		
-		if (!comicTransition){
-			Debug.LogWarning("Hey loser! There's no comic loader in this level!");
-		}
 	}
 #endregion	
 	
@@ -798,7 +788,7 @@ public class ChromatoseManager : MonoBehaviour {
 		
 		if (inComic){
 			if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.P)){
-				comicTransition.Return();
+			//	comicTransition.Return();
 			}
 		}
 				
@@ -953,7 +943,7 @@ public class ChromatoseManager : MonoBehaviour {
 			
 			bool backButtonPressed = GUI.Button(backButtonArea, backButton, GUIStyle.none);
 			if (backButtonPressed){
-				comicTransition.Return();
+				
 			}
 		}
 		else{
