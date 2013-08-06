@@ -14,7 +14,7 @@ function Start()
 
 function Update () 
 { 
-    if(Input.GetKeyUp(KeyCode.P))
+    if(Input.GetKeyUp(KeyCode.N))
     { 
        paused = !paused;
 
@@ -35,7 +35,7 @@ function OnGUI() {
 	   GUILayout.BeginVertical();
 	   GUILayout.BeginHorizontal();
 	   GUILayout.FlexibleSpace();
-	   GUILayout.Label("Press P to Pause");
+	   GUILayout.Label("Press N to Pause");
 	   GUILayout.FlexibleSpace();
 	   GUILayout.EndHorizontal();
 	   GUILayout.EndVertical();
