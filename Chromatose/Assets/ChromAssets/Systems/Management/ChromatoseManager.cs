@@ -32,6 +32,10 @@ public enum TankStates{
 	Flashing,
 }
 
+public enum GUIStateEnum{
+	OnStart, EndResult, EndLevel, Interface, Pause, InComic
+}
+
 [SerializeAll]
 public class ChromatoseManager : MonoBehaviour {
 	private Avatar avatar;
@@ -50,6 +54,7 @@ public class ChromatoseManager : MonoBehaviour {
 	private bool _OnPause = false;
 	
 	private Actions currentAction = Actions.Nothing;
+	private GUIStateEnum _GUIState;
 	
 	private Texture actionTexture;
 	private Texture shownActionTexture;
@@ -229,11 +234,13 @@ public class ChromatoseManager : MonoBehaviour {
 		public Texture _TimeTrialBox;
 		
 		public Texture[] pauseButton;
-		public Texture saveIcon;
-		public Texture menuBG;
+		public Texture pauseWindows;
+		public Texture blackBG;
 		public Texture endResultWindows;
 		
-		public tk2dFontData chromFont;
+		public GUISkin skinSansBox;
+		
+		public Font chromFont;
 		
 		private tk2dTextMesh rColMesh;
 		private tk2dTextMesh gColMesh;
@@ -590,6 +597,8 @@ public class ChromatoseManager : MonoBehaviour {
 	
 	void Start(){
 		
+		_GUIState = GUIStateEnum.OnStart;
+		
 		CheckStartPos();
 		
 		CalculeCollectiblesInLevel();
@@ -934,53 +943,52 @@ public class ChromatoseManager : MonoBehaviour {
 #region OnGUI (HUD & Windows)
 	void OnGUI(){
 		
-				//UPDATE HUD
+		//BackUp de la Matrix Initiale
+		Matrix4x4 matrixBackup = GUI.matrix;
 		
-				//FOR COMICS
-		if (inComic){
+		Rect bgRect = new Rect(0, 0, Screen.width, Screen.height);
+		
+		Rect mainRect = new Rect(Screen.width - hud.mainBox.width, 0, hud.mainBox.width, hud.mainBox.height);
+		Rect rColRect = new Rect(Screen.width - hud.redCollectible.width - 5, colY[0], hud.redCollectible.width, hud.redCollectible.height);
+		Rect gColRect = new Rect(Screen.width - hud.greenCollectible.width - 5, colY[1], hud.greenCollectible.width, hud.greenCollectible.height);
+		Rect bColRect = new Rect(Screen.width - hud.blueCollectible.width - 5, colY[2], hud.blueCollectible.width, hud.blueCollectible.height);
+		Rect wColRect = new Rect(Screen.width - hud.whiteCollectible.width - 5, colY[3], hud.whiteCollectible.width, hud.whiteCollectible.height);
+		Rect comicRect = new Rect(Screen.width - hud.comicCounter.width - 5, colY[4], hud.comicCounter.width, hud.comicCounter.height);
+		Rect actionRect = new Rect(Screen.width * 0.935f, 141, 50, 52);
+		Rect energyRect = new Rect(barX, barMinY, hud.energyBar.width, hud.energyBar.height);
+		Rect flashyRect = new Rect(barX - 7, barMinY - 8, hud.energyBarFlash.width, hud.energyBarFlash.height);
+		Rect tankRect = new Rect(tankX, tankY, 80, 128);
+		Rect timeTrialRect = new Rect(25, 20, hud._TimeTrialBox.width + 100f, hud._TimeTrialBox.height + 10f);
+		Rect pauseWindowsRect = new Rect (Screen.width*0.1f, Screen.height*0.16f, Screen.width*0.55f, Screen.height*0.5f);
+										
+		
+		
+		
+		Rect endResultRect = new Rect (0, 0, Screen.width, Screen.height);
+		
+		#region OnGUI OnStart
+		switch(_GUIState){
+		case GUIStateEnum.OnStart:
+			GUI.skin = hud.skinSansBox;
 			
-			Rect backButtonArea = new Rect(48, Screen.height - 96, backButton.width, backButton.height);
+			avatar.CannotControlFor(false, 0);
 			
-			bool backButtonPressed = GUI.Button(backButtonArea, backButton, GUIStyle.none);
-			if (backButtonPressed){
-				
+			//Black BackGround
+			GUI.DrawTexture(bgRect, hud.blackBG);
+			GUI.skin.button.fontSize = 78;
+			if(GUI.Button(new Rect(Screen.width*0.36f, Screen.height*0.38f, Screen.width*0.2f, Screen.height*0.15f), "PLAY")){
+				_GUIState = GUIStateEnum.Interface;
+				avatar.CanControl();
 			}
-		}
-		else{
 			
-			Rect mainRect = new Rect(Screen.width - hud.mainBox.width, 0, hud.mainBox.width, hud.mainBox.height);
+			
+			break;
+			#endregion
+			
+		#region OnGUI Interface
+		case GUIStateEnum.Interface:
+
 			GUI.skin = skin;
-			
-			
-			Rect rColRect = new Rect(colX[0], colY[0], hud.redCollectible.width, hud.redCollectible.height);
-			Rect gColRect = new Rect(colX[1], colY[1], hud.greenCollectible.width, hud.greenCollectible.height);
-			Rect bColRect = new Rect(colX[2], colY[2], hud.blueCollectible.width, hud.blueCollectible.height);
-			Rect wColRect = new Rect(colX[3], colY[3], hud.whiteCollectible.width, hud.whiteCollectible.height);
-			Rect comicRect = new Rect(colX[4], colY[4], hud.comicCounter.width, hud.comicCounter.height);
-			Rect actionRect = new Rect(1199, 141, 50, 52);
-			Rect energyRect = new Rect(barX, barMinY, hud.energyBar.width, hud.energyBar.height);
-			Rect flashyRect = new Rect(barX - 7, barMinY - 8, hud.energyBarFlash.width, hud.energyBarFlash.height);
-			Rect tankRect = new Rect(tankX, tankY, 80, 128);
-			Rect timeTrialRect = new Rect(25, 20, hud._TimeTrialBox.width + 100f, hud._TimeTrialBox.height + 10f);
-			Rect pauseWindowsRect = new Rect (Screen.width/2 - hud.pauseButton[2].width/2,
-												Screen.height/2 - hud.pauseButton[2].height/2,
-												hud.pauseButton[2].width + 100f, hud.pauseButton[2].height + 10f);
-			
-			Rect pauseButton = new Rect (Screen.width/2 - hud.pauseButton[2].width/2 - hud.pauseButton[0].width - 20f ,
-											Screen.height/2 - hud.pauseButton[2].height/2,
-											hud.pauseButton[0].width, hud.pauseButton[2].height);
-			
-			Rect saveIconRect = new Rect (Screen.width/2 - hud.pauseButton[2].width/2 - hud.pauseButton[0].width - 20f,
-											Screen.height/2 + hud.pauseButton[2].height/2 +10f,
-											hud.saveIcon.width/8, hud.saveIcon.height/8);
-			Rect savedGameRect = new Rect (Screen.width/2 - hud.pauseButton[2].width/2,
-												Screen.height/2 - hud.pauseButton[2].height/2 + 100,
-												600, 300);
-			
-			Rect endResultRect = new Rect (0, 0, Screen.width, Screen.height);
-			
-			
-			
 			
 			GUI.DrawTexture(mainRect, hud.mainBox);
 			
@@ -1036,42 +1044,55 @@ public class ChromatoseManager : MonoBehaviour {
 					GUI.DrawTexture(drawRect, hud.energyBar);
 				GUI.EndGroup();
 			}
+		
 			
 			
-			/********************************************/
-			//--------------AFFICHAGE PAUSE--------------/
-			/********************************************/
-			if(_OnPause){
-				GUI.BeginGroup(pauseWindowsRect);
-					GUI.skin.textArea.normal.textColor = Color.black;
-					GUI.DrawTexture(new Rect(0, 0, hud.pauseButton[2].width + 100f, hud.pauseButton[2].height + 10f), hud.pauseButton[2]);
-					GUI.TextArea(new Rect(textOffset.x + 90f, textOffset.y + 15f, 80, 40), "PAUSE");
-				GUI.EndGroup();
+			break;
+			#endregion
+			
+		#region OnGUI Pause
+		case GUIStateEnum.Pause:
+			
+			GUI.skin = hud.skinSansBox;
+			
+			GUIUtility.RotateAroundPivot(-12f, new Vector2(Screen.width*0.25f, Screen.height*0.30f));
+			GUI.BeginGroup(pauseWindowsRect);
+				//PAUSE WINDOWS
+				GUI.DrawTexture(new Rect(pauseWindowsRect.width*0.05f, pauseWindowsRect.height*0.05f, pauseWindowsRect.width*0.9f, pauseWindowsRect.height*0.9f), hud.pauseWindows);
 				
-				GUI.BeginGroup(pauseButton);
-					if (GUI.Button(new Rect(0, 0, hud.pauseButton[0].width, hud.pauseButton[0].height), hud.pauseButton[0])){
-						ManagerPause();
-					}
-				GUI.EndGroup();
-				GUI.BeginGroup(saveIconRect);
-					if (GUI.Button(new Rect(0, 0, hud.saveIcon.width/8, hud.saveIcon.height/8), hud.saveIcon)){
-					//LevelSerializer.
-						LevelSerializer.SaveGame(_GameName);
-					}
-				GUI.EndGroup();
-				GUI.BeginGroup(savedGameRect);
-				foreach(var sg in LevelSerializer.SavedGames[LevelSerializer.PlayerName]) { 
-				if(GUILayout.Button(sg.Caption)) { 
-			         LevelSerializer.LoadNow(sg.Data);
-			         Time.timeScale = 1;
-			         } 
-			    } 
-				GUI.EndGroup();
-			}
-			//LevelSerializer.SavedGames[LevelSerializer.PlayerName]
-			/********************************************/
-			//--------AFFICHAGE END LEVEL WINDOWS--------/
-			/********************************************/			
+				//TEXTE PAUSE
+				GUI.skin.textArea.fontSize = 76;
+				//GUI.skin.textArea.alignment = TextAnchor.UpperCenter;
+				GUI.TextArea(new Rect(pauseWindowsRect.width*0.35f, pauseWindowsRect.height*0.23f, pauseWindowsRect.width*0.4f, pauseWindowsRect.height*0.23f), "PAUSE");
+				//GUI.skin.textArea.alignment = TextAnchor.UpperLeft;
+			
+				//BOUTON PAUSE
+				GUI.skin.button.fontSize = 54;
+				if(GUI.Button(new Rect(pauseWindowsRect.width*0.25f, pauseWindowsRect.height*0.46f, pauseWindowsRect.width*0.5f, pauseWindowsRect.height*0.18f), "RESUME")){
+					ManagerPause();
+					_GUIState = GUIStateEnum.Interface;
+				}
+				if(GUI.Button(new Rect(pauseWindowsRect.width*0.25f, pauseWindowsRect.height*0.65f, pauseWindowsRect.width*0.5f, pauseWindowsRect.height*0.18f), "MAIN MENU")){
+					_GUIState = GUIStateEnum.EndLevel;
+					Time.timeScale = 1;
+					Application.LoadLevelAsync(0);
+				
+				//TODO Si en TimeTrial Challenge, annuler le challenge
+				
+				}
+			GUI.EndGroup();
+			
+			break;
+			#endregion
+			
+		#region OnGUI EndLevel
+		case GUIStateEnum.EndLevel:
+			
+			break;
+			#endregion
+			
+		#region OnGUI EndResult
+		case GUIStateEnum.EndResult:
 			
 			if(_TimeTrialModeActivated && DisplayScore){
 				if(!DisplayWinWindows){
@@ -1107,41 +1128,17 @@ public class ChromatoseManager : MonoBehaviour {
 					GUI.EndGroup();
 					
 				}
-				
 			}
+		
 			
+			break;
+			#endregion
 			
+		#region OnGUI InComic
+		case GUIStateEnum.InComic:
 			
-			
-			/* OFF - A DELETER
-			 
-			GUI.BeginGroup(gColRect);										//green collectible
-				GUI.skin.textArea.normal.textColor = Color.green;
-				GUI.DrawTexture(new Rect(0, 0, hud.greenCollectible.width, hud.greenCollectible.height), hud.greenCollectible);
-				GUI.TextArea(new Rect(textOffset.x, textOffset.y, 80, 40), gN.ToString());
-				
-			GUI.EndGroup();
-			
-			if (flashyBar){
-				GUI.BeginGroup(flashyRect);
-					GUI.DrawTexture(new Rect(0, 0, hud.energyBarFlash.width, hud.energyBarFlash.height), hud.energyBarFlash);
-				GUI.EndGroup();
-			}
-			
-			GUI.BeginGroup(tankRect);
-				for (int i = 0; i < 3; i ++){
-					for (int j = 0; j < 5; j ++){
-						if (Avatar.tankStates[i, j] == TankStates.None) continue;
-						int index = Avatar.tankStates[i, j] == TankStates.Empty? 0 : 1;
-						GUI.DrawTexture(new Rect(i * hud.energyTank[0].width, j * hud.energyTank[0].height, hud.energyTank[0].width, hud.energyTank[0].height), hud.energyTank[index]);
-					}	
-				
-				}
-			GUI.EndGroup();
-			
-			
-			GUI.Box(new Rect(Screen.width - 128, Screen.height / 2, 96, 32), actionString);
-			*/
+			break;
+			#endregion
 		}
 	}
 #endregion	
@@ -1562,11 +1559,11 @@ public class ChromatoseManager : MonoBehaviour {
 		
 		if(!TimerOnPause){
 			PauseTimer();
-			_OnPause = true;
+			_GUIState = GUIStateEnum.Pause;
 		}
 		else{
 			UnpauseTimer();
-			_OnPause = false;
+			_GUIState = GUIStateEnum.Interface;
 		}
 	}
 	

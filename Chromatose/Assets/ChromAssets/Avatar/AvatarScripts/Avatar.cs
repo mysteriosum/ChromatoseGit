@@ -6,8 +6,13 @@ public class Avatar : ColourBeing
 {
 	
 	//Commentaire du Chu
+	private Color partColor = Color.white;
+	public Color AvatarColor{
+		get{return partColor;}
+	}
 	private bool debug = false;
 	
+	private Color _AvatarColor;
 	private float loseRate = 6f;
 	private float loseTimer = 0f;
 	
@@ -32,6 +37,12 @@ public class Avatar : ColourBeing
 	public tk2dAnimatedSprite givePart;
 	
 	public tk2dSpriteAnimation partAnimations;
+	
+	private Vector3 _InitPos = Vector3.zero;
+		public Vector3 initPos{
+			get{return _InitPos;}
+			set{_InitPos = value;}
+		}
 	
 	private LoseAllColourParticle loseAllColourPart;
 	private List<MovementLines> accelParts = new List<MovementLines>();
@@ -461,7 +472,6 @@ public class Avatar : ColourBeing
 			
 			
 			string spriteName = "part_avatarLosingAllColor0001";
-			Debug.Log(spriteName + " is my name");
 			tk2dAnimatedSprite.AddComponent<tk2dAnimatedSprite>(go, colData, spriteName);
 			spriteInfo = go.GetComponent<tk2dAnimatedSprite>();
 			spriteInfo.anim = anim;
@@ -537,7 +547,8 @@ public class Avatar : ColourBeing
 		basicTurnSpeed = movement.rotator.rotationRate;
 		basicAccel = movement.thruster.accel;
 		basicMaxSpeed = movement.thruster.maxSpeed;
-
+		
+		_InitPos = transform.position;
 		
 		for (int i = 0; i < angles.Length; i++){
 			angles[i] = i * 22.5f;
@@ -602,15 +613,16 @@ public class Avatar : ColourBeing
 	// Update is called once per frame
 	void Update ()
 	{
+		
+		
 								//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
 								//<----------Handling Colour Blend!---------->
 								//<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>
 		
 		
 		int highestColour = Mathf.Max(colour.r, colour.g, colour.b);		//Decide what colour the avatar is
-		//Debug.Log("Highest colour is " + highestColour);
 		float r = 255; float g = 255; float b = 255;
-		Color partColor = Color.white;
+		partColor = Color.white;
 		if (highestColour == colour.r){
 			g -= colour.r;
 			b -= colour.r;
@@ -632,8 +644,10 @@ public class Avatar : ColourBeing
 			g = colour.g;
 		}
 		
-		travisMcGee.Blend(r, g, b);
-		
+		if (gameObject.tag == "avatar"){
+			travisMcGee.Blend(r, g, b);
+		}
+			
 		shownColour = new Color(r/255f, g/255f, b/255f, Invisible);		//CHU Note: Applique la bonne couleur sur l'avatar
 		
 		if (inBlueLight){
@@ -671,21 +685,24 @@ public class Avatar : ColourBeing
 								//<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>
 		int rectCounter = 0;
 		bool detectedSB = false;
-		foreach (Rect rect in speedBoostAreas){
-			
-			if (rect.Contains((Vector2)t.position)){
-				//Debug.Log("Found my speed boost! number " + rectCounter);
-				//Debug.Log("The speed boost itself is called " + speedBoosts[rectCounter]);
-				foreach (Transform node in speedBoosts[rectCounter].GetComponentsInChildren<Transform>()){
-					if (node == speedBoosts[rectCounter].transform) continue;
-					if (Vector2.Distance((Vector2)t.position, (Vector2)node.position) < speedBoostDist){
-						detectedSB = true;
-						//Debug.Log("The one I found is " + node.name);
+		
+		if (gameObject.tag == "avatar"){
+			foreach (Rect rect in speedBoostAreas){
+				
+				if (rect.Contains((Vector2)t.position)){
+					//Debug.Log("Found my speed boost! number " + rectCounter);
+					//Debug.Log("The speed boost itself is called " + speedBoosts[rectCounter]);
+					foreach (Transform node in speedBoosts[rectCounter].GetComponentsInChildren<Transform>()){
+						if (node == speedBoosts[rectCounter].transform) continue;
+						if (Vector2.Distance((Vector2)t.position, (Vector2)node.position) < speedBoostDist){
+							detectedSB = true;
+							//Debug.Log("The one I found is " + node.name);
+						}
 					}
 				}
+				
+				rectCounter ++;
 			}
-			
-			rectCounter ++;
 		}
 		
 		if (detectedSB){

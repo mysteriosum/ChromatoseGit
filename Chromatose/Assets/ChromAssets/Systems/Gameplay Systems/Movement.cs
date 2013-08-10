@@ -31,16 +31,13 @@ public class Movement : MonoBehaviour {
 		public float maxSpeed = 100;
 		public float MaxSpeed{
 			get { return maxSpeed; }
-		}
+			}
 		public float accel = 5;
 		[System.NonSerialized]
 		public float magnitude;
 		[System.NonSerialized]
 		public Vector2 velocity;
-		//private bool isThrusting = false;
-		
-		
-		
+
 	}
 	
 	[System.Serializable]
@@ -54,11 +51,7 @@ public class Movement : MonoBehaviour {
 		public float rotationTimer = 0;
 		[System.NonSerialized]
 		public bool prevClockwise;
-		
-		
-		
-		
-		
+				
 	}
 	
 	void OnCollisionEnter(Collision collision){			//COLLISION CLASS! I'MA COLLIDE YOUR FACE!
@@ -135,6 +128,7 @@ public class Movement : MonoBehaviour {
 	
 	
 	public Vector3 Rotate (bool clockwise){								//Rotate me; rotate me, my friend.
+		
 		if (!rotator.rotates){
 			return Vector3.zero;
 		}
