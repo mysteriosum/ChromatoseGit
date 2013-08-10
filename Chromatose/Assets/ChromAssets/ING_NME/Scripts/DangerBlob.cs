@@ -108,7 +108,6 @@ public class DangerBlob : ColourBeing {
 				if (next){
 					dyingFlames.Add(next);
 					dyingAlphas.Add(1f);
-						Debug.Log("Next is next! its name is + " + next.name);
 				}
 				float highestAlpha = 0;
 				for(int i = 0; i < dyingFlames.Count; i ++){
@@ -127,8 +126,10 @@ public class DangerBlob : ColourBeing {
 			
 		}
 		else{
-			if(_AvatarRigid.velocity.x > 0.5f || _AvatarRigid.velocity.y > 0.5f || _AvatarRigid.velocity.x < -0.5f || _AvatarRigid.velocity.y < -0.5f){
-				_WaitAvatarMove = false;
+			//if(_AvatarRigid.velocity.x > 0.5f || _AvatarRigid.velocity.y > 0.5f || _AvatarRigid.velocity.x < -0.5f || _AvatarRigid.velocity.y < -0.5f){
+			if(GameObject.FindGameObjectWithTag("avatar").transform.position != GameObject.FindGameObjectWithTag("avatar").GetComponent<Avatar>().initPos){
+			
+			_WaitAvatarMove = false;
 			}
 		}
 	}
@@ -142,7 +143,6 @@ public class DangerBlob : ColourBeing {
 		Avatar avatar = other.gameObject.GetComponent<Avatar>();
 		bool sameColour = CheckSameColour(avatar.colour);
 		if (sameColour && diesOnImpact){
-			Debug.Log("Bye bye");
 			Dead = true;
 			if (colour.Red)
 				beingExtinguished = true;

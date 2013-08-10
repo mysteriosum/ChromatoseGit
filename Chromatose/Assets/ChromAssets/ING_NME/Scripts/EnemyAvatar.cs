@@ -5,6 +5,14 @@ using System.Collections.Generic;
 #pragma warning disable 0414 
 public class EnemyAvatar : Avatar {
 	
+	
+	public enum _BehaviourEnum{
+		idle, patrol, idle_Follow, patrol_Follow, bossFight
+	}
+	
+	public _BehaviourEnum behaviours;
+	
+	
 	int wTiming;
 	int aTiming;
 	int dTiming;
@@ -16,11 +24,11 @@ public class EnemyAvatar : Avatar {
 	public bool guardDuty;
 	public Transform guardPost;
 	public int detectionRadius = 450;
-	public bool patrol;
 	public Transform[] patrolRoute;
 	
 	[System.NonSerialized]
 	public GameObject questionBubble;
+	private bool _CanFollow = false;
 	private bool returning;
 	private bool hunting;
 	private float checkTiming = 0.5f;
@@ -41,6 +49,30 @@ public class EnemyAvatar : Avatar {
 	
 	// Use this for initialization
 	void Start () {
+		
+		
+		switch(behaviours){
+		case _BehaviourEnum.idle:
+			
+			break;
+		case _BehaviourEnum.idle_Follow:
+			
+			break;
+		case _BehaviourEnum.patrol:
+			
+			
+			target = patrolRoute[0];
+			
+			break;
+		case _BehaviourEnum.patrol_Follow:
+			
+			break;
+		case _BehaviourEnum.bossFight:
+			
+			break;
+			
+		}
+		
 		
 		spriteInfo = GetComponent<tk2dSprite>();
 		movement = GetComponent<Movement>();
@@ -77,9 +109,7 @@ public class EnemyAvatar : Avatar {
 		if (prey){
 			pather = new Pather(t, prey);
 		}
-		if (patrol && patrolRoute != null){
-			target = patrolRoute[0];
-		}
+		
 		
 		
 		initPosition = t.position;
@@ -100,8 +130,55 @@ public class EnemyAvatar : Avatar {
 	
 	// Update is called once per frame
 	void Update(){
+		
 		timer += Time.deltaTime;
-		float multiplier = 1f;
+		float multiplier = 1f;		//<--Rendre la variable solide pour eviter la depense du garbage Coellector
+		
+		switch(behaviours){
+		case _BehaviourEnum.idle:
+			
+			bool colourAppropriate = true;
+			if (colourTarget){
+				colourAppropriate = !colourTarget.colour.White;
+			}
+			if ((prey.position - t.position).magnitude < detectionRadius && colourAppropriate && !Physics.Linecast(prey.position, t.position, out hit, mask)){
+				target = prey;
+				hunting = true;
+				returning = false;
+				movement.SetNewMoveStats(basicMaxSpeed, basicAccel, basicTurnSpeed);
+				//Debug.Log("In ragne. GetW = " + getW + " getD = " + getD + " getA = " + getA);
+			}
+			
+			break;
+		case _BehaviourEnum.idle_Follow:
+			
+			break;
+		case _BehaviourEnum.patrol:
+			
+			if (Vector3.Distance(target.position, t.position) < 50){
+				if (target == guardPost){
+					returning = false;
+				}
+				else{
+					curNode ++;
+					if (curNode == patrolRoute.Length) curNode = 0;
+					target = patrolRoute[curNode];
+					//Debug.Log("Shavatar targets " + curNode);
+				}
+				
+			}
+			
+			break;
+		case _BehaviourEnum.patrol_Follow:
+			
+			break;
+		case _BehaviourEnum.bossFight:
+			
+			break;
+			
+		}
+		
+
 		if (target != null){								//Here I'm going to figure out where I should be pointing, 
 			float curRot = VectorFunctions.Convert360(t.rotation.eulerAngles.z); 	//how to turn there, and whether I should be accelerating
 			
@@ -134,38 +211,12 @@ public class EnemyAvatar : Avatar {
 					curNode ++;
 					target = myPath[curNode];
 				}
-				
 			}
-			
 		}
 		
-		if (patrol){
-			if (Vector3.Distance(target.position, t.position) < 50){
-				if (target == guardPost){
-					returning = false;
-				}
-				else{
-					curNode ++;
-					if (curNode == patrolRoute.Length) curNode = 0;
-					target = patrolRoute[curNode];
-					//Debug.Log("Shavatar targets " + curNode);
-				}
-				
-			}
-		}
 		
 		if (guardDuty){
-			bool colourAppropriate = true;
-			if (colourTarget){
-				colourAppropriate = !colourTarget.colour.White;
-			}
-			if ((prey.position - t.position).magnitude < detectionRadius && colourAppropriate && !Physics.Linecast(prey.position, t.position, out hit, mask)){
-				target = prey;
-				hunting = true;
-				returning = false;
-					movement.SetNewMoveStats(basicMaxSpeed, basicAccel, basicTurnSpeed);
-				//Debug.Log("In ragne. GetW = " + getW + " getD = " + getD + " getA = " + getA);
-			}
+			
 			
 		}
 		
@@ -191,11 +242,7 @@ public class EnemyAvatar : Avatar {
 		//Debug.Log("GetW = " + getW + " getD = " + getD + " getA = " + getA);
 	
 		TranslateInputs(multiplier);		//From parent script: avatar
-		
-		
-		
 	}
-	
 	
 	void OnCollisionEnter(Collision collider){
 		if (collider.gameObject.tag == "avatar"){
@@ -219,8 +266,17 @@ public class EnemyAvatar : Avatar {
 		onPath = true;
 	}
 	
+	void CheckAvatarColor(){
+		if(prey.GetComponent<Avatar>().AvatarColor != Color.white){
+			_CanFollow = true;
+		}
+		else{
+			_CanFollow= false;
+		}
+	}
+	
 	void OnDrawGizmosSelected(){
-		if (!patrol) return;
+		if (behaviours != _BehaviourEnum.patrol || behaviours != _BehaviourEnum.patrol_Follow) return;
 		int maxIndex = patrolRoute.Length;
 		if (maxIndex <= 1) return;
 		int index = 0;

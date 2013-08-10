@@ -677,7 +677,7 @@ public static class LevelSerializer
 
         while (SavedGames[PlayerName].Count > MaxGames)
         {
-            SavedGames[PlayerName].RemoveAt(SavedGames.Count - 1);
+            SavedGames[PlayerName].RemoveAt(SavedGames[PlayerName].Count - 1);
         }
 
         SaveDataToPlayerPrefs();
