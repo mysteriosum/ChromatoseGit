@@ -21,9 +21,10 @@ public class UnitySingleton : MonoBehaviour
     }
 	
 	
+	
 	public GUISkin tempGuiSkin;
 	public bool SAVETEST;
-	
+	public bool FULLRELEASE = false;
 	private GameObject mainManager;
 	
 	void Start(){
