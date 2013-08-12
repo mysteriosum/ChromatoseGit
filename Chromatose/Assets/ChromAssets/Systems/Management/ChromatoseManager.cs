@@ -52,6 +52,7 @@ public class ChromatoseManager : MonoBehaviour {
 	private bool actionPressed;
 	
 	private bool _OnPause = false;
+	private bool _CanShowAction = false;
 	
 	private Actions currentAction = Actions.Nothing;
 	private GUIStateEnum _GUIState;
@@ -237,6 +238,9 @@ public class ChromatoseManager : MonoBehaviour {
 		public Texture pauseWindows;
 		public Texture blackBG;
 		public Texture endResultWindows;
+		
+		
+		//TEXTURE POUR WEBPLAYER
 		
 		public GUISkin skinSansBox;
 		
@@ -597,6 +601,8 @@ public class ChromatoseManager : MonoBehaviour {
 	
 	void Start(){
 		
+		
+		
 		_GUIState = GUIStateEnum.OnStart;
 		
 		CheckStartPos();
@@ -925,7 +931,9 @@ public class ChromatoseManager : MonoBehaviour {
 		if (showingAction && shownActionTexture != actionTexture){
 			Debug.Log("Should be working to update the action texture");
 			if (aX >= hud.absorbAction.width){
+				
 				UpdateActionTexture();
+				
 			}
 			else{
 				aX -= actionSlideSpeed;
@@ -943,28 +951,34 @@ public class ChromatoseManager : MonoBehaviour {
 #region OnGUI (HUD & Windows)
 	void OnGUI(){
 		
-		//BackUp de la Matrix Initiale
-		Matrix4x4 matrixBackup = GUI.matrix;
+		float horizRatio = Screen.width / 1280.0f;
+		float vertiRatio = Screen.height / 720.0f;
 		
-		Rect bgRect = new Rect(0, 0, Screen.width, Screen.height);
-		
-		Rect mainRect = new Rect(Screen.width - hud.mainBox.width, 0, hud.mainBox.width, hud.mainBox.height);
-		Rect rColRect = new Rect(Screen.width - hud.redCollectible.width - 5, colY[0], hud.redCollectible.width, hud.redCollectible.height);
-		Rect gColRect = new Rect(Screen.width - hud.greenCollectible.width - 5, colY[1], hud.greenCollectible.width, hud.greenCollectible.height);
-		Rect bColRect = new Rect(Screen.width - hud.blueCollectible.width - 5, colY[2], hud.blueCollectible.width, hud.blueCollectible.height);
-		Rect wColRect = new Rect(Screen.width - hud.whiteCollectible.width - 5, colY[3], hud.whiteCollectible.width, hud.whiteCollectible.height);
-		Rect comicRect = new Rect(Screen.width - hud.comicCounter.width - 5, colY[4], hud.comicCounter.width, hud.comicCounter.height);
-		Rect actionRect = new Rect(Screen.width * 0.935f, 141, 50, 52);
-		Rect energyRect = new Rect(barX, barMinY, hud.energyBar.width, hud.energyBar.height);
-		Rect flashyRect = new Rect(barX - 7, barMinY - 8, hud.energyBarFlash.width, hud.energyBarFlash.height);
-		Rect tankRect = new Rect(tankX, tankY, 80, 128);
-		Rect timeTrialRect = new Rect(25, 20, hud._TimeTrialBox.width + 100f, hud._TimeTrialBox.height + 10f);
-		Rect pauseWindowsRect = new Rect (Screen.width*0.1f, Screen.height*0.16f, Screen.width*0.55f, Screen.height*0.5f);
-										
+		GUI.matrix = Matrix4x4.TRS(Vector3.zero, Quaternion.identity,new Vector3(horizRatio, vertiRatio, 1f));
 		
 		
+			//BackUp de la Matrix Initiale
+			Matrix4x4 matrixBackup = GUI.matrix;
+			
+			Rect bgRect = new Rect(0, 0, 1280, 720);
+			
+			Rect mainRect = new Rect(1160, -1, hud.mainBox.width, hud.mainBox.height);
+			Rect rColRect = new Rect(1160, 320, hud.redCollectible.width, hud.redCollectible.height);
+			Rect gColRect = new Rect(1160, colY[1], hud.greenCollectible.width, hud.greenCollectible.height);
+			Rect bColRect = new Rect(1160, 365, hud.blueCollectible.width, hud.blueCollectible.height);
+			Rect wColRect = new Rect(1160, 275, hud.whiteCollectible.width, hud.whiteCollectible.height);
+			Rect comicRect = new Rect(1160, 230, hud.comicCounter.width, hud.comicCounter.height);
 		
-		Rect endResultRect = new Rect (0, 0, Screen.width, Screen.height);
+			Rect actionRect = new Rect(1194, 141, 50, 52);
+			Rect timeTrialRect = new Rect(25, 20, hud._TimeTrialBox.width + 100f, hud._TimeTrialBox.height + 10f);
+			Rect pauseWindowsRect = new Rect (128, 100, 700, 360);
+			Rect endResultRect = new Rect (0, 0, Screen.width, Screen.height);
+		
+			//NE SEMBLE PAS SERVIR
+			Rect energyRect = new Rect(barX, barMinY, hud.energyBar.width, hud.energyBar.height);
+			Rect flashyRect = new Rect(barX - 7, barMinY - 8, hud.energyBarFlash.width, hud.energyBarFlash.height);
+			Rect tankRect = new Rect(tankX, tankY, 80, 128);
+		
 		
 		#region OnGUI OnStart
 		switch(_GUIState){
@@ -976,7 +990,7 @@ public class ChromatoseManager : MonoBehaviour {
 			//Black BackGround
 			GUI.DrawTexture(bgRect, hud.blackBG);
 			GUI.skin.button.fontSize = 78;
-			if(GUI.Button(new Rect(Screen.width*0.36f, Screen.height*0.38f, Screen.width*0.2f, Screen.height*0.15f), "PLAY")){
+			if(GUI.Button(new Rect(460, 240, 250, 150), "PLAY")){
 				_GUIState = GUIStateEnum.Interface;
 				avatar.CanControl();
 			}
@@ -1055,7 +1069,7 @@ public class ChromatoseManager : MonoBehaviour {
 			
 			GUI.skin = hud.skinSansBox;
 			
-			GUIUtility.RotateAroundPivot(-12f, new Vector2(Screen.width*0.25f, Screen.height*0.30f));
+			GUIUtility.RotateAroundPivot(-12f, new Vector2(320, 215));
 			GUI.BeginGroup(pauseWindowsRect);
 				//PAUSE WINDOWS
 				GUI.DrawTexture(new Rect(pauseWindowsRect.width*0.05f, pauseWindowsRect.height*0.05f, pauseWindowsRect.width*0.9f, pauseWindowsRect.height*0.9f), hud.pauseWindows);
@@ -1098,16 +1112,16 @@ public class ChromatoseManager : MonoBehaviour {
 				if(!DisplayWinWindows){
 					//Affichage du Lose result
 					GUI.BeginGroup(endResultRect);
-						if (GUI.Button(new Rect(Screen.width/ 2 - 250, Screen.height/ 2, hud.pauseButton[0].width, hud.pauseButton[0].height), hud.pauseButton[0])){
+						if (GUI.Button(new Rect(390, 360, hud.pauseButton[0].width, hud.pauseButton[0].height), hud.pauseButton[0])){
 							
 						}
 						GUI.skin.textArea.normal.textColor = Color.red;
 						GUI.DrawTexture(new Rect(0, 0, hud.endResultWindows.width, hud.endResultWindows.height), hud.endResultWindows);
 						GUI.TextArea(new Rect (textOffset.x, textOffset.y, 500, 50), "YOU LOSE, SORRY !");
-						GUI.TextArea(new Rect (Screen.width/2 -125f, Screen.height/4 + 50f, 500, 50), Time2BeatString);
+						GUI.TextArea(new Rect (515, 230, 500, 50), Time2BeatString);
 					
 								
-						GUI.Button(new Rect(Screen.width/ 2 + 250, Screen.height/ 2, 300, 100), "NEXT LEVEL");
+						GUI.Button(new Rect(890, 360, 300, 100), "NEXT LEVEL");
 					GUI.EndGroup();
 				}
 				else{
@@ -1115,12 +1129,12 @@ public class ChromatoseManager : MonoBehaviour {
 					GUI.BeginGroup(endResultRect);
 						GUI.skin.textArea.normal.textColor = Color.red;
 						GUI.DrawTexture(new Rect(0, 0, hud.endResultWindows.width, hud.endResultWindows.height), hud.endResultWindows);
-						GUI.TextArea(new Rect (Screen.width/2 -100f, Screen.height/3, 500, 50), "YOU WIN !");
-						GUI.TextArea(new Rect (Screen.width/2 -125f, Screen.height/3 + 50f, 500, 50), "NEW TIME 2 BEAT");
-						GUI.TextArea(new Rect (Screen.width/2 -125f, Screen.height/3 + 100f, 500, 50), TimeString);
+						GUI.TextArea(new Rect (540, 235, 500, 50), "YOU WIN !");
+						GUI.TextArea(new Rect (515, 285, 500, 50), "NEW TIME 2 BEAT");
+						GUI.TextArea(new Rect (515, 335, 500, 50), TimeString);
 						
-						GUI.TextArea(new Rect (Screen.width/2 -250, Screen.height/2 + 170f, 500, 50), "RETRY");
-						if (GUI.Button(new Rect(Screen.width/ 2 - 250, Screen.height/ 2 + 200f, hud.pauseButton[0].width, hud.pauseButton[0].height), hud.pauseButton[0])){
+						GUI.TextArea(new Rect (390, 530, 500, 50), "RETRY");
+						if (GUI.Button(new Rect(390, 560, hud.pauseButton[0].width, hud.pauseButton[0].height), hud.pauseButton[0])){
 							
 							RestartLevel();
 							

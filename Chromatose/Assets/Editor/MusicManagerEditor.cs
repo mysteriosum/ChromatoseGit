@@ -14,30 +14,18 @@ public class MusicManagerEditor : Editor {
 	
 	void OnEnable(){
 		devStateProp = serializedObject.FindProperty("_DevState");
-		
-		
-		
-		/*
-		foreach(AudioClip track in _MusicManager.playlist){
-			AudioSource temp = _MusicManager.gameObject.AddComponent<AudioSource>();
-			temp.clip = track;
-			_MusicManager.musicSources.Add(temp);
-			temp.loop = false;
-			//temp.Play();
-		}*/
+
 	}
 	
 	void Awake(){
 		_MusicManager = (MusicManager)target;
 	
 	}
-	
-	// Use this for initialization
+
 	void Start () {
 	
 	}
-	
-	// Update is called once per frame
+
 	void Update () {
 		
 	}
@@ -45,10 +33,7 @@ public class MusicManagerEditor : Editor {
 	public override void OnInspectorGUI(){
 		serializedObject.Update();
 		DrawDefaultInspector ();
-		
-		
-		
-		
+
 		GUILayout.Space(5);
 		
 		//_MusicManager.devState = EditorGUILayout.EnumPopup(_MusicManager.devState.ToString(), _MusicManager.devState);

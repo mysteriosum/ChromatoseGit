@@ -11,13 +11,20 @@ public class MainMenu : MonoBehaviour {
 	public enum _OptionWindowsEnum{
 		MainOption, Sound, GameMode, Stats, DeleteSavegame,
 	}
-	
+		
 	public MainMenuButton mainMenuButtton = new MainMenuButton();
 	private StatsDisplay _StatsDisplay = new StatsDisplay();
 	
 	private _MenuWindowsEnum _MenuWindows;
 	private _OptionWindowsEnum _OptionWindows;
 	
+	public enum _GameTypeEnum{
+		FreeVersion, FullRelease
+	}
+	
+	private _GameTypeEnum _GameType;
+	
+	private UnitySingleton _Singleton;
 	
 	public GUISkin _SkinMenuAvecBox;
 	public GUISkin _SkinMenuSansBox;
@@ -82,7 +89,7 @@ public class MainMenu : MonoBehaviour {
 		
 		void Start(){
 			_MainMenuBGRect = new Rect(0, 0, Screen.width, Screen.height);
-				
+			
 		}
 	}
 	
@@ -166,7 +173,16 @@ public class MainMenu : MonoBehaviour {
 		_StatsDisplay.SetUpStats();
 		
 		_FontColor = new Color(173, 173, 173);
-	
+		
+		_Singleton = UnitySingleton.Instance;
+		
+		if(!_Singleton.FULLRELEASE){
+			_GameType = _GameTypeEnum.FreeVersion;
+		}
+		else{
+			_GameType = _GameTypeEnum.FullRelease;
+		}
+		
 	}
 	
 	void Update () {
@@ -237,311 +253,635 @@ public class MainMenu : MonoBehaviour {
 		GUI.skin.textArea.fontSize = 60;
 		GUI.skin.toggle.fontSize = 44;
 		
+		float horizRatio = Screen.width / 1280.0f;
+		float vertiRatio = Screen.height / 720.0f;
+		
+		GUI.matrix = Matrix4x4.TRS(Vector3.zero, Quaternion.identity,new Vector3(horizRatio, vertiRatio, 1f));
+		
+		
 		
 		Matrix4x4 matrixBackup = GUI.matrix;
+		
+		
+		
+		switch (_GameType){
 
-		switch (_MenuWindows){
-			
-		#region Main Windows
-		case _MenuWindowsEnum.MainMenu:
-			
-			//BACKGROUND
-			GUI.DrawTexture(new Rect(0, 0, Screen.width, Screen.height), mainMenuButtton.mainMenuBG);
-			
-			
-			if(!_FirstStart){
-				//RESUME BUTTON
-				GUIUtility.RotateAroundPivot(17.5f + _RotStartButton, new Vector2(Screen.width*0.4f, Screen.height * 0.48f));
-				GUI.skin.button.fontSize = Mathf.RoundToInt(76*_FontMultiplier);
-				if(GUI.Button(new Rect(Screen.width*0.28f, Screen.height*0.44f, Screen.width*0.22f, 85), "RESUME")){
-					_MenuWindows = _MenuWindowsEnum.LevelSelectionWindows;
+#region FullRelease Menu
+		case _GameTypeEnum.FullRelease:
+				
+			switch (_MenuWindows){
+				
+			#region Main Windows
+			case _MenuWindowsEnum.MainMenu:
+				
+				//BACKGROUND
+				GUI.DrawTexture(new Rect(0, 0, 1280, 720), mainMenuButtton.mainMenuBG);
+				
+				
+				if(!_FirstStart){
+					//RESUME BUTTON
+					GUIUtility.RotateAroundPivot(17.5f + _RotStartButton, new Vector2(435*horizRatio, 360*vertiRatio));
+					GUI.skin.button.fontSize = 76;
+					if(GUI.Button(new Rect(335, 310, 280, 85), "RESUME")){
+						_MenuWindows = _MenuWindowsEnum.LevelSelectionWindows;
+					}
+					GUI.matrix = matrixBackup; 
 				}
-				GUI.matrix = matrixBackup; 
-			}
-			else{
-				//START BUTTON
-				GUIUtility.RotateAroundPivot(17.5f + _RotStartButton, new Vector2(Screen.width*0.4f, Screen.height * 0.48f));
-				GUI.skin.button.fontSize = Mathf.RoundToInt(76*_FontMultiplier);
-				if(GUI.Button(new Rect(Screen.width*0.28f, Screen.height*0.44f, Screen.width*0.22f, 85), "START")){
-					//_MenuWindows = _MenuWindowsEnum.LevelSelectionWindows;
-					_MenuWindows = _MenuWindowsEnum.LoadingScreen;
-					_lvlLoad = Application.LoadLevelAsync(Application.loadedLevel + 2);
-					//StartCoroutine(LoadLevel());
-				}
-				GUI.matrix = matrixBackup; 
-			}	
-			
-			GUI.skin.button.fontSize = 48;
-			GUIUtility.RotateAroundPivot(8f, new Vector2(Screen.width*0.69f, Screen.height*0.40f));
-			if(GUI.Button(new Rect(Screen.width*0.69f, Screen.height*0.40f, 190, 60), "OPTIONS")){
-				_MenuWindows = _MenuWindowsEnum.OptionWindows;
-			}
-			GUI.matrix = matrixBackup; 
-			
-			GUI.skin.button.fontSize = 32;
-			GUIUtility.RotateAroundPivot(-8f, new Vector2(Screen.width*0.02f, Screen.height*0.5f));
-			if(GUI.Button(new Rect(Screen.width*0.02f, Screen.height*0.5f , 220, 50), "> CREDITS <")){
-				
-			}
-			GUI.matrix = matrixBackup; 
-			
-			//FBOOK & TWITTER
-			GUI.skin = _SkinMenuAvecPetitBox;
-		
-			if(GUI.Button (new Rect(Screen.width*0.02f, Screen.height*0.02f, 80, 80), mainMenuButtton.fbookIcon)){
-				Application.OpenURL("https://www.facebook.com/FabulamGames?fref=ts");
-			}
-			if(GUI.Button (new Rect(Screen.width*0.1f, Screen.height*0.02f, 80, 80), mainMenuButtton.twitterIcon)){
-				Application.OpenURL("https://twitter.com/Chromatosegame");
-			}
-			
-			
-			//BUY IT ON STEAM
-			if(_ADADAD){
-				GUI.skin = _SkinMenuAvecBox;
-				if(GUI.Button(new Rect(Screen.width*0.68f, Screen.height*0.025f, Screen.width*0.235f, Screen.height*0.08f), " Buy It On Steam")){
-					Application.OpenURL("http://store.steampowered.com/");
-				}
-			}
-			
-			//QUITBUTTON
-			if(GUI.Button(new Rect(Screen.width*0.68f, Screen.height*0.11f, Screen.width*0.235f, Screen.height*0.08f), "EXIT GAME")){
-				Application.Quit();
-			}
-			
-			break;
-			#endregion
-			
-		#region LevelSelection Windows
-		case _MenuWindowsEnum.LevelSelectionWindows:
-		
-			
-			
-			break;
-			#endregion
-			
-		#region Option Windows
-		case _MenuWindowsEnum.OptionWindows:
-			
-			Rect inMenuRect = new Rect(Screen.width*0.15f, Screen.height*0.23f, Screen.width*0.58f, Screen.height*0.55f);
-			
-			//BACKGROUND
-			GUI.DrawTexture(new Rect(0, 0, Screen.width, Screen.height), mainMenuButtton.optionBG);
-			
-			switch(_OptionWindows){
-				#region MainOption
-			case _OptionWindowsEnum.MainOption:
-				
-				Rect optionRect = new Rect(Screen.width*0.15f, Screen.height*0.23f, Screen.width*0.58f, Screen.height*0.55f);
-				
-				GUI.skin = _SkinMenuSansBox;
-				GUI.BeginGroup(optionRect);
-					if(GUI.Button(new Rect(optionRect.width*0.26f, optionRect.height*0.1f, optionRect.width*0.66f, optionRect.height*0.20f), "- SOUND -")){
-						_OptionWindows = _OptionWindowsEnum.Sound;
+				else{
+					//START BUTTON
+					GUIUtility.RotateAroundPivot(17.5f + _RotStartButton, new Vector2(435*horizRatio, 360*vertiRatio));
+					GUI.skin.button.fontSize = 76;
+					if(GUI.Button(new Rect(335, 310, 280, 85), "START")){
+						//_MenuWindows = _MenuWindowsEnum.LevelSelectionWindows;
+						_MenuWindows = _MenuWindowsEnum.LoadingScreen;
+						_lvlLoad = Application.LoadLevelAsync(Application.loadedLevel + 2);
+						//StartCoroutine(LoadLevel());
 					}
-					if(GUI.Button(new Rect(optionRect.width*-0.03f, optionRect.height*0.34f, optionRect.width*0.66f, optionRect.height*0.20f), "- GAME MODE -")){
-						_OptionWindows = _OptionWindowsEnum.GameMode;
-					}
-					if(GUI.Button(new Rect(125, optionRect.height*0.58f, optionRect.width*0.66f, optionRect.height*0.20f), "- STATS -")){
-						_OptionWindows = _OptionWindowsEnum.Stats;
-					}
-					if(GUI.Button(new Rect(optionRect.width*0.05f, optionRect.height*0.80f, optionRect.width*0.92f, optionRect.height*0.20f), "- DELETE SAVEGAME -")){
-						_OptionWindows = _OptionWindowsEnum.DeleteSavegame;
-					}
-					
-				GUI.EndGroup();
+					GUI.matrix = matrixBackup; 
+				}	
 				
-				//BACK BUTTON
 				GUI.skin.button.fontSize = 48;
-				if(GUI.Button(new Rect(Screen.height*0.1f, Screen.height*0.84f, Screen.width*0.235f, Screen.height*0.11f), "- BACK -")){
-					_MenuWindows = _MenuWindowsEnum.MainMenu;
+				GUIUtility.RotateAroundPivot(8f, new Vector2(920*horizRatio, 310*vertiRatio));
+				if(GUI.Button(new Rect(880, 290, 190, 60), "OPTIONS")){
+					_MenuWindows = _MenuWindowsEnum.OptionWindows;
+				}
+				GUI.matrix = matrixBackup; 
+				
+				GUI.skin.button.fontSize = 32;
+				GUIUtility.RotateAroundPivot(-8f, new Vector2(50*horizRatio, 380*vertiRatio));
+				if(GUI.Button(new Rect(25, 360, 220, 50), "> CREDITS <")){
+					
+				}
+				GUI.matrix = matrixBackup; 
+				
+				//FBOOK & TWITTER
+				GUI.skin = _SkinMenuAvecPetitBox;
+			
+				if(GUI.Button (new Rect(25, 25, 80, 80), mainMenuButtton.fbookIcon)){
+					Application.OpenURL("https://www.facebook.com/FabulamGames?fref=ts");
+				}
+				if(GUI.Button (new Rect(125, 25, 80, 80), mainMenuButtton.twitterIcon)){
+					Application.OpenURL("https://twitter.com/Chromatosegame");
+				}
+				
+				
+				//BUY IT ON STEAM
+				if(_ADADAD){
+					GUI.skin = _SkinMenuAvecBox;
+					if(GUI.Button(new Rect(850, 20, 400, 60), "Visit Our Site !")){
+						Application.OpenURL("http://store.steampowered.com/");
+					}
+				}
+				
+				//QUITBUTTON
+				if(GUI.Button(new Rect(850, 90, 400, 60), "EXIT GAME")){
+					Application.Quit();
 				}
 				
 				break;
 				#endregion
 				
-				#region SoundOption
-			case _OptionWindowsEnum.Sound:
-				Rect soundRect = new Rect(Screen.width*0.15f, Screen.height*0.15f, Screen.width*0.58f, Screen.height*0.55f);
+			#region LevelSelection Windows
+			case _MenuWindowsEnum.LevelSelectionWindows:
+			
 				
-				GUI.BeginGroup(soundRect);
-					GUI.skin.button.fontSize = 32;
-					GUI.TextArea(new Rect(soundRect.width*0.25f, soundRect.height*0.21f, soundRect.width*0.5f, soundRect.height*0.2f), "- SOUND -");
-					
-					//Text & Slider
-					GUI.skin.textArea.fontSize = 42;
-					GUI.TextArea(new Rect(soundRect.width*0.025f, soundRect.height*0.51f, soundRect.width*0.15f, soundRect.height*0.15f), "MUSIC");
-					_MusicVolume = GUI.HorizontalSlider(new Rect(soundRect.width*0.23f, soundRect.height*0.51f, soundRect.width*0.55f, soundRect.height*0.18f), _MusicVolume, 100, 0);
-				
-					GUI.TextArea(new Rect(soundRect.width*0.05f, soundRect.height*0.76f, soundRect.width*0.15f, soundRect.height*0.15f), "SFX");
-					_SFXVolume = GUI.HorizontalSlider(new Rect(soundRect.width*0.23f, soundRect.height*0.76f, soundRect.width*0.55f, soundRect.height*0.18f), _SFXVolume, 100, 0);
-				
-					//Mute Button
-					_MusicMute = GUI.Toggle(new Rect(soundRect.width*0.8f, soundRect.height*0.51f, soundRect.width*0.2f, soundRect.height*0.15f), _MusicMute, "MUTE");
-					_SFXMute = GUI.Toggle(new Rect(soundRect.width*0.8f, soundRect.height*0.76f, soundRect.width*0.2f, soundRect.height*0.15f), _SFXMute, "MUTE");
-				GUI.EndGroup();
-				
-				//BACK BUTTON
-				GUI.skin.button.fontSize = 48;
-				if(GUI.Button(new Rect(Screen.height*0.1f, Screen.height*0.84f, Screen.width*0.235f, Screen.height*0.11f), "- BACK -")){
-					_OptionWindows = _OptionWindowsEnum.MainOption;
-				}
 				
 				break;
 				#endregion
 				
-				#region GameModeOption
-			case _OptionWindowsEnum.GameMode:
+			#region Option Windows
+			case _MenuWindowsEnum.OptionWindows:
 				
-				GUI.BeginGroup(inMenuRect);
-					GUI.skin.textArea.fontSize = 60;
-					GUI.TextArea(new Rect(inMenuRect.width*0.15f, inMenuRect.height*0.15f, inMenuRect.width*0.6f, inMenuRect.height*0.21f), "- GAMEMODE -");
+				Rect inMenuRect = new Rect(190, 165, 740, 395);
 				
-					//TIME TRIAL MODE & NO DEATH ACTIVATION
-					if(!_ExtraModeUnlocked){
-						GUI.TextArea(new Rect(inMenuRect.width*0.02f, inMenuRect.height*0.52f, inMenuRect.width*0.9f, inMenuRect.height*0.4f), " Finish the Game to Unlock More Chromatose Extra Mode");
+				//BACKGROUND
+				GUI.DrawTexture(new Rect(0, 0, 1280, 720), mainMenuButtton.optionBG);
+				
+				switch(_OptionWindows){
+					#region MainOption
+				case _OptionWindowsEnum.MainOption:
 					
+					Rect optionRect = new Rect(190, 165, 740, 395);
+					
+					GUI.skin = _SkinMenuSansBox;
+					GUI.BeginGroup(optionRect);
+						if(GUI.Button(new Rect(optionRect.width*0.26f, optionRect.height*0.1f, optionRect.width*0.66f, optionRect.height*0.20f), "- SOUND -")){
+							_OptionWindows = _OptionWindowsEnum.Sound;
+						}
+						if(GUI.Button(new Rect(optionRect.width*-0.03f, optionRect.height*0.34f, optionRect.width*0.66f, optionRect.height*0.20f), "- GAME MODE -")){
+							_OptionWindows = _OptionWindowsEnum.GameMode;
+						}
+						if(GUI.Button(new Rect(125, optionRect.height*0.58f, optionRect.width*0.66f, optionRect.height*0.20f), "- STATS -")){
+							_OptionWindows = _OptionWindowsEnum.Stats;
+						}
+						if(GUI.Button(new Rect(optionRect.width*0.05f, optionRect.height*0.80f, optionRect.width*0.92f, optionRect.height*0.20f), "- DELETE SAVEGAME -")){
+							_OptionWindows = _OptionWindowsEnum.DeleteSavegame;
+						}
+						
+					GUI.EndGroup();
+					
+					//BACK BUTTON
+					GUI.skin.button.fontSize = 48;
+					if(GUI.Button(new Rect(125, 605, 300, 80), "- BACK -")){
+						_MenuWindows = _MenuWindowsEnum.MainMenu;
 					}
-					else{
-						GUI.skin.textArea.fontSize = 40;
 					
-						GUI.TextArea(new Rect(inMenuRect.width*0.1f, inMenuRect.height*0.52f, inMenuRect.width*0.6f, inMenuRect.height*0.25f), "TIME TRIAL CHALLENGE");
-						GUI.TextArea(new Rect(inMenuRect.width*0.1f, inMenuRect.height*0.74f, inMenuRect.width*0.6f, inMenuRect.height*0.25f), "NO DEATH CHALLENGE");
-						_TimeTrialActive = GUI.Toggle(new Rect(inMenuRect.width*0.7f, inMenuRect.height*0.52f, inMenuRect.width*0.15f, inMenuRect.height*0.2f),_TimeTrialActive ,"Active");
-						_NoDeathModeActive = GUI.Toggle(new Rect(inMenuRect.width*0.7f, inMenuRect.height*0.74f, inMenuRect.width*0.15f, inMenuRect.height*0.2f), _NoDeathModeActive, "Active");
+					break;
+					#endregion
+					
+					#region SoundOption
+				case _OptionWindowsEnum.Sound:
+					Rect soundRect = new Rect(190, 110, 740, 400);
+					
+					GUI.BeginGroup(soundRect);
+						GUI.skin.button.fontSize = 32;
+						GUI.TextArea(new Rect(soundRect.width*0.25f, soundRect.height*0.21f, soundRect.width*0.5f, soundRect.height*0.2f), "- SOUND -");
+						
+						//Text & Slider
+						GUI.skin.textArea.fontSize = 42;
+						GUI.TextArea(new Rect(soundRect.width*0.025f, soundRect.height*0.51f, soundRect.width*0.15f, soundRect.height*0.15f), "MUSIC");
+						_MusicVolume = GUI.HorizontalSlider(new Rect(soundRect.width*0.23f, soundRect.height*0.51f, soundRect.width*0.55f, soundRect.height*0.18f), _MusicVolume, 100, 0);
+					
+						GUI.TextArea(new Rect(soundRect.width*0.05f, soundRect.height*0.76f, soundRect.width*0.15f, soundRect.height*0.15f), "SFX");
+						_SFXVolume = GUI.HorizontalSlider(new Rect(soundRect.width*0.23f, soundRect.height*0.76f, soundRect.width*0.55f, soundRect.height*0.18f), _SFXVolume, 100, 0);
+					
+						//Mute Button
+						_MusicMute = GUI.Toggle(new Rect(soundRect.width*0.8f, soundRect.height*0.51f, soundRect.width*0.2f, soundRect.height*0.15f), _MusicMute, "MUTE");
+						_SFXMute = GUI.Toggle(new Rect(soundRect.width*0.8f, soundRect.height*0.76f, soundRect.width*0.2f, soundRect.height*0.15f), _SFXMute, "MUTE");
+					GUI.EndGroup();
+					
+					//BACK BUTTON
+					GUI.skin.button.fontSize = 48;
+					if(GUI.Button(new Rect(125, 605, 300, 80), "- BACK -")){
+						_OptionWindows = _OptionWindowsEnum.MainOption;
+					}
+					
+					break;
+					#endregion
+					
+					#region GameModeOption
+				case _OptionWindowsEnum.GameMode:
+					
+					GUI.BeginGroup(inMenuRect);
+						GUI.skin.textArea.fontSize = 60;
+						GUI.TextArea(new Rect(inMenuRect.width*0.15f, inMenuRect.height*0.15f, inMenuRect.width*0.6f, inMenuRect.height*0.21f), "- GAMEMODE -");
+					
+						//TIME TRIAL MODE & NO DEATH ACTIVATION
+						if(!_ExtraModeUnlocked){
+							GUI.TextArea(new Rect(inMenuRect.width*0.02f, inMenuRect.height*0.52f, inMenuRect.width*0.9f, inMenuRect.height*0.4f), " Finish the Game to Unlock More Chromatose Extra Mode");
+						
+						}
+						else{
+							GUI.skin.textArea.fontSize = 40;
+						
+							GUI.TextArea(new Rect(inMenuRect.width*0.1f, inMenuRect.height*0.52f, inMenuRect.width*0.6f, inMenuRect.height*0.25f), "TIME TRIAL CHALLENGE");
+							GUI.TextArea(new Rect(inMenuRect.width*0.1f, inMenuRect.height*0.74f, inMenuRect.width*0.6f, inMenuRect.height*0.25f), "NO DEATH CHALLENGE");
+							_TimeTrialActive = GUI.Toggle(new Rect(inMenuRect.width*0.7f, inMenuRect.height*0.52f, inMenuRect.width*0.15f, inMenuRect.height*0.2f),_TimeTrialActive ,"Active");
+							_NoDeathModeActive = GUI.Toggle(new Rect(inMenuRect.width*0.7f, inMenuRect.height*0.74f, inMenuRect.width*0.15f, inMenuRect.height*0.2f), _NoDeathModeActive, "Active");
+							
+						}
+					GUI.EndGroup();
+					
+					//BACK BUTTON
+					GUI.skin.button.fontSize = 48;
+					if(GUI.Button(new Rect(125, 605, 300, 80), "- BACK -")){
+						_OptionWindows = _OptionWindowsEnum.MainOption;
+					}
+					
+					break;
+					#endregion
+					
+					#region StatsOption
+				case _OptionWindowsEnum.Stats:
+					
+					
+					GUI.BeginGroup(inMenuRect);
+						GUI.skin.textArea.fontSize = 60;
+						
+						//STATIC STRING
+						GUI.TextArea(new Rect(inMenuRect.width*0.24f, inMenuRect.height*0.01f, inMenuRect.width*0.6f, inMenuRect.height*0.21f), "- STATS -");
+					
+						GUI.skin.textArea.fontSize = 30;
+						GUI.TextArea(new Rect(inMenuRect.width*0.15f, inMenuRect.height*0.2f, inMenuRect.width*0.3f, inMenuRect.height*0.21f), "DEAD NPC");
+						GUI.TextArea(new Rect(inMenuRect.width*0.15f, inMenuRect.height*0.3f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), "WHITE COLLECTIBLES");
+						GUI.TextArea(new Rect(inMenuRect.width*0.15f, inMenuRect.height*0.4f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), "RED COLLECTIBLES");
+						GUI.TextArea(new Rect(inMenuRect.width*0.15f, inMenuRect.height*0.5f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), "BLUE COLLECTIBLES");
+						GUI.TextArea(new Rect(inMenuRect.width*0.15f, inMenuRect.height*0.6f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), "COMIC THUMBS");
+						GUI.TextArea(new Rect(inMenuRect.width*0.15f, inMenuRect.height*0.7f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), "ACHIEVEMENT");
+					
+						GUI.TextArea(new Rect(inMenuRect.width*0.15f, inMenuRect.height*0.8f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), "TOTAL DEATH");
+						GUI.TextArea(new Rect(inMenuRect.width*0.15f, inMenuRect.height*0.9f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), "TOTAL PLAYTIME");
+					
+						//STATISTIC STRING
+						GUI.TextArea(new Rect(inMenuRect.width*0.675f, inMenuRect.height*0.2f, inMenuRect.width*0.3f, inMenuRect.height*0.21f), _StatsDisplay.DeadNPCString);
+						GUI.TextArea(new Rect(inMenuRect.width*0.65f, inMenuRect.height*0.3f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), _StatsDisplay.whiteCollString);
+						GUI.TextArea(new Rect(inMenuRect.width*0.65f, inMenuRect.height*0.4f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), _StatsDisplay.redCollString);
+						GUI.TextArea(new Rect(inMenuRect.width*0.65f, inMenuRect.height*0.5f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), _StatsDisplay.blueCollString);
+						GUI.TextArea(new Rect(inMenuRect.width*0.65f, inMenuRect.height*0.6f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), _StatsDisplay.comicThumbsString);
+						GUI.TextArea(new Rect(inMenuRect.width*0.65f, inMenuRect.height*0.7f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), _StatsDisplay.achievementString);
+						GUI.TextArea(new Rect(inMenuRect.width*0.675f, inMenuRect.height*0.8f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), _StatsDisplay.DeathCountString);
+						GUI.TextArea(new Rect(inMenuRect.width*0.65f, inMenuRect.height*0.9f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), _StatsDisplay.totalPlaytimeString);
+					GUI.EndGroup();
+					
+					//HIGHSCORE BUTTON
+					GUI.skin.button.fontSize = 48;
+					if(GUI.Button(new Rect(470, 605, 385, 80), "- HIGHSCORES -")){
 						
 					}
+					
+					//BACK BUTTON
+					GUI.skin.button.fontSize = 48;
+					if(GUI.Button(new Rect(125, 605, 300, 80), "- BACK -")){
+						_OptionWindows = _OptionWindowsEnum.MainOption;
+					}
+					
+					break;
+					#endregion
+					
+					#region DeleteOption
+				case _OptionWindowsEnum.DeleteSavegame:
+					
+					GUI.BeginGroup(inMenuRect);
+						GUI.skin.textArea.fontSize = 52;
+						GUI.TextArea(new Rect(inMenuRect.width*0.05f, inMenuRect.height*0.14f, inMenuRect.width*0.9f, inMenuRect.height*0.2f), "- DELETE THE ACTUAL -");
+						GUI.skin.textArea.fontSize = 46;
+						GUI.TextArea(new Rect(inMenuRect.width*0.3f, inMenuRect.height*0.3f, inMenuRect.width*0.55f, inMenuRect.height*0.2f), "- SAVED GAME -");
+						GUI.skin.textArea.fontSize = 55;
+						GUI.TextArea(new Rect(inMenuRect.width*0.1f, inMenuRect.height*0.51f, inMenuRect.width*0.7f, inMenuRect.height*0.28f), "? ARE YOU SURE ?");
+						
+						GUI.skin.button.fontSize = 60;
+						if(GUI.Button(new Rect(inMenuRect.width*0.12f, inMenuRect.height*0.73f, 250, 80), "YES")){
+							File.Delete(Application.persistentDataPath + "/" + "Chromasave");
+							_FirstStart = true;
+							_MenuWindows = _MenuWindowsEnum.MainMenu;
+							_OptionWindows = _OptionWindowsEnum.MainOption;
+							Debug.Log("GAME DELETER");
+						}
+						if(GUI.Button(new Rect(inMenuRect.width*0.4f, inMenuRect.height*0.73f, 250, 80), "NO")){
+							_OptionWindows = _OptionWindowsEnum.MainOption;
+						}
+					
+					GUI.EndGroup();
+					
+					
+					//BACK BUTTON
+					GUI.skin.button.fontSize = 48;
+					if(GUI.Button(new Rect(125, 605, 300, 80), "- BACK -")){
+						_OptionWindows = _OptionWindowsEnum.MainOption;
+					}
+					
+					break;
+					#endregion
+				}
+				
+				break;
+				#endregion
+	
+			#region Loading Screen
+			case _MenuWindowsEnum.LoadingScreen:
+				
+				Rect inLoadRect = new Rect(217.5f, 165, 740, 380);
+				
+				//BACKGROUND
+				GUI.DrawTexture(new Rect(0, 0, 1280, 720), mainMenuButtton.blackBG);
+				
+				//_LoadProgress = Application.GetStreamProgressForLevel(Application.loadedLevel + 2);
+				
+				GUI.BeginGroup(inLoadRect);
+					GUI.skin.textArea.fontSize = 62;
+					GUI.TextArea(new Rect(inLoadRect.width*0.41f, inLoadRect.height*0.25f,inLoadRect.width, inLoadRect.height*0.4f), "Loading");
+					
+				//TODO Gerer la Progress Bar differement selon WebPlayer/StandAlone
+					//PROGRESS BAR
+					//GUI.DrawTexture(new Rect(inLoadRect.width*0.25f, inLoadRect.height*0.5f,inLoadRect.width*0.5f, inLoadRect.height*0.2f), mainMenuButtton.emptyProgressBar);
+					//GUI.DrawTexture(new Rect(inLoadRect.width*0.25f, inLoadRect.height*0.5f,inLoadRect.width*0.48f * _LoadProgress, inLoadRect.height*0.18f), mainMenuButtton.progressLine);
+					
+					if(_LoadCounter > 50){GUI.TextArea(new Rect(inLoadRect.width*0.605f, inLoadRect.height*0.25f,inLoadRect.width*0.2f, inLoadRect.height*0.3f), ".");}
+					else if(_LoadCounter > 100){GUI.TextArea(new Rect(inLoadRect.width*0.625f, inLoadRect.height*0.25f,inLoadRect.width*0.2f, inLoadRect.height*0.3f), ".");}
+					else if(_LoadCounter > 150){GUI.TextArea(new Rect(inLoadRect.width*0.645f, inLoadRect.height*0.25f,inLoadRect.width*0.2f, inLoadRect.height*0.3f), ".");}
 				GUI.EndGroup();
 				
-				//BACK BUTTON
+				break;
+				#endregion
+				
+			#region Credits Windows
+			case _MenuWindowsEnum.CreditWindows:
+				
+				break;
+				#endregion
+			
+			}
+				
+			break;
+#endregion			
+			
+#region FreeVersion Menu
+		case _GameTypeEnum.FreeVersion:
+			
+			
+			switch (_MenuWindows){
+				
+			#region Main Windows
+			case _MenuWindowsEnum.MainMenu:
+				
+				//BACKGROUND
+				GUI.DrawTexture(new Rect(0, 0, 1280, 720), mainMenuButtton.mainMenuBG);
+				
+				
+				if(!_FirstStart){
+					//RESUME BUTTON
+					GUIUtility.RotateAroundPivot(17.5f + _RotStartButton, new Vector2(435*horizRatio, 360*vertiRatio));
+					GUI.skin.button.fontSize = 76;
+					if(GUI.Button(new Rect(335, 310, 280, 85), "RESUME")){
+						_MenuWindows = _MenuWindowsEnum.LevelSelectionWindows;
+					}
+					GUI.matrix = matrixBackup; 
+				}
+				else{
+					//START BUTTON
+					GUIUtility.RotateAroundPivot(17.5f + _RotStartButton, new Vector2(435*horizRatio, 360*vertiRatio));
+					GUI.skin.button.fontSize = 76;
+					if(GUI.Button(new Rect(335, 310, 280, 85), "START")){
+						//_MenuWindows = _MenuWindowsEnum.LevelSelectionWindows;
+						_MenuWindows = _MenuWindowsEnum.LoadingScreen;
+						_lvlLoad = Application.LoadLevelAsync(Application.loadedLevel + 2);
+						//StartCoroutine(LoadLevel());
+					}
+					GUI.matrix = matrixBackup; 
+				}	
+				/*
 				GUI.skin.button.fontSize = 48;
-				if(GUI.Button(new Rect(Screen.height*0.1f, Screen.height*0.84f, Screen.width*0.235f, Screen.height*0.11f), "- BACK -")){
-					_OptionWindows = _OptionWindowsEnum.MainOption;
+				GUIUtility.RotateAroundPivot(8f, new Vector2(920*horizRatio, 310*vertiRatio));
+				if(GUI.Button(new Rect(880, 290, 190, 60), "OPTIONS")){
+					_MenuWindows = _MenuWindowsEnum.OptionWindows;
+				}
+				GUI.matrix = matrixBackup; 
+				*/
+				GUI.skin.button.fontSize = 32;
+				GUIUtility.RotateAroundPivot(-8f, new Vector2(50*horizRatio, 380*vertiRatio));
+				if(GUI.Button(new Rect(25, 360, 220, 50), "> CREDITS <")){
+					
+				}
+				GUI.matrix = matrixBackup; 
+				
+				//FBOOK & TWITTER
+				GUI.skin = _SkinMenuAvecPetitBox;
+			
+				if(GUI.Button (new Rect(25, 25, 80, 80), mainMenuButtton.fbookIcon)){
+					Application.OpenURL("https://www.facebook.com/FabulamGames?fref=ts");
+				}
+				if(GUI.Button (new Rect(125, 25, 80, 80), mainMenuButtton.twitterIcon)){
+					Application.OpenURL("https://twitter.com/Chromatosegame");
+				}
+				
+				
+				//BUY IT ON STEAM
+				if(_ADADAD){
+					GUI.skin = _SkinMenuAvecBox;
+					if(GUI.Button(new Rect(850, 20, 400, 60), "Vote for Us on GreenLight")){
+						Application.OpenURL("http://store.steampowered.com/");
+					}
+				}
+				
+				//QUITBUTTON
+				if(GUI.Button(new Rect(850, 90, 400, 60), "EXIT GAME")){
+					Application.Quit();
 				}
 				
 				break;
 				#endregion
 				
-				#region StatsOption
-			case _OptionWindowsEnum.Stats:
+			#region LevelSelection Windows
+			case _MenuWindowsEnum.LevelSelectionWindows:
+			
 				
-				
-				GUI.BeginGroup(inMenuRect);
-					GUI.skin.textArea.fontSize = 60;
-					
-					//STATIC STRING
-					GUI.TextArea(new Rect(inMenuRect.width*0.24f, inMenuRect.height*0.01f, inMenuRect.width*0.6f, inMenuRect.height*0.21f), "- STATS -");
-				
-					GUI.skin.textArea.fontSize = 30;
-					GUI.TextArea(new Rect(inMenuRect.width*0.15f, inMenuRect.height*0.2f, inMenuRect.width*0.3f, inMenuRect.height*0.21f), "DEAD NPC");
-					GUI.TextArea(new Rect(inMenuRect.width*0.15f, inMenuRect.height*0.3f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), "WHITE COLLECTIBLES");
-					GUI.TextArea(new Rect(inMenuRect.width*0.15f, inMenuRect.height*0.4f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), "RED COLLECTIBLES");
-					GUI.TextArea(new Rect(inMenuRect.width*0.15f, inMenuRect.height*0.5f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), "BLUE COLLECTIBLES");
-					GUI.TextArea(new Rect(inMenuRect.width*0.15f, inMenuRect.height*0.6f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), "COMIC THUMBS");
-					GUI.TextArea(new Rect(inMenuRect.width*0.15f, inMenuRect.height*0.7f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), "ACHIEVEMENT");
-				
-					GUI.TextArea(new Rect(inMenuRect.width*0.15f, inMenuRect.height*0.8f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), "TOTAL DEATH");
-					GUI.TextArea(new Rect(inMenuRect.width*0.15f, inMenuRect.height*0.9f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), "TOTAL PLAYTIME");
-				
-					//STATISTIC STRING
-					GUI.TextArea(new Rect(inMenuRect.width*0.675f, inMenuRect.height*0.2f, inMenuRect.width*0.3f, inMenuRect.height*0.21f), _StatsDisplay.DeadNPCString);
-					GUI.TextArea(new Rect(inMenuRect.width*0.65f, inMenuRect.height*0.3f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), _StatsDisplay.whiteCollString);
-					GUI.TextArea(new Rect(inMenuRect.width*0.65f, inMenuRect.height*0.4f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), _StatsDisplay.redCollString);
-					GUI.TextArea(new Rect(inMenuRect.width*0.65f, inMenuRect.height*0.5f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), _StatsDisplay.blueCollString);
-					GUI.TextArea(new Rect(inMenuRect.width*0.65f, inMenuRect.height*0.6f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), _StatsDisplay.comicThumbsString);
-					GUI.TextArea(new Rect(inMenuRect.width*0.65f, inMenuRect.height*0.7f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), _StatsDisplay.achievementString);
-					GUI.TextArea(new Rect(inMenuRect.width*0.675f, inMenuRect.height*0.8f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), _StatsDisplay.DeathCountString);
-					GUI.TextArea(new Rect(inMenuRect.width*0.65f, inMenuRect.height*0.9f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), _StatsDisplay.totalPlaytimeString);
-				GUI.EndGroup();
-				
-				//HIGHSCORE BUTTON
-				GUI.skin.button.fontSize = 48;
-				if(GUI.Button(new Rect(Screen.height*0.65f, Screen.height*0.84f, Screen.width*0.3f, Screen.height*0.11f), "- HIGHSCORES -")){
-					
-				}
-				
-				//BACK BUTTON
-				GUI.skin.button.fontSize = 48;
-				if(GUI.Button(new Rect(Screen.height*0.1f, Screen.height*0.84f, Screen.width*0.235f, Screen.height*0.11f), "- BACK -")){
-					_OptionWindows = _OptionWindowsEnum.MainOption;
-				}
 				
 				break;
 				#endregion
 				
-				#region DeleteOption
-			case _OptionWindowsEnum.DeleteSavegame:
+			#region Option Windows
+			case _MenuWindowsEnum.OptionWindows:
 				
-				GUI.BeginGroup(inMenuRect);
-					GUI.skin.textArea.fontSize = 52;
-					GUI.TextArea(new Rect(inMenuRect.width*0.05f, inMenuRect.height*0.14f, inMenuRect.width*0.9f, inMenuRect.height*0.2f), "- DELETE THE ACTUAL -");
-					GUI.skin.textArea.fontSize = 46;
-					GUI.TextArea(new Rect(inMenuRect.width*0.3f, inMenuRect.height*0.3f, inMenuRect.width*0.55f, inMenuRect.height*0.2f), "- SAVED GAME -");
-					GUI.skin.textArea.fontSize = 55;
-					GUI.TextArea(new Rect(inMenuRect.width*0.1f, inMenuRect.height*0.51f, inMenuRect.width*0.7f, inMenuRect.height*0.28f), "? ARE YOU SURE ?");
+				Rect inMenuRect = new Rect(190, 165, 740, 395);
+				
+				//BACKGROUND
+				GUI.DrawTexture(new Rect(0, 0, 1280, 720), mainMenuButtton.optionBG);
+				
+				switch(_OptionWindows){
+					#region MainOption
+				case _OptionWindowsEnum.MainOption:
 					
-					GUI.skin.button.fontSize = 60;
-					if(GUI.Button(new Rect(inMenuRect.width*0.12f, inMenuRect.height*0.73f, 250, 80), "YES")){
-						File.Delete(Application.persistentDataPath + "/" + "Chromasave");
-						_FirstStart = true;
+					Rect optionRect = new Rect(190, 165, 740, 395);
+					
+					GUI.skin = _SkinMenuSansBox;
+					GUI.BeginGroup(optionRect);
+						if(GUI.Button(new Rect(optionRect.width*0.26f, optionRect.height*0.1f, optionRect.width*0.66f, optionRect.height*0.20f), "- SOUND -")){
+							_OptionWindows = _OptionWindowsEnum.Sound;
+						}
+						if(GUI.Button(new Rect(optionRect.width*-0.03f, optionRect.height*0.34f, optionRect.width*0.66f, optionRect.height*0.20f), "- GAME MODE -")){
+							_OptionWindows = _OptionWindowsEnum.GameMode;
+						}
+						if(GUI.Button(new Rect(125, optionRect.height*0.58f, optionRect.width*0.66f, optionRect.height*0.20f), "- STATS -")){
+							_OptionWindows = _OptionWindowsEnum.Stats;
+						}
+						if(GUI.Button(new Rect(optionRect.width*0.05f, optionRect.height*0.80f, optionRect.width*0.92f, optionRect.height*0.20f), "- DELETE SAVEGAME -")){
+							_OptionWindows = _OptionWindowsEnum.DeleteSavegame;
+						}
+						
+					GUI.EndGroup();
+					
+					//BACK BUTTON
+					GUI.skin.button.fontSize = 48;
+					if(GUI.Button(new Rect(125, 605, 300, 80), "- BACK -")){
 						_MenuWindows = _MenuWindowsEnum.MainMenu;
-						_OptionWindows = _OptionWindowsEnum.MainOption;
-						Debug.Log("GAME DELETER");
 					}
-					if(GUI.Button(new Rect(inMenuRect.width*0.4f, inMenuRect.height*0.73f, 250, 80), "NO")){
+					
+					break;
+					#endregion
+					
+					#region SoundOption
+				case _OptionWindowsEnum.Sound:
+					Rect soundRect = new Rect(190, 110, 740, 400);
+					
+					GUI.BeginGroup(soundRect);
+						GUI.skin.button.fontSize = 32;
+						GUI.TextArea(new Rect(soundRect.width*0.25f, soundRect.height*0.21f, soundRect.width*0.5f, soundRect.height*0.2f), "- SOUND -");
+						
+						//Text & Slider
+						GUI.skin.textArea.fontSize = 42;
+						GUI.TextArea(new Rect(soundRect.width*0.025f, soundRect.height*0.51f, soundRect.width*0.15f, soundRect.height*0.15f), "MUSIC");
+						_MusicVolume = GUI.HorizontalSlider(new Rect(soundRect.width*0.23f, soundRect.height*0.51f, soundRect.width*0.55f, soundRect.height*0.18f), _MusicVolume, 100, 0);
+					
+						GUI.TextArea(new Rect(soundRect.width*0.05f, soundRect.height*0.76f, soundRect.width*0.15f, soundRect.height*0.15f), "SFX");
+						_SFXVolume = GUI.HorizontalSlider(new Rect(soundRect.width*0.23f, soundRect.height*0.76f, soundRect.width*0.55f, soundRect.height*0.18f), _SFXVolume, 100, 0);
+					
+						//Mute Button
+						_MusicMute = GUI.Toggle(new Rect(soundRect.width*0.8f, soundRect.height*0.51f, soundRect.width*0.2f, soundRect.height*0.15f), _MusicMute, "MUTE");
+						_SFXMute = GUI.Toggle(new Rect(soundRect.width*0.8f, soundRect.height*0.76f, soundRect.width*0.2f, soundRect.height*0.15f), _SFXMute, "MUTE");
+					GUI.EndGroup();
+					
+					//BACK BUTTON
+					GUI.skin.button.fontSize = 48;
+					if(GUI.Button(new Rect(125, 605, 300, 80), "- BACK -")){
 						_OptionWindows = _OptionWindowsEnum.MainOption;
 					}
+					
+					break;
+					#endregion
+					
+					#region GameModeOption
+				case _OptionWindowsEnum.GameMode:
+					
+					GUI.BeginGroup(inMenuRect);
+						GUI.skin.textArea.fontSize = 60;
+						GUI.TextArea(new Rect(inMenuRect.width*0.15f, inMenuRect.height*0.15f, inMenuRect.width*0.6f, inMenuRect.height*0.21f), "- GAMEMODE -");
+					
+						//TIME TRIAL MODE & NO DEATH ACTIVATION
+						if(!_ExtraModeUnlocked){
+							GUI.TextArea(new Rect(inMenuRect.width*0.02f, inMenuRect.height*0.52f, inMenuRect.width*0.9f, inMenuRect.height*0.4f), " Finish the Game to Unlock More Chromatose Extra Mode");
+						
+						}
+						else{
+							GUI.skin.textArea.fontSize = 40;
+						
+							GUI.TextArea(new Rect(inMenuRect.width*0.1f, inMenuRect.height*0.52f, inMenuRect.width*0.6f, inMenuRect.height*0.25f), "TIME TRIAL CHALLENGE");
+							GUI.TextArea(new Rect(inMenuRect.width*0.1f, inMenuRect.height*0.74f, inMenuRect.width*0.6f, inMenuRect.height*0.25f), "NO DEATH CHALLENGE");
+							_TimeTrialActive = GUI.Toggle(new Rect(inMenuRect.width*0.7f, inMenuRect.height*0.52f, inMenuRect.width*0.15f, inMenuRect.height*0.2f),_TimeTrialActive ,"Active");
+							_NoDeathModeActive = GUI.Toggle(new Rect(inMenuRect.width*0.7f, inMenuRect.height*0.74f, inMenuRect.width*0.15f, inMenuRect.height*0.2f), _NoDeathModeActive, "Active");
+							
+						}
+					GUI.EndGroup();
+					
+					//BACK BUTTON
+					GUI.skin.button.fontSize = 48;
+					if(GUI.Button(new Rect(125, 605, 300, 80), "- BACK -")){
+						_OptionWindows = _OptionWindowsEnum.MainOption;
+					}
+					
+					break;
+					#endregion
+					
+					#region StatsOption
+				case _OptionWindowsEnum.Stats:
+					
+					
+					GUI.BeginGroup(inMenuRect);
+						GUI.skin.textArea.fontSize = 60;
+						
+						//STATIC STRING
+						GUI.TextArea(new Rect(inMenuRect.width*0.24f, inMenuRect.height*0.01f, inMenuRect.width*0.6f, inMenuRect.height*0.21f), "- STATS -");
+					
+						GUI.skin.textArea.fontSize = 30;
+						GUI.TextArea(new Rect(inMenuRect.width*0.15f, inMenuRect.height*0.2f, inMenuRect.width*0.3f, inMenuRect.height*0.21f), "DEAD NPC");
+						GUI.TextArea(new Rect(inMenuRect.width*0.15f, inMenuRect.height*0.3f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), "WHITE COLLECTIBLES");
+						GUI.TextArea(new Rect(inMenuRect.width*0.15f, inMenuRect.height*0.4f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), "RED COLLECTIBLES");
+						GUI.TextArea(new Rect(inMenuRect.width*0.15f, inMenuRect.height*0.5f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), "BLUE COLLECTIBLES");
+						GUI.TextArea(new Rect(inMenuRect.width*0.15f, inMenuRect.height*0.6f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), "COMIC THUMBS");
+						GUI.TextArea(new Rect(inMenuRect.width*0.15f, inMenuRect.height*0.7f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), "ACHIEVEMENT");
+					
+						GUI.TextArea(new Rect(inMenuRect.width*0.15f, inMenuRect.height*0.8f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), "TOTAL DEATH");
+						GUI.TextArea(new Rect(inMenuRect.width*0.15f, inMenuRect.height*0.9f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), "TOTAL PLAYTIME");
+					
+						//STATISTIC STRING
+						GUI.TextArea(new Rect(inMenuRect.width*0.675f, inMenuRect.height*0.2f, inMenuRect.width*0.3f, inMenuRect.height*0.21f), _StatsDisplay.DeadNPCString);
+						GUI.TextArea(new Rect(inMenuRect.width*0.65f, inMenuRect.height*0.3f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), _StatsDisplay.whiteCollString);
+						GUI.TextArea(new Rect(inMenuRect.width*0.65f, inMenuRect.height*0.4f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), _StatsDisplay.redCollString);
+						GUI.TextArea(new Rect(inMenuRect.width*0.65f, inMenuRect.height*0.5f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), _StatsDisplay.blueCollString);
+						GUI.TextArea(new Rect(inMenuRect.width*0.65f, inMenuRect.height*0.6f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), _StatsDisplay.comicThumbsString);
+						GUI.TextArea(new Rect(inMenuRect.width*0.65f, inMenuRect.height*0.7f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), _StatsDisplay.achievementString);
+						GUI.TextArea(new Rect(inMenuRect.width*0.675f, inMenuRect.height*0.8f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), _StatsDisplay.DeathCountString);
+						GUI.TextArea(new Rect(inMenuRect.width*0.65f, inMenuRect.height*0.9f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), _StatsDisplay.totalPlaytimeString);
+					GUI.EndGroup();
+					
+					//HIGHSCORE BUTTON
+					GUI.skin.button.fontSize = 48;
+					if(GUI.Button(new Rect(470, 605, 385, 80), "- HIGHSCORES -")){
+						
+					}
+					
+					//BACK BUTTON
+					GUI.skin.button.fontSize = 48;
+					if(GUI.Button(new Rect(125, 605, 300, 80), "- BACK -")){
+						_OptionWindows = _OptionWindowsEnum.MainOption;
+					}
+					
+					break;
+					#endregion
+					
+					#region DeleteOption
+				case _OptionWindowsEnum.DeleteSavegame:
+					
+					GUI.BeginGroup(inMenuRect);
+						GUI.skin.textArea.fontSize = 52;
+						GUI.TextArea(new Rect(inMenuRect.width*0.05f, inMenuRect.height*0.14f, inMenuRect.width*0.9f, inMenuRect.height*0.2f), "- DELETE THE ACTUAL -");
+						GUI.skin.textArea.fontSize = 46;
+						GUI.TextArea(new Rect(inMenuRect.width*0.3f, inMenuRect.height*0.3f, inMenuRect.width*0.55f, inMenuRect.height*0.2f), "- SAVED GAME -");
+						GUI.skin.textArea.fontSize = 55;
+						GUI.TextArea(new Rect(inMenuRect.width*0.1f, inMenuRect.height*0.51f, inMenuRect.width*0.7f, inMenuRect.height*0.28f), "? ARE YOU SURE ?");
+						
+						GUI.skin.button.fontSize = 60;
+						if(GUI.Button(new Rect(inMenuRect.width*0.12f, inMenuRect.height*0.73f, 250, 80), "YES")){
+							File.Delete(Application.persistentDataPath + "/" + "Chromasave");
+							_FirstStart = true;
+							_MenuWindows = _MenuWindowsEnum.MainMenu;
+							_OptionWindows = _OptionWindowsEnum.MainOption;
+							Debug.Log("GAME DELETER");
+						}
+						if(GUI.Button(new Rect(inMenuRect.width*0.4f, inMenuRect.height*0.73f, 250, 80), "NO")){
+							_OptionWindows = _OptionWindowsEnum.MainOption;
+						}
+					
+					GUI.EndGroup();
+					
+					
+					//BACK BUTTON
+					GUI.skin.button.fontSize = 48;
+					if(GUI.Button(new Rect(125, 605, 300, 80), "- BACK -")){
+						_OptionWindows = _OptionWindowsEnum.MainOption;
+					}
+					
+					break;
+					#endregion
+				}
 				
+				break;
+				#endregion
+	
+			#region Loading Screen
+			case _MenuWindowsEnum.LoadingScreen:
+				
+				Rect inLoadRect = new Rect(217.5f, 165, 740, 380);
+				
+				//BACKGROUND
+				GUI.DrawTexture(new Rect(0, 0, 1280, 720), mainMenuButtton.blackBG);
+				
+				//_LoadProgress = Application.GetStreamProgressForLevel(Application.loadedLevel + 2);
+				
+				GUI.BeginGroup(inLoadRect);
+					GUI.skin.textArea.fontSize = 62;
+					GUI.TextArea(new Rect(inLoadRect.width*0.41f, inLoadRect.height*0.25f,inLoadRect.width, inLoadRect.height*0.4f), "Loading");
+					
+				//TODO Gerer la Progress Bar differement selon WebPlayer/StandAlone
+					//PROGRESS BAR
+					//GUI.DrawTexture(new Rect(inLoadRect.width*0.25f, inLoadRect.height*0.5f,inLoadRect.width*0.5f, inLoadRect.height*0.2f), mainMenuButtton.emptyProgressBar);
+					//GUI.DrawTexture(new Rect(inLoadRect.width*0.25f, inLoadRect.height*0.5f,inLoadRect.width*0.48f * _LoadProgress, inLoadRect.height*0.18f), mainMenuButtton.progressLine);
+					
+					if(_LoadCounter > 50){GUI.TextArea(new Rect(inLoadRect.width*0.605f, inLoadRect.height*0.25f,inLoadRect.width*0.2f, inLoadRect.height*0.3f), ".");}
+					else if(_LoadCounter > 100){GUI.TextArea(new Rect(inLoadRect.width*0.625f, inLoadRect.height*0.25f,inLoadRect.width*0.2f, inLoadRect.height*0.3f), ".");}
+					else if(_LoadCounter > 150){GUI.TextArea(new Rect(inLoadRect.width*0.645f, inLoadRect.height*0.25f,inLoadRect.width*0.2f, inLoadRect.height*0.3f), ".");}
 				GUI.EndGroup();
 				
+				break;
+				#endregion
 				
-				//BACK BUTTON
-				GUI.skin.button.fontSize = 48;
-				if(GUI.Button(new Rect(Screen.height*0.1f, Screen.height*0.84f, Screen.width*0.235f, Screen.height*0.11f), "- BACK -")){
-					_OptionWindows = _OptionWindowsEnum.MainOption;
-				}
+			#region Credits Windows
+			case _MenuWindowsEnum.CreditWindows:
 				
 				break;
 				#endregion
 			}
-			
 			break;
-			#endregion
-
-		#region Loading Screen
-		case _MenuWindowsEnum.LoadingScreen:
-			
-			Rect inLoadRect = new Rect(Screen.width*0.17f, Screen.height*0.23f, Screen.width*0.58f, Screen.height*0.55f);
-			
-			//BACKGROUND
-			GUI.DrawTexture(new Rect(0, 0, Screen.width, Screen.height), mainMenuButtton.blackBG);
-			
-			//_LoadProgress = Application.GetStreamProgressForLevel(Application.loadedLevel + 2);
-			
-			GUI.BeginGroup(inLoadRect);
-				GUI.skin.textArea.fontSize = 62;
-				GUI.TextArea(new Rect(inLoadRect.width*0.41f, inLoadRect.height*0.25f,inLoadRect.width, inLoadRect.height*0.4f), "Loading");
-				
-			//TODO Gerer la Progress Bar differement selon WebPlayer/StandAlone
-				//PROGRESS BAR
-				//GUI.DrawTexture(new Rect(inLoadRect.width*0.25f, inLoadRect.height*0.5f,inLoadRect.width*0.5f, inLoadRect.height*0.2f), mainMenuButtton.emptyProgressBar);
-				//GUI.DrawTexture(new Rect(inLoadRect.width*0.25f, inLoadRect.height*0.5f,inLoadRect.width*0.48f * _LoadProgress, inLoadRect.height*0.18f), mainMenuButtton.progressLine);
-				
-				if(_LoadCounter > 50){GUI.TextArea(new Rect(inLoadRect.width*0.605f, inLoadRect.height*0.25f,inLoadRect.width*0.2f, inLoadRect.height*0.3f), ".");}
-				else if(_LoadCounter > 100){GUI.TextArea(new Rect(inLoadRect.width*0.625f, inLoadRect.height*0.25f,inLoadRect.width*0.2f, inLoadRect.height*0.3f), ".");}
-				else if(_LoadCounter > 150){GUI.TextArea(new Rect(inLoadRect.width*0.645f, inLoadRect.height*0.25f,inLoadRect.width*0.2f, inLoadRect.height*0.3f), ".");}
-			GUI.EndGroup();
-			
-			break;
-			#endregion
-			
-		#region Credits Windows
-		case _MenuWindowsEnum.CreditWindows:
-			
-			break;
-			#endregion
-			
-			
+#endregion			
 		}
 	}
 	
