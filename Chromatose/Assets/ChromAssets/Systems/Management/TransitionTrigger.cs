@@ -8,9 +8,12 @@ public class TransitionTrigger : MonoBehaviour {
 	}
 	public transitionVers _TransitEnum;
 	
+	//public bool 
+	
 	private Avatar _AvatarScript;
 	private Transform avatarT;
 	private ChromatoseManager _Manager;
+	private ChromaRoomManager _RoomManager;
 	
 	private bool _Popped = false;
 	private bool _Lightning = false;
@@ -31,6 +34,7 @@ public class TransitionTrigger : MonoBehaviour {
 	void Start () {
 		
 		_Manager = ChromatoseManager.manager;
+		_RoomManager = GameObject.FindGameObjectWithTag("RoomManager").GetComponent<ChromaRoomManager>();
 		_AvatarScript = GameObject.FindGameObjectWithTag("avatar").GetComponent<Avatar>();
 		avatarT = GameObject.FindWithTag("avatar").transform;
 		
@@ -91,6 +95,7 @@ public class TransitionTrigger : MonoBehaviour {
 		case transitionVers.LocalTarget:
 			
 			if (!_Popped) return;
+			
 				
 			if (_LightCounter < 1 && _FadeIn){_LightCounter += 0.02f;}
 			if (_LightCounter > 0 && _FadeOut){_LightCounter -= 0.02f;}
@@ -171,6 +176,17 @@ public class TransitionTrigger : MonoBehaviour {
 		avatarT.position = localTarget.position;
 		avatarT.rotation = localTarget.rotation;
 		avatarT.SendMessage ("SetVelocity", Vector2.zero);
+		
+		
+		if(_RoomManager._RoomType == ChromaRoomManager._RoomTypeEnum.WhiteRoom){
+			_RoomManager.NextLilRoom();
+			Debug.Log("NextLilRoom");
+		}
+		
+		_Manager.ResetComicCounter();
+		
+		OptiManager tempOptiManager = GameObject.FindGameObjectWithTag("OptiManager").GetComponent<OptiManager>();
+		tempOptiManager.OptimizeZone();
 		
 		_AvatarScript.CallFromFar();
 		_AvatarScript.LoseAllColour();		

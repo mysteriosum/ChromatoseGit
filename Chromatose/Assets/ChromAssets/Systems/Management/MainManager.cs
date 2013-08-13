@@ -5,6 +5,17 @@ using System.Collections;
 public class MainManager : MonoBehaviour {
 	
 	
+	public enum _WhiteRoomEnum{
+		Tuto, ModuleBlanc_2, ModuleBlanc_3, ModuleBlanc_4, None
+	}
+	public enum _RoomTypeEnum{
+		WhiteRoom, RedRoom, BlueRoom, RedAndBlueRoom, FinalBoss
+	}
+	
+	public _WhiteRoomEnum _WhiteRoom;
+	public _RoomTypeEnum _RoomType;
+	
+	
 	private ChromatoseManager _Manager;
 	private GameObject _Avatar;
 	private Avatar _AvatarScript;
@@ -40,6 +51,9 @@ public class MainManager : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 	
+		
+		
+		
 	}
 	
 	// Update is called once per frame
