@@ -42,10 +42,11 @@ public class ChromatoseManager : MonoBehaviour {
 	private AvatarPointer avatarP;
 	private Vector3 _AvatarStartingPos;
 	public static ChromatoseManager manager; 
+	private ChromaRoomManager _RoomManager;
 	public ChromHUD hud = new ChromHUD();
 	private GUISkin skin;
 	private string _GameName = "Chromatose";
-	
+	public int _TotalComicInLevel;
 										//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
 										//<--------------ACTION BUTTON!---------------->
 										//<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>
@@ -438,23 +439,7 @@ public class ChromatoseManager : MonoBehaviour {
 		
 		//TODO Faire Fonction Save/Load les records sur un XML externe
 		
-		public void TTChallengeWinWindow(){
-		//TODO Faire Fonction lorsque le joueur reussi le TimeTrial [Affichage = Fenetre Reussite + Resultat + Bouton Continuer + Bouton Recommencer]
-		
-			
-		}
-		
-		public void TTChallengeLoseWindow(){
-		//TODO Faire Fonction lorsque le joueur echoue le TimeTrial [Affichage = Fenetre Echec + Resultat + Temps a Battre pour Reussite + Bouton Recommencer]
-		
-			
-		}
-		
-		public void TTChallengeCloseWindow(){
-		//TODO Faire Fonction qui ferme la fenetre de resultat du TimeTrial
-			
-			
-		}
+
 		
 		public bool StopChallenge(){
 			
@@ -551,23 +536,8 @@ public class ChromatoseManager : MonoBehaviour {
 		public int thumbNumber = 0;
 		public bool secretFound = false;
 		public bool comicComplete = false;
-		/*
-		public int redColsUsed;
-		public int greenColsUsed;
-		public int blueColsUsed;
-		public int afterImagesUsed;
-		public float timeTaken;
+
 		
-		public int redColsIn;
-		public int greenColsIn;
-		public int blueColsIn;
-		public int whiteColsIn;
-		
-		public int redColsFound;
-		public int greenColsFound;
-		public int blueColsFound;
-		public int whiteColsFound;*/
-	
 	}
 	
 
@@ -601,7 +571,8 @@ public class ChromatoseManager : MonoBehaviour {
 	
 	void Start(){
 		
-		
+		_RoomManager = GameObject.FindGameObjectWithTag("RoomManager").GetComponent<ChromaRoomManager>();
+		_TotalComicInLevel = _RoomManager.UpdateTotalComic();
 		
 		_GUIState = GUIStateEnum.OnStart;
 		
@@ -1015,10 +986,10 @@ public class ChromatoseManager : MonoBehaviour {
 				GUI.EndGroup();
 			}
 			
-			GUI.BeginGroup(comicRect);										//comic counter
+			GUI.BeginGroup(comicRect);										//comic counter							
 				GUI.skin.textArea.normal.textColor = Color.black;
 				GUI.DrawTexture(new Rect(0, 0, hud.comicCounter.width, hud.comicCounter.height), hud.comicCounter);
-				GUI.TextArea(new Rect(textOffset.x, textOffset.y, 80, 40), cN.ToString() + " / " + roomStats[curRoom].comics.Count.ToString());
+				GUI.TextArea(new Rect(textOffset.x, textOffset.y, 80, 40), cN.ToString() + " / " + _TotalComicInLevel);
 				
 			GUI.EndGroup();
 			
@@ -1047,7 +1018,7 @@ public class ChromatoseManager : MonoBehaviour {
 			
 			GUI.BeginGroup(actionRect);										//Action icon
 				
-				GUI.DrawTexture(new Rect(aX, 0, hud.absorbAction.width, hud.absorbAction.height), actionTexture);
+				//GUI.DrawTexture(new Rect(aX, 0, hud.absorbAction.width, hud.absorbAction.height), actionTexture);
 			
 			GUI.EndGroup();
 			
@@ -1580,6 +1551,15 @@ public class ChromatoseManager : MonoBehaviour {
 			_GUIState = GUIStateEnum.Interface;
 		}
 	}
+	
+	public void ResetComicCounter(){
+		
+		_TotalComicInLevel = _RoomManager.UpdateTotalComic();
+		
+		roomStats[curRoom].thumbNumber = 0;
+		cN = 0;
+	}
+
 	
 #endregion	
 		

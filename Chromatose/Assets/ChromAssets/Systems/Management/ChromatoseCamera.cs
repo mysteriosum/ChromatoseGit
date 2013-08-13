@@ -13,6 +13,10 @@ public class ChromatoseCamera : MonoBehaviour {
 	
 	
 	public GameObject _HUDHelper_Comics = null;
+	private Vector3 _HelperPos;
+	
+	private float _ScreenHeight = 0;
+	private float _ScreenWidth = 0;
 	
 	// Use this for initialization
 	void Start () {
@@ -25,14 +29,29 @@ public class ChromatoseCamera : MonoBehaviour {
 		cam2d = GetComponent<tk2dCamera>();
 		width = (int) cam2d.camera.GetScreenWidth();
 		height = (int) cam2d.camera.GetScreenHeight();
-
 		
+		
+		if(Screen.width == 848){
+			_ScreenHeight = 310;
+			_ScreenWidth = 785;
+		}
+		else{
+			_ScreenHeight = 465;
+			_ScreenWidth = 1185f;
+		}
+		
+		_HelperPos = new Vector3(transform.position.x + _ScreenWidth, transform.position.y + _ScreenHeight, 0);
+		
+		_HUDHelper_Comics.transform.position = _HelperPos;
 		//width = cam2d.nativeResolutionWidth;
 		//height = cam2d.nativeResolutionHeight;
 	}
 	
 	// Update is called once per frame
 	void Update () {
+		
+		
+		
 		if (Application.loadedLevelName == "Menu") return;
 		
 		if (manager.InComic){

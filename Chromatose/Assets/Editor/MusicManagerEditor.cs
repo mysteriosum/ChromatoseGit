@@ -28,21 +28,24 @@ public class MusicManagerEditor : Editor {
 
 	void Update () {
 		
+		
+		
 	}
 	
 	public override void OnInspectorGUI(){
 		serializedObject.Update();
 		DrawDefaultInspector ();
-
-		GUILayout.Space(5);
+		
+		
+		
+		GUILayout.Space(15);
 		
 		//_MusicManager.devState = EditorGUILayout.EnumPopup(_MusicManager.devState.ToString(), _MusicManager.devState);
 		EditorGUILayout.PropertyField(devStateProp);
 		MusicManager._DevStateEnum dS = (MusicManager._DevStateEnum)devStateProp.enumValueIndex;
 		
-		GUILayout.Space(20);
-		
-			_MusicManager.volume = EditorGUILayout.IntSlider("Volume", _MusicManager.volume, 0, 100 );
+		/*
+			_MusicManager.volume = EditorGUILayout.IntSlider("Current Volume", _MusicManager.volume, 0, 100 );
 			
 		GUILayout.Space(10);
 		
@@ -52,22 +55,9 @@ public class MusicManagerEditor : Editor {
 				_MusicManager.muteSFX = EditorGUILayout.Toggle("Mute SFX", _MusicManager.muteSFX);
 			}
 		
-		GUILayout.Space(5);
+		 */
 		
-			_MusicManager.playOption = EditorGUILayout.Foldout(_MusicManager.playOption, "Play Option");
-			if(_MusicManager.playOption){
-				_MusicManager.loopPlaylist = EditorGUILayout.Toggle("Loop Playlist", _MusicManager.loopPlaylist);
-				_MusicManager.shufflePlaylist = EditorGUILayout.Toggle("Shuffle Playlist", _MusicManager.shufflePlaylist);
-			}
 		
-		GUILayout.Space(5);
-		
-			_MusicManager.crossfadeOption = EditorGUILayout.Foldout(_MusicManager.crossfadeOption, "Crossfade Option");
-			if(_MusicManager.crossfadeOption){
-				_MusicManager.crossfadeBetweenTrack = EditorGUILayout.Toggle("Crossfade Between Track", _MusicManager.crossfadeBetweenTrack);
-				_MusicManager.fadeIn = EditorGUILayout.Toggle("Allow FadeIn", _MusicManager.fadeIn);
-				_MusicManager.crossfadeTime = EditorGUILayout.Slider("Crossfade Time", _MusicManager.crossfadeTime, 1, 10);
-			}
 		
 		GUILayout.Space(15);
 			
@@ -136,11 +126,27 @@ public class MusicManagerEditor : Editor {
 			}
 		EditorGUILayout.EndHorizontal();
 		
+		GUILayout.Space(5);
+		
+			_MusicManager.playOption = EditorGUILayout.Foldout(_MusicManager.playOption, "Play Option");
+			if(_MusicManager.playOption){
+				_MusicManager.loopPlaylist = EditorGUILayout.Toggle("Loop Playlist", _MusicManager.loopPlaylist);
+				_MusicManager.shufflePlaylist = EditorGUILayout.Toggle("Shuffle Playlist", _MusicManager.shufflePlaylist);
+			}
+		
+		GUILayout.Space(5);
+		
+			_MusicManager.crossfadeOption = EditorGUILayout.Foldout(_MusicManager.crossfadeOption, "Crossfade Option");
+			if(_MusicManager.crossfadeOption){
+				_MusicManager.crossfadeBetweenTrack = EditorGUILayout.Toggle("Crossfade Between Track", _MusicManager.crossfadeBetweenTrack);
+				_MusicManager.fadeIn = EditorGUILayout.Toggle("Allow FadeIn", _MusicManager.fadeIn);
+				_MusicManager.crossfadeTime = EditorGUILayout.Slider("Crossfade Time", _MusicManager.crossfadeTime, 1, 10);
+			}
 		
 		
 		for(int i = 0; i < _MusicManager.musicSources.Count; i++){
 			
-			GUILayout.Space(10);
+			GUILayout.Space(20);
 			GUILayout.Label("TRACK " + i);
 			
 			GUILayout.Space(10);
@@ -155,7 +161,7 @@ public class MusicManagerEditor : Editor {
 					_MusicManager.musicSources[i].Play();
 				}
 				if(GUILayout.Button("PAUSE")){
-					
+					_MusicManager.musicSources[i].Pause();
 				}
 				if(GUILayout.Button("STOP")){
 					_MusicManager.musicSources[i].Stop();
@@ -194,5 +200,5 @@ public class MusicManagerEditor : Editor {
 				EditorGUILayout.EndVertical();
 			EditorGUILayout.EndHorizontal();
 		}		
-	}
+	}	
 }
