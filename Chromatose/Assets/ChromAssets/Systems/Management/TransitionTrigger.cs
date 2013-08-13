@@ -159,6 +159,7 @@ public class TransitionTrigger : MonoBehaviour {
 		_Popped = false;
 		_FadeIn = true;
 		_FadeOut = false;
+		_LightCounter = 0;
 	}
 	
 	
@@ -184,6 +185,7 @@ public class TransitionTrigger : MonoBehaviour {
 		}
 		
 		_Manager.ResetComicCounter();
+		//ResetBool();
 		
 		OptiManager tempOptiManager = GameObject.FindGameObjectWithTag("OptiManager").GetComponent<OptiManager>();
 		tempOptiManager.OptimizeZone();
@@ -208,7 +210,7 @@ public class TransitionTrigger : MonoBehaviour {
 		avatarT.position = dynamicComicTarget.position;
 		avatarT.rotation = dynamicComicTarget.rotation;
 		avatarT.SendMessage ("SetVelocity", Vector2.zero);
-		
+		ResetBool();
 		/*
 		_AvatarScript.LoseAllColour();		
 		if(_AvatarScript.HasOutline){
