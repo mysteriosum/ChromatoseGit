@@ -187,11 +187,13 @@ public class TransitionTrigger : MonoBehaviour {
 		_Manager.ResetComicCounter();
 		//ResetBool();
 		
-		OptiManager tempOptiManager = GameObject.FindGameObjectWithTag("OptiManager").GetComponent<OptiManager>();
-		tempOptiManager.OptimizeZone();
+		if(GameObject.FindGameObjectWithTag("OptiManager") != null){
+			OptiManager tempOptiManager = GameObject.FindGameObjectWithTag("OptiManager").GetComponent<OptiManager>();
+			tempOptiManager.OptimizeZone();
+		}
 		
 		_AvatarScript.CallFromFar();
-		_AvatarScript.LoseAllColour();		
+		_AvatarScript.LoseAllColourHidden();		
 		if(_AvatarScript.HasOutline){
 			_AvatarScript.CancelOutline();
 		}

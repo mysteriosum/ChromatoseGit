@@ -1067,6 +1067,7 @@ public class ChromatoseManager : MonoBehaviour {
 		for(int i = 0; i < amount; i++){
 			Vector2 randomVelocity = Random.insideUnitCircle.normalized * Random.Range(40, 65);
 			Vector3 randomPos = avatar.transform.position + (Vector3)randomVelocity;
+			randomPos.z = -5;
 			GameObject wCol = Instantiate(prefab.collectible, randomPos, Quaternion.identity)as GameObject;
 			wCol.GetComponent<Collectible2>().effect = true;
 			wCol.GetComponent<Collectible2>().colorCollectible = Collectible2._ColorCollectible.White;

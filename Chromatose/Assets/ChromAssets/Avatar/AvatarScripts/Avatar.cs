@@ -81,6 +81,7 @@ public class Avatar : ColourBeing
 	protected bool getS;	//This is there for solidarity
 	protected bool getD;
 	private bool getSpace;
+	private bool _SpaceBarActive = true;
 	
 	private int currentSubimg;
 	private string spritePrefix = "Player";
@@ -585,6 +586,17 @@ public class Avatar : ColourBeing
 			angles[i] = i * 22.5f;
 		}
 		
+		_SpaceBarActive = true;
+		
+		switch(Application.loadedLevelName){
+		case ("Tutorial"):
+			_SpaceBarActive = false;
+			break;
+		case ("GYM_CHU"):
+			_SpaceBarActive = false;
+			break;
+		}
+		
 		t = this.transform;
 		t.rotation = Quaternion.identity;
 												//initializing my particle objects, as necessary
@@ -646,11 +658,34 @@ public class Avatar : ColourBeing
 
 	void Update ()
 	{
+		
+		Debug.Log(spriteInfo.Collection);
+		
 								//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
 								//<--------------Color Fading!--------------->
 								//<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>
 		
 		if(_Colored){
+			
+			loseTimer += Mathf.Min(velocity.magnitude, basicMaxSpeed * Time.deltaTime);
+			
+			if (loseTimer >= loseRate){
+				loseTimer = 0f;
+				//colour.r = _CurColor == Color.red ? colour.r : colour.r - 1;
+				//colour.b = _CurColor == Color.blue ? colour.b : colour.b - 1;
+				loseColourPartCounter ++;
+				//Debug.Log("Je passe ici");
+				
+			}
+			if (loseColourPartCounter >= loseColourPartDrop){
+				loseColourPartCounter = 0;
+				loseColourPartDrop = Random.Range(partDropMin, partDropMax);
+				loseColourPart.Add(new LoseColourParticle(particleCollection, t, _CurColor));
+				
+			}
+		
+		//colour.r = Mathf.Clamp(colour.r, 0, 255);
+		//colour.b = Mathf.Clamp(colour.b, 0, 255);
 			
 			
 			_ColorCounter += Time.deltaTime * velocity.magnitude;
@@ -710,7 +745,7 @@ public class Avatar : ColourBeing
 			}
 		}
 		
-		if(!_Colored && HasOutline){
+		else if(!_Colored && HasOutline){
 			spriteInfo.Collection = paleCollection;
 			//spriteInfo.SetSprite(spriteInfo.CurrentSprite.name);
 			Debug.Log("Change Collection Here");
@@ -784,12 +819,16 @@ public class Avatar : ColourBeing
 				getD = true;
 			}
 			
+		
 			if (!manager.InComic){
+				//if(!_SpaceBarActive)return;
+				
 				getS = Input.GetKeyDown(KeyCode.Space);
 				if (Input.GetKeyDown(KeyCode.DownArrow)){
 					getS = true;
 				}
 			}
+			
 			
 			
 				
@@ -1178,6 +1217,13 @@ public class Avatar : ColourBeing
 		colour.r = 0;
 		colour.g = 0;
 		colour.b = 0;
+	}
+	
+	public void LoseAllColourHidden(){
+		if(_CurColor == Color.white)return;
+		
+		_Colored = false;
+		_CurColor = Color.white;
 	}
 	
 	public void GiveColourTo(Transform target, Transform origin){

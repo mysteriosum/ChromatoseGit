@@ -24,6 +24,7 @@ public class whiteTollBooth : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		myColor = Color.white;
+		
 		Setup();
 	}
 	
@@ -46,10 +47,13 @@ public class whiteTollBooth : MonoBehaviour {
 		
 		anim = GetComponent<tk2dAnimatedSprite>();
 		
-		indicator = (Instantiate(Resources.Load("pre_tollIndicator"), transform.position + new Vector3(0, -10, -1), transform.rotation) as GameObject).GetComponent<tk2dAnimatedSprite>();
+		Quaternion indicRotation = Quaternion.identity;
+		indicRotation.eulerAngles = new Vector3(0, 0, -90);
+		
+		indicator = (Instantiate(Resources.Load("pre_tollIndicator"), transform.position + new Vector3(-25, 0, 0), indicRotation) as GameObject).GetComponent<tk2dAnimatedSprite>();
 		indicator.renderer.enabled = false;
-		inString = "boothMoneyIn_" + requiredPayment.ToString();
-		outString = "boothMoneyOut_" + requiredPayment.ToString();
+		inString = "boothWhiteIn_" + requiredPayment.ToString();
+		outString = "boothWhiteOut_" + requiredPayment.ToString();
 		
 	}
 	
