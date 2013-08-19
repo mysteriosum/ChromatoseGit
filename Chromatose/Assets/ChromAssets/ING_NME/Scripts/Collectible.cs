@@ -78,7 +78,7 @@ public class Collectible : ColourBeing {
 				
 				if(!ChromatoseManager.manager.CollAlreadyAdded){
 					if (CheckSameColour(avatar.colour) || colColour == Couleur.white){
-						ChromatoseManager.manager.AddCollectible(this);
+						ChromatoseManager.manager.AddCollectible(Color.white);
 						//Debug.Log("Collectibles Added ! it's a " + colColour + "Coll");
 						Dead = true;
 						anim.Play(takeAnim);

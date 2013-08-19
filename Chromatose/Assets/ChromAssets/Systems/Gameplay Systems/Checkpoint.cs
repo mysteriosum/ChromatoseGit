@@ -44,7 +44,7 @@ public class Checkpoint : MonoBehaviour {
 		if (other.tag != "avatar") return;
 
 		ChromatoseManager.manager.NewCheckpoint(transform);
-		
+		ChromatoseManager.manager.SaveRoom();
 	}
 	public void CallOnStart(GameObject newCP){
 		ChromatoseManager.manager.NewFirstCheckPoint(newCP.transform);

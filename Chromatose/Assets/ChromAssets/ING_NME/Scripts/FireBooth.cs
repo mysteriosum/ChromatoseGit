@@ -30,7 +30,7 @@ public class FireBooth : TollBooth {
 	}
 	
 	protected override void StartIn(){
-		chroManager.RemoveCollectibles(Couleur.red, requiredPayment, transform.position);
+		chroManager.RemoveCollectibles(Color.red, requiredPayment, transform.position);
 	}
 	
 	void TurnRed(){

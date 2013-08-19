@@ -25,47 +25,78 @@ public enum Actions{
 	
 }
 
-public enum TankStates{
-	None,
-	Empty,
-	Full,
-	Flashing,
-}
-
 public enum GUIStateEnum{
 	OnStart, EndResult, EndLevel, Interface, Pause, InComic
 }
 
 [SerializeAll]
 public class ChromatoseManager : MonoBehaviour {
+	
+	
+	//Variables Assignation Public
+	public GameObject comicCompleteAnim;
+	public GameObject oneShotSpritePrefab;
+	public tk2dSpriteCollectionData bubbleCollection;
+	public tk2dFontData chromatoseFont;
+	public GameObject rewardsGuy;
+	
+	
+	//Variables Instance Enum
+	private GUIStateEnum _GUIState;
+	
+	//Avatar Data
 	private Avatar avatar;
 	private AvatarPointer avatarP;
 	private Vector3 _AvatarStartingPos;
+	
+	//Class & Manager
 	public static ChromatoseManager manager; 
 	private ChromaRoomManager _RoomManager;
+	private tk2dSprite spriteInfo;
 	public ChromHUD hud = new ChromHUD();
+	public TimeTrialTimes timeTrialClass = new TimeTrialTimes();
+	public PrefabCollection prefab = new PrefabCollection();
 	private GUISkin skin;
-	private string _GameName = "Chromatose";
-	public int _TotalComicInLevel;
-										//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
-										//<--------------ACTION BUTTON!---------------->
-										//<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>
-	private bool actionPressed;
+	private string _GameName = "CheckpointSave";
 	
+	
+	//Variables Bool
 	private bool _OnPause = false;
 	private bool _CanShowAction = false;
+	private bool actionPressed;
+	private bool showingAction;
+	private bool checkedComicStats = false;
+	public bool playedCompleteFlourish = false;
+	public bool playedSecretFlourish = false;
+	public bool givenCols = false;
+	public bool animsReady = false;
+		public bool AnimsReady{
+			set { animsReady = value; }
+		}
+	private bool inComic = false;
+		public bool InComic{
+			get{ return inComic; }
+			
+		}
+	public bool _TimeTrialModeActivated = false;
+		public bool TimeTrialMode{
+			get{return _TimeTrialModeActivated;}
+		}
 	
+	public bool _NoDeathModeActivated = false;
+		public bool NoDeathMode{
+			get{return _NoDeathModeActivated;}
+		}	
+	
+	
+	//Variable ActionWindows
 	private Actions currentAction = Actions.Nothing;
-	private GUIStateEnum _GUIState;
-	
 	private Texture actionTexture;
 	private Texture shownActionTexture;
-	
 	public delegate void ActionDelegate();
 	public ActionDelegate actionMethod;
-	
-	private SpriteFader[] _FaderList;
-	
+	private float actionSlideSpeed = 10f;
+
 	public void UpdateAction(Actions action, ActionDelegate method){
 		if (action <= currentAction || action == Actions.Nothing){
 			currentAction = action;
@@ -73,90 +104,65 @@ public class ChromatoseManager : MonoBehaviour {
 			showingAction = true;
 		}
 	}
-	
 	public void UpdateActionTexture(){
-		
 		shownActionTexture = actionTexture;
 	}
 	
 	
-	private bool showingAction;
-	private float actionSlideSpeed = 10f;
-	
+	//Variables Collectible
 	private bool _CollAlreadyAdded = false;
-	public bool CollAlreadyAdded{
-		get{return _CollAlreadyAdded;}
-		set{_CollAlreadyAdded = value;}
-	}
+		public bool CollAlreadyAdded{
+			get{return _CollAlreadyAdded;}
+			set{_CollAlreadyAdded = value;}
+		}
+
+	
+	private int _WhiteCollected = 0;
+		public int wCollected{
+			get{return _WhiteCollected;}
+		}
+	private int _RedCollected = 0;
+		public int rCollected{
+			get{return _RedCollected;}
+		}
+	private int _BlueCollected = 0;
+		public int bCollected{
+			get{return _BlueCollected;}
+		}
+	private int _ComicThumbCollected = 0;
+		public int comicCollected{
+			get{return _ComicThumbCollected;}
+		}
+	
+	private int _TotalWhiteColl = 0;
+	private int _TotalRedColl = 0;
+	private int _TotalBlueColl = 0;
+	private int _TotalComicThumb = 0;
+	
+	
+	//Variables CheckPoint
 	private bool _NewLevel = false;
 	private bool _FirstLevelCPDone = false;
-	public bool FirstLevelCPDone {
-		get{return _FirstLevelCPDone;}
-		set{_FirstLevelCPDone = value;}
-	}
+		public bool FirstLevelCPDone {
+			get{return _FirstLevelCPDone;}
+			set{_FirstLevelCPDone = value;}
+		}
+	private Transform curCheckpoint;
 	
-	private string[] roomNames = 
-		{
-		"Tutorial", "Module1_Scene1", "Module1_Scene2", "Module1_Scene3", "Module1_Scene4", "Module1_Scene5,",
-		"Module1_Scene6", "Module1_Scene7", "Module1_Scene8", "Module1_Scene9", "ModuleBlanc_2", "ModuleBlanc_3", "ModuleBlanc_4"};
-	public static RoomStats[] roomStats;
+	
+	//Variables Listes
+	private SpriteFader[] _FaderList;
+	
+	
+	//Variables Room
 	private int curRoom;
 		public int CurRoom{
 			get{ return curRoom; }
 		}
-	private Transform curCheckpoint;
-	
-	private CollectiblesManager collectibles = new CollectiblesManager();
-	public static CollectiblesManager statCols;
-	
-	public GameObject comicCompleteAnim;
-	public GameObject oneShotSpritePrefab;
-	public tk2dSpriteCollectionData bubbleCollection;
-	public tk2dFontData chromatoseFont;
-	
-	private bool checkedComicStats = false;
-	
-	public bool playedCompleteFlourish = false;
-	public bool playedSecretFlourish = false;
-	
-	public bool givenCols = false;
-	public GameObject rewardsGuy;
-	
-	public bool animsReady = false;
-	public bool AnimsReady{
-		set { animsReady = value; }
-	}
-	
-	public Texture backButton;
-												//COMICS AND HOW TO USE THEM
-	private bool inComic = false;
-	public bool InComic{
-		get{ return inComic; }
-		
-	}
 	
 	
-												//GETTERS & SETTERS
-	public List<Collectible> WhiteCollectibles{
-		get{ return collectibles.w; }
-	}
-										//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
-										//<----------------DIFFICULTY------------------>
-										//<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>
-	
-	public bool _TimeTrialModeActivated = false;
-	public bool TimeTrialMode{
-		get{return _TimeTrialModeActivated;}
-	}
-	
-	public bool _NoDeathModeActivated = false;
-	public bool NoDeathMode{
-		get{return _NoDeathModeActivated;}
-	}
-	
-	private float[] colX = {0, 0, 0, 0, 0};
-	private float[] colY = {0, 0, 0, 0, 0};
-	
+
+
 	private float aX;
 	
 	private int rN;
@@ -188,9 +194,9 @@ public class ChromatoseManager : MonoBehaviour {
 	
 	private Vector2 textOffset = new Vector2 (55f, 8);
 	
-	private Couleur[] colCouleurs = {Couleur.red, Couleur.green, Couleur.blue, Couleur.white, Couleur.black};		//the black is for the comics
+	//private Couleur[] colCouleurs = {Couleur.red, Couleur.green, Couleur.blue, Couleur.white, Couleur.black};		//the black is for the comics
 	
-	private bool[] showingCol = {false, false, false, false, false};
+	//private bool[] showingCol = {false, false, false, false, false};
 	private int[] colTimers = {0, 0, 0, 0, 0};
 
 	
@@ -199,18 +205,8 @@ public class ChromatoseManager : MonoBehaviour {
 	private int refreshTiming = 75;
 	
 	private float[] track;
-	
-	private int rTimer = 0;
-	private float rSpeed = 0;
-	private int gTimer = 0;
-	private float gSpeed = 0;
-	private int bTimer = 0;
-	private float bSpeed = 0;
-	private int wTimer = 0;
-	private float wSpeed = 0;
-	
+
 	[System.Serializable]
-	//[SerializeAll]
 	public class ChromHUD {
 		
 		public Texture mainBox;
@@ -242,7 +238,6 @@ public class ChromatoseManager : MonoBehaviour {
 		
 		
 		//TEXTURE POUR WEBPLAYER
-		
 		public GUISkin skinSansBox;
 		
 		public Font chromFont;
@@ -252,16 +247,19 @@ public class ChromatoseManager : MonoBehaviour {
 		private tk2dTextMesh bColMesh;
 	}
 	
+	[System.Serializable]
+	public class PrefabCollection{
+		
+		public GameObject collectible;
+		public GameObject checkPoint;
+		
+	}
 	
 #endregion
 	
 #region TimeTrial Data & Methods
-										//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
-										//<------------TIME TRIAL CHALLENGE------------>
-										//<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>
-	//[System.Serializable]
-	//[SerializeAll]
-	//public class TimeTrialTimes {
+	[System.Serializable]
+	public class TimeTrialTimes {
 		
 		private ChromatoseManager _Manager;
 		
@@ -375,23 +373,15 @@ public class ChromatoseManager : MonoBehaviour {
 													_Lev3_Time2Beat, _Lev4_Time2Beat, _Lev5_Time2Beat, 
 													_Lev6_Time2Beat, _Lev7_Time2Beat, _Lev8_Time2Beat, _Lev9_Time2Beat };
 			}	
-			
 			if (_RecordsList == null){
 				_RecordsList = new List<float>(10){ _NEW_Tuto_Time2Beat, _NEW_Lev1_Time2Beat, _NEW_Lev2_Time2Beat, 
 													_NEW_Lev3_Time2Beat, _NEW_Lev4_Time2Beat, _NEW_Lev5_Time2Beat, 
 													_NEW_Lev6_Time2Beat, _NEW_Lev7_Time2Beat, _NEW_Lev8_Time2Beat, _NEW_Lev9_Time2Beat };
-			
+			}
 			if (_NewRecordList == null){
 				_NewRecordList = new List<float>(10){ _NewRecordTimes_Tuto, _NewRecordTimes_Lev1, _NewRecordTimes_Lev2,
 													_NewRecordTimes_Lev3, _NewRecordTimes_Lev4, _NewRecordTimes_Lev5,
 													_NewRecordTimes_Lev6, _NewRecordTimes_Lev7, _NewRecordTimes_Lev8, _NewRecordTimes_Lev9 };
-				
-			}
-			
-			/*
-			if (_TimesList[_Manager.CurRoom] >= _RecordsList[_Manager.CurRoom]){
-				_TimesList[_Manager.CurRoom] = RecordsList[_Manager.CurRoom];
-				}*/
 			}
 		}
 		
@@ -444,26 +434,18 @@ public class ChromatoseManager : MonoBehaviour {
 		public bool StopChallenge(){
 			
 			bool winGame = false;
-			
-			//Assignation
 			_DisplayScore = true;
-			
-			
-			//Sauvegarde le Temps
 			_FinalLevelTimes = _TimerTime;
 			
 			//Stop le Manager et le Jeu
-			//_Manager.ManagerPause();
 			_Manager.avatar.CannotControlFor(false, 0f);
 			Time.timeScale = 0;
 			
 			//Verifie si le temps du Joueur bats le Temps a battre
 			if (_FinalLevelTimes < _TimeToDisplay){
 				winGame = true;
-				//_DisplayWinWindows = true;
 				return winGame;
 			}
-			
 			return winGame;
 		}
 		
@@ -482,97 +464,34 @@ public class ChromatoseManager : MonoBehaviour {
 		}
 		public void ResetTimer(){
 			_StartTimerTime = Time.fixedTime;
-			
-			
 			//TODO remettre les variable pour la endresultWindows a defaut
 		}
 		
 		public void RestartLevel(){
 			
-			
-			avatar.transform.position = _AvatarStartingPos;
+			manager.ResetPos();
 			ResetTimer();	
 			DisplayScore = false;
 			_DisplayWinWindows = false;
 			Time.timeScale = 1;
 			_Manager.avatar.CanControl();
-			
-			
 		}
-		
-		
-	//}
+	}
 #endregion
 
-#region Data Tracking
-										//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
-										//<--------------DATA TRACKING!---------------->
-										//<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>
-
-	
-	private int _CurrentThumbOnAdd = 0;
-	
-	public class CollectiblesManager{
-		public List<Collectible> w = new List<Collectible>();
-		public List<Collectible> r = new List<Collectible>();
-		public List<Collectible> g = new List<Collectible>();
-		public List<Collectible> b = new List<Collectible>();
-		public List<Collectible> held = new List<Collectible>();
-		
-		public List<Collectible> wInLevel = new List<Collectible>();
-		public List<Collectible> rInLevel = new List<Collectible>();
-		public List<Collectible> gInLevel = new List<Collectible>();
-		public List<Collectible> bInLevel = new List<Collectible>();
-		public List<Collectible> heldInLevel = new List<Collectible>();
-	}
-	
-	public class RoomStats{
-
-		public List<Collectible> consumedCollectibles = new List<Collectible>();
-		public List<Comic> comics = new List<Comic>();
-		public Comic secretComic;
-		
-		public bool[] thumbsFound = {false, false, false, false, false, false, false};
-		public int thumbNumber = 0;
-		public bool secretFound = false;
-		public bool comicComplete = false;
-
-		
-	}
-	
-
-#endregion	
 	
 #region Initialisation et Setup	(Start)
 	// Use this for initialization
 	void Awake () {
-		
-		if (statCols == null){
-			statCols = collectibles;
-		}
-		else{
-			collectibles = statCols;
-		}
-		if (roomStats == null){
-			roomStats = new RoomStats[13]
-			{	new RoomStats(), new RoomStats(), new RoomStats(), new RoomStats(), 
-				new RoomStats(), new RoomStats(), new RoomStats(), new RoomStats(), 
-				new RoomStats(), new RoomStats(), new RoomStats(), new RoomStats(), 
-				new RoomStats(),
-			};
-		}
-		
-		
 		manager = this;
-		
-		UpdateRoomStats();
-		
 	}
 	
 	void Start(){
 		
 		_RoomManager = GameObject.FindGameObjectWithTag("RoomManager").GetComponent<ChromaRoomManager>();
-		_TotalComicInLevel = _RoomManager.UpdateTotalComic();
+		_TotalComicThumb = _RoomManager.UpdateTotalComic();
+		_FaderList = FindObjectsOfType(typeof(SpriteFader)) as SpriteFader[];
+		avatar = GameObject.FindGameObjectWithTag("avatar").GetComponent<Avatar>();
 		
 		_GUIState = GUIStateEnum.OnStart;
 		
@@ -581,8 +500,8 @@ public class ChromatoseManager : MonoBehaviour {
 		CalculeCollectiblesInLevel();
 		
 		if(_TimeTrialModeActivated){
-			SetupTTT();
-			DisplayTimes2Beat();
+			timeTrialClass.SetupTTT();
+			timeTrialClass.DisplayTimes2Beat();
 		}
 		
 		//Initialise pour la premiere la security pour le FirstCP
@@ -592,62 +511,11 @@ public class ChromatoseManager : MonoBehaviour {
 		if (!hud.mainBox){
 			Debug.LogWarning("There are some missing textures....");
 		}
+
 		
-		rN = collectibles.r.Count;
-		gN = collectibles.g.Count;
-		bN = collectibles.b.Count;
-		wN = collectibles.w.Count;
-		
-		colX[0] = Screen.width; 		//the red one
-		colY[0] = hud.mainBox.height + 90f;
-		colX[1] = Screen.width;			//the blue one
-		colY[1] = hud.mainBox.height + 180f;
-		colX[2] = Screen.width;			//the green one
-		colY[2] = hud.mainBox.height + 135f;
-		colX[3] = Screen.width;			//the white one
-		colY[3] = hud.mainBox.height + 45f;
-		colX[4] = Screen.width; 		//the comics
-		colY[4] = hud.mainBox.height;	
-		
-		
-		
-		for (int i = 0; i < showingCol.Length; i++){
-			showingCol[i] = true;
-		}
-		
-		float mainAnchor = Screen.width - hud.mainBox.width;
-		float dummy = Screen.width;
-		List<float> tempTrack = new List<float>();
-		float initSpeed = 6f;
-		float increment = 1.5f;
-		
-		while (dummy >= mainAnchor){		//move my dummy toward the main anchor
-			dummy -= initSpeed;
-			tempTrack.Add(dummy);
-			if (dummy <= 0){
-				break;
-			}
-		}
-		
-		do{
-			initSpeed -= increment;
-			dummy -= initSpeed;
-			tempTrack.Add(dummy);
-		}
-		while (initSpeed > 0 || dummy < mainAnchor);
-		
-		track = tempTrack.ToArray();
-		track[track.Length - 1] = mainAnchor;
 						//HACK Getting a HUD_skin from the Resources folder
 		skin = Resources.Load("Menus/HUD_skin") as GUISkin;
-		
-		
-		barMinY = 28;
-		barMaxY = barMinY + hud.energyBar.height;
-		barX = 1192;
-		barY = barMinY;
-		
-		
+
 		
 		aX = hud.absorbAction.width;
 		
@@ -662,101 +530,20 @@ public class ChromatoseManager : MonoBehaviour {
 			
 		}
 	}
-	
-	
-	void OnLevelWasLoaded(){
-		
-		UpdateRoomStats();	
-	}
-	
+
 	void ResetStats(){
-		roomStats = new RoomStats[13]{	new RoomStats(), new RoomStats(), new RoomStats(), new RoomStats(), 
+		/*roomStats = new RoomStats[14]{	new RoomStats(), new RoomStats(), new RoomStats(), new RoomStats(), 
 										new RoomStats(), new RoomStats(), new RoomStats(), new RoomStats(), 
-										new RoomStats(), new RoomStats(), new RoomStats(), new RoomStats(), new RoomStats()};
-		statCols = null;
-		collectibles = statCols;
+										new RoomStats(), new RoomStats(), new RoomStats(), new RoomStats(), new RoomStats(), new RoomStats()};*/
 	}
 	
 	//TODO Faire Fonction qui Save/Load les RoomStats, faire en XML pour pouvoir l'utiliser avec les checkpoint et pesistant
-	
-	void UpdateRoomStats(){
-		
-		//Start Du Chu
-		_FaderList = FindObjectsOfType(typeof(SpriteFader)) as SpriteFader[];
-		
-		avatar = GameObject.Find("Avatar").GetComponent<Avatar>();
-		curRoom = -1;
-		for (int i = 0; i < roomNames.Length; i ++){
-			if (Application.loadedLevelName == roomNames[i]){
-				curRoom = i;
-				
-				break;
-			}
-		}
-		if (curRoom == -1 && Application.loadedLevelName != "Menu"){
-			Debug.LogWarning("This room is not named properly, or shouldn't be in the build at all.");
-		}
-		GameObject[] frames = GameObject.FindGameObjectsWithTag("comicFrame");
-		GameObject[] thumbs = GameObject.FindGameObjectsWithTag("comicThumb");
-		int counter = 0;
-		
-		if (roomStats[curRoom].comics.Count == 0){
-			foreach (GameObject go in frames){
-				Comic strip = go.GetComponent<Comic>();
-				if (strip.isSecret){
-					roomStats[curRoom].secretComic = strip;
-				}
-				else{
-					roomStats[curRoom].comics.Add(strip);
-					strip.gameObject.SetActive(false);
-				}
-			}
-		}
-		else{
-			foreach (GameObject go in thumbs){
-				ComicThumb thumb = go.GetComponent<ComicThumb>();
-				if (roomStats[curRoom].thumbsFound[counter]){
-					thumb.SendMessage("Trigger");
-				}
-			}
-		}
-	}
+
 #endregion	
 	
 #region Update & LateUpdate
 	void Update () {
 		
-			
-		//Debug.Log ("Le record est : " + _RecordsList[_Manager.CurRoom]);
-		
-		if (inComic && animsReady && !checkedComicStats){
-			
-			roomStats[curRoom].comicComplete = CheckComicStats();
-			checkedComicStats = true;
-			
-			if (roomStats[curRoom].comicComplete){
-				// do I have the secret too? play special anim : play normal anim;
-				
-				if (!roomStats[curRoom].secretFound){
-					Instantiate(comicCompleteAnim);
-					tk2dAnimatedSprite anim = comicCompleteAnim.GetComponent<tk2dAnimatedSprite>();
-					anim.Play();
-					TriggerQuestionMark();
-				}
-				else{
-					//SUPER SECRET ANIM TIME!
-				}
-				
-				if (!givenCols){
-					givenCols = true;
-					rewardsGuy.SendMessage("Trigger");
-				}
-			}
-		}
-		else if (!inComic){
-			animsReady = false;
-			checkedComicStats = false;
-		}
 		
 		if (Input.GetKeyDown(KeyCode.PageUp)){
 			if (Application.loadedLevel == 0) return;
@@ -784,61 +571,11 @@ public class ChromatoseManager : MonoBehaviour {
 		if(Input.GetKeyDown(KeyCode.M)){
 			ManagerPause();
 		}
-		
-	
-		
-										//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
-										//<-----------SHOWING COLLECTIBLES!------------>
-										//<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>
-		/*
-		for (int i=0; i < colCouleurs.Length; i++){
-			bool identical = UpdateCollectible(colCouleurs[i]);
-		}*/
-		
-		
-		
-		for (int i = 0; i < colCouleurs.Length; i++){
-			if (showingCol[i]){
-				colTimers[i] ++;
-				if (colTimers[i] > refreshTiming){
-					bool identical = UpdateCollectible(colCouleurs[i]);
-					if (!identical){
-						colTimers[i] = track.Length;
-					}
-					else{
-						//Desactiver Pour Laisse le HUD de collectibles toujours afficher
-						//On peut quand meme se servir de "showingCol[i] = false;" pour le faire disparaitre, ex: A la findes Niv
-						//
-						//showingCol[i] = false;
-					}
-				}
-			}
-			
-			if (!showingCol[i] && colTimers[i] > 0){
-				colTimers[i] --;
-			}
-			
-			if (colTimers[i] >= 0 && colTimers[i] < track.Length){
-				colX[i] = track[colTimers[i]];
-			}
-		}
-		
-		
-										//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
-										//<------------UPDATING ENERGY BAR!------------>
-										//<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>
-		float barDiffY = Avatar.curEnergy * hud.energyBar.height / 100;
-		barY = barMaxY - (int) barDiffY;
-		if (flashyBarTimer > 0){
-			flashyBarTimer --;
-		}
-		else{
-			flashyBar = false;
-		}
+
 	
 		//Appel du timeTrial
-		if(_TimeTrialModeActivated && !TimerOnPause){
-			TimeTrialCounter();
+		if(_TimeTrialModeActivated && !timeTrialClass.TimerOnPause){
+			timeTrialClass.TimeTrialCounter();
 		}
 	}
 	
@@ -873,18 +610,13 @@ public class ChromatoseManager : MonoBehaviour {
 			break;
 		}
 		
-		/*
-		Debug.Log("Some state info: " +
-			"showingAction = " + showingAction + 
-			"shownActionTexture = " + shownActionTexture.name + 
-			"actionTexture = " + actionTexture);*/
+
 		
 		if (currentAction == Actions.Nothing && aX < hud.absorbAction.width){
 			aX -= actionSlideSpeed;
 			if (aX < -hud.absorbAction.width){
 				aX = Mathf.Abs(aX);
 			}
-			//Debug.Log("Wiping away the Tears");
 		}
 		if (!showingAction){
 			currentAction = Actions.Nothing;
@@ -933,14 +665,13 @@ public class ChromatoseManager : MonoBehaviour {
 			
 			Rect bgRect = new Rect(0, 0, 1280, 720);
 			
-			Rect mainRect = new Rect(1160, -1, hud.mainBox.width, hud.mainBox.height);
-			Rect rColRect = new Rect(1160, 320, hud.redCollectible.width, hud.redCollectible.height);
-			Rect gColRect = new Rect(1160, colY[1], hud.greenCollectible.width, hud.greenCollectible.height);
-			Rect bColRect = new Rect(1160, 365, hud.blueCollectible.width, hud.blueCollectible.height);
-			Rect wColRect = new Rect(1160, 275, hud.whiteCollectible.width, hud.whiteCollectible.height);
-			Rect comicRect = new Rect(1160, 230, hud.comicCounter.width, hud.comicCounter.height);
+			Rect mainRect = new Rect(1150, -121, hud.mainBox.width + 10, hud.mainBox.height);
+			Rect rColRect = new Rect(1150, 200, hud.redCollectible.width + 10, hud.redCollectible.height);
+			Rect bColRect = new Rect(1150, 245, hud.blueCollectible.width + 10, hud.blueCollectible.height);
+			Rect wColRect = new Rect(1150, 155, hud.whiteCollectible.width + 10, hud.whiteCollectible.height);
+			Rect comicRect = new Rect(1150, 110, hud.comicCounter.width + 10, hud.comicCounter.height);
 		
-			Rect actionRect = new Rect(1194, 141, 50, 52);
+			Rect actionRect = new Rect(1189, 21, 60, 52);
 			Rect timeTrialRect = new Rect(25, 20, hud._TimeTrialBox.width + 100f, hud._TimeTrialBox.height + 10f);
 			Rect pauseWindowsRect = new Rect (128, 100, 700, 360);
 			Rect endResultRect = new Rect (0, 0, Screen.width, Screen.height);
@@ -981,44 +712,44 @@ public class ChromatoseManager : MonoBehaviour {
 				GUI.BeginGroup(timeTrialRect);												//TimeTrial Counter
 					GUI.skin.textArea.normal.textColor = Color.black;
 					GUI.DrawTexture(new Rect(0, 0, hud._TimeTrialBox.width + 100f, hud._TimeTrialBox.height + 10f), hud._TimeTrialBox);
-					GUI.TextArea(new Rect(textOffset.x - 20f, textOffset.y, 250, 40), "Time To Beat : " + "'" + DisplayTimes2Beat() +"'");
-					GUI.TextArea(new Rect(textOffset.x - 20f, textOffset.y + 30f, 250, 40), "Your Time : " + "'" + TimeString + "'");
+					GUI.TextArea(new Rect(textOffset.x - 20f, textOffset.y, 250, 40), "Time To Beat : " + "'" + timeTrialClass.DisplayTimes2Beat() +"'");
+					GUI.TextArea(new Rect(textOffset.x - 20f, textOffset.y + 30f, 250, 40), "Your Time : " + "'" + timeTrialClass.TimeString + "'");
 				GUI.EndGroup();
 			}
 			
 			GUI.BeginGroup(comicRect);										//comic counter							
 				GUI.skin.textArea.normal.textColor = Color.black;
-				GUI.DrawTexture(new Rect(0, 0, hud.comicCounter.width, hud.comicCounter.height), hud.comicCounter);
-				GUI.TextArea(new Rect(textOffset.x, textOffset.y, 80, 40), cN.ToString() + " / " + _TotalComicInLevel);
+				GUI.DrawTexture(new Rect(0, 0, hud.comicCounter.width + 10, hud.comicCounter.height), hud.comicCounter);
+				GUI.TextArea(new Rect(textOffset.x, textOffset.y, 80, 40), _ComicThumbCollected + " / " + _TotalComicThumb);
 				
 			GUI.EndGroup();
 			
 			GUI.BeginGroup(wColRect);										//white collectible
 				GUI.skin.textArea.normal.textColor = Color.white;
-				GUI.DrawTexture(new Rect(0, 0, hud.whiteCollectible.width, hud.whiteCollectible.height), hud.whiteCollectible);
-				GUI.TextArea(new Rect(textOffset.x, textOffset.y, 80, 40), wN.ToString());
+				GUI.DrawTexture(new Rect(0, 0, hud.whiteCollectible.width + 10, hud.whiteCollectible.height), hud.whiteCollectible);
+				GUI.TextArea(new Rect(textOffset.x, textOffset.y, 80, 40), _WhiteCollected.ToString() + " / " + _TotalWhiteColl.ToString());
 				
 			GUI.EndGroup();
 			
 			GUI.BeginGroup(rColRect);										//red collectible
 				GUI.skin.textArea.normal.textColor = Color.red;
-				GUI.DrawTexture(new Rect(0, 0, hud.redCollectible.width, hud.redCollectible.height), hud.redCollectible);
-				GUI.TextArea(new Rect(textOffset.x, textOffset.y, 80, 40), rN.ToString());
+				GUI.DrawTexture(new Rect(0, 0, hud.redCollectible.width + 10, hud.redCollectible.height), hud.redCollectible);
+				GUI.TextArea(new Rect(textOffset.x, textOffset.y, 80, 40), _RedCollected.ToString() + " / " + _TotalRedColl.ToString());
 				
 			GUI.EndGroup();
 
 			
 			GUI.BeginGroup(bColRect);										//blue collectible
 				GUI.skin.textArea.normal.textColor = Color.blue;
-				GUI.DrawTexture(new Rect(0, 0, hud.blueCollectible.width, hud.blueCollectible.height), hud.blueCollectible);
-				GUI.TextArea(new Rect(textOffset.x, textOffset.y, 80, 40), bN.ToString());
+				GUI.DrawTexture(new Rect(0, 0, hud.blueCollectible.width + 10, hud.blueCollectible.height), hud.blueCollectible);
+				GUI.TextArea(new Rect(textOffset.x, textOffset.y, 80, 40), _BlueCollected.ToString() + " / " + _TotalBlueColl.ToString());
 				
 			GUI.EndGroup();
 			
 			
 			GUI.BeginGroup(actionRect);										//Action icon
 				
-				//GUI.DrawTexture(new Rect(aX, 0, hud.absorbAction.width, hud.absorbAction.height), actionTexture);
+				GUI.DrawTexture(new Rect(aX, 0, hud.absorbAction.width, hud.absorbAction.height), actionTexture);
 			
 			GUI.EndGroup();
 			
@@ -1079,8 +810,8 @@ public class ChromatoseManager : MonoBehaviour {
 		#region OnGUI EndResult
 		case GUIStateEnum.EndResult:
 			
-			if(_TimeTrialModeActivated && DisplayScore){
-				if(!DisplayWinWindows){
+			if(_TimeTrialModeActivated && timeTrialClass.DisplayScore){
+				if(!timeTrialClass.DisplayWinWindows){
 					//Affichage du Lose result
 					GUI.BeginGroup(endResultRect);
 						if (GUI.Button(new Rect(390, 360, hud.pauseButton[0].width, hud.pauseButton[0].height), hud.pauseButton[0])){
@@ -1089,9 +820,8 @@ public class ChromatoseManager : MonoBehaviour {
 						GUI.skin.textArea.normal.textColor = Color.red;
 						GUI.DrawTexture(new Rect(0, 0, hud.endResultWindows.width, hud.endResultWindows.height), hud.endResultWindows);
 						GUI.TextArea(new Rect (textOffset.x, textOffset.y, 500, 50), "YOU LOSE, SORRY !");
-						GUI.TextArea(new Rect (515, 230, 500, 50), Time2BeatString);
+						GUI.TextArea(new Rect (515, 230, 500, 50), timeTrialClass.Time2BeatString);
 					
-								
 						GUI.Button(new Rect(890, 360, 300, 100), "NEXT LEVEL");
 					GUI.EndGroup();
 				}
@@ -1102,16 +832,13 @@ public class ChromatoseManager : MonoBehaviour {
 						GUI.DrawTexture(new Rect(0, 0, hud.endResultWindows.width, hud.endResultWindows.height), hud.endResultWindows);
 						GUI.TextArea(new Rect (540, 235, 500, 50), "YOU WIN !");
 						GUI.TextArea(new Rect (515, 285, 500, 50), "NEW TIME 2 BEAT");
-						GUI.TextArea(new Rect (515, 335, 500, 50), TimeString);
+						GUI.TextArea(new Rect (515, 335, 500, 50), timeTrialClass.TimeString);
 						
 						GUI.TextArea(new Rect (390, 530, 500, 50), "RETRY");
 						if (GUI.Button(new Rect(390, 560, hud.pauseButton[0].width, hud.pauseButton[0].height), hud.pauseButton[0])){
-							
-							RestartLevel();
-							
+							timeTrialClass.RestartLevel();							
 						}
-					GUI.EndGroup();
-					
+					GUI.EndGroup();					
 				}
 			}
 		
@@ -1129,170 +856,62 @@ public class ChromatoseManager : MonoBehaviour {
 #endregion	
 	
 #region Collectibles Methods	
-	public void AddCollectible(Collectible col){
+	public void AddCollectible(Color col){
+		
 		if(!_CollAlreadyAdded){
 			_CollAlreadyAdded = true;
-			switch (col.colColour){
-			case Couleur.red:
-				collectibles.r.Add(col);
-				showingCol[0] = true;
-				break;
-			case Couleur.green:
-				collectibles.g.Add(col);
-				showingCol[1] = true;
-				break;
-			case Couleur.blue:
-				collectibles.b.Add(col);
-				showingCol[2] = true;
-				break;
-			case Couleur.white:
-				collectibles.w.Add(col);
-				showingCol[3] = true;
-				break;
-			default:
-				Debug.LogWarning("Not a real collectible.");
-				break;
-			}
 			StartCoroutine(ResetCanGrabCollectibles(0.01f));
 			
+			if(col == Color.white){
+				_WhiteCollected++;
+			}
+			else if(col == Color.red){
+				_RedCollected++;
+			}
+			else if(col == Color.blue){
+				_BlueCollected++;
+			}
+			else{
+				Debug.LogWarning("Not a real collectible.");
+			}
 		}
 	}
-	
-	public bool UpdateCollectible(Couleur colour){
-		switch (colour){
-		case Couleur.red:
-			if (rN > collectibles.r.Count){
-				rN --;
-			}
-			if (rN < collectibles.r.Count){
-				rN ++;
-			}
-			
-			return rN == collectibles.r.Count;
-		case Couleur.green:
-			if (gN > collectibles.g.Count){
-				gN --;
-			}
-			if (gN < collectibles.g.Count){
-				gN ++;
-			}
-			
-			return gN == collectibles.g.Count;
-			
-		case Couleur.blue:
-			
-			if (bN > collectibles.b.Count){
-				bN --;
-			}
-			if (bN < collectibles.b.Count){
-				bN ++;
-			}
-			
-			return bN == collectibles.b.Count;
-			
-		case Couleur.white:
-			if (wN > collectibles.w.Count){
-				wN --;
-			}
-			if (wN < collectibles.w.Count){
-				wN ++;
-			}
-			
-			return wN == collectibles.w.Count;
-		default:
-			
-			
-			if (cN > roomStats[curRoom].thumbNumber){
-				cN --;
-				
-			}
-			if (cN < roomStats[curRoom].thumbNumber){
-				cN++;
-			}
-			
-			return cN == roomStats[curRoom].thumbNumber;
+
+	public int GetCollectibles(Color color){
+		
+		if(color == Color.white){
+			return _WhiteCollected;
 		}
-	}
-	/// <summary>
-	/// Gets the number of a specific type of collectible.
-	/// </summary>
-	/// <returns>
-	/// The number of cols specified
-	/// </returns>
-	/// <param name='colour'>
-	/// Colour.
-	/// </param>
-	public int GetCollectibles(Couleur colour){
-		switch (colour){
-		case Couleur.red:
-			return collectibles.r.Count;
-		case Couleur.green:
-			return collectibles.g.Count;
-		case Couleur.blue:
-			return collectibles.b.Count;
-		case Couleur.white:
-			return collectibles.w.Count;
-		default:
-			Debug.LogWarning("Not a real collectible.");
+		else if(color == Color.red){
+			return _RedCollected;
+		}
+		else if(color == Color.blue){
+			return _BlueCollected;
+		}
+		else{
+			Debug.Log("CANT CHECK THIS COLOR?");
 			return 0;
 		}
 	}
 	
-	public void DropCollectibles(List<Collectible> list, int no, Vector3 pos){
+	public void RemoveCollectibles(Color color, int amount, Vector3 pos){
 		
-		for (int i = 0; i < no; i ++){
-			Collectible inQuestion = list[list.Count - 1];
-			
-			inQuestion.PutBack(pos + (Vector3)Random.insideUnitCircle * 15);
-			list.Remove(inQuestion);
-			collectibles.held.Add(inQuestion);
-		}
 		
-	}
-	
-	public void GrabHeldWhiteCols(){
-		foreach(Collectible col in collectibles.held){
-			if (!col.colour.White){
-				Debug.LogWarning("Turns out this one's not white...");
-				continue;
-			}
-			collectibles.w.Add(col);
+		if(color == Color.white){
+			_WhiteCollected -= amount;
+			BlowWhiteColl(amount, pos);			
 		}
-		collectibles.held.Clear();
-	}
-	
-	public void RemoveCollectibles(Couleur colour, int value, Vector3 pos){
-		switch (colour){
-		case Couleur.red:
-			JettisonCollectibles(collectibles.r, value, pos);
-			showingCol[0] = true;
-			return;
-		case Couleur.green:
-			JettisonCollectibles(collectibles.g, value, pos);
-			showingCol[1] = true;
-			return;
-		case Couleur.blue:
-			JettisonCollectibles(collectibles.b, value, pos);
-			showingCol[2] = true;
-			return;
-		case Couleur.white:
-			JettisonCollectibles(collectibles.w, value, pos);
-			showingCol[3] = true;
-			return;
-		default:
-			Debug.LogWarning("Not a real collectible.");
-			return;
+		else if(color == Color.red){
+			_RedCollected -= amount;
+			ShootRedCollOnMini(amount, pos);
+			Debug.Log("Remove "+amount);
 		}
-	}
-	
-	public void JettisonCollectibles(List<Collectible> list, int no, Vector3 pos){
-		for (int i = 0; i < no; i ++){
-			
-			Collectible inQuestion = list[list.Count - 1];
-			roomStats[Application.loadedLevel].consumedCollectibles.Add(inQuestion);
-			inQuestion.Trigger();
-			//inQuestion.transform.position = pos;
-			list.Remove(inQuestion);
+		else if(color == Color.blue){
+			_BlueCollected -= amount;
+			BlowBlueColl(amount, pos);
+		}
+		else{
+			Debug.Log("Cant delete this collectable, check color");
 		}
 	}
 #endregion	
@@ -1301,110 +920,16 @@ public class ChromatoseManager : MonoBehaviour {
 																			//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
 																			//<-------------COMICS AND STUFF!-------------->
 																			//<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>
-	public void OpenComic(int index){
-		avatar.movement.SetVelocity(Vector2.zero);
-		
-		Time.timeScale = 0;
-		inComic = true;
-		int counter = 0;
-		foreach (Comic c in roomStats[curRoom].comics){
-			
-			if (roomStats[curRoom].thumbsFound[counter]){
-				c.gameObject.SetActive(true);
-			}
-			
-			counter ++;
-		}
-		if (roomStats[curRoom].secretFound){
-			roomStats[curRoom].secretComic.gameObject.SetActive(true);
-		}
-	}
 	
-	public void CloseComic(){
-		Time.timeScale = 1;
-		inComic = false;
-		
+	public void AddComicThumb(){
+		_ComicThumbCollected++;
 	}
-	
-	
-	public void FindComic(int index){
-		//roomStats[curRoom].comics[index].SendMessage("FadeAlpha", 1f);
-		
-		if (index == roomStats[curRoom].comics.Count){
-			
-			roomStats[curRoom].secretFound = true;
-			
-			bool foundEmpty = false;
-			bool foundNone = false;
-			
-			for (int i = 0; i < 3; i ++){
-				for (int j = 0; j < 5; j ++){
-					if (Avatar.tankStates[i, j] == TankStates.Empty && !foundEmpty){
-						Avatar.tankStates[i, j] = TankStates.Full;
-						foundEmpty = true;
-					}
-					if (Avatar.tankStates[i, j] == TankStates.None){
-						foundNone = true;
-						Avatar.tankStates[i, j] = foundEmpty? TankStates.Empty : TankStates.Full;
-						break;
-					}
-				}
-				if (foundEmpty && foundNone) break;
-			}
-			
-			if (!foundEmpty && !foundNone){
-				Avatar.curEnergy = 100;
-				Debug.LogWarning("You fucked up because there isn't enough room for all these tanks. WTH! I Warned you!");
-			}
-		}
-		else{
-			roomStats[curRoom].thumbsFound[index] = true;
-			roomStats[curRoom].thumbNumber ++;
-			showingCol[4] = true;
-		}
-		
-	}
-	
-	public bool CheckComicStats(){
-		
-		int i = 0;
-		foreach (Comic comic in roomStats[curRoom].comics){
-			if (roomStats[curRoom].thumbsFound[i] && !comic.InMySlot){
-				comic.InMySlot = true;
-				//TODO Ajouter Anim ou Feedback pour indiquer que l'on a tous les comics
-			}
-				
-			i++;
-		}
-		
-		if (roomStats[curRoom].secretFound){
-			roomStats[curRoom].secretComic.InMySlot = true;
-		}
-		
-		foreach (Comic c in roomStats[curRoom].comics){
-			if (!c.InMySlot){
-				return false;
-			}
-		}
-		roomStats[curRoom].comicComplete = true;
-								//turns out the comic is successful!
-		//CHU Note: si necessaire activer le ramassage de collectible
-		//shavatarComicBlock.SetActive(false);
-		Debug.Log("J'ai un comic ou tous les comics ?");
-		return true;
-		
-	}
+
 #endregion	
 	
 #region Fonctions Diverses
 	Avatar.DeathAnim danim;		//avatar's death animation
 	public void Death(){
-		//Archaic
-		/*
-		Avatar.tankStates[0, 0] = TankStates.Full;
-		Avatar.tankStates[0, 1] = TankStates.Full;
-		Avatar.curEnergy = 50;
-		Application.LoadLevel(Application.loadedLevel);*/
 		
 		if(!_NoDeathModeActivated){
 			danim = new Avatar.DeathAnim();
@@ -1412,6 +937,8 @@ public class ChromatoseManager : MonoBehaviour {
 			avatar.SendMessage("FadeAlpha", 0f);
 			avatar.movement.SetVelocity(Vector2.zero);
 			StartCoroutine(OnDeath(0.15f));
+			
+			
 			avatar.CancelOutline();
 			avatar.Gone = true;
 		}
@@ -1475,6 +1002,17 @@ public class ChromatoseManager : MonoBehaviour {
 			//Debug.Log("SaveState in CP");
 		}
 	}
+	
+	public void SaveRoom(){
+		LevelSerializer.SaveGame(_GameName);
+	}
+	public void LoadRoom(){
+		foreach(var sg in LevelSerializer.SavedGames[LevelSerializer.PlayerName]) { 
+         	LevelSerializer.LoadNow(sg.Data);
+			Time.timeScale = 1;
+    	} 
+	}
+	
 #endregion	
 	
 #region Static Functions	
@@ -1483,7 +1021,7 @@ public class ChromatoseManager : MonoBehaviour {
 		//<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>
 	
 	
-	tk2dSprite spriteInfo;
+	
 	public GameObject OneShotAnim( string animName, float time, Vector3 callerPosition){
 		
 		GameObject newGuy = GameObject.Instantiate(oneShotSpritePrefab, callerPosition, Quaternion.identity) as GameObject;
@@ -1507,29 +1045,51 @@ public class ChromatoseManager : MonoBehaviour {
 	}
 	
 	void CalculeCollectiblesInLevel(){
+
+		foreach (GameObject col in GameObject.FindGameObjectsWithTag("collectible")){
+			if(col.GetComponent<Collectible2>().colorCollectible == Collectible2._ColorCollectible.White){
+				_TotalWhiteColl++;
+			}
+			else if(col.GetComponent<Collectible2>().colorCollectible == Collectible2._ColorCollectible.Red){
+				_TotalRedColl++;
+			}
+			else if(col.GetComponent<Collectible2>().colorCollectible == Collectible2._ColorCollectible.Blue){
+				_TotalBlueColl++;
+			}
+			else{
+				Debug.Log ("A Collectible doesn't have a Color or a Script");
+			}
+		}	
+	}
+	
+	void BlowWhiteColl(int amount, Vector3 pos){
 		
-		foreach (GameObject rCol in GameObject.FindGameObjectsWithTag("redCollectible")){
-			Collectible rColItem = rCol.GetComponent<Collectible>();
-			collectibles.rInLevel.Add(rColItem);
+		for(int i = 0; i < amount; i++){
+			Vector2 randomVelocity = Random.insideUnitCircle.normalized * Random.Range(40, 65);
+			Vector3 randomPos = avatar.transform.position + (Vector3)randomVelocity;
+			GameObject wCol = Instantiate(prefab.collectible, randomPos, Quaternion.identity)as GameObject;
+			wCol.GetComponent<Collectible2>().effect = true;
+			wCol.GetComponent<Collectible2>().colorCollectible = Collectible2._ColorCollectible.White;
+			StartCoroutine(DelaiToBlowColl(0.5f, wCol));
 		}
-		foreach (GameObject wCol in GameObject.FindGameObjectsWithTag("whiteCollectible")){
-			Collectible wColItem = wCol.GetComponent<Collectible>();
-			collectibles.wInLevel.Add(wColItem);
+	}
+	
+	void BlowBlueColl(int amount, Vector3 pos){
+		for(int i = 0; i < amount; i++){
+			Vector2 randomVelocity = Random.insideUnitCircle.normalized * Random.Range(40, 65);
+			Vector3 randomPos = avatar.transform.position + (Vector3)randomVelocity;
+			GameObject bCol = Instantiate(prefab.collectible, randomPos, Quaternion.identity)as GameObject;
+			bCol.GetComponent<Collectible2>().effect = true;
+			bCol.GetComponent<Collectible2>().colorCollectible = Collectible2._ColorCollectible.Blue;
+			StartCoroutine(DelaiToBlowColl(0.5f, bCol));
 		}
-		foreach (GameObject bCol in GameObject.FindGameObjectsWithTag("blueCollectible")){
-			Collectible bColItem = bCol.GetComponent<Collectible>();
-			collectibles.bInLevel.Add(bColItem);
+	}
+	void ShootRedCollOnMini(int amount, Vector3 pos){
+		Debug.Log("Shoot");
+		for(int i = 0; i < amount; i++){
+			StartCoroutine(ShootRed(i*0.5f, pos));
+			
 		}
-		
-		//Verifier si ce compteur n'existe pas quelque part deja
-		/*
-		foreach (GameObject rCol in GameObject.FindGameObjectsWithTag("redCollectible")){
-			Collectible rColItem = rCol.GetComponent<Collectible>();
-			collectibles.rInLevel.Add(rColItem);
-		}*/
-		
-		Debug.Log("On a : " + collectibles.rInLevel.Count + " rouges, " + collectibles.wInLevel.Count + " blancs et ");
-		
 	}
 	
 	void ManagerPause(){
@@ -1542,34 +1102,44 @@ public class ChromatoseManager : MonoBehaviour {
 			Time.timeScale = 1; 
 		}
 		
-		if(!TimerOnPause){
-			PauseTimer();
+		if(!timeTrialClass.TimerOnPause){
+			timeTrialClass.PauseTimer();
 			_GUIState = GUIStateEnum.Pause;
 		}
 		else{
-			UnpauseTimer();
+			timeTrialClass.UnpauseTimer();
 			_GUIState = GUIStateEnum.Interface;
 		}
 	}
 	
 	public void ResetComicCounter(){
-		
-		_TotalComicInLevel = _RoomManager.UpdateTotalComic();
-		
-		roomStats[curRoom].thumbNumber = 0;
-		cN = 0;
+		_TotalComicThumb = _RoomManager.UpdateTotalComic();
+		_ComicThumbCollected = 0;
+	}
+	public void ResetPos(){
+		avatar.transform.position = _AvatarStartingPos;
 	}
 
 	
 #endregion	
 		
 #region CoRoutine
+	IEnumerator ShootRed(float delai, Vector3 pos){
+		yield return new WaitForSeconds(delai);
+		GameObject rCol = Instantiate(prefab.collectible, avatar.transform.position, Quaternion.identity)as GameObject;
+		Vector3 newPos = new Vector3(pos.x + Random.Range(-50, 50), pos.y + Random.Range(-50, 50), 0);
+		rCol.GetComponent<Collectible2>().redCollectorPos = newPos;
+		rCol.GetComponent<Collectible2>().effect = true;
+		rCol.GetComponent<Collectible2>().colorCollectible = Collectible2._ColorCollectible.Red;
+	}
 	IEnumerator OnDeath(float _wait){
 		yield return new WaitForSeconds(_wait);
 		
 		foreach(SpriteFader _SFader in _FaderList){
 			_SFader.ResetState();
 		}
+		
+		LoadRoom();
 	}	
 	IEnumerator ResetCanGrabCollectibles(float _wait){
 		yield return new WaitForSeconds(_wait);
@@ -1579,6 +1149,10 @@ public class ChromatoseManager : MonoBehaviour {
 	IEnumerator DelaiToAddComic(float _delai){
 		yield return new WaitForSeconds(_delai);
 		cN ++;
+	}
+	IEnumerator DelaiToBlowColl(float delai, GameObject col){
+		yield return new WaitForSeconds(delai);
+		col.GetComponent<Collectible2>().PayEffect();
 	}
 #endregion
 	

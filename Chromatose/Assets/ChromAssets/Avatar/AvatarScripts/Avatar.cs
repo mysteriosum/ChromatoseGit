@@ -13,6 +13,19 @@ public class Avatar : ColourBeing
 	private bool debug = false;
 	
 	private Color _AvatarColor;
+	private Color _CurColor;
+		public Color curColor{
+			get{return _CurColor;}
+			set{_CurColor = value;}
+		}
+	
+	private bool _Colored = false;
+	private float _ColorCounter = 0;
+	private int _SpriteIndex = 1;
+	private string _ColorFadeString = "";
+	private string _PlayerFadeString = "";
+	
+	
 	private float loseRate = 6f;
 	private float loseTimer = 0f;
 	
@@ -22,7 +35,7 @@ public class Avatar : ColourBeing
 	protected float[] angles = new float[16];
 	
 	public static int curEnergy = 50;				//MY HP (ENERGY)
-	public static TankStates[,] tankStates;
+	//public static TankStates[,] tankStates;
 	
 	[System.NonSerializedAttribute]
 	public Movement movement;
@@ -34,6 +47,7 @@ public class Avatar : ColourBeing
 	public tk2dSpriteCollectionData paleCollection;
 	public tk2dSpriteCollectionData afterImageCollection;
 	public tk2dSpriteCollectionData particleCollection;
+	public tk2dSpriteCollectionData coloredCollection;
 	public tk2dAnimatedSprite givePart;
 	
 	public tk2dSpriteAnimation partAnimations;
@@ -60,7 +74,7 @@ public class Avatar : ColourBeing
 	public float accelPartTimingBase = 0.3f;
 	
 	private Eye travisMcGee;
-	private Npc.SpeechBubble bubble;
+	private SpeechBubble bubble;
 	//inputs. Up, left and right will also work, but getW seems intuitive to me
 	protected bool getW;
 	protected bool getA;
@@ -183,9 +197,12 @@ public class Avatar : ColourBeing
 											//Keeping track of where I get knocked back to
 	private Transform myKnockTarget;
 	
+	
+#region PARTICLE CLASSES
 								//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
 								//<------------Particle classes!!------------>
 								//<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>
+	#region CLASS DEATHANIM
 	public class DeathAnim {
 		tk2dAnimatedSprite anim;
 		public GameObject go;
@@ -209,13 +226,15 @@ public class Avatar : ColourBeing
 			avatar.CannotControlFor(0.5f);
 		}
 	}
-	
+	#endregion
+
+	#region CLASS EYE
 	private class Eye {
 		private tk2dSprite spriteInfo;
 		private GameObject go;
 		private Transform t;
 		private Transform avatarT;
-		private Vector3 offset = new Vector3(-6, -2, -2);
+		private Vector3 offset = new Vector3(-6, -2, -1);
 		
 		public Eye (Transform avatarT, tk2dSpriteCollectionData spriteData){
 			go = new GameObject("AvatarEye");
@@ -275,7 +294,9 @@ public class Avatar : ColourBeing
 			
 		}
 	}
+	#endregion
 	
+	#region CLASS MOVEMENT
 	private class MovementLines {
 		float baseSpeed = 50f;
 		float fadeRate = 0.05f;
@@ -321,7 +342,9 @@ public class Avatar : ColourBeing
 			return false;
 		}
 	}
+	#endregion
 	
+	#region CLASS TURBOPARTICLE
 	private class TurboParticle {
 		GameObject go = new GameObject("TurboPart");
 		Transform t;
@@ -348,7 +371,9 @@ public class Avatar : ColourBeing
 			go.SetActive(false);
 		}
 	}
+	#endregion
 	
+	#region CLASS GIVECOLOURPARTICLE
 	private class GiveColourParticle {
 		List<GameObject> gos = new List<GameObject>();
 		Transform target;
@@ -405,6 +430,9 @@ public class Avatar : ColourBeing
 				spriteInfo.color = Color.red;
 		}
 	}
+	#endregion
+	
+	#region CLASS REFILLCOLOURPARTICLE
 					//NOT BEING USED ATM
 	private class RefillColourParticle {
 		List<GameObject> gos = new List<GameObject>();
@@ -455,9 +483,10 @@ public class Avatar : ColourBeing
 				GameObject.Destroy(go);
 			}
 		}
-		
 	}
+	#endregion
 	
+	#region CLASS LOASEALLCOLOURPARTICLE
 	public class LoseAllColourParticle {
 		GameObject go = new GameObject("LoseColourPart");
 		Transform t;
@@ -494,7 +523,9 @@ public class Avatar : ColourBeing
 			return false;
 		}
 	}
+	#endregion
 	
+	#region CLASS LOSECOLOURPARTICLE
 	private class LoseColourParticle {
 		GameObject go = new GameObject("LoseColourPart");
 		Transform t;
@@ -531,11 +562,11 @@ public class Avatar : ColourBeing
 			}	
 			return false;
 		}
-		
 	}
+	#endregion
 	
-	
-	// Use this for initialization
+#endregion
+
 	void Start ()
 	{		
 		manager = ChromatoseManager.manager;
@@ -591,7 +622,7 @@ public class Avatar : ColourBeing
 		myKnockTarget = VectorFunctions.FindClosestOfTag(t.position, "knockTarget", 1000000);
 		
 		allTheFaders = GameObject.FindGameObjectsWithTag("spriteFader");
-		if (tankStates == null){
+		/*if (tankStates == null){
 		
 			tankStates = new TankStates[3, 5]
 				{{TankStates.Full, TankStates.Full, TankStates.None, TankStates.None, TankStates.None}, 
@@ -599,87 +630,99 @@ public class Avatar : ColourBeing
 					{TankStates.None, TankStates.None, TankStates.None, TankStates.None, TankStates.None} 
 				};
 			
-		}
+		}*/
 		
 		//MAKE ME AN EYE BABY
 		travisMcGee = new Eye(t, particleCollection);
-		bubble = new Npc.SpeechBubble (t, particleCollection);
+		bubble = new SpeechBubble (t, particleCollection);
+		
+		
+		spriteInfo.Collection = normalCollection;
 		
 		StartCoroutine(LateCPCreation(1.0f));
 		
 	}
 	
-	
-	// Update is called once per frame
+
 	void Update ()
 	{
-		
-		
 								//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
-								//<----------Handling Colour Blend!---------->
+								//<--------------Color Fading!--------------->
 								//<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>
 		
-		
-		int highestColour = Mathf.Max(colour.r, colour.g, colour.b);		//Decide what colour the avatar is
-		float r = 255; float g = 255; float b = 255;
-		partColor = Color.white;
-		if (highestColour == colour.r){
-			g -= colour.r;
-			b -= colour.r;
-			partColor = Color.red;
-		}
-		if (highestColour == colour.g){
-			r -= colour.g;
-			b -= colour.g;
-			partColor = Color.green;
-		}
-		if (highestColour == colour.b){
-			g -= colour.b;
-			r -= colour.b;
-			partColor = Color.blue;
-		}
-		
-		if (inBlueLight){
-			r = colour.r;
-			g = colour.g;
-		}
-		
-		if (gameObject.tag == "avatar"){
-			travisMcGee.Blend(r, g, b);
-		}
+		if(_Colored){
 			
-		shownColour = new Color(r/255f, g/255f, b/255f, Invisible);		//CHU Note: Applique la bonne couleur sur l'avatar
-		
-		if (inBlueLight){
-			partColor = shownColour;
-		}
-		//Debug.Log("I'm showing the colour " + shownColour);
-		spriteInfo.color = shownColour;
-		
-					//Check for inputs: WAD or Up, Left Right
-		if (highestColour > 0){
-			loseTimer += Mathf.Min(velocity.magnitude, basicMaxSpeed * Time.deltaTime);
-		}
-		if (loseTimer >= loseRate){
-			loseTimer = 0f;
-			colour.r = tempColour.r >= 0 ? colour.r : colour.r - 1;
-			colour.g = tempColour.g >= 0 ? colour.g : colour.g - 1;
-			colour.b = tempColour.b >= 0 ? colour.b : colour.b - 1;
-			loseColourPartCounter ++;
-			//Debug.Log("Je passe ici");
 			
-		}
-		if (loseColourPartCounter >= loseColourPartDrop){
-			loseColourPartCounter = 0;
-			loseColourPartDrop = Random.Range(partDropMin, partDropMax);
-			loseColourPart.Add(new LoseColourParticle(particleCollection, t, partColor));
+			_ColorCounter += Time.deltaTime * velocity.magnitude;
 			
+			
+			if(_ColorCounter > 1){
+				_SpriteIndex++;
+				_ColorCounter = 0;
+			}
+			if(_SpriteIndex >= 20){
+				_Colored = false;
+				spriteInfo.Collection = normalCollection;
+				_SpriteIndex = 1;
+				_CurColor = Color.white;
+			}
+			
+			if(!getA && !getD){	
+				if(currentSubimg == ccw2){
+					_PlayerFadeString = "Player2";
+					spriteInfo.SetSprite("Player2_"+_ColorFadeString+_SpriteIndex);
+				}
+				else if(currentSubimg == cw2){
+					_PlayerFadeString = "Player4";
+					spriteInfo.SetSprite("Player4_"+_ColorFadeString+_SpriteIndex);
+				}
+				else{
+					//NoRotation Sprite
+					_PlayerFadeString = "Player1";
+					spriteInfo.SetSprite("Player1_"+_ColorFadeString+_SpriteIndex);
+					currentSubimg = noRotSubimg;
+				}
+			}
+			else{
+				if(getA){
+					
+					if(currentSubimg != ccw1 && currentSubimg != ccw2){
+						_PlayerFadeString = "Player2";
+						spriteInfo.SetSprite("Player2_"+_ColorFadeString+_SpriteIndex);
+						currentSubimg = ccw1;
+					}
+					else{_PlayerFadeString = "Player3";
+						spriteInfo.SetSprite("Player3_"+_ColorFadeString+_SpriteIndex);
+						currentSubimg = ccw2;
+					}
+				}
+				else{
+					if(currentSubimg != cw1 && currentSubimg != cw2){
+						_PlayerFadeString = "Player4";
+						spriteInfo.SetSprite("Player4_"+_ColorFadeString+_SpriteIndex);
+						currentSubimg = cw1;
+					}
+					else{_PlayerFadeString = "Player5";
+						spriteInfo.SetSprite("Player5_"+_ColorFadeString+_SpriteIndex);
+						currentSubimg = cw2;
+					}
+				}
+			}
 		}
 		
-		colour.r = Mathf.Clamp(colour.r, 0, 255);
-		colour.g = Mathf.Clamp(colour.g, 0, 255);
-		colour.b = Mathf.Clamp(colour.b, 0, 255);
+		if(!_Colored && HasOutline){
+			spriteInfo.Collection = paleCollection;
+			//spriteInfo.SetSprite(spriteInfo.CurrentSprite.name);
+			Debug.Log("Change Collection Here");
+		}
+		else{
+			spriteInfo.Collection = normalCollection;
+		}
 		
+		
+		
+		
+
 								//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
 								//<---------Check for speed boosts!!--------->
 								//<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>
@@ -793,7 +836,12 @@ public class Avatar : ColourBeing
 				outline = new GameObject("Outline");
 				outline.transform.rotation = t.rotation;
 				outline.transform.position = t.position;
-				tk2dSprite.AddComponent<tk2dSprite>(outline, afterImageCollection, spriteInfo.CurrentSprite.name);
+				if(!_Colored){
+					tk2dSprite.AddComponent<tk2dSprite>(outline, afterImageCollection, spriteInfo.CurrentSprite.name);
+				}
+				else{
+					tk2dSprite.AddComponent<tk2dSprite>(outline, afterImageCollection, _PlayerFadeString);
+				}
 
 				hasOutline = true;
 				
@@ -844,7 +892,6 @@ public class Avatar : ColourBeing
 		if (getW && ((!getA && !getD) || (getA && getD))){
 			accelPartTimer += Time.deltaTime;
 			if (accelPartTimer >= accelPartTiming){
-				//accelParts.Add(new MovementLines())
 				accelParts.Add(new MovementLines(t,-t.right, 1f, particleCollection, partAnimations));
 				accelPartTimer = 0;
 				accelPartTiming = velocity.magnitude *accelPartTimingBase;
@@ -898,69 +945,39 @@ public class Avatar : ColourBeing
 			part.Main();
 		}
 		
-						//checking to see if my ENERGY is below the healthy threshold
-		if (curEnergy < 0){
-			bool foundOne = false;
-			if (tankStates[0, 0] == TankStates.Full && tankStates[0, 1] == TankStates.Empty && hasOutline){
-				hasOutline = false;
-				Destroy(outline);
-							//TODO Ajouter du feedback pour indiquer que l'afterimage est parti
-							//Peut-etre pas necessaire, vieille note
-			}
-			for (int i = 0; i < 3; i ++){
-				
-				if (tankStates[0, 0] == TankStates.Empty) break;		//This checks right away if I'm out of HP
-				
-				for (int j = 0; j < 5; j ++){					//Iterate through each tank state 
-					if (Avatar.tankStates[i, j] == TankStates.Full) continue;
-					Vector2 index;
-					if (j == 0) index = new Vector2 (i - 1, 4);
-					else index = new Vector2(i, j - 1);
-					Avatar.tankStates[(int) index.x, (int) index.y] = TankStates.Empty;
-					foundOne = true;
-					curEnergy = 100 + curEnergy;
-					break;
-				}	
-				if (foundOne) break;
-			}
-			
-			
-			if (!foundOne){
-				canControl = false;
-				ChromatoseManager.manager.Death();
-				foreach (GameObject go in allTheFaders){
-					go.SendMessage("LoadState");
-				}
-			}
-			
-		}
-		
-		
-		if (curEnergy > 100){
-			bool foundOne = false;
-			for (int i = 0; i < 3; i ++){
-				
-				for (int j = 0; j < 5; j ++){					//Iterate through each tank state 
-					if (Avatar.tankStates[i, j] != TankStates.Empty) continue;
-					Avatar.tankStates[i, j] = TankStates.Full;
-					foundOne = true;
-					curEnergy = curEnergy - 100;
-					break;
-				}	
-				if (foundOne) break;
-			}
-			if (!foundOne){
-				curEnergy = 100;
-			}
-			
-		}
-		
+
+		#region BUBBLE UPDATE
 								//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
 								//<------------Update my bubble!------------->
 								//<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>
 		switch(Application.loadedLevelName){
+		case ("Tutorial"):
+			if (onRedCol){
+				bubble.ShowBubbleFor("avatarBubble_redColor1", 0.3f);
+				onRedCol = true;
+			}
+			
+			if (!colour.White && !hasChangedColour){
+				hasChangedColour = true;
+			}
+			if (onRedWell && !hasChangedColour){
+				bubble.ShowBubbleFor("avatarBubble_P1", 0.4f);
+				onRedWell = true;
+			}
+			
+			if (atDestructible && !hasDestroyed){
+				bubble.ShowBubbleFor(colour.Red? "avatarBubble_P1" : "avatarBubble_redColor2", 0.2f);
+				atDestructible = true;
+			}
+			
+			if (wantsToRelease){
+				bubble.ShowBubbleFor("avatarBubble_fire1", 0.3f);
+				wantsToRelease = true;
+			}
+			
+			break;
 		case ("Module1_Scene1"):
-			if (onRedCol && manager.GetCollectibles(Couleur.red) == 0){
+			if (onRedCol){					// && manager.GetCollectibles(Couleur.red) == 0){
 				bubble.ShowBubbleFor("avatarBubble_redColor1", 0.3f);
 				onRedCol = false;
 			}
@@ -984,8 +1001,35 @@ public class Avatar : ColourBeing
 			}
 			
 			break;
+		case ("GYM_CHU"):
+			if (onRedCol){					// && manager.GetCollectibles(Couleur.red) == 0){
+				bubble.ShowBubbleFor("avatarBubble_redColor1", 0.3f);
+				onRedCol = false;
+			}
+			
+			if (!colour.White && !hasChangedColour){
+				hasChangedColour = true;
+			}
+			if (onRedWell && !hasChangedColour){
+				bubble.ShowBubbleFor("avatarBubble_P1", 0.4f);
+				onRedWell = false;
+			}
+			
+			if (atDestructible && !hasDestroyed && _CurColor != Color.red){
+				bubble.ShowBubbleFor(colour.Red? "avatarBubble_P1" : "avatarBubble_redColor2", 0.2f);
+				atDestructible = false;
+			}
+			
+			if (wantsToRelease){
+				bubble.ShowBubbleFor("avatarBubble_fire1", 0.3f);
+				wantsToRelease = false;
+			}
+			
+			break;
 		}
 		bubble.Main();
+#endregion
+		
 		
 	end:
 		if (previousVelocity != velocity)
@@ -1187,6 +1231,28 @@ public class Avatar : ColourBeing
 		}
 	}
 	
+	public void FillBucket(Color color){
+		
+		_CurColor = color;
+		_SpriteIndex = 1;
+		
+		if(color == Color.red){
+			spriteInfo.Collection = coloredCollection;
+			spriteInfo.SetSprite("Player1_rouge1");
+			_ColorFadeString = "rouge";
+			_Colored = true;
+		}
+		else if(color == Color.blue){
+			spriteInfo.Collection = coloredCollection;
+			spriteInfo.SetSprite("Player1_bleu1");
+			_ColorFadeString = "bleu";
+			_Colored = true;
+		}
+		else{
+			Debug.Log("Pas le bon Setting");
+		}
+	}
+	
 	public void Jolt(float amount){
 		if (!myKnockTarget){
 			Debug.LogWarning("There's no knockback targets in this level! NOOOOO!");
@@ -1219,6 +1285,8 @@ public class Avatar : ColourBeing
 	public void Pause(){
 		canControl = !canControl;
 	}
+	
+	
 	
 	
 	// COROUTINE DU CHU YEEEE

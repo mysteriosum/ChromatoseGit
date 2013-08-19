@@ -199,9 +199,9 @@ public class TransitionTrigger : MonoBehaviour {
 	}
 	
 	void FinishTimeTrialChallenge(){
-		if(_Manager.StopChallenge()){
+		if(_Manager.timeTrialClass.StopChallenge()){
 			//Faire afficher la fenetre de reussite du TimeTrial
-			_Manager.DisplayWinWindows = true;
+			_Manager.timeTrialClass.DisplayWinWindows = true;
 		}
 		StartCoroutine(DelaiToDisplay());
 	}
@@ -222,7 +222,7 @@ public class TransitionTrigger : MonoBehaviour {
 #region CoRoutine	
 	IEnumerator DelaiToDisplay(){
 		yield return new WaitForSeconds(0.5f);
-		_Manager.DisplayScore = true;
+		_Manager.timeTrialClass.DisplayScore = true;
 	}
 }
 #endregion

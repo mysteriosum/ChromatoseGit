@@ -1,60 +1,86 @@
 using UnityEngine;
 using System.Collections;
 
-public class ColourWell : ColourBeing {
-	int colourToAdd;
-	public int giveRate = 8;
-	protected Avatar avatar;
+public class ColourWell : MonoBehaviour {
 	
-	// Use this for initialization
+	public enum _WellTypeEnum{
+		RedGyser_1, RedGyser_2, RedLeak_1, BlueWell_1, BlueLeak_1, BlueLeak_2
+	}
+	
+	public _WellTypeEnum wellType;
+	
+	private ChromatoseManager _Manager;
+	private Avatar _AvatarScript;
+	private Color myColor;
+	private tk2dAnimatedSprite _MainAnim;
+	
+	
+	private string redWellString1 = "redWellL1_gyser";
+	private string redWellString2 = "redWellL2_gyser";
+	private string redWellString3 = "redWellL3_wall";
+	private string blueWellString1 = "blueWellL4";
+	private string blueWellString2 = "blueWell_godBlavatar";
+	private string blueWellString3 = "blueWell_leakPomp";
+	
 	void Start () {
-		if (colour.r > colourConsiderMin){
-			colourToAdd = 0;
-		}
-		else if(colour.g > colourConsiderMin){
-			colourToAdd = 1;
-		}
-		else if(colour.b > colourConsiderMin){
-			colourToAdd = 2;
-		}
-		
-		manager = ChromatoseManager.manager;
-		avatar = GameObject.Find("Avatar").GetComponent<Avatar>();
+		Setup();		
 	}
 	
-	// Update is called once per frame
-	void Update () {
-	
-	}
 	
 	void OnTriggerStay(Collider collider){
 		
-		if (collider != avatar.collider) return;
-		if (colour.Red)
-			avatar.OnRedWell = true;
+		if (collider.tag != "avatar") return;
+		if (myColor == Color.red)
+			_AvatarScript.OnRedWell = true;
 		
-		manager.UpdateAction(Actions.Absorb, Trigger);		//this tells the manager that I want to do something. But I'll have to wait in line!
+		_Manager.UpdateAction(Actions.Absorb, Trigger);		//this tells the manager that I want to do something. But I'll have to wait in line!
 		
 		
 	}
 	
 	
-	override public void Trigger(){
+	void Trigger(){
+
+		_AvatarScript.FillBucket(myColor);
+
+	}
+	
+	void Setup(){
+		_Manager = ChromatoseManager.manager;
+		_AvatarScript = GameObject.Find("Avatar").GetComponent<Avatar>();
+		_MainAnim = GetComponent<tk2dAnimatedSprite>();
 		
-		
-		
-		
-		/*****************************************************/
-		avatar.TakeColour(colour);		//A remettre si sa fonctionne pas
-		
-		if (colour.Red){				//<--- A Dupliquer pour le Bleu t le Vert
-			avatar.colour.b = 0;
-			avatar.colour.g = 0;
+		switch(wellType){
+		case _WellTypeEnum.RedGyser_1:
+			myColor = Color.red;
+			_MainAnim.Play(redWellString1);
+			
+			break;
+		case _WellTypeEnum.RedGyser_2:
+			myColor = Color.red;
+			_MainAnim.Play(redWellString2);
+
+			break;
+		case _WellTypeEnum.RedLeak_1:
+			myColor = Color.red;
+			_MainAnim.Play(redWellString3);
+			
+			break;
+		case _WellTypeEnum.BlueWell_1:
+			myColor = Color.blue;
+			_MainAnim.Play(blueWellString1);
+			
+			break;
+		case _WellTypeEnum.BlueLeak_1:
+			myColor = Color.blue;
+			_MainAnim.Play(blueWellString2);
+			
+			break;
+		case _WellTypeEnum.BlueLeak_2:
+			myColor = Color.blue;
+			_MainAnim.Play(blueWellString3);
+			
+			break;
 		}
-		if (colour.Blue){
-			avatar.colour.r = 0;
-			avatar.colour.g = 0;
-		}
-		Debug.Log("Should be setting colour");
 	}
 }

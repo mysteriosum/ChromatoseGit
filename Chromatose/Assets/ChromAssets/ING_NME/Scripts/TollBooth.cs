@@ -83,7 +83,7 @@ public class TollBooth : MonoBehaviour {
 	}
 	
 	void Pay(){
-		if (chroManager.GetCollectibles(myCouleur) >= requiredPayment){
+		if (chroManager.GetCollectibles(Color.blue) >= requiredPayment){
 			
 			StartIn();
 			waiting = true;
@@ -124,7 +124,7 @@ public class TollBooth : MonoBehaviour {
 		if (triggered){
 			waiting = false;
 			collisionChild.gameObject.SetActive(false);
-			chroManager.RemoveCollectibles(Couleur.blue, requiredPayment, avatarT.position);
+			chroManager.RemoveCollectibles(Color.blue, requiredPayment, avatarT.position);
 			if (anim)
 				Animate();
 		}

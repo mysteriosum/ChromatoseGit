@@ -9,12 +9,15 @@ using System.Collections;
 public class ComicThumb : MonoBehaviour {
 	
 	public int myIndex;
+	public GameObject myComicBG;
 	
 	private ChromatoseManager _Manager;
 	private Camera _Camera;
 	private GameObject _Moi = null;
+	private Transform _StartingTransform;
 	
-	private tk2dAnimatedSprite anim;
+	private tk2dSprite spriteInfo;
+	public GameObject myCircleParent;
 	private tk2dAnimatedSprite myCircle;
 	
 	private float _TargetXOffset = 50f;
@@ -26,6 +29,7 @@ public class ComicThumb : MonoBehaviour {
 	private float _DistanceConverti = 0f;
 	private float _DistanceRemaining = 0f;
 	private float _DistanceDepart = 0f;
+	private float _IdleCounter = 0f;
 	
 	
 	private bool _CanGoBig = false;
@@ -37,6 +41,7 @@ public class ComicThumb : MonoBehaviour {
 	private bool _Destroyed = false;
 	private bool _FollowHUD = false;
 	private bool _DejaTiers = false;
+	private bool _OnIdle = false;
 	
 	private Vector3 _MyPos = new Vector3(0,0,0);
 	private Vector3 _HUDPos = new Vector3(0,0,0);
@@ -51,19 +56,22 @@ public class ComicThumb : MonoBehaviour {
 		_Manager = ChromatoseManager.manager;
 		_Moi = this.gameObject;
 		_Camera = Camera.mainCamera;
+
+		spriteInfo = GetComponent<tk2dSprite>();
 		
-		anim = GetComponent<tk2dAnimatedSprite>();
-		anim.CurrentClip.wrapMode = tk2dSpriteAnimationClip.WrapMode.Loop;
-		myCircle = (Instantiate(Resources.Load("animref_ing2")) as GameObject).GetComponent<tk2dAnimatedSprite>();
+		myCircle = myCircleParent.GetComponent<tk2dAnimatedSprite>();
 		myCircle.Play("comicThumb_pickedUp");
 		myCircle.Stop();
 		myCircle.transform.position = transform.position;
 		myCircle.renderer.enabled = false;
 		
+		_StartingTransform = this.gameObject.transform;
+		
 		_Alive = true;
 		_CanGoBig = false;
 		_CanGoSmall = false;
 		_CanGoToHUD = false;
+		_OnIdle = true;
 	}
 
 	void FixedUpdate () {
@@ -71,20 +79,25 @@ public class ComicThumb : MonoBehaviour {
 		if(_CanGoBig){ThumbGoBigger();}
 		if(_CanGoSmall){ThumbGoSmaller();}
 		
+		if(_OnIdle){
+			Idle();
+		}
+		
+		
 		if(_FollowHUD){
 			CalculatePosition();
 			CalculateHUDPosition();
 			CalculeDistance();
 			
-			Vector3 center = (_MyPos + _HUDPos) * 0.45F;
-	        center -= new Vector3(0, 1f, 0);
+			Vector3 center = (_MyPos + _HUDPos) * 0.35F;
+	        center -= new Vector3(0, 0.05f, 0);
 	        Vector3 riseRelCenter = _MyPos - center;
 	        Vector3 setRelCenter = _HUDPos - center;
 	        float fracComplete = (Time.time - _StartTime) / journeyTime;
 	        transform.position = Vector3.Slerp(riseRelCenter, setRelCenter, fracComplete * _SlerpSpeedRate);
 	        transform.position += center;
 			
-			anim.MakePixelPerfect(); 	
+			spriteInfo.MakePixelPerfect();
 		}
 		
 		if(Vector3.Distance(_MyPos, _HUDPos) < (Vector3.Distance(_MyStartPos, _HUDPos)/2) && _CanGoBig){
@@ -127,10 +140,9 @@ public class ComicThumb : MonoBehaviour {
 		
 		//TOFIX Corriger le probleme que certains thumbs reussissent a s'ajouter avant la fin de l'anim
 		
-		//ChromatoseManager.manager.FindComic(myIndex);
-		
 		myCircle.renderer.enabled = false;
-		
+		myComicBG.GetComponent<ComicBG>().MakeActive(myIndex);
+		_OnIdle = false;
 		ThumbStartGoBig();
 	}
 	
@@ -170,6 +182,16 @@ public class ComicThumb : MonoBehaviour {
 	void CalculeDistanceDepart(){
 		_DistanceDepart = Vector3.Distance(_MyStartPos, _HUDPos);
 	}	
+	void Idle(){
+		if(_IdleCounter < 5){
+			_IdleCounter += 0.2f;
+			transform.position = new Vector3(transform.position.x, transform.position.y - 0.2f, 0);
+		}
+		else{
+			transform.position = new Vector3(transform.position.x, transform.position.y + 5f, 0);
+			_IdleCounter = 0;
+		}
+	}
 	IEnumerator DestroyWhenImBig(float _time){
 		yield return new WaitForSeconds(_time);
 		_FollowHUD = false;
@@ -177,7 +199,7 @@ public class ComicThumb : MonoBehaviour {
 		
 		if(!_Destroyed){
 			_Moi.transform.Translate(Vector3.forward * -3000);	
-			ChromatoseManager.manager.FindComic(myIndex);
+			ChromatoseManager.manager.AddComicThumb();
 			_Destroyed = true;
 		}
 	}

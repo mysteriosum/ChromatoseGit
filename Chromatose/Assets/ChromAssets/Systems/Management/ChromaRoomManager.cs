@@ -27,7 +27,6 @@ public class ChromaRoomManager : MonoBehaviour {
 	}
 	
 	void Update () {
-		Debug.Log(_CurRoom);
 	}
 	
 	public void NextLilRoom(){
