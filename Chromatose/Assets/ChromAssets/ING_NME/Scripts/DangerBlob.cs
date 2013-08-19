@@ -141,7 +141,7 @@ public class DangerBlob : ColourBeing {
 		}
 		
 		Avatar avatar = other.gameObject.GetComponent<Avatar>();
-		bool sameColour = CheckSameColour(avatar.colour);
+		bool sameColour = avatar.curColor == Color.red? true : false;
 		if (sameColour && diesOnImpact){
 			Dead = true;
 			if (colour.Red)

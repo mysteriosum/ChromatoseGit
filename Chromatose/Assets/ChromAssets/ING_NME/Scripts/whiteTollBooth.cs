@@ -10,7 +10,7 @@ public class whiteTollBooth : MonoBehaviour {
 	protected ChromatoseManager chroManager;
 	protected Transform collisionChild;
 	protected tk2dAnimatedSprite anim;
-	protected Couleur myCouleur;
+	protected Color myColor;
 	
 	private tk2dAnimatedSprite indicator;
 	private string inString;
@@ -23,7 +23,7 @@ public class whiteTollBooth : MonoBehaviour {
 	protected bool waiting = false;
 	// Use this for initialization
 	void Start () {
-		myCouleur = Couleur.white;
+		myColor = Color.white;
 		Setup();
 	}
 	
@@ -83,7 +83,7 @@ public class whiteTollBooth : MonoBehaviour {
 	}
 	
 	void Pay(){
-		if (chroManager.GetCollectibles(myCouleur) >= requiredPayment){
+		if (chroManager.GetCollectibles(myColor) >= requiredPayment){
 			
 			StartIn();
 			waiting = true;
@@ -103,7 +103,6 @@ public class whiteTollBooth : MonoBehaviour {
 		isIn = false;
 		indicator.animationCompleteDelegate = Out;
 		indicator.renderer.enabled = true;
-		Debug.Log("Play! Up!");
 	}
 	
 	virtual protected void StartIn(){
@@ -111,7 +110,6 @@ public class whiteTollBooth : MonoBehaviour {
 		indicator.CurrentClip.wrapMode = tk2dSpriteAnimationClip.WrapMode.Once;
 		isOut = false;
 		indicator.animationCompleteDelegate = In;
-		Debug.Log("Play! Down!");
 	}
 	
 	void Out(tk2dAnimatedSprite sprite, int index){
@@ -124,7 +122,7 @@ public class whiteTollBooth : MonoBehaviour {
 		if (triggered){
 			waiting = false;
 			collisionChild.gameObject.SetActive(false);
-			chroManager.RemoveCollectibles(Couleur.white, requiredPayment, avatarT.position);
+			chroManager.RemoveCollectibles(Color.white, requiredPayment, avatarT.position);
 			if (anim)
 				Animate();
 		}

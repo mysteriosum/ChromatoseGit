@@ -32,12 +32,12 @@ public class ChromatoseCamera : MonoBehaviour {
 		
 		
 		if(Screen.width == 848){
-			_ScreenHeight = 310;
-			_ScreenWidth = 785;
+			_ScreenHeight = 430;
+			_ScreenWidth = 775;
 		}
 		else{
-			_ScreenHeight = 465;
-			_ScreenWidth = 1185f;
+			_ScreenHeight = 585;
+			_ScreenWidth = 1175f;
 		}
 		
 		_HelperPos = new Vector3(transform.position.x + _ScreenWidth, transform.position.y + _ScreenHeight, 0);

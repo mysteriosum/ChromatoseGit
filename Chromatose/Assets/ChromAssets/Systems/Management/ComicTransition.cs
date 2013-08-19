@@ -1,6 +1,9 @@
 using UnityEngine;
 using System.Collections;
 
+//TODEL SCRIPT A DELETER
+
+
 public class ComicTransition : MonoBehaviour {
 	private bool popped;
 	private bool returning = false;
@@ -44,7 +47,7 @@ public class ComicTransition : MonoBehaviour {
 			
 			if (returning){
 				if (counter >= 1){
-					ChromatoseManager.manager.CloseComic();
+				//	ChromatoseManager.manager.CloseComic();
 				}
 				goto fadeOut;
 			}
@@ -69,7 +72,7 @@ public class ComicTransition : MonoBehaviour {
 			}
 			else if (counter >= 1){
 				GameObject.Find("Avatar").transform.position = transform.position;
-				ChromatoseManager.manager.OpenComic(Application.loadedLevel);
+				//ChromatoseManager.manager.OpenComic(Application.loadedLevel);
 			}
 		}
 		

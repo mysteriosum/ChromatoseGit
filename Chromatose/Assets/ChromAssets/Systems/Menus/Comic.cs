@@ -4,7 +4,40 @@ using System.Collections;
 #pragma warning disable 0414 // private field assigned but not used.
 
 public class Comic : MonoBehaviour {
+	
+	void Start(){
+		
+	}
+	
+	void Update(){
+		
+	}
+	
 
+	
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*********************************************************************************************************************************/
+
+	/*
 	private bool inMySlot;
 	public bool InMySlot{
 		get { return inMySlot; }
@@ -61,6 +94,8 @@ public class Comic : MonoBehaviour {
 				fading = false;
 			}
 		}
+		
+		*/
 		/*
 		if (Comic.comicComplete){
 			return;
@@ -117,7 +152,7 @@ public class Comic : MonoBehaviour {
 		
 		inMySlot = currentSlot == mySlotIndex;			//a check to see if I'm in the right slot
 		*/
-		
+		/*
 	}
 	
 	void SlideToPos(Vector3 newPos){
@@ -133,3 +168,4 @@ public class Comic : MonoBehaviour {
 		spr.SetSprite(name);
 	}
 }
+ */

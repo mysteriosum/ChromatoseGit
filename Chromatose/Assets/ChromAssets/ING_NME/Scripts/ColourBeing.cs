@@ -98,7 +98,7 @@ abstract public class ColourBeing : MonoBehaviour {		//base class for all living
 	}
 	
 	public void TakeColour(Colour newColour){
-		this.colour.r = Mathf.Min(colour.r + newColour.r, 255);
+		//this.colour.r = Mathf.Min(colour.r + newColour.r, 255);
 		this.colour.g = Mathf.Min(colour.g + newColour.g, 255);
 		this.colour.b = Mathf.Min(colour.b + newColour.b, 255);
 		
