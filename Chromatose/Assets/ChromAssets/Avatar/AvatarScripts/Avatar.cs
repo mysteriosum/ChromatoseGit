@@ -757,7 +757,7 @@ public class Avatar : ColourBeing
 		//colour.b = Mathf.Clamp(colour.b, 0, 255);
 			
 			
-			_ColorCounter += Time.deltaTime * velocity.magnitude;
+			_ColorCounter += Time.deltaTime * velocity.magnitude * 0.65f;
 			
 			
 			if(_ColorCounter > 1){
@@ -1408,10 +1408,12 @@ public class Avatar : ColourBeing
 	public IEnumerator LateCPCreation(float _wait){
 		yield return new WaitForSeconds(_wait);
 		CreatFirstCP();
+		ChromatoseManager.manager.SaveRoom();
 	}
 	public IEnumerator CPCreationForRoom(float _wait){
 		yield return new WaitForSeconds(_wait);
 		CreateCP();
+		ChromatoseManager.manager.SaveRoom();
 	}
 }
 

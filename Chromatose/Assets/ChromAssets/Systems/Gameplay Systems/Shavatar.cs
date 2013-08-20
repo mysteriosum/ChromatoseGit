@@ -58,92 +58,7 @@ public class Shavatar : MonoBehaviour {
 	public SphereCollider _CollisionDetectionCollider;
 	private ShavatarDetectionScript _DetectionScript;
 	
-	private Eye eyeOfTheChu;
-	
-	#region CLASS EYE
-	private class Eye {
-		private tk2dSprite spriteInfo;
-		private GameObject go;
-		private Transform t;
-		private Transform avatarT;
-		private Vector3 offset = new Vector3(-5, 0, -1);
-		
-		private float timer = 0;
-		private float leftCounter = 0;
-		private float rightCounter = 0;
-		private float timeRate = 10;
-		private float moveRate = 1;
-		
-		public Eye (Transform avatarT, tk2dSpriteCollectionData spriteData){
-			go = new GameObject("AvatarEye");
-			t = go.transform;
-			tk2dSprite.AddComponent<tk2dSprite>(go, spriteData, "eye");
-			spriteInfo = go.GetComponent<tk2dSprite>();
-			this.avatarT = avatarT;
-			t.parent = avatarT;
-			t.localPosition = offset;
-			t.localRotation = Quaternion.identity;
-		}
-		
-		/*
-		public void EyeFollow() {
-			//Debug.Log("OO");
-			
-			timer += Time.deltaTime;
-			
-			if(Input.GetKey(KeyCode.Q)){
-				if(leftCounter < timeRate){
-					t.localPosition = new Vector3(-5.5f, 0.75f, -1);
-					leftCounter += moveRate;
-				}
-				else if(leftCounter >= timeRate){
-					t.localPosition = new Vector3(-6, 1.5f, -1);
-				}
-				timer = 0;
-			}
-			else if(Input.GetKey(KeyCode.W)){
-				if(rightCounter < timeRate){
-					t.localPosition = new Vector3(-5.5f, -1.5f, -1);
-					rightCounter += moveRate;
-				}
-				else if(leftCounter >= timeRate){
-					t.localPosition = new Vector3(-6, -3f, -1);
-				}
-				timer = 0;
-				
-				
-			}
-			else if(Input.GetKey(KeyCode.O)){
-				if(leftCounter >= 1){
-					t.localPosition = new Vector3(-5.5f, 0.75f, -1);
-					leftCounter -= moveRate;
-				}
-				else if(rightCounter >= 1){
-					t.localPosition = new Vector3(-5.5f, -1.5f, -1);
-					rightCounter -= moveRate;
-				}
-				else{				
-					t.localPosition = new Vector3(-5, 0, -1);
-				}
-				timer = 0;
-			}
-			
-			if(timer >= 3){
-				if(leftCounter >= 1){
-					t.localPosition = new Vector3(-5.5f, 0.75f, -1);
-					leftCounter -= moveRate;
-				}
-				else if(rightCounter >= 1){
-					t.localPosition = new Vector3(-5.5f, -1.5f, -1);
-					rightCounter -= moveRate;
-				}
-				else{				
-					t.localPosition = new Vector3(-5, 0, -1);
-				}
-			}
-		}*/
-	}
-	#endregion
+
 	
 	void Start () {
 
@@ -187,7 +102,7 @@ public class Shavatar : MonoBehaviour {
 		}
 		#endregion
 		
-		//eyeOfTheChu = new Eye(t, eyeCollection);
+		//eyeOfTheChu = new Eye(this.transform, eyeCollection);
 		
 	}
 	void Update () {
@@ -371,6 +286,7 @@ public class Shavatar : MonoBehaviour {
 		}
 	}
 	
+	
 	void LookAtAvatar(){
 		targetPoint = _Avatar.transform.position;
 		targetPoint.z = transform.position.z;
@@ -380,6 +296,7 @@ public class Shavatar : MonoBehaviour {
 	void Forward(){
 		if(_InCharge && _OnCollision){return;}		
 		transform.Translate(Vector3.forward * shavatarSpeed * _AccelSpeed, Space.Self);
+		//transform.position = Vector2.Lerp(transform.position, _Target, Time.deltaTime);
 	}
 	
 	
