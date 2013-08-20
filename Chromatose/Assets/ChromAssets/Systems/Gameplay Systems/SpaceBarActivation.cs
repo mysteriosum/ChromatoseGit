@@ -2,14 +2,19 @@ using UnityEngine;
 using System.Collections;
 
 public class SpaceBarActivation : MonoBehaviour {
-
-	// Use this for initialization
-	void Start () {
 	
-	}
+	private Avatar _AvatarScript;
 	
-	// Update is called once per frame
-	void Update () {
+	void Start(){
+		_AvatarScript = GameObject.FindGameObjectWithTag("avatar").GetComponent<Avatar>();
+	}	
 	
+	void OnTriggerEnter(Collider other){
+		
+		if(other.tag != "avatar") return;
+		if(_AvatarScript != null){
+			Debug.Log("IN");
+			_AvatarScript.spaceBarActive = true;
+		}
 	}
 }

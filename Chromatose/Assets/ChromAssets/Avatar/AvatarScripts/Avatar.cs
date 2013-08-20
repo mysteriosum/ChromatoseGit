@@ -81,7 +81,11 @@ public class Avatar : ColourBeing
 	protected bool getS;	//This is there for solidarity
 	protected bool getD;
 	private bool getSpace;
-	private bool _SpaceBarActive = true;
+	private bool _SpaceBarActive;
+		public bool spaceBarActive{
+			get{return _SpaceBarActive;}
+			set{_SpaceBarActive = value;}
+		}
 	
 	private int currentSubimg;
 	private string spritePrefix = "Player";
@@ -235,7 +239,13 @@ public class Avatar : ColourBeing
 		private GameObject go;
 		private Transform t;
 		private Transform avatarT;
-		private Vector3 offset = new Vector3(-6, -2, -1);
+		private Vector3 offset = new Vector3(-5, 0, -1);
+		
+		private float timer = 0;
+		private float leftCounter = 0;
+		private float rightCounter = 0;
+		private float timeRate = 10;
+		private float moveRate = 1;
 		
 		public Eye (Transform avatarT, tk2dSpriteCollectionData spriteData){
 			go = new GameObject("AvatarEye");
@@ -246,6 +256,64 @@ public class Avatar : ColourBeing
 			t.parent = avatarT;
 			t.localPosition = offset;
 			t.localRotation = Quaternion.identity;
+		}
+		
+		
+		public void EyeFollow() {
+			//Debug.Log("OO");
+			
+			timer += Time.deltaTime;
+			
+			if(Input.GetKey(KeyCode.Q)){
+				if(leftCounter < timeRate){
+					t.localPosition = new Vector3(-5.5f, 0.75f, -1);
+					leftCounter += moveRate;
+				}
+				else if(leftCounter >= timeRate){
+					t.localPosition = new Vector3(-6, 1.5f, -1);
+				}
+				timer = 0;
+			}
+			else if(Input.GetKey(KeyCode.W)){
+				if(rightCounter < timeRate){
+					t.localPosition = new Vector3(-5.5f, -1.5f, -1);
+					rightCounter += moveRate;
+				}
+				else if(leftCounter >= timeRate){
+					t.localPosition = new Vector3(-6, -3f, -1);
+				}
+				timer = 0;
+				
+				
+			}
+			else if(Input.GetKey(KeyCode.O)){
+				if(leftCounter >= 1){
+					t.localPosition = new Vector3(-5.5f, 0.75f, -1);
+					leftCounter -= moveRate;
+				}
+				else if(rightCounter >= 1){
+					t.localPosition = new Vector3(-5.5f, -1.5f, -1);
+					rightCounter -= moveRate;
+				}
+				else{				
+					t.localPosition = new Vector3(-5, 0, -1);
+				}
+				timer = 0;
+			}
+			
+			if(timer >= 3){
+				if(leftCounter >= 1){
+					t.localPosition = new Vector3(-5.5f, 0.75f, -1);
+					leftCounter -= moveRate;
+				}
+				else if(rightCounter >= 1){
+					t.localPosition = new Vector3(-5.5f, -1.5f, -1);
+					rightCounter -= moveRate;
+				}
+				else{				
+					t.localPosition = new Vector3(-5, 0, -1);
+				}
+			}
 		}
 		
 		public void Blend(float r, float g, float b){
@@ -646,6 +714,7 @@ public class Avatar : ColourBeing
 		
 		//MAKE ME AN EYE BABY
 		travisMcGee = new Eye(t, particleCollection);
+		
 		bubble = new SpeechBubble (t, particleCollection);
 		
 		
@@ -659,8 +728,8 @@ public class Avatar : ColourBeing
 	void Update ()
 	{
 		
-		Debug.Log(spriteInfo.Collection);
 		
+		travisMcGee.EyeFollow();
 								//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
 								//<--------------Color Fading!--------------->
 								//<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>
@@ -821,11 +890,11 @@ public class Avatar : ColourBeing
 			
 		
 			if (!manager.InComic){
-				//if(!_SpaceBarActive)return;
-				
-				getS = Input.GetKeyDown(KeyCode.Space);
-				if (Input.GetKeyDown(KeyCode.DownArrow)){
-					getS = true;
+				if(_SpaceBarActive){
+					getS = Input.GetKeyDown(KeyCode.Space);
+					if (Input.GetKeyDown(KeyCode.DownArrow)){
+						getS = true;
+					}
 				}
 			}
 			
