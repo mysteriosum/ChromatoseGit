@@ -212,7 +212,7 @@ public class ChromatoseManager : MonoBehaviour {
 		public Texture mainBox;
 		public Texture smallBox;
 		public Texture[] energyTank;
-		public Texture energyBar;
+		//public Texture energyBar;
 		public Texture actionButton;
 		public Texture absorbAction;
 		public Texture buildAction;
@@ -220,7 +220,7 @@ public class ChromatoseManager : MonoBehaviour {
 		public Texture payAction;
 		public Texture releaseAction;
 		public Texture returnAction;
-		public Texture energyBarFlash;
+		//public Texture energyBarFlash;
 		
 		
 		public Texture redCollectible;
@@ -676,10 +676,10 @@ public class ChromatoseManager : MonoBehaviour {
 			Rect pauseWindowsRect = new Rect (128, 100, 700, 360);
 			Rect endResultRect = new Rect (0, 0, Screen.width, Screen.height);
 		
-			//NE SEMBLE PAS SERVIR
+			/*NE SEMBLE PAS SERVIR
 			Rect energyRect = new Rect(barX, barMinY, hud.energyBar.width, hud.energyBar.height);
 			Rect flashyRect = new Rect(barX - 7, barMinY - 8, hud.energyBarFlash.width, hud.energyBarFlash.height);
-			Rect tankRect = new Rect(tankX, tankY, 80, 128);
+			Rect tankRect = new Rect(tankX, tankY, 80, 128);*/
 		
 		
 		#region OnGUI OnStart
@@ -727,14 +727,14 @@ public class ChromatoseManager : MonoBehaviour {
 			GUI.BeginGroup(wColRect);										//white collectible
 				GUI.skin.textArea.normal.textColor = Color.white;
 				GUI.DrawTexture(new Rect(0, 0, hud.whiteCollectible.width + 10, hud.whiteCollectible.height), hud.whiteCollectible);
-				GUI.TextArea(new Rect(textOffset.x, textOffset.y, 80, 40), _WhiteCollected.ToString() + " / " + _TotalWhiteColl.ToString());
+				GUI.TextArea(new Rect(textOffset.x + 10, textOffset.y, 80, 40), _WhiteCollected.ToString());// + " / " + _TotalWhiteColl.ToString());
 				
 			GUI.EndGroup();
 			
 			GUI.BeginGroup(rColRect);										//red collectible
 				GUI.skin.textArea.normal.textColor = Color.red;
 				GUI.DrawTexture(new Rect(0, 0, hud.redCollectible.width + 10, hud.redCollectible.height), hud.redCollectible);
-				GUI.TextArea(new Rect(textOffset.x, textOffset.y, 80, 40), _RedCollected.ToString() + " / " + _TotalRedColl.ToString());
+				GUI.TextArea(new Rect(textOffset.x + 10, textOffset.y, 80, 40), _RedCollected.ToString());// + " / " + _TotalRedColl.ToString());
 				
 			GUI.EndGroup();
 
@@ -742,7 +742,7 @@ public class ChromatoseManager : MonoBehaviour {
 			GUI.BeginGroup(bColRect);										//blue collectible
 				GUI.skin.textArea.normal.textColor = Color.blue;
 				GUI.DrawTexture(new Rect(0, 0, hud.blueCollectible.width + 10, hud.blueCollectible.height), hud.blueCollectible);
-				GUI.TextArea(new Rect(textOffset.x, textOffset.y, 80, 40), _BlueCollected.ToString() + " / " + _TotalBlueColl.ToString());
+				GUI.TextArea(new Rect(textOffset.x + 10, textOffset.y, 80, 40), _BlueCollected.ToString());// + " / " + _TotalBlueColl.ToString());
 				
 			GUI.EndGroup();
 			
@@ -752,14 +752,14 @@ public class ChromatoseManager : MonoBehaviour {
 				GUI.DrawTexture(new Rect(aX, 0, hud.absorbAction.width, hud.absorbAction.height), actionTexture);
 			
 			GUI.EndGroup();
-			
+			/*
 			if (!avatar.HasOutline){
 				
 				GUI.BeginGroup(energyRect);
 					Rect drawRect = new Rect(0, 0, hud.energyBar.width, hud.energyBar.height);
 					GUI.DrawTexture(drawRect, hud.energyBar);
 				GUI.EndGroup();
-			}
+			}*/
 		
 			
 			

@@ -29,6 +29,7 @@ public class OptiManager : MonoBehaviour {
 	public void OptimizeZone(){
 		
 		_CurRoom = _RoomManager.curRoom;
+
 		foreach(GameObject go in roomList){
 			if(go != null){
 				go.SetActive(false);
@@ -46,4 +47,14 @@ public class OptiManager : MonoBehaviour {
 		}
 		roomList[_CurRoom].SetActive(true);
 	}
+	
+	IEnumerator DelaiToDesactive(){
+		yield return new WaitForSeconds(5.0f);
+		foreach(GameObject go in roomList){
+			if(go != null){
+				go.SetActive(false);
+			}
+		}
+	}
+	
 }

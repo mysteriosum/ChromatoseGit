@@ -757,7 +757,7 @@ public class Avatar : ColourBeing
 		//colour.b = Mathf.Clamp(colour.b, 0, 255);
 			
 			
-			_ColorCounter += Time.deltaTime * velocity.magnitude * 0.65f;
+			_ColorCounter += Time.deltaTime * velocity.magnitude * 0.5f;
 			
 			
 			if(_ColorCounter > 1){
@@ -1391,7 +1391,7 @@ public class Avatar : ColourBeing
 	/// Calls from far. Appel la creation d'un checkpoint depuis l'exterieur
 	/// </summary>
 	public void CallFromFar(){
-		StartCoroutine(CPCreationForRoom(1.5f));
+		StartCoroutine(CPCreationForRoom(1.1f));
 	}
 	
 	/// <summary>
