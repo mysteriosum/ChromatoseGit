@@ -120,7 +120,17 @@ public class Collectible2 : MonoBehaviour {
 				break;
 			}
 		}
-	}	
+	}
+	
+	void OnTriggerExit(Collider other){
+		if(other.tag != "avatar" || _Effect)return;
+		
+		switch(colorCollectible){
+		case _ColorCollectible.Red:
+			_AvatarScript.OnRedCol = false;
+			break;
+		}
+	}
 	
 	void Setup(){
 		
