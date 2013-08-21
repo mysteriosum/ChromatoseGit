@@ -204,7 +204,7 @@ public class Collectible2 : MonoBehaviour {
 	
 	
 	public void Die(tk2dAnimatedSprite sprite, int index){
-		//Destroy(this.gameObject);
-		transform.position = new Vector3(transform.position.x, transform.position.y, -3000);
+		Destroy(this.gameObject);
+		//transform.position = new Vector3(transform.position.x, transform.position.y, -3000);
 	}
 }

@@ -44,11 +44,15 @@ public class SpriteFader : MonoBehaviour {
 		
 		
 		foreach (GameObject sprite in spritesIn){
-			sprite.BroadcastMessage("FadeAlpha", inAlpha, SendMessageOptions.DontRequireReceiver);
-			_spritesIn.Add(sprite);
+			if(sprite != null){
+				sprite.BroadcastMessage("FadeAlpha", inAlpha, SendMessageOptions.DontRequireReceiver);
+				_spritesIn.Add(sprite);
+			}
 		}
 		foreach (GameObject sprite in spritesOut){
-			_spritesOut.Add(sprite);
+			if(sprite != null){
+				_spritesOut.Add(sprite);
+			}
 		}
 	}
 	
@@ -56,12 +60,14 @@ public class SpriteFader : MonoBehaviour {
 	void LateUpdate () {
 		if (!change) return;
 		foreach (GameObject go in _spritesIn){
-			
-			go.BroadcastMessage("FadeAlpha", inAlpha, SendMessageOptions.DontRequireReceiver);
+			if(go != null){
+				go.BroadcastMessage("FadeAlpha", inAlpha, SendMessageOptions.DontRequireReceiver);
+			}
 		}
 		foreach (GameObject go in _spritesOut){
-			go.BroadcastMessage("FadeAlpha", outAlpha, SendMessageOptions.DontRequireReceiver);
-			
+			if(go != null){
+				go.BroadcastMessage("FadeAlpha", outAlpha, SendMessageOptions.DontRequireReceiver);
+			}
 		}
 		
 		change = false;

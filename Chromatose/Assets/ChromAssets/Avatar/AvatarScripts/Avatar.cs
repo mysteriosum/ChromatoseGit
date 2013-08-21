@@ -1373,6 +1373,12 @@ public class Avatar : ColourBeing
 		}
 	}
 	
+	public void EmptyingBucket(){
+		//spriteInfo.Collection = normalCollection;
+		_Colored = false;
+	}
+	
+	
 	public void Jolt(float amount){
 		if (!myKnockTarget){
 			Debug.LogWarning("There's no knockback targets in this level! NOOOOO!");
