@@ -214,6 +214,7 @@ public class Avatar : ColourBeing
 		Transform t;
 		Avatar avatar;
 		public DeathAnim (){
+			Debug.Log ("Passe par Ici");
 			go = new GameObject("Death Animation!");
 			t = go.transform;
 			avatar = GameObject.FindWithTag("avatar").GetComponent<Avatar>();
@@ -1408,12 +1409,12 @@ public class Avatar : ColourBeing
 	public IEnumerator LateCPCreation(float _wait){
 		yield return new WaitForSeconds(_wait);
 		CreatFirstCP();
-		ChromatoseManager.manager.SaveRoom();
+		//ChromatoseManager.manager.SaveRoom();
 	}
 	public IEnumerator CPCreationForRoom(float _wait){
 		yield return new WaitForSeconds(_wait);
 		CreateCP();
-		ChromatoseManager.manager.SaveRoom();
+		//ChromatoseManager.manager.SaveRoom();
 	}
 }
 
