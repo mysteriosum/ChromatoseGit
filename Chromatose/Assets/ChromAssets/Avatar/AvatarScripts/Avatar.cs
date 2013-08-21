@@ -214,6 +214,7 @@ public class Avatar : ColourBeing
 		Transform t;
 		Avatar avatar;
 		public DeathAnim (){
+			Debug.Log ("Passe par Ici");
 			go = new GameObject("Death Animation!");
 			t = go.transform;
 			avatar = GameObject.FindWithTag("avatar").GetComponent<Avatar>();
@@ -725,7 +726,7 @@ public class Avatar : ColourBeing
 	}
 	
 
-	void Update ()
+	void FixedUpdate ()
 	{
 		
 		
@@ -757,7 +758,7 @@ public class Avatar : ColourBeing
 		//colour.b = Mathf.Clamp(colour.b, 0, 255);
 			
 			
-			_ColorCounter += Time.deltaTime * velocity.magnitude * 0.5f;
+			_ColorCounter += Time.deltaTime * velocity.magnitude * 0.3f;
 			
 			
 			if(_ColorCounter > 1){
@@ -820,7 +821,11 @@ public class Avatar : ColourBeing
 			Debug.Log("Change Collection Here");
 		}
 		else{
-			spriteInfo.Collection = normalCollection;
+			if(spriteInfo.Collection != normalCollection){
+				spriteInfo.Collection = normalCollection;
+				currentSubimg = noRotSubimg;
+				spriteInfo.SetSprite(spritePrefix + currentSubimg.ToString());
+			}
 		}
 		
 		
@@ -1408,12 +1413,12 @@ public class Avatar : ColourBeing
 	public IEnumerator LateCPCreation(float _wait){
 		yield return new WaitForSeconds(_wait);
 		CreatFirstCP();
-		ChromatoseManager.manager.SaveRoom();
+		//ChromatoseManager.manager.SaveRoom();
 	}
 	public IEnumerator CPCreationForRoom(float _wait){
 		yield return new WaitForSeconds(_wait);
 		CreateCP();
-		ChromatoseManager.manager.SaveRoom();
+		//ChromatoseManager.manager.SaveRoom();
 	}
 }
 

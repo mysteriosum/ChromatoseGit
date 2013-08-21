@@ -59,7 +59,7 @@ public class whiteTollBooth : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		Check(Actions.Pay);
+		Check(Actions.whitePay);
 		
 		if (triggered) return;
 		
@@ -80,13 +80,13 @@ public class whiteTollBooth : MonoBehaviour {
 			return false;
 		}
 		if (myCollider.bounds.Contains(avatarT.position)){
-			chroManager.UpdateAction(action, Pay);
+			chroManager.UpdateAction(action, whitePay);
 			return true;
 		}
 		return false;
 	}
 	
-	void Pay(){
+	void whitePay(){
 		if (chroManager.GetCollectibles(myColor) >= requiredPayment){
 			
 			StartIn();

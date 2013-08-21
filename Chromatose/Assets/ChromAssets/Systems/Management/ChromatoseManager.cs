@@ -19,6 +19,7 @@ public enum Actions{
 	Destroy,
 	Build,
 	Pay,
+	whitePay,
 	Release,
 	
 	Nothing,
@@ -218,6 +219,7 @@ public class ChromatoseManager : MonoBehaviour {
 		public Texture buildAction;
 		public Texture destroyAction;
 		public Texture payAction;
+		public Texture whitePayAction;
 		public Texture releaseAction;
 		public Texture returnAction;
 		//public Texture energyBarFlash;
@@ -601,6 +603,9 @@ public class ChromatoseManager : MonoBehaviour {
 		case Actions.Pay:
 			actionTexture = hud.payAction;
 			break;
+		case Actions.whitePay:
+			actionTexture = hud.whitePayAction;
+			break;
 		case Actions.Release:
 			actionTexture = hud.releaseAction;
 			break;
@@ -934,7 +939,7 @@ public class ChromatoseManager : MonoBehaviour {
 		if(!_NoDeathModeActivated){
 			danim = new Avatar.DeathAnim();
 			danim.PlayDeath(Reset);
-			avatar.SendMessage("FadeAlpha", 0f);
+			//avatar.SendMessage("FadeAlpha", 0f);
 			avatar.movement.SetVelocity(Vector2.zero);
 			StartCoroutine(OnDeath(0.15f));
 			
@@ -945,7 +950,7 @@ public class ChromatoseManager : MonoBehaviour {
 		else{
 			danim = new Avatar.DeathAnim();
 			danim.PlayDeath(Reset);
-			avatar.SendMessage("FadeAlpha", 0f);
+			//avatar.SendMessage("FadeAlpha", 0f);
 			avatar.movement.SetVelocity(Vector2.zero);
 			StartCoroutine(OnDeath(0.15f));
 			avatar.CancelOutline();
@@ -964,7 +969,7 @@ public class ChromatoseManager : MonoBehaviour {
 		avatar.transform.position = curCheckpoint.transform.position;
 		avatar.transform.rotation = Quaternion.identity;
 		avatar.movement.SetVelocity(Vector2.zero);
-		avatar.SetColour(0, 0, 0);
+		//avatar.SetColour(0, 0, 0);
 	}
 	
 	void TriggerQuestionMark(){
@@ -1005,12 +1010,14 @@ public class ChromatoseManager : MonoBehaviour {
 	
 	public void SaveRoom(){
 		LevelSerializer.SaveGame(_GameName);
+		Debug.Log("Save");
 	}
 	public void LoadRoom(){
 		foreach(var sg in LevelSerializer.SavedGames[LevelSerializer.PlayerName]) { 
          	LevelSerializer.LoadNow(sg.Data);
 			Time.timeScale = 1;
     	} 
+		Debug.Log("Load");
 	}
 	
 #endregion	
@@ -1140,7 +1147,7 @@ public class ChromatoseManager : MonoBehaviour {
 			_SFader.ResetState();
 		}
 		
-		LoadRoom();
+		//LoadRoom();
 	}	
 	IEnumerator ResetCanGrabCollectibles(float _wait){
 		yield return new WaitForSeconds(_wait);
