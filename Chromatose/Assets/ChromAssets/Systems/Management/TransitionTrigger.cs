@@ -99,7 +99,7 @@ public class TransitionTrigger : MonoBehaviour {
 				
 			if (_LightCounter < 1 && _FadeIn){_LightCounter += 0.03f;}
 			if (_LightCounter > 0 && _FadeOut){_LightCounter -= 0.015f;}
-			if (_LightCounter > 1){_FadeIn = false; StartCoroutine(DelaiToFadeOut()); myTrigger();}
+			if (_LightCounter > 1){_FadeIn = false; _FadeOut = true; myTrigger();}
 				
 			break;
 		case transitionVers.TimeTrial:
@@ -114,7 +114,7 @@ public class TransitionTrigger : MonoBehaviour {
 			
 			if (_LightCounter < 1 && _FadeIn){_LightCounter += 0.03f;}
 			if (_LightCounter > 0 && _FadeOut){_LightCounter -= 0.015f;}
-			if (_LightCounter > 1){_FadeIn = false; myTrigger(); StartCoroutine(DelaiToFadeOut());}
+			if (_LightCounter > 1){_FadeIn = false; _FadeOut = true; myTrigger();}
 			
 			break;
 		}

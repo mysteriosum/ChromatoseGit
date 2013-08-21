@@ -1391,7 +1391,7 @@ public class Avatar : ColourBeing
 	/// Calls from far. Appel la creation d'un checkpoint depuis l'exterieur
 	/// </summary>
 	public void CallFromFar(){
-		StartCoroutine(CPCreationForRoom(1.1f));
+		StartCoroutine(CPCreationForRoom(1.5f));
 	}
 	
 	/// <summary>
