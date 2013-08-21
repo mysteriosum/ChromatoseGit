@@ -184,7 +184,7 @@ public class TransitionTrigger : MonoBehaviour {
 			//Debug.Log("NextLilRoom");
 		}
 		
-		_Manager.ResetComicCounter();
+		StartCoroutine(DelaiBeforeOpti());
 		//ResetBool();
 		
 		if(GameObject.FindGameObjectWithTag("OptiManager") != null){
@@ -229,6 +229,10 @@ public class TransitionTrigger : MonoBehaviour {
 	IEnumerator DelaiToFadeOut(){
 		yield return new WaitForSeconds(1f);
 		_FadeOut = true;
+	}
+	IEnumerator DelaiBeforeOpti(){
+		yield return new WaitForSeconds(0.5f);
+		_Manager.ResetComicCounter();
 	}
 }
 #endregion

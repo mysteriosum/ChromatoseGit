@@ -303,7 +303,8 @@ public class Shavatar : MonoBehaviour {
 	
 	void OnCollisionEnter(Collision collider){
 		if(collider.gameObject.tag == "avatar"){
-			_Avatar.GetComponent<Avatar>().SetColour(0, 0, 0);
+			_Avatar.GetComponent<Avatar>().LoseAllColour();
+			_Avatar.GetComponent<Avatar>().EmptyingBucket();
 			StopAllCoroutines();
 			shavatarSpeed = _InitSpeed;
 			_InCharge = false;
