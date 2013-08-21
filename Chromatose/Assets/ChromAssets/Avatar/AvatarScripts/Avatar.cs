@@ -1324,7 +1324,7 @@ public class Avatar : ColourBeing
 	}
 	
 	void CreateCP(){
-		GameObject _NewCP = GameObject.Find("pre_checkpoint");
+			GameObject _NewCP = manager.prefab.checkPoint;
 			GameObject _NewLevelCP = Instantiate(_NewCP, this.transform.position, Quaternion.identity)as GameObject;
 			
 			_NewLevelCP.transform.position = new Vector3(_NewLevelCP.transform.position.x, _NewLevelCP.transform.position.y, 2);	
@@ -1337,7 +1337,7 @@ public class Avatar : ColourBeing
 	
 	void CreatFirstCP(){
 		if(!manager.FirstLevelCPDone){
-			GameObject _NewCP = GameObject.Find("pre_checkpoint");
+			GameObject _NewCP = manager.prefab.checkPoint;
 			GameObject _FirstLevelCP = Instantiate(_NewCP, this.transform.position, this.transform.rotation)as GameObject;
 			
 			_FirstLevelCP.transform.position = new Vector3(_FirstLevelCP.transform.position.x, _FirstLevelCP.transform.position.y, 2);
