@@ -12,6 +12,7 @@ public class Npc2 : MonoBehaviour {
 	private ChromatoseManager _Manager;
 	private tk2dAnimatedSprite _MainAnim;
 	private Avatar _AvatarScript;
+	private Avatar.LoseAllColourParticle losePart;
 	
 	private Color myColor = Color.red;
 
@@ -24,21 +25,26 @@ public class Npc2 : MonoBehaviour {
 	}
 	
 	void Update () {
-	
+		if(losePart != null){
+			losePart.Fade();
+		}
 	}
 	
 	void OnTriggerStay(Collider other){
 		if(other.tag != "avatar") return;
 		
-		//if(_AvatarScript.curColor == myColor){
-			_Manager.UpdateAction(Actions.Absorb, Trigger);		//this tells the hud that I want to do something. But I'll have to wait in line!
-		//}		
+		_Manager.UpdateAction(Actions.Absorb, Trigger);		//this tells the hud that I want to do something. But I'll have to wait in line!
+			
 	}
 	
 	void Trigger(){
 		_AvatarScript.FillBucket(myColor);
 		_MainAnim.Play("rNPC_redToGrey");
-		_MainAnim.animationCompleteDelegate = GreyBounce;		
+		_MainAnim.animationCompleteDelegate = GreyBounce;	
+
+		losePart = new Avatar.LoseAllColourParticle(_AvatarScript.particleCollection, _AvatarScript.partAnimations, this.transform, myColor);
+		//StartCoroutine(DelaiBeforeFade(1.0f));
+		
 	}
 		
 	void Setup(){
@@ -60,5 +66,10 @@ public class Npc2 : MonoBehaviour {
 	
 	public void GreyBounce(tk2dAnimatedSprite clip, int index){
 		_MainAnim.Play(_greyBounceString);
+	}
+	
+	IEnumerator DelaiBeforeFade(float delai){
+		yield return new WaitForSeconds(delai);
+		losePart.Fade();
 	}
 }

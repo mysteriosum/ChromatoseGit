@@ -175,7 +175,7 @@ public class Npc : MonoBehaviour {
 			miscPartAnim.color = spriteInfo.color;
 		}*/
 		
-		/*				//show speech bubbles! If I have a happy one or a sad one and I'm happy or sad, respectively, show that shit
+		/*			//show speech bubbles! If I have a happy one or a sad one and I'm happy or sad, respectively, show that shit
 		string toShow = colour.White ? sadBubbleName : happyBubbleName;
 		Vector3 diff = avatar.transform.position - t.position;
 		
@@ -198,7 +198,7 @@ public class Npc : MonoBehaviour {
 		
 		
 	}
-	/*
+	
 	void Trigger(){
 		
 		

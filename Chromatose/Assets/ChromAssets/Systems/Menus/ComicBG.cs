@@ -35,6 +35,15 @@ public class ComicBG : MonoBehaviour {
 		if(other.tag == "avatar"){
 			if(_ComicCollected >= comic.Length && !_ComicDone){
 				_ComicDone = true;
+				//Debug.Log("Enter");
+			}
+		}
+	}
+	
+	void OnTriggerStay(Collider other){
+		if(other.tag == "avatar"){
+			if(_ComicCollected >= comic.Length && !_ComicDone){
+				_ComicDone = true;
 				Debug.Log("Enter");
 			}
 		}

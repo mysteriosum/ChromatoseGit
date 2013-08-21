@@ -34,8 +34,12 @@ public class ColourWell : MonoBehaviour {
 			_AvatarScript.OnRedWell = true;
 		
 		_Manager.UpdateAction(Actions.Absorb, Trigger);		//this tells the manager that I want to do something. But I'll have to wait in line!
-		
-		
+	}
+	void OnTriggerExit(Collider collider){
+		if(collider.tag != "avatar") return;
+		if(myColor == Color.red){
+			_AvatarScript.OnRedWell = false;
+		}
 	}
 	
 	

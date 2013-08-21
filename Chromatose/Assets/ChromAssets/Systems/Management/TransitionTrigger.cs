@@ -97,9 +97,9 @@ public class TransitionTrigger : MonoBehaviour {
 			if (!_Popped) return;
 			
 				
-			if (_LightCounter < 1 && _FadeIn){_LightCounter += 0.02f;}
-			if (_LightCounter > 0 && _FadeOut){_LightCounter -= 0.02f;}
-			if (_LightCounter > 1){_FadeIn = false; _FadeOut = true; myTrigger();}
+			if (_LightCounter < 1 && _FadeIn){_LightCounter += 0.03f;}
+			if (_LightCounter > 0 && _FadeOut){_LightCounter -= 0.015f;}
+			if (_LightCounter > 1){_FadeIn = false; StartCoroutine(DelaiToFadeOut()); myTrigger();}
 				
 			break;
 		case transitionVers.TimeTrial:
@@ -112,9 +112,9 @@ public class TransitionTrigger : MonoBehaviour {
 			
 			if (!_Popped) return;
 			
-			if (_LightCounter < 1 && _FadeIn){_LightCounter += 0.02f;}
-			if (_LightCounter > 0 && _FadeOut){_LightCounter -= 0.02f;}
-			if (_LightCounter > 1){_FadeIn = false; _FadeOut = true; myTrigger();}
+			if (_LightCounter < 1 && _FadeIn){_LightCounter += 0.03f;}
+			if (_LightCounter > 0 && _FadeOut){_LightCounter -= 0.015f;}
+			if (_LightCounter > 1){_FadeIn = false; myTrigger(); StartCoroutine(DelaiToFadeOut());}
 			
 			break;
 		}
@@ -181,7 +181,7 @@ public class TransitionTrigger : MonoBehaviour {
 		
 		if(_RoomManager._RoomType == ChromaRoomManager._RoomTypeEnum.WhiteRoom){
 			_RoomManager.NextLilRoom();
-			Debug.Log("NextLilRoom");
+			//Debug.Log("NextLilRoom");
 		}
 		
 		_Manager.ResetComicCounter();
@@ -225,6 +225,10 @@ public class TransitionTrigger : MonoBehaviour {
 	IEnumerator DelaiToDisplay(){
 		yield return new WaitForSeconds(0.5f);
 		_Manager.timeTrialClass.DisplayScore = true;
+	}
+	IEnumerator DelaiToFadeOut(){
+		yield return new WaitForSeconds(1f);
+		_FadeOut = true;
 	}
 }
 #endregion
