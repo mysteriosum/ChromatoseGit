@@ -204,6 +204,11 @@ public class Collectible2 : MonoBehaviour {
 	
 	
 	public void Die(tk2dAnimatedSprite sprite, int index){
+		switch(colorCollectible){
+		case _ColorCollectible.Red:
+			_AvatarScript.OnRedCol = false;
+			break;
+		}
 		Destroy(this.gameObject);
 		//transform.position = new Vector3(transform.position.x, transform.position.y, -3000);
 	}

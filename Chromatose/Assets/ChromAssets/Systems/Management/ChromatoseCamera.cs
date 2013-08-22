@@ -18,6 +18,8 @@ public class ChromatoseCamera : MonoBehaviour {
 	private float _ScreenHeight = 0;
 	private float _ScreenWidth = 0;
 	
+	private float _BdOffset;
+	
 	// Use this for initialization
 	void Start () {
 		if (Application.loadedLevelName == "Menu") return;
@@ -55,10 +57,19 @@ public class ChromatoseCamera : MonoBehaviour {
 		if (Application.loadedLevelName == "Menu") return;
 		
 		if (manager.InComic){
-			t.position = new Vector3(0, 0, t.position.z);
+			t.position = new Vector3(0, 0 + _BdOffset, t.position.z);
 		}
 		else{
-			t.position = new Vector3(avatar.position.x - width/2, avatar.position.y - height/2, t.position.z);
+			t.position = new Vector3(avatar.position.x - width/2, avatar.position.y - height/2 + _BdOffset, t.position.z);
+		}
+	}
+	
+	public void SwitchCamType(){
+		if(_BdOffset != 0){
+			_BdOffset = 0;
+		}
+		else{
+			_BdOffset = 100;
 		}
 	}
 }

@@ -822,6 +822,7 @@ public class Avatar : ColourBeing
 		}
 		else{
 			if(spriteInfo.Collection != normalCollection){
+				_CurColor = Color.white;
 				spriteInfo.Collection = normalCollection;
 				currentSubimg = noRotSubimg;
 				spriteInfo.SetSprite(spritePrefix + currentSubimg.ToString());
@@ -1376,6 +1377,7 @@ public class Avatar : ColourBeing
 	public void EmptyingBucket(){
 		//spriteInfo.Collection = normalCollection;
 		_Colored = false;
+		_CurColor = Color.white;
 	}
 	
 	

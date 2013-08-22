@@ -4,7 +4,7 @@ using System.Collections;
 public class TransitionTrigger : MonoBehaviour {
 	
 	public enum transitionVers{
-		 NextLevel, LocalTarget, DynamicComic, TimeTrial
+		 NextLevel, LocalTarget, DynamicComic, TimeTrial, ReturnMainMenu
 	}
 	public transitionVers _TransitEnum;
 	
@@ -14,6 +14,7 @@ public class TransitionTrigger : MonoBehaviour {
 	private Transform avatarT;
 	private ChromatoseManager _Manager;
 	private ChromaRoomManager _RoomManager;
+	private ChromatoseCamera _Cam;
 	
 	private bool _Popped = false;
 	private bool _Lightning = false;
@@ -37,6 +38,7 @@ public class TransitionTrigger : MonoBehaviour {
 		_RoomManager = GameObject.FindGameObjectWithTag("RoomManager").GetComponent<ChromaRoomManager>();
 		_AvatarScript = GameObject.FindGameObjectWithTag("avatar").GetComponent<Avatar>();
 		avatarT = GameObject.FindWithTag("avatar").transform;
+		_Cam = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<ChromatoseCamera>();
 		
 		
 		
@@ -73,6 +75,11 @@ public class TransitionTrigger : MonoBehaviour {
 				else{
 					myTrigger = NextLevel;
 				}
+			
+			break;
+		case transitionVers.ReturnMainMenu:
+			
+			myTrigger = ReturnMainMenu;
 			
 			break;
 		}
@@ -114,15 +121,18 @@ public class TransitionTrigger : MonoBehaviour {
 			
 			if (_LightCounter < 1 && _FadeIn){_LightCounter += 0.03f;}
 			if (_LightCounter > 0 && _FadeOut){_LightCounter -= 0.015f;}
-			if (_LightCounter > 1){_FadeIn = false; _FadeOut = true; myTrigger();}
+			if (_LightCounter > 1){_FadeIn = false; _FadeOut = true; _Cam.SwitchCamType(); myTrigger();}
 			
 			break;
+			
+		case transitionVers.ReturnMainMenu:
+			if (!_Popped) return;
+			
+			if (_LightCounter < 1 && _FadeIn){_LightCounter += 0.03f;}
+			if (_LightCounter > 0 && _FadeOut){_LightCounter -= 0.015f;}
+			if (_LightCounter > 1){_FadeIn = false; _FadeOut = true; myTrigger();}
+			break;
 		}
-		
-		
-		
-		
-
 	}
 	
 	void OnTriggerEnter(Collider other){
@@ -218,6 +228,10 @@ public class TransitionTrigger : MonoBehaviour {
 		if(_AvatarScript.HasOutline){
 			_AvatarScript.CancelOutline();
 		}*/
+	}
+	
+	void ReturnMainMenu(){
+		Application.LoadLevel(0);
 	}
 #endregion	
 	
