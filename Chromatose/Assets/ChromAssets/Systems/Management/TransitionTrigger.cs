@@ -106,7 +106,7 @@ public class TransitionTrigger : MonoBehaviour {
 				
 			if (_LightCounter < 1 && _FadeIn){_LightCounter += 0.03f;}
 			if (_LightCounter > 0 && _FadeOut){_LightCounter -= 0.015f;}
-			if (_LightCounter > 1){_FadeIn = false; _FadeOut = true; myTrigger();}
+			if (_LightCounter > 1){_FadeIn = false; _FadeOut = true; _Manager.ResetComicCounter(); myTrigger();}
 				
 			break;
 		case transitionVers.TimeTrial:
@@ -232,6 +232,7 @@ public class TransitionTrigger : MonoBehaviour {
 	
 	void ReturnMainMenu(){
 		Application.LoadLevel(0);
+		//_Manager.SwitchGUIToBlank();
 	}
 #endregion	
 	

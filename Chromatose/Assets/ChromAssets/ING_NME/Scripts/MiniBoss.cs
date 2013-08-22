@@ -37,9 +37,10 @@ public class MiniBoss : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 	
-		if(_PayZoneScript.inPayZone && _Manager.rCollected >= requiredPayment){
+		if(_PayZoneScript.inPayZone){
 			_Manager.UpdateAction(Actions.Release, DelegateActionTest);
-			_AvatarScript.WantsToRelease = true;
+			_AvatarScript.requieredPayment = requiredPayment.ToString();
+			_AvatarScript.wantFightBoss = true;
 		}
 		
 		if(_CanDie){

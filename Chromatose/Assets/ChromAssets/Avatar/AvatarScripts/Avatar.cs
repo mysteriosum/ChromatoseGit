@@ -75,6 +75,7 @@ public class Avatar : ColourBeing
 	
 	private Eye travisMcGee;
 	private SpeechBubble bubble;
+
 	//inputs. Up, left and right will also work, but getW seems intuitive to me
 	protected bool getW;
 	protected bool getA;
@@ -98,7 +99,11 @@ public class Avatar : ColourBeing
 	private int cw1 = 4;
 	private int cw2 = 5;
 	
-	
+	private string intForBoss = "";
+	public string requieredPayment{
+		get{return intForBoss;}
+		set{intForBoss = value;}
+	}
 	
 	private bool hurt;				//other properties! Getting hurt and stuff
 	public bool Hurt{
@@ -178,6 +183,11 @@ public class Avatar : ColourBeing
 	public bool WantsToRelease{
 		get { return wantsToRelease; }
 		set { wantsToRelease = value; }
+	}
+	private bool _WantFightBoss = false;
+	public bool wantFightBoss{
+		get{return _WantFightBoss;}
+		set{_WantFightBoss = value;}
 	}
 	
 								//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
@@ -1089,6 +1099,11 @@ public class Avatar : ColourBeing
 				wantsToRelease = true;
 			}
 			
+			if (_WantFightBoss){
+				bubble.ShowBubbleFor("avatarBubble_" + intForBoss + "redcol", 0.3f);
+				_WantFightBoss = false;
+			}
+			
 			break;
 		case ("Module1_Scene1"):
 			if (onRedCol){					// && manager.GetCollectibles(Couleur.red) == 0){
@@ -1113,7 +1128,7 @@ public class Avatar : ColourBeing
 				bubble.ShowBubbleFor("avatarBubble_fire1", 0.3f);
 				wantsToRelease = false;
 			}
-			
+						
 			break;
 		case ("GYM_CHU"):
 			if (onRedCol){					// && manager.GetCollectibles(Couleur.red) == 0){

@@ -27,7 +27,7 @@ public enum Actions{
 }
 
 public enum GUIStateEnum{
-	OnStart, EndResult, EndLevel, Interface, Pause, InComic
+	OnStart, EndResult, EndLevel, Interface, Pause, InComic, Nothing
 }
 
 [SerializeAll]
@@ -509,7 +509,7 @@ public class ChromatoseManager : MonoBehaviour {
 		//Initialise pour la premiere la security pour le FirstCP
 		_FirstLevelCPDone = false;
 		
-		DontDestroyOnLoad(manager);
+		//DontDestroyOnLoad(manager);
 		if (!hud.mainBox){
 			Debug.LogWarning("There are some missing textures....");
 		}
@@ -526,7 +526,7 @@ public class ChromatoseManager : MonoBehaviour {
 		
 		rewardsGuy = GameObject.FindWithTag("rewardsGuy");
 		if (!rewardsGuy){
-			Debug.LogWarning("Hey doofus! There's no rewards guy in this level! Is there even a comic!?");
+			//Debug.LogWarning("Hey doofus! There's no rewards guy in this level! Is there even a comic!?");
 		}
 		else{
 			
@@ -867,6 +867,12 @@ public class ChromatoseManager : MonoBehaviour {
 			
 			break;
 			#endregion
+			
+			
+		case GUIStateEnum.Nothing:
+			
+			break;
+			
 		}
 	}
 #endregion	
@@ -1137,6 +1143,12 @@ public class ChromatoseManager : MonoBehaviour {
 	}
 	public void ResetPos(){
 		avatar.transform.position = _AvatarStartingPos;
+	}
+	public void SwitchGUIToBlank(){
+		_GUIState = GUIStateEnum.Nothing;
+	}
+	public void SwitchGUIToWait(){
+		_GUIState = GUIStateEnum.OnStart;
 	}
 
 	
