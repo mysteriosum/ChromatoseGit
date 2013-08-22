@@ -573,7 +573,16 @@ public class ChromatoseManager : MonoBehaviour {
 		if(Input.GetKeyDown(KeyCode.M)){
 			ManagerPause();
 		}
-
+		
+		switch(_GUIState){
+		case GUIStateEnum.OnStart:
+			if(Input.GetKeyDown(KeyCode.Space)){
+				_GUIState = GUIStateEnum.Interface;
+				avatar.CanControl();
+			}
+			break;
+		}
+		
 	
 		//Appel du timeTrial
 		if(_TimeTrialModeActivated && !timeTrialClass.TimerOnPause){
@@ -701,6 +710,8 @@ public class ChromatoseManager : MonoBehaviour {
 				_GUIState = GUIStateEnum.Interface;
 				avatar.CanControl();
 			}
+			GUI.skin.label.fontSize = 36;
+			GUI.Label(new Rect(390, 350, 450, 100), "Press SpaceBar or Click on Start");
 			
 			
 			break;

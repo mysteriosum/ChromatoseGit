@@ -18,7 +18,7 @@ public class OptiManager : MonoBehaviour {
 	void Start () {
 		_RoomManager = GameObject.FindGameObjectWithTag("RoomManager").GetComponent<ChromaRoomManager>();
 		
-		OptimizeZone();
+		StartCoroutine(DelaiBeforeStartOpti());
 	}
 	
 	// Update is called once per frame
@@ -55,6 +55,10 @@ public class OptiManager : MonoBehaviour {
 				go.SetActive(false);
 			}
 		}
+	}
+	IEnumerator DelaiBeforeStartOpti(){
+		yield return new WaitForSeconds(0.5f);
+		OptimizeZone();
 	}
 	
 }

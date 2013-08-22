@@ -604,7 +604,8 @@ public class MainMenu : MonoBehaviour {
 					if(GUI.Button(new Rect(335, 310, 280, 85), "START")){
 						//_MenuWindows = _MenuWindowsEnum.LevelSelectionWindows;
 						_MenuWindows = _MenuWindowsEnum.LoadingScreen;
-						_lvlLoad = Application.LoadLevelAsync(Application.loadedLevel + 2);
+						//_lvlLoad = Application.LoadLevelAsync(Application.loadedLevel + 1);
+						Application.LoadLevel(1);
 						//StartCoroutine(LoadLevel());
 					}
 					GUI.matrix = matrixBackup; 

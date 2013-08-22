@@ -95,6 +95,7 @@ public class MiniBoss : MonoBehaviour {
 	}
 	
 	void Die(){
+		_AvatarScript.WantsToRelease = false;
 		Destroy(this.gameObject);
 	}
 	

@@ -140,6 +140,7 @@ public class DangerBlob : ColourBeing {
 			return;
 		}
 		
+		/*
 		Avatar avatar = other.gameObject.GetComponent<Avatar>();
 		bool sameColour = avatar.curColor == Color.red? true : false;
 		if (sameColour && diesOnImpact){
@@ -154,9 +155,10 @@ public class DangerBlob : ColourBeing {
 		
 		if (anim != null && colour.Blue){
 			anim.Play();
-		}
-		ChromatoseManager.manager.Death();
+		}*/
 		
+		ChromatoseManager.manager.Death();
+		other.gameObject.GetComponent<Avatar>().EmptyingBucket();
 		//avatar.Damage();    //remove HP from the avatar, but this isn't implemented yet
 	}
 	
