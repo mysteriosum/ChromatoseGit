@@ -5,6 +5,8 @@ using System.Collections.Generic;
 public class Avatar : ColourBeing
 {
 	
+	public AudioSource sfxPlayer;
+	
 	//Commentaire du Chu
 	private Color partColor = Color.white;
 	public Color AvatarColor{
@@ -20,6 +22,7 @@ public class Avatar : ColourBeing
 		}
 	
 	private bool _Colored = false;
+	private bool _CantPlaySpeedFX = false;
 	private float _ColorCounter = 0;
 	private int _SpriteIndex = 1;
 	private string _ColorFadeString = "";
@@ -75,6 +78,7 @@ public class Avatar : ColourBeing
 	
 	private Eye travisMcGee;
 	private SpeechBubble bubble;
+
 	//inputs. Up, left and right will also work, but getW seems intuitive to me
 	protected bool getW;
 	protected bool getA;
@@ -98,7 +102,11 @@ public class Avatar : ColourBeing
 	private int cw1 = 4;
 	private int cw2 = 5;
 	
-	
+	private string intForBoss = "";
+	public string requieredPayment{
+		get{return intForBoss;}
+		set{intForBoss = value;}
+	}
 	
 	private bool hurt;				//other properties! Getting hurt and stuff
 	public bool Hurt{
@@ -178,6 +186,11 @@ public class Avatar : ColourBeing
 	public bool WantsToRelease{
 		get { return wantsToRelease; }
 		set { wantsToRelease = value; }
+	}
+	private bool _WantFightBoss = false;
+	public bool wantFightBoss{
+		get{return _WantFightBoss;}
+		set{_WantFightBoss = value;}
 	}
 	
 								//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
@@ -641,6 +654,7 @@ public class Avatar : ColourBeing
 	{		
 		manager = ChromatoseManager.manager;
 		movement = GetComponent<Movement>();
+		sfxPlayer = GetComponent<AudioSource>();
 		
 		_TimeTrialActivated = manager.TimeTrialMode;
 		_NoDeathModeActivated = manager.NoDeathMode;
@@ -859,6 +873,11 @@ public class Avatar : ColourBeing
 		}
 		
 		if (detectedSB){
+			if(!_CantPlaySpeedFX){
+				sfxPlayer.PlayOneShot(manager.sfx[12]);
+				_CantPlaySpeedFX = true;
+				StartCoroutine(PlaySpeedFXBool());
+			}
 			speedBoostCounter = Mathf.Min(speedBoostCounter + 1, speedBoostMax);
 			turboPart.Go();
 			movement.SetNewMoveStats(Mathf.Min(basicMaxSpeed + speedBoostMod * speedBoostCounter, basicMaxSpeed * speedBoostMod), basicAccel * speedBoostMod, basicTurnSpeed / speedBoostMod * 2);
@@ -881,6 +900,9 @@ public class Avatar : ColourBeing
 			if (Input.GetKey (KeyCode.UpArrow)){
 				getW = true;
 				
+			}
+			if(Input.GetKeyDown(KeyCode.O)){
+				sfxPlayer.PlayOneShot(manager.sfx[0], 0.2f);
 			}
 			
 			
@@ -968,6 +990,7 @@ public class Avatar : ColourBeing
 				
 				t.position = outline.transform.position;
 				t.rotation = outline.transform.rotation;
+				sfxPlayer.PlayOneShot(manager.sfx[5]);
 				
 				Destroy(outline);
 				hasOutline = false;
@@ -1089,6 +1112,11 @@ public class Avatar : ColourBeing
 				wantsToRelease = true;
 			}
 			
+			if (_WantFightBoss){
+				bubble.ShowBubbleFor("avatarBubble_" + intForBoss + "redcol", 0.3f);
+				_WantFightBoss = false;
+			}
+			
 			break;
 		case ("Module1_Scene1"):
 			if (onRedCol){					// && manager.GetCollectibles(Couleur.red) == 0){
@@ -1113,7 +1141,7 @@ public class Avatar : ColourBeing
 				bubble.ShowBubbleFor("avatarBubble_fire1", 0.3f);
 				wantsToRelease = false;
 			}
-			
+						
 			break;
 		case ("GYM_CHU"):
 			if (onRedCol){					// && manager.GetCollectibles(Couleur.red) == 0){
@@ -1372,6 +1400,7 @@ public class Avatar : ColourBeing
 		else{
 			Debug.Log("Pas le bon Setting");
 		}
+		sfxPlayer.PlayOneShot(manager.sfx[4]);		
 	}
 	
 	public void EmptyingBucket(){
@@ -1427,6 +1456,11 @@ public class Avatar : ColourBeing
 		yield return new WaitForSeconds(_wait);
 		CreateCP();
 		//ChromatoseManager.manager.SaveRoom();
+	}
+	
+	IEnumerator PlaySpeedFXBool(){
+		yield return new WaitForSeconds(1.0f);
+		_CantPlaySpeedFX = false;
 	}
 }
 

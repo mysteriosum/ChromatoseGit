@@ -3,6 +3,8 @@ using System.Collections;
 
 public class whiteTollBooth : MonoBehaviour {
 	public int requiredPayment = 1;
+	public Vector3 positionOffSet;
+	public Vector3 rotationOffSet;
 	
 	protected BoxCollider myCollider;
 	protected Transform colliderT;
@@ -13,6 +15,7 @@ public class whiteTollBooth : MonoBehaviour {
 	protected Color myColor;
 	
 	private tk2dAnimatedSprite indicator;
+	private AudioSource sfxPlayer;
 	private string inString;
 	private string outString;
 	private int avatarCloseDist = 150;
@@ -30,6 +33,7 @@ public class whiteTollBooth : MonoBehaviour {
 	
 	protected void Setup(){
 		chroManager = ChromatoseManager.manager;
+		sfxPlayer = GetComponent<AudioSource>();
 		avatarT = GameObject.FindGameObjectWithTag("avatar").GetComponent<Transform>();
 		//Debug.Log("Did I find avatar? " + avatarT.name);
 		BoxCollider[] chilluns = gameObject.GetAllComponentsInChildren<BoxCollider>();
@@ -48,9 +52,9 @@ public class whiteTollBooth : MonoBehaviour {
 		anim = GetComponent<tk2dAnimatedSprite>();
 		
 		Quaternion indicRotation = Quaternion.identity;
-		indicRotation.eulerAngles = new Vector3(0, 0, -90);
+		indicRotation.eulerAngles = new Vector3(0 + rotationOffSet.x, 0 + rotationOffSet.y, -90 + rotationOffSet.z);
 		
-		indicator = (Instantiate(Resources.Load("pre_tollIndicator"), transform.position + new Vector3(-25, 0, 0), indicRotation) as GameObject).GetComponent<tk2dAnimatedSprite>();
+		indicator = (Instantiate(Resources.Load("pre_tollIndicator"), transform.position + new Vector3(-25 + positionOffSet.x, 0 + positionOffSet.y, 0 + positionOffSet.z - 1), indicRotation) as GameObject).GetComponent<tk2dAnimatedSprite>();
 		indicator.renderer.enabled = false;
 		inString = "boothWhiteIn_" + requiredPayment.ToString();
 		outString = "boothWhiteOut_" + requiredPayment.ToString();
@@ -92,7 +96,7 @@ public class whiteTollBooth : MonoBehaviour {
 			StartIn();
 			waiting = true;
 			triggered = true;
-		
+			sfxPlayer.Play();
 		}
 	}
 	

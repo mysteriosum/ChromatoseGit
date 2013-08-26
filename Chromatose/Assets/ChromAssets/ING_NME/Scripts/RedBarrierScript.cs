@@ -23,9 +23,9 @@ public class RedBarrierScript : MonoBehaviour {
 		
 		foreach(tk2dAnimatedSprite flames in myFlames){
 			if (flames == GetComponent<tk2dAnimatedSprite>()) continue;
-			
+			float animOffset = Random.Range(0f, 1f);
 			flames.anim = flameAnim;
-			flames.Play("flame1");
+			flames.Play("flame1", animOffset);
 			flames.transform.rotation = Quaternion.identity;
 		}	
 	}

@@ -27,7 +27,7 @@ public enum Actions{
 }
 
 public enum GUIStateEnum{
-	OnStart, EndResult, EndLevel, Interface, Pause, InComic
+	OnStart, EndResult, EndLevel, Interface, Pause, InComic, Nothing
 }
 
 [SerializeAll]
@@ -53,13 +53,13 @@ public class ChromatoseManager : MonoBehaviour {
 	//Class & Manager
 	public static ChromatoseManager manager; 
 	private ChromaRoomManager _RoomManager;
+	private AudioSource sfxPlayer;
 	private tk2dSprite spriteInfo;
 	public ChromHUD hud = new ChromHUD();
 	public TimeTrialTimes timeTrialClass = new TimeTrialTimes();
 	public PrefabCollection prefab = new PrefabCollection();
 	private GUISkin skin;
 	private string _GameName = "CheckpointSave";
-	
 	
 	//Variables Bool
 	private bool _OnPause = false;
@@ -206,6 +206,7 @@ public class ChromatoseManager : MonoBehaviour {
 	private int refreshTiming = 75;
 	
 	private float[] track;
+	public AudioClip[] sfx;
 
 	[System.Serializable]
 	public class ChromHUD {
@@ -494,6 +495,7 @@ public class ChromatoseManager : MonoBehaviour {
 		_TotalComicThumb = _RoomManager.UpdateTotalComic();
 		_FaderList = FindObjectsOfType(typeof(SpriteFader)) as SpriteFader[];
 		avatar = GameObject.FindGameObjectWithTag("avatar").GetComponent<Avatar>();
+		sfxPlayer = GetComponent<AudioSource>();
 		
 		_GUIState = GUIStateEnum.OnStart;
 		
@@ -509,7 +511,7 @@ public class ChromatoseManager : MonoBehaviour {
 		//Initialise pour la premiere la security pour le FirstCP
 		_FirstLevelCPDone = false;
 		
-		DontDestroyOnLoad(manager);
+		//DontDestroyOnLoad(manager);
 		if (!hud.mainBox){
 			Debug.LogWarning("There are some missing textures....");
 		}
@@ -526,7 +528,7 @@ public class ChromatoseManager : MonoBehaviour {
 		
 		rewardsGuy = GameObject.FindWithTag("rewardsGuy");
 		if (!rewardsGuy){
-			Debug.LogWarning("Hey doofus! There's no rewards guy in this level! Is there even a comic!?");
+			//Debug.LogWarning("Hey doofus! There's no rewards guy in this level! Is there even a comic!?");
 		}
 		else{
 			
@@ -558,27 +560,28 @@ public class ChromatoseManager : MonoBehaviour {
 		}
 		
 		if (Input.GetKeyDown(KeyCode.Escape)){
-			Application.Quit();
+			ManagerPause();
 		}
 		
 		if (inComic){
 			if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.P)){
-			//	comicTransition.Return();
+				//comicTransition.Return();
 			}
 		}
 				
 		
 		//TODEL KeyTouch M pour pause a Deleter lorsque les tests seront fini
-		
+		/*
 		if(Input.GetKeyDown(KeyCode.M)){
 			ManagerPause();
-		}
+		}*/
 		
 		switch(_GUIState){
 		case GUIStateEnum.OnStart:
 			if(Input.GetKeyDown(KeyCode.Space)){
 				_GUIState = GUIStateEnum.Interface;
 				avatar.CanControl();
+				sfxPlayer.PlayOneShot(sfx[6]);
 			}
 			break;
 		}
@@ -657,6 +660,8 @@ public class ChromatoseManager : MonoBehaviour {
 			}
 		}
 		
+		
+		//Effectue l'action si une action peut etre effectuer et si la touche P est presser
 		if (Input.GetKeyDown(KeyCode.P) && currentAction > 0 && actionMethod != null && !inComic){
 			actionMethod();
 		}
@@ -709,6 +714,7 @@ public class ChromatoseManager : MonoBehaviour {
 			if(GUI.Button(new Rect(460, 240, 250, 150), "PLAY")){
 				_GUIState = GUIStateEnum.Interface;
 				avatar.CanControl();
+				sfxPlayer.PlayOneShot(sfx[6]);
 			}
 			GUI.skin.label.fontSize = 36;
 			GUI.Label(new Rect(390, 350, 450, 100), "Press SpaceBar or Click on Start");
@@ -767,17 +773,7 @@ public class ChromatoseManager : MonoBehaviour {
 				
 				GUI.DrawTexture(new Rect(aX, 0, hud.absorbAction.width, hud.absorbAction.height), actionTexture);
 			
-			GUI.EndGroup();
-			/*
-			if (!avatar.HasOutline){
-				
-				GUI.BeginGroup(energyRect);
-					Rect drawRect = new Rect(0, 0, hud.energyBar.width, hud.energyBar.height);
-					GUI.DrawTexture(drawRect, hud.energyBar);
-				GUI.EndGroup();
-			}*/
-		
-			
+			GUI.EndGroup();			
 			
 			break;
 			#endregion
@@ -800,10 +796,17 @@ public class ChromatoseManager : MonoBehaviour {
 			
 				//BOUTON PAUSE
 				GUI.skin.button.fontSize = 54;
-				if(GUI.Button(new Rect(pauseWindowsRect.width*0.25f, pauseWindowsRect.height*0.46f, pauseWindowsRect.width*0.5f, pauseWindowsRect.height*0.18f), "RESUME")){
+				if(GUI.Button(new Rect(pauseWindowsRect.width*0.25f, pauseWindowsRect.height*0.46f, pauseWindowsRect.width*0.5f, pauseWindowsRect.height*0.18f), new GUIContent("RESUME", "Hover"))){
 					ManagerPause();
 					_GUIState = GUIStateEnum.Interface;
+					sfxPlayer.PlayOneShot(sfx[6]);
+					if(Event.current.type == EventType.Repaint){
+						if(GUI.tooltip == "Hover"){
+							sfxPlayer.PlayOneShot(sfx[5]);
+						}					
+					}
 				}
+			
 				if(GUI.Button(new Rect(pauseWindowsRect.width*0.25f, pauseWindowsRect.height*0.65f, pauseWindowsRect.width*0.5f, pauseWindowsRect.height*0.18f), "MAIN MENU")){
 					_GUIState = GUIStateEnum.EndLevel;
 					Time.timeScale = 1;
@@ -867,6 +870,12 @@ public class ChromatoseManager : MonoBehaviour {
 			
 			break;
 			#endregion
+			
+			
+		case GUIStateEnum.Nothing:
+			
+			break;
+			
 		}
 	}
 #endregion	
@@ -876,7 +885,7 @@ public class ChromatoseManager : MonoBehaviour {
 		
 		if(!_CollAlreadyAdded){
 			_CollAlreadyAdded = true;
-			StartCoroutine(ResetCanGrabCollectibles(0.01f));
+			StartCoroutine(ResetCanGrabCollectibles(0.05f));
 			
 			if(col == Color.white){
 				_WhiteCollected++;
@@ -948,6 +957,7 @@ public class ChromatoseManager : MonoBehaviour {
 	public void Death(){
 		
 		if(!_NoDeathModeActivated){
+			sfxPlayer.PlayOneShot(sfx[11]);
 			danim = new Avatar.DeathAnim();
 			danim.PlayDeath(Reset);
 			//avatar.SendMessage("FadeAlpha", 0f);
@@ -959,6 +969,7 @@ public class ChromatoseManager : MonoBehaviour {
 			avatar.Gone = true;
 		}
 		else{
+			sfxPlayer.PlayOneShot(sfx[11]);
 			danim = new Avatar.DeathAnim();
 			danim.PlayDeath(Reset);
 			//avatar.SendMessage("FadeAlpha", 0f);
@@ -994,7 +1005,6 @@ public class ChromatoseManager : MonoBehaviour {
 #region Fonctions CheckPoint
 	public void NewFirstCheckPoint(Transform cp){
 		curCheckpoint = cp;
-		
 		foreach(SpriteFader _SFader in _FaderList){
 			_SFader.SaveState();
 		}
@@ -1002,6 +1012,7 @@ public class ChromatoseManager : MonoBehaviour {
 	
 	public void NewCheckpoint(Transform cp){
 		curCheckpoint = cp;
+		sfxPlayer.PlayOneShot(sfx[10]);
 		GameObject[] cps = GameObject.FindGameObjectsWithTag("checkpoint");
 		foreach (GameObject check in cps){
 			Checkpoint script = check.GetComponent<Checkpoint>();
@@ -1089,6 +1100,7 @@ public class ChromatoseManager : MonoBehaviour {
 			GameObject wCol = Instantiate(prefab.collectible, randomPos, Quaternion.identity)as GameObject;
 			wCol.GetComponent<Collectible2>().effect = true;
 			wCol.GetComponent<Collectible2>().colorCollectible = Collectible2._ColorCollectible.White;
+			avatar.sfxPlayer.PlayOneShot(sfx[7]);
 			StartCoroutine(DelaiToBlowColl(0.5f, wCol));
 		}
 	}
@@ -1100,6 +1112,7 @@ public class ChromatoseManager : MonoBehaviour {
 			GameObject bCol = Instantiate(prefab.collectible, randomPos, Quaternion.identity)as GameObject;
 			bCol.GetComponent<Collectible2>().effect = true;
 			bCol.GetComponent<Collectible2>().colorCollectible = Collectible2._ColorCollectible.Blue;
+			avatar.sfxPlayer.PlayOneShot(sfx[7]);
 			StartCoroutine(DelaiToBlowColl(0.5f, bCol));
 		}
 	}
@@ -1137,6 +1150,12 @@ public class ChromatoseManager : MonoBehaviour {
 	}
 	public void ResetPos(){
 		avatar.transform.position = _AvatarStartingPos;
+	}
+	public void SwitchGUIToBlank(){
+		_GUIState = GUIStateEnum.Nothing;
+	}
+	public void SwitchGUIToWait(){
+		_GUIState = GUIStateEnum.OnStart;
 	}
 
 	

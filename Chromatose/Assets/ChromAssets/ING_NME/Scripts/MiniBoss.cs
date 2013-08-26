@@ -27,6 +27,7 @@ public class MiniBoss : MonoBehaviour {
 	
 	private bool beingExtinguished = false;
 	private bool _CanDie = false;
+	private bool alreadyShooten = false;
 	
 
 	// Use this for initialization
@@ -37,9 +38,10 @@ public class MiniBoss : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 	
-		if(_PayZoneScript.inPayZone && _Manager.rCollected >= requiredPayment){
+		if(_PayZoneScript.inPayZone){
 			_Manager.UpdateAction(Actions.Release, DelegateActionTest);
-			_AvatarScript.WantsToRelease = true;
+			_AvatarScript.requieredPayment = requiredPayment.ToString();
+			_AvatarScript.wantFightBoss = true;
 		}
 		
 		if(_CanDie){
@@ -74,10 +76,11 @@ public class MiniBoss : MonoBehaviour {
 	}
 	
 	void DelegateActionTest(){
-		
-		_Manager.RemoveCollectibles(Color.red, requiredPayment, this.transform.position);
-		StartCoroutine(StartDie(1f));
-		Debug.Log("LOGTEST");
+		if(!alreadyShooten){
+			_Manager.RemoveCollectibles(Color.red, requiredPayment, this.transform.position);
+			alreadyShooten = true;
+			StartCoroutine(StartDie(1f));
+		}
 	}
 	
 	void Setup(){
