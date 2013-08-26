@@ -13,6 +13,7 @@ public class ColourWell : MonoBehaviour {
 	private Avatar _AvatarScript;
 	private Color myColor;
 	private tk2dAnimatedSprite _MainAnim;
+	private AudioSource sfxPlayer;
 	
 	
 	private string redWellString1 = "redWellL1_gyser";
@@ -53,6 +54,8 @@ public class ColourWell : MonoBehaviour {
 		_Manager = ChromatoseManager.manager;
 		_AvatarScript = GameObject.Find("Avatar").GetComponent<Avatar>();
 		_MainAnim = GetComponent<tk2dAnimatedSprite>();
+		sfxPlayer = GetComponent<AudioSource>();
+		sfxPlayer.Play();
 		
 		switch(wellType){
 		case _WellTypeEnum.RedGyser_1:
@@ -63,7 +66,9 @@ public class ColourWell : MonoBehaviour {
 		case _WellTypeEnum.RedGyser_2:
 			myColor = Color.red;
 			_MainAnim.Play(redWellString2);
-
+			BoxCollider bCollider = GetComponent<BoxCollider>();
+			bCollider.center = new Vector3(3.5f, -50f, 0f);
+			
 			break;
 		case _WellTypeEnum.RedLeak_1:
 			myColor = Color.red;

@@ -13,6 +13,7 @@ public class TollBooth : MonoBehaviour {
 	protected Couleur myCouleur;
 	
 	private tk2dAnimatedSprite indicator;
+	private AudioSource sfxPlayer;
 	private string inString;
 	private string outString;
 	private int avatarCloseDist = 150;
@@ -29,6 +30,7 @@ public class TollBooth : MonoBehaviour {
 	
 	protected void Setup(){
 		chroManager = ChromatoseManager.manager;
+		sfxPlayer = GetComponent<AudioSource>();
 		avatarT = GameObject.FindGameObjectWithTag("avatar").GetComponent<Transform>();
 		//Debug.Log("Did I find avatar? " + avatarT.name);
 		BoxCollider[] chilluns = gameObject.GetAllComponentsInChildren<BoxCollider>();
@@ -88,6 +90,7 @@ public class TollBooth : MonoBehaviour {
 			StartIn();
 			waiting = true;
 			triggered = true;
+			sfxPlayer.Play();
 		
 		}
 	}

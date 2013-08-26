@@ -85,7 +85,7 @@ public class TransitionTrigger : MonoBehaviour {
 		}
 	}	
 
-	void Update () {
+	void FixedUpdate () {
 		
 		
 		switch (_TransitEnum){

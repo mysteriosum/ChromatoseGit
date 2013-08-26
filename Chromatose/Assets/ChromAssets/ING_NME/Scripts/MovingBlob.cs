@@ -5,6 +5,7 @@ public class MovingBlob : MonoBehaviour {
 	
 	
 	public bool waitingAvatarInZone = false;
+	public bool addExtraCollisionBox = false;
 	
 	public bool patrol = false;
 	public int patrolSpeed = 75;

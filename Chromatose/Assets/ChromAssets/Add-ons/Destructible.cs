@@ -20,6 +20,8 @@ public class Destructible : MonoBehaviour {		//move sprite @ 15 frames or 0.5f s
 	protected int avatarMinDist = 85;
 	protected Transform avatar;
 	
+	private AudioSource sfxPlayer;
+	
 	[System.SerializableAttribute]
 	public class TargetMessageReceivers{
 		public GameObject target;
@@ -68,6 +70,7 @@ public class Destructible : MonoBehaviour {		//move sprite @ 15 frames or 0.5f s
 	protected virtual void Setup(){
 		avatar = GameObject.Find("Avatar").transform;
 		avatarScript = avatar.GetComponent<Avatar>();
+		sfxPlayer = GetComponent<AudioSource>();
 		spriteInfo = GetComponent<tk2dSprite>();
 		poof = Instantiate(poof) as GameObject;
 		poof.SetActive(false);
@@ -113,6 +116,7 @@ public class Destructible : MonoBehaviour {		//move sprite @ 15 frames or 0.5f s
 		avatarScript.HasDestroyed = true;
 		avatarScript.GiveColourTo(transform, avatar);
 		avatarScript.SetColour(0, avatarScript.colour.g, avatarScript.colour.b);
+		StartCoroutine(DelaiSFX());
 		Invoke("Destruct", 0.5f);
 	}
 	
@@ -156,5 +160,10 @@ public class Destructible : MonoBehaviour {		//move sprite @ 15 frames or 0.5f s
 	void OnDrawGizmosSelected(){
 		Gizmos.color = Color.yellow;
 		Gizmos.DrawWireSphere(transform.position + (Vector3) poofOffset, 10);
+	}
+	
+	IEnumerator DelaiSFX(){
+		yield return new WaitForSeconds(0.5f);
+		sfxPlayer.Play();
 	}
 }
