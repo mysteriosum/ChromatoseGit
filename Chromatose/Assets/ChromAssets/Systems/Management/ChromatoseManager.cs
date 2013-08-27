@@ -53,6 +53,7 @@ public class ChromatoseManager : MonoBehaviour {
 	//Class & Manager
 	public static ChromatoseManager manager; 
 	private ChromaRoomManager _RoomManager;
+	private RoomInstancier _RoomSaver;
 	private AudioSource sfxPlayer;
 	private tk2dSprite spriteInfo;
 	public ChromHUD hud = new ChromHUD();
@@ -492,6 +493,7 @@ public class ChromatoseManager : MonoBehaviour {
 	void Start(){
 		
 		_RoomManager = GameObject.FindGameObjectWithTag("RoomManager").GetComponent<ChromaRoomManager>();
+		_RoomSaver = GameObject.FindGameObjectWithTag("SaveManager").GetComponent<RoomInstancier>();
 		_TotalComicThumb = _RoomManager.UpdateTotalComic();
 		_FaderList = FindObjectsOfType(typeof(SpriteFader)) as SpriteFader[];
 		avatar = GameObject.FindGameObjectWithTag("avatar").GetComponent<Avatar>();
@@ -963,7 +965,7 @@ public class ChromatoseManager : MonoBehaviour {
 			//avatar.SendMessage("FadeAlpha", 0f);
 			avatar.movement.SetVelocity(Vector2.zero);
 			StartCoroutine(OnDeath(0.15f));
-			
+			StartCoroutine(RestartRoom());
 			
 			avatar.CancelOutline();
 			avatar.Gone = true;
@@ -1191,6 +1193,10 @@ public class ChromatoseManager : MonoBehaviour {
 	IEnumerator DelaiToBlowColl(float delai, GameObject col){
 		yield return new WaitForSeconds(delai);
 		col.GetComponent<Collectible2>().PayEffect();
+	}
+	IEnumerator RestartRoom(){
+		yield return new WaitForSeconds(0.25f);
+		_RoomSaver.LoadRoom();
 	}
 #endregion
 	
