@@ -772,7 +772,7 @@ public class Avatar : ColourBeing
 		//colour.b = Mathf.Clamp(colour.b, 0, 255);
 			
 			
-			_ColorCounter += Time.deltaTime * velocity.magnitude * 0.3f;
+			_ColorCounter += Time.deltaTime * velocity.magnitude * 0.5f;
 			
 			
 			if(_ColorCounter > 1){

@@ -7,6 +7,9 @@ public class OptiManager : MonoBehaviour {
 	public GameObject[] roomList;
 	
 	private int _CurRoom = 0;
+		public int curRoom{
+			get{return _CurRoom;}
+		}
 	private int _RoomToDisplay = 0;
 		public int roomToDisplay{
 			get{return _RoomToDisplay;}
@@ -14,10 +17,11 @@ public class OptiManager : MonoBehaviour {
 		}
 	
 	private ChromaRoomManager _RoomManager;
+	private RoomInstancier _RoomSaver;
 	// Use this for initialization
 	void Start () {
 		_RoomManager = GameObject.FindGameObjectWithTag("RoomManager").GetComponent<ChromaRoomManager>();
-		
+		_RoomSaver = GameObject.FindGameObjectWithTag("SaveManager").GetComponent<RoomInstancier>();
 		StartCoroutine(DelaiBeforeStartOpti());
 	}
 	
@@ -36,6 +40,7 @@ public class OptiManager : MonoBehaviour {
 			}
 		}
 		roomList[_CurRoom].SetActive(true);
+		_RoomSaver.SaveRoom();
 	}
 	
 	public void OptimizeZone(int roomNumber){
@@ -46,6 +51,7 @@ public class OptiManager : MonoBehaviour {
 			}
 		}
 		roomList[_CurRoom].SetActive(true);
+		_RoomSaver.SaveRoom();
 	}
 	
 	IEnumerator DelaiToDesactive(){
