@@ -19,6 +19,7 @@ public class Shavatar : MonoBehaviour {
 	
 	private Vector3 _Target;
 	private Transform t;
+	private Transform ShavatarT;
 	private GameObject _Avatar;
 	
 	private Transform _InitTransform;
@@ -35,6 +36,7 @@ public class Shavatar : MonoBehaviour {
 	
 	
 	private Vector3 targetPoint;
+	private Quaternion rotation;
 	private float _AccelSpeed = 1;
 	private bool _OnCollision = false;
 	public bool OnCollision{
@@ -52,6 +54,9 @@ public class Shavatar : MonoBehaviour {
 	//Variable Patrol
 	private int _CurIndex = 0;
 	private float _DistToTurn = 10;
+	private float rotCounter = 0;
+	private bool gonnaRotate = false;
+	private bool clockwise;
 	
 	//Famille
 	public SphereCollider _DetectionCollider;
@@ -123,7 +128,7 @@ public class Shavatar : MonoBehaviour {
 			
 			bool colourAppropriate = true;
 			if (_ColourTarget){
-				colourAppropriate = !_ColourTarget.colour.White;
+				colourAppropriate = _Avatar.GetComponent<Avatar>().curColor != Color.white;
 			}
 			
 			
@@ -190,7 +195,7 @@ public class Shavatar : MonoBehaviour {
 			
 			colourAppropriate = true;
 			if (_ColourTarget){
-				colourAppropriate = !_ColourTarget.colour.White;
+				colourAppropriate = _Avatar.GetComponent<Avatar>().curColor != Color.white;
 			}
 			
 			
@@ -231,8 +236,9 @@ public class Shavatar : MonoBehaviour {
 	void Setup(){
 		_Avatar = GameObject.FindGameObjectWithTag("avatar");
 		t = gameObject.transform;
+		//_ShavatarT
 		_ColourTarget = _Avatar.GetComponent<ColourBeing>();
-		_SpriteInfo = GetComponent<tk2dSprite>();
+		_SpriteInfo = GetComponentInChildren<tk2dSprite>();
 		_Movement = GetComponent<Movement>();
 		
 		_DetectionScript = _DetectionCollider.GetComponent<ShavatarDetectionScript>();
@@ -273,11 +279,93 @@ public class Shavatar : MonoBehaviour {
 	}
 	
 	void LookAtTarget(){
-		targetPoint = _Target;
-		targetPoint.z = transform.position.z;
-		transform.LookAt(targetPoint);
+
+		float curRot = VectorFunctions.Convert360(t.rotation.eulerAngles.z); 	//how to turn there, and whether I should be accelerating
+			
+		Vector2 pointA = t.position;
+		Vector2 pointB = _Target;
+		Vector2 dist = pointB - pointA;
+		float angle = VectorFunctions.PointDirection(dist);
 		
-		if(Vector2.Distance(transform.position, _Target) < _DistToTurn){
+		
+		float diffAngle = curRot - angle;
+		float targetAngle = diffAngle * 2;
+		
+		Vector3 temprel = transform.InverseTransformPoint(_Target);
+		
+		Debug.Log (transform.InverseTransformPoint(_Target).x > 0);
+		
+		
+		
+		//Debug.Log(targetAngle);
+		/*
+		if(targetAngle > -25 || targetAngle < -550){
+			transform.Rotate(new Vector3(0, 0, -1f));
+			//transform.Rotate(_Movement.Rotate(false));
+		}
+		if(targetAngle < 25 || targetAngle > 550){
+			transform.Rotate(new Vector3(0, 0, 1f));
+			//transform.Rotate(_Movement.Rotate(true));
+		}*/
+		
+		bool getD = targetAngle > -25 || targetAngle < -550;
+		bool getA = targetAngle < 25 || targetAngle > 550;
+	
+		
+		if (getA){
+			rotCounter --;
+			gonnaRotate = true;
+			clockwise = false;
+		}
+		
+		if (getD){
+			rotCounter ++;
+			if (getA){
+				gonnaRotate = false;
+				getA = false;
+				getD = false;
+			}
+			else{
+				gonnaRotate = true;
+				clockwise = true;
+			}
+		}
+		
+		if (gonnaRotate){
+			t.Rotate(this._Movement.Rotate(clockwise));
+		}
+		
+		if(getA){
+			_SpriteInfo.SetSprite("Player5");
+			rotCounter--;
+		}
+		if(getD){
+			_SpriteInfo.SetSprite("Player3");
+			rotCounter++;
+		}
+	
+		gonnaRotate = false;
+		
+		/*
+		
+		if(getA){
+			transform.Rotate(new Vector3(0, 0, -0.5f));
+		}
+		else if(getD){
+			transform.Rotate(new Vector3(0, 0, 0.5f));
+		}*/
+		
+		targetPoint = _Target;
+		//targetPoint.z = transform.position.z;
+		rotation = Quaternion.LookRotation(targetPoint - t.position);
+		rotation.x = 0;
+		rotation.y = 0;
+		//Quaternion realRot = Quaternion.Euler(rotation.eulerAngles.x, , 0f);
+		//t.rotation = Quaternion.Slerp(t.rotation, rotation, Time.deltaTime * 5.0f);
+		//transform.LookAt(targetPoint);
+		
+		
+		if(Vector2.Distance(transform.position, _Target) < 10){
 			_Target = patrolPath[_CurIndex].position;
 			_CurIndex++;
 			if (_CurIndex == patrolPath.Length){
@@ -295,7 +383,7 @@ public class Shavatar : MonoBehaviour {
 	
 	void Forward(){
 		if(_InCharge && _OnCollision){return;}		
-		transform.Translate(Vector3.forward * shavatarSpeed * _AccelSpeed, Space.Self);
+		transform.Translate(Vector3.right * shavatarSpeed * _AccelSpeed, Space.Self);
 		//transform.position = Vector2.Lerp(transform.position, _Target, Time.deltaTime);
 	}
 	

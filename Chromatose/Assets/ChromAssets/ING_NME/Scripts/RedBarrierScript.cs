@@ -34,7 +34,14 @@ public class RedBarrierScript : MonoBehaviour {
 	
 	#region Update
 	void FixedUpdate () {
-	
+		
+		if(myFlames.Length <= 1){
+			Destroy(this.gameObject);
+		}
+		
+		//Debug.Log(myFlames.Length);
+		
+	/*
 		if(_CanDie){
 			foreach(tk2dAnimatedSprite sprite in myFlames){
 				_FadingCounter -= _FadeRate;
@@ -44,7 +51,7 @@ public class RedBarrierScript : MonoBehaviour {
 		
 		if(_FadingCounter <= 0 && !_Gone){
 			Die();
-		}
+		}*/
 	}
 	#endregion
 	
@@ -56,16 +63,52 @@ public class RedBarrierScript : MonoBehaviour {
 		bool sameColour = avatar.curColor == Color.red? true : false;
 		
 		if(sameColour){
-			_CanDie = true;
+			//_CanDie = true;
+			PlayDie();
 		}
 		else{
 			ChromatoseManager.manager.Death();
 		}
 	}	
 	
+	void PlayDie(){
+		foreach(tk2dAnimatedSprite spr in myFlames){
+			StartCoroutine(RandomChange(spr));
+		}
+		//StartCoroutine(DelaiToDie());
+	}
+
+	
 	void Die(){
-		Debug.Log("Die");
+		//Debug.Log("Die");
 		_Gone = true;
 		transform.position = new Vector3(transform.position.x, transform.position.y, -1000);
+	}
+	
+	void Die(tk2dAnimatedSprite sprite, int index){
+		//Debug.Log("Die by Delegate");
+		_Gone = true;
+		transform.position = new Vector3(transform.position.x, transform.position.y, -1000);
+	}
+	
+	void DestroyFlame(tk2dAnimatedSprite sprite, int index){
+		if(sprite){
+			myFlames = GetComponentsInChildren<tk2dAnimatedSprite>();
+			Destroy(sprite.gameObject);			
+		}
+	}
+	
+	IEnumerator RandomChange(tk2dAnimatedSprite spr){
+		float ramdomDelai = Random.Range(0.25f, 1.5f);
+		yield return new WaitForSeconds(ramdomDelai);
+		if(spr){
+			spr.PlayFromFrame("flameDie", 0);
+			spr.animationCompleteDelegate = DestroyFlame;
+		}
+	}
+	
+	IEnumerator DelaiToDie(){
+		yield return new WaitForSeconds(3f);
+		Die ();
 	}
 }

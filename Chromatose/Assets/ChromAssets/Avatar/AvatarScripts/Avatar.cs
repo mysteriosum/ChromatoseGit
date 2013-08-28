@@ -655,7 +655,7 @@ public class Avatar : ColourBeing
 		manager = ChromatoseManager.manager;
 		movement = GetComponent<Movement>();
 		sfxPlayer = GetComponent<AudioSource>();
-		
+		curColor = Color.white;
 		_TimeTrialActivated = manager.TimeTrialMode;
 		_NoDeathModeActivated = manager.NoDeathMode;
 

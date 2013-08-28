@@ -47,12 +47,12 @@ public class MiniBoss : MonoBehaviour {
 		if(_CanDie){
 			_FadingCounter -= _FadeRate;
 			_MainAnim.color = new Color(0, 0, 0 ,_FadingCounter);
-			
+			/*
 			if(myFlames != null){
 				foreach(tk2dAnimatedSprite sprite in myFlames){
 					sprite.color = new Color(0, 0, 0, _FadingCounter);
 				}
-			}
+			}*/
 			if(_FadingCounter <= 0 ){
 				Die ();
 			}
@@ -90,10 +90,10 @@ public class MiniBoss : MonoBehaviour {
 		_Manager = ChromatoseManager.manager;
 		_PayZoneScript = GetComponentInChildren<MiniBoss_PayZone>();
 		_ShootingZone = GetComponentInChildren<MiniBossShootingZone>();
-		
+		/*
 		if(GetComponentsInChildren<tk2dAnimatedSprite>() != null){
 			myFlames = GetComponentsInChildren<tk2dAnimatedSprite>();
-		}
+		}*/
 		StartCoroutine(SetAnim());
 	}
 	
@@ -109,6 +109,7 @@ public class MiniBoss : MonoBehaviour {
 	}
 	IEnumerator StartDie(float delai){
 		yield return new WaitForSeconds(delai);
+		//_MainAnim.SetSprite("flameDie");
 		_CanDie = true;
 	}
 }
