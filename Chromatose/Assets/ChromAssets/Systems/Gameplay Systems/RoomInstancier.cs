@@ -20,32 +20,36 @@ public class RoomInstancier : MonoBehaviour {
 	
 	// Use this for initialization
 	void Start () {
-		optiManager = GameObject.FindGameObjectWithTag("OptiManager").GetComponent<OptiManager>();
+		if(GameObject.FindGameObjectWithTag("OptiManager").GetComponent<OptiManager>() != null){
+			optiManager = GameObject.FindGameObjectWithTag("OptiManager").GetComponent<OptiManager>();
+		}
 	}
 	
-	// Update is called once per frame
-	void Update () {
-	
-	}
-	
-	
+	void Update(){}
+		
 	public void SaveRoom(){
-		roomPos = GameObject.Find("room" + optiManager.curRoom).transform.position;
-		roomRot = GameObject.Find("room" + optiManager.curRoom).transform.rotation;
-		Debug.Log("room" + optiManager.curRoom + " was Saved");
+		if(optiManager != null){
+			roomPos = GameObject.Find("room" + optiManager.curRoom).transform.position;
+			roomRot = GameObject.Find("room" + optiManager.curRoom).transform.rotation;
+			Debug.Log("room" + optiManager.curRoom + " was Saved");
+		}
 	}
 	
 	public void SaveRoom(GameObject roomToSave){
-		roomPos = GameObject.Find("room" + optiManager.curRoom).transform.position;
-		roomRot = GameObject.Find("room" + optiManager.curRoom).transform.rotation;
-		Debug.Log("New Room was Saved");
+		if(optiManager != null){
+			roomPos = GameObject.Find("room" + optiManager.curRoom).transform.position;
+			roomRot = GameObject.Find("room" + optiManager.curRoom).transform.rotation;
+			Debug.Log("New Room was Saved");
+		}
 	}
 	
 	public void LoadRoom(){
-		Destroy(GameObject.Find("room" + optiManager.curRoom));
-		GameObject newRoom = Instantiate(RoomPrefab[optiManager.curRoom], roomPos, roomRot)as GameObject;
-		newRoom.name = "room" + optiManager.curRoom.ToString();
-		SaveRoom(newRoom);
-		Debug.Log("room" + optiManager.curRoom + " was Loaded");
+		if(optiManager != null){
+			Destroy(GameObject.Find("room" + optiManager.curRoom));
+			GameObject newRoom = Instantiate(RoomPrefab[optiManager.curRoom], roomPos, roomRot)as GameObject;
+			newRoom.name = "room" + optiManager.curRoom.ToString();
+			SaveRoom(newRoom);
+			Debug.Log("room" + optiManager.curRoom + " was Loaded");
+		}
 	}
 }
