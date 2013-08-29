@@ -260,12 +260,10 @@ public class MainMenu : MonoBehaviour {
 		GUI.skin.toggle.fontSize = 44;
 		
 		float horizRatio = Screen.width / 1280.0f;
-		float vertiRatio = Screen.height / 720.0f;
+		float vertiRatio = Screen.height / 960.0f;
 		
 		GUI.matrix = Matrix4x4.TRS(Vector3.zero, Quaternion.identity,new Vector3(horizRatio, vertiRatio, 1f));
-		
-		
-		
+
 		Matrix4x4 matrixBackup = GUI.matrix;
 		
 		
