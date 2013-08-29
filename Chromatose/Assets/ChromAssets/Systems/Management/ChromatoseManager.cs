@@ -240,6 +240,10 @@ public class ChromatoseManager : MonoBehaviour {
 		public Texture blackBG;
 		public Texture endResultWindows;
 		
+		public Texture _AvatarLoading;
+		public GUISkin _PlayButtonSkin, _BulleSteamSkin;
+		//public GUISkin 
+		
 		
 		//TEXTURE POUR WEBPLAYER
 		public GUISkin skinSansBox;
@@ -523,7 +527,7 @@ public class ChromatoseManager : MonoBehaviour {
 		skin = Resources.Load("Menus/HUD_skin") as GUISkin;
 
 		
-		aX = hud.absorbAction.width;
+		aX = hud.absorbAction.width * 1.5f;
 		
 		actionTexture = hud.absorbAction;
 		shownActionTexture = actionTexture;
@@ -631,9 +635,9 @@ public class ChromatoseManager : MonoBehaviour {
 		
 
 		
-		if (currentAction == Actions.Nothing && aX < hud.absorbAction.width){
+		if (currentAction == Actions.Nothing && aX < hud.absorbAction.width * 1.5f){
 			aX -= actionSlideSpeed;
-			if (aX < -hud.absorbAction.width){
+			if (aX < -hud.absorbAction.width * 1.5f){
 				aX = Mathf.Abs(aX);
 			}
 		}
@@ -645,14 +649,14 @@ public class ChromatoseManager : MonoBehaviour {
 			
 			aX -= actionSlideSpeed;
 			if (aX > -9 && aX < 9) aX = 0;
-			if (aX < -hud.absorbAction.width){
+			if (aX < -hud.absorbAction.width * 1.5f){
 				aX = Mathf.Abs(aX);
 			}
 		}
 		
 		if (showingAction && shownActionTexture != actionTexture){
 			Debug.Log("Should be working to update the action texture");
-			if (aX >= hud.absorbAction.width){
+			if (aX >= hud.absorbAction.width * 1.5f){
 				
 				UpdateActionTexture();
 				
@@ -676,7 +680,7 @@ public class ChromatoseManager : MonoBehaviour {
 	void OnGUI(){
 		
 		float horizRatio = Screen.width / 1280.0f;
-		float vertiRatio = Screen.height / 720.0f;
+		float vertiRatio = Screen.height / 960.0f;
 		
 		GUI.matrix = Matrix4x4.TRS(Vector3.zero, Quaternion.identity,new Vector3(horizRatio, vertiRatio, 1f));
 		
@@ -684,15 +688,15 @@ public class ChromatoseManager : MonoBehaviour {
 			//BackUp de la Matrix Initiale
 			Matrix4x4 matrixBackup = GUI.matrix;
 			
-			Rect bgRect = new Rect(0, 0, 1280, 720);
+			Rect bgRect = new Rect(0, 0, 1280, 960);
 			
-			Rect mainRect = new Rect(1150, -121, hud.mainBox.width + 10, hud.mainBox.height);
-			Rect rColRect = new Rect(1150, 200, hud.redCollectible.width + 10, hud.redCollectible.height);
-			Rect bColRect = new Rect(1150, 245, hud.blueCollectible.width + 10, hud.blueCollectible.height);
-			Rect wColRect = new Rect(1150, 155, hud.whiteCollectible.width + 10, hud.whiteCollectible.height);
-			Rect comicRect = new Rect(1150, 110, hud.comicCounter.width + 10, hud.comicCounter.height);
+			Rect mainRect = new Rect(1090, -180, hud.mainBox.width * 1.5f + 10, hud.mainBox.height * 1.5f);
+			Rect comicRect = new Rect(1090, 175, hud.comicCounter.width * 1.5f + 10, hud.comicCounter.height * 1.5f);
+			Rect wColRect = new Rect(1090, 255, hud.whiteCollectible.width * 1.5f + 10, hud.whiteCollectible.height * 1.5f);
+			Rect rColRect = new Rect(1090, 335, hud.redCollectible.width * 1.5f + 10, hud.redCollectible.height * 1.5f);
+			Rect bColRect = new Rect(1090, 415, hud.blueCollectible.width * 1.5f + 10, hud.blueCollectible.height * 1.5f);
 		
-			Rect actionRect = new Rect(1189, 21, 60, 52);
+			Rect actionRect = new Rect(1145, 30, 60 * 1.5f, 52 * 1.5f);
 			Rect timeTrialRect = new Rect(25, 20, hud._TimeTrialBox.width + 100f, hud._TimeTrialBox.height + 10f);
 			Rect pauseWindowsRect = new Rect (128, 100, 700, 360);
 			Rect endResultRect = new Rect (0, 0, Screen.width, Screen.height);
@@ -712,15 +716,23 @@ public class ChromatoseManager : MonoBehaviour {
 			
 			//Black BackGround
 			GUI.DrawTexture(bgRect, hud.blackBG);
+			GUI.skin = hud._PlayButtonSkin;
 			GUI.skin.button.fontSize = 78;
-			if(GUI.Button(new Rect(460, 240, 250, 150), "PLAY")){
+			if(GUI.Button(new Rect(380, 200, 500, 250), "")){
 				_GUIState = GUIStateEnum.Interface;
 				avatar.CanControl();
 				sfxPlayer.PlayOneShot(sfx[6]);
 			}
-			GUI.skin.label.fontSize = 36;
-			GUI.Label(new Rect(390, 350, 450, 100), "Press SpaceBar or Click on Start");
+			GUI.skin.label.fontSize = 46;
+			GUI.Label(new Rect(360, 450, 700, 200), "Press SpaceBar or Click on Start");
 			
+			GUI.DrawTexture(new Rect(450, 590, 128, 270), hud._AvatarLoading);
+									
+			GUI.skin = hud._BulleSteamSkin;
+			GUI.skin.button.fontSize = 46;
+			if(GUI.Button(new Rect(575, 565, 290, 250), "Vote for Us on GreenLight")){
+				
+			}
 			
 			break;
 			#endregion
@@ -728,7 +740,7 @@ public class ChromatoseManager : MonoBehaviour {
 		#region OnGUI Interface
 		case GUIStateEnum.Interface:
 
-			GUI.skin = skin;
+			GUI.skin = hud._PlayButtonSkin;
 			
 			GUI.DrawTexture(mainRect, hud.mainBox);
 			
@@ -741,39 +753,40 @@ public class ChromatoseManager : MonoBehaviour {
 				GUI.EndGroup();
 			}
 			
-			GUI.BeginGroup(comicRect);										//comic counter							
+			GUI.BeginGroup(comicRect);										//comic counter		
+				//GUI.skin = skin;
 				GUI.skin.textArea.normal.textColor = Color.black;
-				GUI.DrawTexture(new Rect(0, 0, hud.comicCounter.width + 10, hud.comicCounter.height), hud.comicCounter);
-				GUI.TextArea(new Rect(textOffset.x, textOffset.y, 80, 40), _ComicThumbCollected + " / " + _TotalComicThumb);
+				GUI.DrawTexture(new Rect(0, 0, hud.comicCounter.width * 1.5f + 10, hud.comicCounter.height * 1.5f), hud.comicCounter);
+				GUI.TextArea(new Rect(textOffset.x * 1.5f, textOffset.y * 1.5f, 100, 50), _ComicThumbCollected + " /" + _TotalComicThumb);
 				
 			GUI.EndGroup();
 			
 			GUI.BeginGroup(wColRect);										//white collectible
 				GUI.skin.textArea.normal.textColor = Color.white;
-				GUI.DrawTexture(new Rect(0, 0, hud.whiteCollectible.width + 10, hud.whiteCollectible.height), hud.whiteCollectible);
-				GUI.TextArea(new Rect(textOffset.x + 10, textOffset.y, 80, 40), _WhiteCollected.ToString());// + " / " + _TotalWhiteColl.ToString());
+				GUI.DrawTexture(new Rect(0, 0, hud.whiteCollectible.width * 1.5f + 10, hud.whiteCollectible.height * 1.5f), hud.whiteCollectible);
+				GUI.TextArea(new Rect(textOffset.x * 1.5f + 10, textOffset.y * 1.5f, 100, 50), _WhiteCollected.ToString());// + " / " + _TotalWhiteColl.ToString());
 				
 			GUI.EndGroup();
 			
 			GUI.BeginGroup(rColRect);										//red collectible
 				GUI.skin.textArea.normal.textColor = Color.red;
-				GUI.DrawTexture(new Rect(0, 0, hud.redCollectible.width + 10, hud.redCollectible.height), hud.redCollectible);
-				GUI.TextArea(new Rect(textOffset.x + 10, textOffset.y, 80, 40), _RedCollected.ToString());// + " / " + _TotalRedColl.ToString());
+				GUI.DrawTexture(new Rect(0, 0, hud.redCollectible.width * 1.5f + 10, hud.redCollectible.height * 1.5f), hud.redCollectible);
+				GUI.TextArea(new Rect(textOffset.x * 1.5f + 10, textOffset.y * 1.5f, 100, 50), _RedCollected.ToString());// + " / " + _TotalRedColl.ToString());
 				
 			GUI.EndGroup();
 
 			
 			GUI.BeginGroup(bColRect);										//blue collectible
 				GUI.skin.textArea.normal.textColor = Color.blue;
-				GUI.DrawTexture(new Rect(0, 0, hud.blueCollectible.width + 10, hud.blueCollectible.height), hud.blueCollectible);
-				GUI.TextArea(new Rect(textOffset.x + 10, textOffset.y, 80, 40), _BlueCollected.ToString());// + " / " + _TotalBlueColl.ToString());
+				GUI.DrawTexture(new Rect(0, 0, hud.blueCollectible.width * 1.5f + 10, hud.blueCollectible.height * 1.5f), hud.blueCollectible);
+				GUI.TextArea(new Rect(textOffset.x * 1.5f + 10, textOffset.y * 1.5f, 100, 50), _BlueCollected.ToString());// + " / " + _TotalBlueColl.ToString());
 				
 			GUI.EndGroup();
 			
 			
 			GUI.BeginGroup(actionRect);										//Action icon
 				
-				GUI.DrawTexture(new Rect(aX, 0, hud.absorbAction.width, hud.absorbAction.height), actionTexture);
+				GUI.DrawTexture(new Rect(aX, 0, hud.absorbAction.width * 1.5f, hud.absorbAction.height * 1.5f), actionTexture);
 			
 			GUI.EndGroup();			
 			
