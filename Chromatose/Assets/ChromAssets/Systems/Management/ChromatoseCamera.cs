@@ -33,9 +33,9 @@ public class ChromatoseCamera : MonoBehaviour {
 		height = (int) cam2d.camera.GetScreenHeight();
 		
 		
-		if(Screen.width == 848){
-			_ScreenHeight = 430;
-			_ScreenWidth = 775;
+		if(Screen.width == 800){
+			_ScreenHeight = 470;
+			_ScreenWidth = 680;
 		}
 		else{
 			_ScreenHeight = 585;

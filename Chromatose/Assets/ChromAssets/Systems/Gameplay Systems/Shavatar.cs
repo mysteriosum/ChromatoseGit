@@ -332,7 +332,7 @@ public class Shavatar : MonoBehaviour {
 		}
 		
 		if (gonnaRotate){
-			t.Rotate(this._Movement.Rotate(clockwise));
+			//t.Rotate(this._Movement.Rotate(clockwise));
 		}
 		
 		if(getA){
