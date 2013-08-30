@@ -15,7 +15,7 @@ public class MainMenu : MonoBehaviour {
 	public MainMenuButton mainMenuButtton = new MainMenuButton();
 	private StatsDisplay _StatsDisplay = new StatsDisplay();
 	
-	private _MenuWindowsEnum _MenuWindows;
+	public _MenuWindowsEnum _MenuWindows;
 	private _OptionWindowsEnum _OptionWindows;
 	
 	public enum _GameTypeEnum{
@@ -30,8 +30,8 @@ public class MainMenu : MonoBehaviour {
 	public GUISkin _SkinMenuSansBox;
 	public GUISkin _SkinMenuAvecPetitBox;
 	
-	public GUISkin _StartButtonSkin, _CreditButtonSkin, _FbookButtonSkin, _TwitterButtonSkin, _BackButtonSkin, _BulleSteamSkin;
-	public Texture _LoadingText, _AvatarLoading;
+	public GUISkin _StartButtonSkin, _CreditButtonSkin, _FbookButtonSkin, _TwitterButtonSkin, _BackButtonSkin, _BulleSteamSkin, _GreenlightButton;
+	public Texture _LoadingText, _AvatarLoadingLoop1, _AvatarLoadingLoop2, _BulleLoadLoop1, _BulleLoadLoop2;
 	
 	private Color _FontColor;
 	private float _FontMultiplier = 1;
@@ -69,10 +69,11 @@ public class MainMenu : MonoBehaviour {
 	private bool _TimeTrialActive = false;
 	private bool _NoDeathModeActive = false;
 	
-	//VARIABLE LADING SCREEN
+	//VARIABLE LOADING SCREEN
 	private float _LoadProgress = 0;
 	private AsyncOperation async = null;
-	
+	private bool _loop2 = false;
+	private float loopingCounter = 0;
 	
 	[System.Serializable]
 	public class MainMenuButton{
@@ -595,7 +596,7 @@ public class MainMenu : MonoBehaviour {
 				//START BUTTON
 				GUI.skin = _StartButtonSkin;
 				GUI.skin.button.fontSize = 76;
-				if(GUI.Button(new Rect(300, 450, 280, 85), "")){
+				if(GUI.Button(new Rect(195, 408, 400, 400), "")){
 					_MenuWindows = _MenuWindowsEnum.LoadingScreen;
 					//Application.LoadLevelAsync(1);
 					StartCoroutine(LoadALevel());
@@ -604,30 +605,30 @@ public class MainMenu : MonoBehaviour {
 
 				GUI.skin = _CreditButtonSkin;
 				GUI.skin.button.fontSize = 76;
-				if(GUI.Button(new Rect(700, 450, 220, 85), "")){
+				if(GUI.Button(new Rect(664, 408, 400, 400), "")){
 					_MenuWindows = _MenuWindowsEnum.CreditWindows;
 				}
 				GUI.matrix = matrixBackup; 
 				
 				//FBOOK & TWITTER
-				GUI.skin = _FbookButtonSkin;			
-				if(GUI.Button (new Rect(25, 25, 80, 80), "")){
-					Application.OpenURL("https://www.facebook.com/FabulamGames?fref=ts");
-				}
-				
-				GUI.skin = _TwitterButtonSkin;
-				if(GUI.Button (new Rect(125, 25, 80, 80), "")){
+				GUI.skin = _TwitterButtonSkin;			
+				if(GUI.Button (new Rect(10, 20, 97, 97), "")){
 					Application.OpenURL("https://twitter.com/Chromatosegame");
 				}
 				
-				/*
+				GUI.skin = _FbookButtonSkin;
+				if(GUI.Button (new Rect(88, 20, 97, 97), "")){
+					Application.OpenURL("https://www.facebook.com/FabulamGames?fref=ts");
+				}
+				
+				
 				//BUY IT ON STEAM
 				if(_ADADAD){
-					GUI.skin = _SkinMenuAvecBox;
-					if(GUI.Button(new Rect(850, 20, 400, 60), "Vote for Us on GreenLight")){
+					GUI.skin = _GreenlightButton;
+					if(GUI.Button(new Rect(1065, -27.5f, 195, 185), "")){
 						Application.OpenURL("http://store.steampowered.com/");
 					}
-				}*/
+				}
 								
 				break;
 				#endregion
@@ -836,23 +837,51 @@ public class MainMenu : MonoBehaviour {
 				//BACKGROUND
 				GUI.DrawTexture(new Rect(0, 0, 1280, 960), _LoadingText);
 				
-				Debug.Log(async.progress);
+				//Debug.Log(async.progress);
 				
-				GUI.DrawTexture(new Rect(450, 450, 128, 200), _AvatarLoading);
-									
-				GUI.skin = _BulleSteamSkin;
-				GUI.skin.button.fontSize = 46;
-				if(GUI.Button(new Rect(575, 425, 290, 180), "Vote for Us on GreenLight")){
-					
+				
+				//IMAGE AVATAR
+				loopingCounter += Time.deltaTime;
+				if(loopingCounter > 1){
+					loopingCounter = 0;
+					_loop2 = !_loop2;
+				}
+				if(!_loop2){
+					GUI.DrawTexture(new Rect(333, 610, 225, 225), _AvatarLoadingLoop1);
+				}
+				else{
+					GUI.DrawTexture(new Rect(333, 610, 225, 225), _AvatarLoadingLoop2);
 				}
 				
-				GUI.BeginGroup(inLoadRect);
+				
+				if(!_loop2){
+					GUI.DrawTexture(new Rect(505, 480, 410, 410), _BulleLoadLoop1);
+				}
+				else{
+					GUI.DrawTexture(new Rect(505, 480, 410, 410), _BulleLoadLoop2);
+				}
+				
+				
 									
+				GUI.skin = _GreenlightButton;
+					if(GUI.Button(new Rect(578, 545, 273, 273), "")){
+						Application.OpenURL("http://store.steampowered.com/");
+					}
+				
+			
+				
+				
+				GUI.BeginGroup(inLoadRect);
+				
+				
+				//GUI.DrawTexture(new Rect(130, 262, 590, inLoadRect.height*0.2f), mainMenuButtton.emptyProgressBar);
+							
+				
 				//TODO Gerer la Progress Bar differement selon WebPlayer/StandAlone
 					//PROGRESS BAR
 				if(async != null){
-					GUI.DrawTexture(new Rect(inLoadRect.width*0.315f, inLoadRect.height*0.515f,inLoadRect.width*0.48f * async.progress * 100, inLoadRect.height*0.19f), mainMenuButtton.progressLine);
-					GUI.DrawTexture(new Rect(inLoadRect.width*0.30f, inLoadRect.height*0.5f,inLoadRect.width*0.5f, inLoadRect.height*0.2f), mainMenuButtton.emptyProgressBar);
+					GUI.DrawTexture(new Rect(140, 267, 500 * async.progress * 100f, inLoadRect.height*0.18f), mainMenuButtton.progressLine);
+					GUI.DrawTexture(new Rect(130, 262, 590, inLoadRect.height*0.2f), mainMenuButtton.emptyProgressBar);
 				}	
 								
 				/*
@@ -866,9 +895,9 @@ public class MainMenu : MonoBehaviour {
 				
 			#region Credits Windows
 			case _MenuWindowsEnum.CreditWindows:
-				GUI.DrawTexture(new Rect(0, 0, 1280, 720), mainMenuButtton.credits);
+				GUI.DrawTexture(new Rect(0, 0, 1280, 960), mainMenuButtton.credits);
 				GUI.skin = _BackButtonSkin;
-				if(GUI.Button(new Rect(360, 550, 300, 80), "")){
+				if(GUI.Button(new Rect(280, 700, 180, 180), "")){
 					_MenuWindows = _MenuWindowsEnum.MainMenu;
 				}
 				

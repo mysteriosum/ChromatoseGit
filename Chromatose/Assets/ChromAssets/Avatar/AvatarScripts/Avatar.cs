@@ -771,8 +771,8 @@ public class Avatar : ColourBeing
 		//colour.r = Mathf.Clamp(colour.r, 0, 255);
 		//colour.b = Mathf.Clamp(colour.b, 0, 255);
 			
-			
-			_ColorCounter += Time.deltaTime * velocity.magnitude * 0.5f;
+			//DESCENDRE OU MONTER LA VITESSE DU FADE ICI
+			_ColorCounter += Time.deltaTime * velocity.magnitude * 0.4f;
 			
 			
 			if(_ColorCounter > 1){
