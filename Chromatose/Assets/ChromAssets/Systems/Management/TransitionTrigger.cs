@@ -207,7 +207,7 @@ public class TransitionTrigger : MonoBehaviour {
 		if(_AvatarScript.HasOutline){
 			_AvatarScript.CancelOutline();
 		}
-		
+		_Manager.hud._AfterComic = false;
 	}
 	
 	void FinishTimeTrialChallenge(){
@@ -222,6 +222,9 @@ public class TransitionTrigger : MonoBehaviour {
 		avatarT.position = dynamicComicTarget.position;
 		avatarT.rotation = dynamicComicTarget.rotation;
 		avatarT.SendMessage ("SetVelocity", Vector2.zero);
+		_Manager.hud._CanFlash = false;
+		_Manager.hud._AfterComic = true;
+		_Manager.hud._OnFlash = false;
 		ResetBool();
 		/*
 		_AvatarScript.LoseAllColour();		

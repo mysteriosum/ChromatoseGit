@@ -212,6 +212,12 @@ public class ChromatoseManager : MonoBehaviour {
 	[System.Serializable]
 	public class ChromHUD {
 		
+		public bool _GlowComicNb;
+		public bool _CanFlash;
+		public bool _OnFlash;
+		public bool _AfterComic;
+		public float flashTimer;
+		
 		public Texture mainBox;
 		public Texture smallBox;
 		public Texture[] energyTank;
@@ -231,7 +237,7 @@ public class ChromatoseManager : MonoBehaviour {
 		public Texture greenCollectible;
 		public Texture blueCollectible;
 		public Texture whiteCollectible;
-		public Texture comicCounter;
+		public Texture comicCounter, comicCounter2;
 		
 		public Texture _TimeTrialBox;
 		
@@ -240,10 +246,10 @@ public class ChromatoseManager : MonoBehaviour {
 		public Texture blackBG;
 		public Texture endResultWindows;
 		
-		public Texture _AvatarLoading;
-		public GUISkin _PlayButtonSkin, _BulleSteamSkin;
-		//public GUISkin 
-		
+		public Texture _AvatarLoadingLoop1, _AvatarLoadingLoop2, _BulleLoadingLoop1, _BulleLoadingLoop2;
+		public GUISkin _PlayButtonSkin, _GreenlightSkin;
+		public bool _loop2 = false;
+		public float loopingCounter;
 		
 		//TEXTURE POUR WEBPLAYER
 		public GUISkin skinSansBox;
@@ -718,21 +724,40 @@ public class ChromatoseManager : MonoBehaviour {
 			GUI.DrawTexture(bgRect, hud.blackBG);
 			GUI.skin = hud._PlayButtonSkin;
 			GUI.skin.button.fontSize = 78;
-			if(GUI.Button(new Rect(380, 200, 500, 250), "")){
+			if(GUI.Button(new Rect(442, 70, 402, 402), "")){
 				_GUIState = GUIStateEnum.Interface;
 				avatar.CanControl();
 				sfxPlayer.PlayOneShot(sfx[6]);
 			}
-			GUI.skin.label.fontSize = 46;
-			GUI.Label(new Rect(360, 450, 700, 200), "Press SpaceBar or Click on Start");
 			
-			GUI.DrawTexture(new Rect(450, 590, 128, 270), hud._AvatarLoading);
-									
-			GUI.skin = hud._BulleSteamSkin;
-			GUI.skin.button.fontSize = 46;
-			if(GUI.Button(new Rect(575, 565, 290, 250), "Vote for Us on GreenLight")){
+			//IMAGE AVATAR
 				
-			}
+				hud.loopingCounter += Time.deltaTime;
+				if(hud.loopingCounter > 1){
+					hud.loopingCounter = 0;
+					hud._loop2 = !hud._loop2;
+				}
+				if(!hud._loop2){
+					GUI.DrawTexture(new Rect(333, 610, 225, 225), hud._AvatarLoadingLoop1);
+				}
+				else{
+					GUI.DrawTexture(new Rect(333, 610, 225, 225), hud._AvatarLoadingLoop2);
+				}
+				
+				
+				if(!hud._loop2){
+					GUI.DrawTexture(new Rect(505, 480, 410, 410), hud._BulleLoadingLoop1);
+				}
+				else{
+					GUI.DrawTexture(new Rect(505, 480, 410, 410), hud._BulleLoadingLoop2);
+				}
+				
+				
+									
+				GUI.skin = hud._GreenlightSkin;
+					if(GUI.Button(new Rect(578, 545, 273, 273), "")){
+						Application.OpenURL("http://store.steampowered.com/");
+					}
 			
 			break;
 			#endregion
@@ -756,8 +781,26 @@ public class ChromatoseManager : MonoBehaviour {
 			GUI.BeginGroup(comicRect);										//comic counter		
 				//GUI.skin = skin;
 				GUI.skin.textArea.normal.textColor = Color.black;
-				GUI.DrawTexture(new Rect(0, 0, hud.comicCounter.width * 1.5f + 10, hud.comicCounter.height * 1.5f), hud.comicCounter);
+				if(_ComicThumbCollected >= _TotalComicThumb && _TotalComicThumb != 0 && !hud._AfterComic){
+					hud._CanFlash = true;
+				}
+				if(hud._CanFlash){
+					hud.flashTimer += Time.deltaTime;
+					if(hud.flashTimer >= 1){
+						hud.flashTimer = 0;
+						hud._OnFlash = !hud._OnFlash;
+					}
+				}
+				if(!hud._OnFlash || hud._AfterComic){
+					GUI.DrawTexture(new Rect(0, 0, hud.comicCounter.width * 1.5f + 10, hud.comicCounter.height * 1.5f), hud.comicCounter);
+				}
+				else{
+					GUI.DrawTexture(new Rect(0, 0, hud.comicCounter.width * 1.5f + 10, hud.comicCounter.height * 1.5f), hud.comicCounter2);
+				}
+				GUI.skin.textArea.fontSize = 35;
+				GUI.skin.textArea.normal.textColor = Color.black;
 				GUI.TextArea(new Rect(textOffset.x * 1.5f, textOffset.y * 1.5f, 100, 50), _ComicThumbCollected + " /" + _TotalComicThumb);
+				
 				
 			GUI.EndGroup();
 			
@@ -1115,7 +1158,7 @@ public class ChromatoseManager : MonoBehaviour {
 			GameObject wCol = Instantiate(prefab.collectible, randomPos, Quaternion.identity)as GameObject;
 			wCol.GetComponent<Collectible2>().effect = true;
 			wCol.GetComponent<Collectible2>().colorCollectible = Collectible2._ColorCollectible.White;
-			avatar.sfxPlayer.PlayOneShot(sfx[7]);
+			avatar.sfxPlayer.PlayOneShot(sfx[13]);
 			StartCoroutine(DelaiToBlowColl(0.5f, wCol));
 		}
 	}

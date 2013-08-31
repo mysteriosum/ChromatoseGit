@@ -8,11 +8,13 @@ public class Npc2 : MonoBehaviour {
 	}
 	
 	public _TypeNPCEnum typeNpc;
+	public AudioClip _FillBucketSound;
 	
 	private ChromatoseManager _Manager;
 	private tk2dAnimatedSprite _MainAnim;
 	private Avatar _AvatarScript;
 	private Avatar.LoseAllColourParticle losePart;
+	private AudioSource _Player;
 	
 	private Color myColor = Color.red;
 
@@ -39,6 +41,8 @@ public class Npc2 : MonoBehaviour {
 	
 	void Trigger(){
 		_AvatarScript.FillBucket(myColor);
+		_Player.clip = _FillBucketSound;
+		_Player.Play();
 		_MainAnim.Play("rNPC_redToGrey");
 		_MainAnim.animationCompleteDelegate = GreyBounce;	
 
@@ -51,6 +55,7 @@ public class Npc2 : MonoBehaviour {
 		_MainAnim = GetComponent<tk2dAnimatedSprite>();
 		_Manager = ChromatoseManager.manager;
 		_AvatarScript = GameObject.FindGameObjectWithTag("avatar").GetComponent<Avatar>();
+		_Player = GetComponent<AudioSource>();
 		
 		switch(typeNpc){
 		case _TypeNPCEnum.Red:

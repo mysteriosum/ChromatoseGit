@@ -28,6 +28,8 @@ public class Avatar : ColourBeing
 	private string _ColorFadeString = "";
 	private string _PlayerFadeString = "";
 	
+	private float _VolumeFade = 0.90f;
+	private float _VolumeFadeCounter = 0f;
 	
 	private float loseRate = 6f;
 	private float loseTimer = 0f;
@@ -771,8 +773,8 @@ public class Avatar : ColourBeing
 		//colour.r = Mathf.Clamp(colour.r, 0, 255);
 		//colour.b = Mathf.Clamp(colour.b, 0, 255);
 			
-			
-			_ColorCounter += Time.deltaTime * velocity.magnitude * 0.5f;
+			//DESCENDRE OU MONTER LA VITESSE DU FADE ICI
+			_ColorCounter += Time.deltaTime * velocity.magnitude * 0.4f;
 			
 			
 			if(_ColorCounter > 1){
@@ -899,10 +901,30 @@ public class Avatar : ColourBeing
 			getW = Input.GetKey(KeyCode.O);
 			if (Input.GetKey (KeyCode.UpArrow)){
 				getW = true;
-				
 			}
-			if(Input.GetKeyDown(KeyCode.O)){
-				sfxPlayer.PlayOneShot(manager.sfx[0], 0.2f);
+			
+			if(Input.GetKey(KeyCode.O)){
+				sfxPlayer.volume = _VolumeFade;
+				if(!sfxPlayer.isPlaying){
+					sfxPlayer.clip = manager.sfx[0];
+					//sfxPlayer.loop = true;
+					sfxPlayer.Play();
+					_VolumeFadeCounter++;
+				}
+				if(_VolumeFadeCounter > 1){
+					_VolumeFade = 0.60f;
+					if(_VolumeFadeCounter > 2){
+						_VolumeFade = 0.30f;
+						if(_VolumeFadeCounter > 3){
+							_VolumeFade = 0;
+						}
+					}				
+				}
+			}
+			else{
+				sfxPlayer.loop = false;
+				_VolumeFade = 0.90f;
+				_VolumeFadeCounter = 0;
 			}
 			
 			
@@ -1254,6 +1276,18 @@ public class Avatar : ColourBeing
 		}
 		velocity = this.movement.Displace(gonnaThrust);
 		t.position += new Vector3(velocity.x, velocity.y, 0) * multiplier;
+		/*
+		if(this.movement.thruster.velocity.magnitude == this.movement.thruster.maxSpeed){
+			if(!sfxPlayer.isPlaying){
+				sfxPlayer.clip = manager.sfx[13];
+				sfxPlayer.loop = true;
+				sfxPlayer.Play();
+			}
+		}
+		else{
+			sfxPlayer.loop = false;
+		}*/
+		
 		//Debug.Log(t.rotation.eulerAngles.z);
 		
 	}
@@ -1400,7 +1434,7 @@ public class Avatar : ColourBeing
 		else{
 			Debug.Log("Pas le bon Setting");
 		}
-		sfxPlayer.PlayOneShot(manager.sfx[4]);		
+		//sfxPlayer.PlayOneShot(manager.sfx[4]);		
 	}
 	
 	public void EmptyingBucket(){
