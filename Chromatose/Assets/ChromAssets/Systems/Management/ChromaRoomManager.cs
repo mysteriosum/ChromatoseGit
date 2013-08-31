@@ -58,7 +58,7 @@ public class ChromaRoomManager : MonoBehaviour {
 		}	
 		else{
 			
-			retTotalComic = comicInLevel[_CurRoom + 1];
+			retTotalComic = comicInLevel[_CurRoom];
 			
 		}
 		

@@ -79,7 +79,7 @@ public class MiniBoss : MonoBehaviour {
 		if(!alreadyShooten){
 			_Manager.RemoveCollectibles(Color.red, requiredPayment, this.transform.position);
 			alreadyShooten = true;
-			StartCoroutine(StartDie(1f));
+			StartCoroutine(StartDie(2f));
 		}
 	}
 	
@@ -99,7 +99,13 @@ public class MiniBoss : MonoBehaviour {
 	
 	void Die(){
 		_AvatarScript.WantsToRelease = false;
-		Destroy(this.gameObject);
+		//_MainAnim.SetSprite("miniBossDie");
+		_MainAnim.Play("miniBossDie");
+		_MainAnim.animationCompleteDelegate = DestroyThis;
+	}
+	
+	void DestroyThis(tk2dAnimatedSprite sprite, int clipId){
+		StartCoroutine(DelaiToDestroy());
 	}
 	
 	IEnumerator SetAnim(){
@@ -110,6 +116,11 @@ public class MiniBoss : MonoBehaviour {
 	IEnumerator StartDie(float delai){
 		yield return new WaitForSeconds(delai);
 		//_MainAnim.SetSprite("flameDie");
-		_CanDie = true;
+		//_CanDie = true;
+		Die ();
+	}
+	IEnumerator DelaiToDestroy(){
+		yield return new WaitForSeconds(1.0f);
+		Destroy(this.gameObject);
 	}
 }

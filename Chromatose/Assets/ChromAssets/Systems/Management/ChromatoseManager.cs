@@ -213,6 +213,10 @@ public class ChromatoseManager : MonoBehaviour {
 	public class ChromHUD {
 		
 		public bool _GlowComicNb;
+		public bool _CanFlash;
+		public bool _OnFlash;
+		public bool _AfterComic;
+		public float flashTimer;
 		
 		public Texture mainBox;
 		public Texture smallBox;
@@ -233,7 +237,7 @@ public class ChromatoseManager : MonoBehaviour {
 		public Texture greenCollectible;
 		public Texture blueCollectible;
 		public Texture whiteCollectible;
-		public Texture comicCounter;
+		public Texture comicCounter, comicCounter2;
 		
 		public Texture _TimeTrialBox;
 		
@@ -777,21 +781,21 @@ public class ChromatoseManager : MonoBehaviour {
 			GUI.BeginGroup(comicRect);										//comic counter		
 				//GUI.skin = skin;
 				GUI.skin.textArea.normal.textColor = Color.black;
-				if(_ComicThumbCollected >= _TotalComicThumb){
-					_CanFlash = true;
+				if(_ComicThumbCollected >= _TotalComicThumb && _TotalComicThumb != 0 && !hud._AfterComic){
+					hud._CanFlash = true;
 				}
-				if(_CanFlash){
-					flashTimer += Time.deltaTime;
-					if(flashTimer >= 1){
-						flashTimer = 0;
-						_OnFlash = !_OnFlash;
+				if(hud._CanFlash){
+					hud.flashTimer += Time.deltaTime;
+					if(hud.flashTimer >= 1){
+						hud.flashTimer = 0;
+						hud._OnFlash = !hud._OnFlash;
 					}
 				}
-				if(!_OnFlash){
+				if(!hud._OnFlash || hud._AfterComic){
 					GUI.DrawTexture(new Rect(0, 0, hud.comicCounter.width * 1.5f + 10, hud.comicCounter.height * 1.5f), hud.comicCounter);
 				}
 				else{
-					GUI.DrawTexture(new Rect(0, 0, hud.comicCounter.width * 1.5f + 10, hud.comicCounter.height * 1.5f), hud.comicCounter);
+					GUI.DrawTexture(new Rect(0, 0, hud.comicCounter.width * 1.5f + 10, hud.comicCounter.height * 1.5f), hud.comicCounter2);
 				}
 				GUI.skin.textArea.fontSize = 35;
 				GUI.skin.textArea.normal.textColor = Color.black;
@@ -1154,7 +1158,7 @@ public class ChromatoseManager : MonoBehaviour {
 			GameObject wCol = Instantiate(prefab.collectible, randomPos, Quaternion.identity)as GameObject;
 			wCol.GetComponent<Collectible2>().effect = true;
 			wCol.GetComponent<Collectible2>().colorCollectible = Collectible2._ColorCollectible.White;
-			avatar.sfxPlayer.PlayOneShot(sfx[7]);
+			avatar.sfxPlayer.PlayOneShot(sfx[13]);
 			StartCoroutine(DelaiToBlowColl(0.5f, wCol));
 		}
 	}
