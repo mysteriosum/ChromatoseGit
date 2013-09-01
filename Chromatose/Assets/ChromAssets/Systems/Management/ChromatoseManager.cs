@@ -858,11 +858,12 @@ public class ChromatoseManager : MonoBehaviour {
 					ManagerPause();
 					_GUIState = GUIStateEnum.Interface;
 					sfxPlayer.PlayOneShot(sfx[6]);
+				/*
 					if(Event.current.type == EventType.Repaint){
 						if(GUI.tooltip == "Hover"){
 							sfxPlayer.PlayOneShot(sfx[5]);
 						}					
-					}
+					}*/
 				}
 			
 				if(GUI.Button(new Rect(pauseWindowsRect.width*0.25f, pauseWindowsRect.height*0.65f, pauseWindowsRect.width*0.5f, pauseWindowsRect.height*0.18f), "MAIN MENU")){

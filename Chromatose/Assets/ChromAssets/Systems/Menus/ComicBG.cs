@@ -5,34 +5,53 @@ using System.Collections;
 public class ComicBG : MonoBehaviour {
 		
 	public GameObject[] comic;
+	public float[] yOffset;
 	
 	public GameObject rewardGuy;
+	public GameObject partComic;
+	
 	
 	private int _ComicCollected = 0;
 	private bool _ComicDone = false;
+	private bool _AvatarInHall = false;
+	private bool[] onWait = new bool[]{false, false, false, false, false, false, false, false, false, false};
+	private bool[] alreadySpawn = new bool[]{false, false, false, false, false, false, false, false, false, false};
+	
+	private AudioSource sfxPlayer;
 	
 	// Use this for initialization
 	void Start () {
-	
+		sfxPlayer = GetComponent<AudioSource>();
 	}
 	
 	// Update is called once per frame
 	void Update () {
 		
+		
+		
 		if(_ComicCollected >= comic.Length && _ComicDone){
 			if(rewardGuy != null){
-				rewardGuy.SetActive(true);
+				rewardGuy.GetComponent<RewardGuy2>().canBe = true;
 			}
 		}		
 	}
 	
 	public void MakeActive(int index){
-		comic[index].SetActive(true);
+		//comic[index].SetActive(true);
+		onWait[index] = true;
 		_ComicCollected++;
 	}
 	
 	void OnTriggerEnter(Collider other){
+		
 		if(other.tag == "avatar"){
+			for(int i = 0; i < onWait.Length; i++){
+				if(onWait[i] == true && alreadySpawn[i] == false){
+					StartCoroutine(SpawnPartInBG(i * 2.0f, i));
+				}
+			}
+		
+		
 			if(_ComicCollected >= comic.Length && !_ComicDone){
 				_ComicDone = true;
 				//Debug.Log("Enter");
@@ -47,5 +66,24 @@ public class ComicBG : MonoBehaviour {
 				Debug.Log("Enter");
 			}
 		}
+	}
+	
+	IEnumerator SpawnPartInBG(float delai, int index){
+		yield return new WaitForSeconds(delai);
+		Vector3 partPos = comic[index].gameObject.transform.position;
+		partPos.z = -5;
+		partPos.y = partPos.y - (100 + yOffset[index]);
+		GameObject partObj1 = Instantiate(partComic, partPos, Quaternion.identity)as GameObject;
+		partPos.x = partPos.x - 30;
+		GameObject partObj2 = Instantiate(partComic, partPos, Quaternion.identity)as GameObject;
+		partPos.x = partPos.x + 60;
+		GameObject partObj3 = Instantiate(partComic, partPos, Quaternion.identity)as GameObject;
+		StartCoroutine(SpawnComicInBG(1.75f, index));
+	}
+	IEnumerator SpawnComicInBG(float delai, int index){
+		yield return new WaitForSeconds(delai);
+		comic[index].SetActive(true);
+		alreadySpawn[index] = true;
+		sfxPlayer.Play ();
 	}
 }
