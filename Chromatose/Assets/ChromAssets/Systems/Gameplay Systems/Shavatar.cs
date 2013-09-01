@@ -279,91 +279,10 @@ public class Shavatar : MonoBehaviour {
 	}
 	
 	void LookAtTarget(){
-
-		float curRot = VectorFunctions.Convert360(t.rotation.eulerAngles.z); 	//how to turn there, and whether I should be accelerating
-			
-		Vector2 pointA = t.position;
-		Vector2 pointB = _Target;
-		Vector2 dist = pointB - pointA;
-		float angle = VectorFunctions.PointDirection(dist);
-		
-		
-		float diffAngle = curRot - angle;
-		float targetAngle = diffAngle * 2;
-		
-		Vector3 temprel = transform.InverseTransformPoint(_Target);
-		
-		Debug.Log (transform.InverseTransformPoint(_Target).x > 0);
-		
-		
-		
-		//Debug.Log(targetAngle);
-		/*
-		if(targetAngle > -25 || targetAngle < -550){
-			transform.Rotate(new Vector3(0, 0, -1f));
-			//transform.Rotate(_Movement.Rotate(false));
-		}
-		if(targetAngle < 25 || targetAngle > 550){
-			transform.Rotate(new Vector3(0, 0, 1f));
-			//transform.Rotate(_Movement.Rotate(true));
-		}*/
-		
-		bool getD = targetAngle > -25 || targetAngle < -550;
-		bool getA = targetAngle < 25 || targetAngle > 550;
-	
-		
-		if (getA){
-			rotCounter --;
-			gonnaRotate = true;
-			clockwise = false;
-		}
-		
-		if (getD){
-			rotCounter ++;
-			if (getA){
-				gonnaRotate = false;
-				getA = false;
-				getD = false;
-			}
-			else{
-				gonnaRotate = true;
-				clockwise = true;
-			}
-		}
-		
-		if (gonnaRotate){
-			//t.Rotate(this._Movement.Rotate(clockwise));
-		}
-		
-		if(getA){
-			_SpriteInfo.SetSprite("Player5");
-			rotCounter--;
-		}
-		if(getD){
-			_SpriteInfo.SetSprite("Player3");
-			rotCounter++;
-		}
-	
-		gonnaRotate = false;
-		
-		/*
-		
-		if(getA){
-			transform.Rotate(new Vector3(0, 0, -0.5f));
-		}
-		else if(getD){
-			transform.Rotate(new Vector3(0, 0, 0.5f));
-		}*/
 		
 		targetPoint = _Target;
-		//targetPoint.z = transform.position.z;
-		rotation = Quaternion.LookRotation(targetPoint - t.position);
-		rotation.x = 0;
-		rotation.y = 0;
-		//Quaternion realRot = Quaternion.Euler(rotation.eulerAngles.x, , 0f);
-		//t.rotation = Quaternion.Slerp(t.rotation, rotation, Time.deltaTime * 5.0f);
-		//transform.LookAt(targetPoint);
-		
+		targetPoint.z = transform.position.z;
+		transform.LookAt(targetPoint);
 		
 		if(Vector2.Distance(transform.position, _Target) < 10){
 			_Target = patrolPath[_CurIndex].position;

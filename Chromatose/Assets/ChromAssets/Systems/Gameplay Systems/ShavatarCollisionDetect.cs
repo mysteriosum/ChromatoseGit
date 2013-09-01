@@ -3,12 +3,12 @@ using System.Collections;
 
 public class ShavatarCollisionDetect : MonoBehaviour {
 	
-	private Shavatar _ShavatarScript;
+	private Shavatar1 _ShavatarScript;
 
 	// Use this for initialization
 	void Start () {
 	
-		_ShavatarScript = transform.parent.GetComponent<Shavatar>();
+		_ShavatarScript = transform.parent.GetComponent<Shavatar1>();
 	}
 	
 	// Update is called once per frame
