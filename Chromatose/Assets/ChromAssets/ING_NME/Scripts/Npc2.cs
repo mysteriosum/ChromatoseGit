@@ -17,6 +17,7 @@ public class Npc2 : MonoBehaviour {
 	private AudioSource _Player;
 	
 	private Color myColor = Color.red;
+	private bool _ColorGone = false;
 
 	private string _redBounceString = "rNPC_bounce";
 	private string _greyBounceString = "rNPC_bounceGrey";
@@ -35,8 +36,10 @@ public class Npc2 : MonoBehaviour {
 	void OnTriggerStay(Collider other){
 		if(other.tag != "avatar") return;
 		
-		_Manager.UpdateAction(Actions.Absorb, Trigger);		//this tells the hud that I want to do something. But I'll have to wait in line!
-			
+		if(!_ColorGone){
+			_Manager.UpdateAction(Actions.Absorb, Trigger);		//this tells the hud that I want to do something. But I'll have to wait in line!
+			_ColorGone = true;
+		}
 	}
 	
 	void Trigger(){
