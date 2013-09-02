@@ -28,7 +28,7 @@ public class Avatar : ColourBeing
 	private string _ColorFadeString = "";
 	private string _PlayerFadeString = "";
 	
-	private float _VolumeFade = 0.90f;
+	private float _VolumeFade = 0.60f;
 	private float _VolumeFadeCounter = 0f;
 	
 	private float loseRate = 6f;
@@ -912,9 +912,9 @@ public class Avatar : ColourBeing
 					_VolumeFadeCounter++;
 				}
 				if(_VolumeFadeCounter > 1){
-					_VolumeFade = 0.60f;
+					_VolumeFade = 0.40f;
 					if(_VolumeFadeCounter > 2){
-						_VolumeFade = 0.30f;
+						_VolumeFade = 0.20f;
 						if(_VolumeFadeCounter > 3){
 							_VolumeFade = 0;
 						}
@@ -923,7 +923,7 @@ public class Avatar : ColourBeing
 			}
 			else{
 				sfxPlayer.loop = false;
-				_VolumeFade = 0.90f;
+				_VolumeFade = 0.60f;
 				_VolumeFadeCounter = 0;
 			}
 			
