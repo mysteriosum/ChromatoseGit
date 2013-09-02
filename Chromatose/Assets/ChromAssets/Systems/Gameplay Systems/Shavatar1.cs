@@ -243,8 +243,7 @@ public class Shavatar1 : MonoBehaviour {
 		_InitSpeed = shavatarSpeed;
 		
 		_ColLayerMask = 1 << LayerMask.NameToLayer("collision");		//for teh linecasts
-		_MainAnim.SetSprite("Shavatar");
-		_MainAnim.Play();
+		_MainAnim.Play("Shavatar");
 	}
 	
 	/*

@@ -38,7 +38,7 @@ public class Npc2 : MonoBehaviour {
 		
 		if(!_ColorGone){
 			_Manager.UpdateAction(Actions.Absorb, Trigger);		//this tells the hud that I want to do something. But I'll have to wait in line!
-			_ColorGone = true;
+			
 		}
 	}
 	
@@ -48,7 +48,7 @@ public class Npc2 : MonoBehaviour {
 		_Player.Play();
 		_MainAnim.Play("rNPC_redToGrey");
 		_MainAnim.animationCompleteDelegate = GreyBounce;	
-
+		_ColorGone = true;
 		losePart = new Avatar.LoseAllColourParticle(_AvatarScript.particleCollection, _AvatarScript.partAnimations, this.transform, myColor);
 		//StartCoroutine(DelaiBeforeFade(1.0f));
 		
