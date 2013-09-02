@@ -1151,7 +1151,7 @@ public class ChromatoseManager : MonoBehaviour {
 	}
 	
 	void BlowWhiteColl(int amount, Vector3 pos){
-		
+		avatar.sfxPlayer.PlayOneShot(sfx[13]);
 		for(int i = 0; i < amount; i++){
 			Vector2 randomVelocity = Random.insideUnitCircle.normalized * Random.Range(40, 65);
 			Vector3 randomPos = avatar.transform.position + (Vector3)randomVelocity;
@@ -1159,7 +1159,6 @@ public class ChromatoseManager : MonoBehaviour {
 			GameObject wCol = Instantiate(prefab.collectible, randomPos, Quaternion.identity)as GameObject;
 			wCol.GetComponent<Collectible2>().effect = true;
 			wCol.GetComponent<Collectible2>().colorCollectible = Collectible2._ColorCollectible.White;
-			avatar.sfxPlayer.PlayOneShot(sfx[13]);
 			StartCoroutine(DelaiToBlowColl(0.5f, wCol));
 		}
 	}
