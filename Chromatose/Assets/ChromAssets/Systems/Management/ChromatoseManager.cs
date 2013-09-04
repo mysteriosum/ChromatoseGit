@@ -756,8 +756,9 @@ public class ChromatoseManager : MonoBehaviour {
 				
 									
 				GUI.skin = hud._GreenlightSkin;
-					if(GUI.Button(new Rect(578, 545, 273, 273), "")){
-						Application.OpenURL("http://store.steampowered.com/");
+					if(GUI.Button(new Rect(578, 615, 273, 120), "")){
+						//Application.OpenURL("http://steamcommunity.com/sharedfiles/filedetails/?id=174349688");
+						Application.ExternalEval("window.open('http://steamcommunity.com/sharedfiles/filedetails/?id=174349688','Chromatose Greenlight Page')");
 					}
 			
 			break;
