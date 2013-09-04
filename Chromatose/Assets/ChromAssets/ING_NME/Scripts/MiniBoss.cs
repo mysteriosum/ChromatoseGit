@@ -39,6 +39,7 @@ public class MiniBoss : MonoBehaviour {
 	void Update () {
 	
 		if(_PayZoneScript.inPayZone){
+			
 			_Manager.UpdateAction(Actions.Release, DelegateActionTest);
 			_AvatarScript.requieredPayment = requiredPayment.ToString();
 			_AvatarScript.wantFightBoss = true;
@@ -76,10 +77,12 @@ public class MiniBoss : MonoBehaviour {
 	}
 	
 	void DelegateActionTest(){
-		if(!alreadyShooten){
-			_Manager.RemoveCollectibles(Color.red, requiredPayment, this.transform.position);
-			alreadyShooten = true;
-			StartCoroutine(StartDie(2f));
+		if(_Manager.rCollected >= requiredPayment){
+			if(!alreadyShooten){
+				_Manager.RemoveCollectibles(Color.red, requiredPayment, this.transform.position);
+				alreadyShooten = true;
+				StartCoroutine(StartDie(2f));
+			}
 		}
 	}
 	

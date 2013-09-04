@@ -18,6 +18,20 @@ public class SpeechBubble : MonoBehaviour{				//THE BUBBLE AND ITS DECLARATION!
 	private Vector3 digitOffset = new Vector3(10, 3, -2);
 	private int myDigit = 0;
 	
+	
+	private float frameCounter = 0;
+	private int indexFrame = 1;
+	private bool bubbleGrowed = false;
+	private bool bubbleShrinked = false;
+	private bool _CanShow = false;
+	public bool canShow{
+		get{return _CanShow;}
+		set{_CanShow = value;}
+	}
+	
+	private string spriteToPlay = "";
+	
+	
 	public int Digit{
 		get{ return myDigit; }
 		set{ myDigit = value; }
@@ -62,6 +76,25 @@ public class SpeechBubble : MonoBehaviour{				//THE BUBBLE AND ITS DECLARATION!
 	{
 	}
 	
+	void Update(){
+		if(_CanShow){
+			if(!bubbleGrowed){
+				
+			}
+			else if(bubbleGrowed){
+				
+			}
+		}
+		else{
+			if(!bubbleShrinked){
+				
+			}
+			else{
+			
+			}
+		}
+	}
+	
 	public void Main(){
 		
 		
@@ -78,6 +111,7 @@ public class SpeechBubble : MonoBehaviour{				//THE BUBBLE AND ITS DECLARATION!
 	}
 	
 	public void ShowBubbleFor(string bubble, float time, int digit){
+		
 		string myDigitString = digit > 0? digit.ToString() : "";
 		SpriteName = bubble + myDigitString;
 		timer = time;
@@ -103,5 +137,7 @@ public class SpeechBubble : MonoBehaviour{				//THE BUBBLE AND ITS DECLARATION!
 		t.localPosition = (Vector3) offset;
 	}
 	
-	
+	void ManualPlay(){
+		
+	}
 }

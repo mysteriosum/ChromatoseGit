@@ -243,6 +243,7 @@ public class ChromatoseManager : MonoBehaviour {
 		
 		public Texture[] pauseButton;
 		public Texture pauseWindows;
+		public GUISkin pauseBackButton;
 		public Texture blackBG;
 		public Texture endResultWindows;
 		
@@ -755,8 +756,9 @@ public class ChromatoseManager : MonoBehaviour {
 				
 									
 				GUI.skin = hud._GreenlightSkin;
-					if(GUI.Button(new Rect(578, 545, 273, 273), "")){
-						Application.OpenURL("http://store.steampowered.com/");
+					if(GUI.Button(new Rect(578, 615, 273, 120), "")){
+						//Application.OpenURL("http://steamcommunity.com/sharedfiles/filedetails/?id=174349688");
+						Application.ExternalEval("window.open('http://steamcommunity.com/sharedfiles/filedetails/?id=174349688','Chromatose Greenlight Page')");
 					}
 			
 			break;
@@ -848,32 +850,13 @@ public class ChromatoseManager : MonoBehaviour {
 				
 				//TEXTE PAUSE
 				GUI.skin.textArea.fontSize = 76;
-				//GUI.skin.textArea.alignment = TextAnchor.UpperCenter;
-				GUI.TextArea(new Rect(pauseWindowsRect.width*0.35f, pauseWindowsRect.height*0.23f, pauseWindowsRect.width*0.4f, pauseWindowsRect.height*0.23f), "PAUSE");
-				//GUI.skin.textArea.alignment = TextAnchor.UpperLeft;
+				GUI.TextArea(new Rect(pauseWindowsRect.width*0.3f, pauseWindowsRect.height*0.23f, pauseWindowsRect.width*0.8f, pauseWindowsRect.height*0.23f), "ON PAUSE");
 			
-				//BOUTON PAUSE
-				GUI.skin.button.fontSize = 54;
-				if(GUI.Button(new Rect(pauseWindowsRect.width*0.25f, pauseWindowsRect.height*0.46f, pauseWindowsRect.width*0.5f, pauseWindowsRect.height*0.18f), new GUIContent("RESUME", "Hover"))){
+				GUI.skin = hud.pauseBackButton;
+				if(GUI.Button(new Rect(300, 225, 130, 75), "")){
 					ManagerPause();
-					_GUIState = GUIStateEnum.Interface;
-					sfxPlayer.PlayOneShot(sfx[6]);
-				/*
-					if(Event.current.type == EventType.Repaint){
-						if(GUI.tooltip == "Hover"){
-							sfxPlayer.PlayOneShot(sfx[5]);
-						}					
-					}*/
-				}
+				}	
 			
-				if(GUI.Button(new Rect(pauseWindowsRect.width*0.25f, pauseWindowsRect.height*0.65f, pauseWindowsRect.width*0.5f, pauseWindowsRect.height*0.18f), "MAIN MENU")){
-					_GUIState = GUIStateEnum.EndLevel;
-					Time.timeScale = 1;
-					Application.LoadLevelAsync(0);
-				
-				//TODO Si en TimeTrial Challenge, annuler le challenge
-				
-				}
 			GUI.EndGroup();
 			
 			break;
@@ -1023,7 +1006,7 @@ public class ChromatoseManager : MonoBehaviour {
 			avatar.movement.SetVelocity(Vector2.zero);
 			StartCoroutine(OnDeath(0.15f));
 			StartCoroutine(RestartRoom());
-			
+			ResetColl();
 			avatar.CancelOutline();
 			avatar.Gone = true;
 		}
@@ -1036,6 +1019,7 @@ public class ChromatoseManager : MonoBehaviour {
 			StartCoroutine(OnDeath(0.15f));
 			avatar.CancelOutline();
 			avatar.Gone = true;
+			ResetColl();
 			Application.LoadLevel(2);
 			ResetStats();
 		}
@@ -1205,6 +1189,11 @@ public class ChromatoseManager : MonoBehaviour {
 	public void ResetComicCounter(){
 		_TotalComicThumb = _RoomManager.UpdateTotalComic();
 		_ComicThumbCollected = 0;
+	}
+	public void ResetColl(){
+		_RedCollected = 0;
+		_WhiteCollected = 0;
+		_BlueCollected = 0;
 	}
 	public void ResetPos(){
 		avatar.transform.position = _AvatarStartingPos;

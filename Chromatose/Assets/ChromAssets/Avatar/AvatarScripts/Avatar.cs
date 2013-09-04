@@ -21,6 +21,8 @@ public class Avatar : ColourBeing
 			set{_CurColor = value;}
 		}
 	
+	private bool bubbleGrowed = false, bubbleShrinked = false;
+	
 	private bool _Colored = false;
 	private bool _CantPlaySpeedFX = false;
 	private float _ColorCounter = 0;
@@ -1112,8 +1114,15 @@ public class Avatar : ColourBeing
 		switch(Application.loadedLevelName){
 		case ("Tutorial"):
 			if (onRedCol){
-				bubble.ShowBubbleFor("avatarBubble_redColor1", 0.3f);
-				onRedCol = true;
+				if(!bubbleGrowed){
+					bubble.ShowBubbleFor("bubbleAvatar_grow", 0.3f);
+					StartCoroutine(BubbleGrowed());
+				}
+				else if(bubbleGrowed){
+					
+					bubble.ShowBubbleFor("avatarBubble_redColor1", 0.3f);
+					onRedCol = true;
+				}
 			}
 			
 			if (!colour.White && !hasChangedColour){
@@ -1167,26 +1176,52 @@ public class Avatar : ColourBeing
 			break;
 		case ("GYM_CHU"):
 			if (onRedCol){					// && manager.GetCollectibles(Couleur.red) == 0){
-				bubble.ShowBubbleFor("avatarBubble_redColor1", 0.3f);
-				onRedCol = false;
+				if(!bubbleGrowed){
+					bubble.ShowBubbleFor("avatarBubble_grow2", 0.15f);
+					StartCoroutine(BubbleGrowed());
+				}
+				else if(bubbleGrowed){
+					bubble.ShowBubbleFor("avatarBubble_redColor1", 0.4f);
+					//onRedCol = false;
+				}
 			}
-			
-			if (!colour.White && !hasChangedColour){
+			else if (!colour.White && !hasChangedColour){				
 				hasChangedColour = true;
 			}
-			if (onRedWell && !hasChangedColour){
-				bubble.ShowBubbleFor("avatarBubble_P1", 0.4f);
-				onRedWell = false;
+			else if (onRedWell && !hasChangedColour){
+				if(!bubbleGrowed){
+					bubble.ShowBubbleFor("avatarBubble_grow2", 0.15f);
+					StartCoroutine(BubbleGrowed());
+				}
+				else if(bubbleGrowed){
+					bubble.ShowBubbleFor("avatarBubble_P1", 0.4f);
+					//onRedWell = false;
+				}
 			}
-			
-			if (atDestructible && !hasDestroyed && _CurColor != Color.red){
-				bubble.ShowBubbleFor(colour.Red? "avatarBubble_P1" : "avatarBubble_redColor2", 0.2f);
-				atDestructible = false;
+			else if (atDestructible && !hasDestroyed && _CurColor != Color.red){
+				if(!bubbleGrowed){
+					bubble.ShowBubbleFor("avatarBubble_grow2", 0.15f);
+					StartCoroutine(BubbleGrowed());
+				}
+				else if(bubbleGrowed){				
+					bubble.ShowBubbleFor(colour.Red? "avatarBubble_P1" : "avatarBubble_redColor2", 0.2f);
+					//atDestructible = false;
+				}
 			}
-			
-			if (wantsToRelease){
-				bubble.ShowBubbleFor("avatarBubble_fire1", 0.3f);
-				wantsToRelease = false;
+			else if (wantsToRelease){
+				if(!bubbleGrowed){
+					bubble.ShowBubbleFor("avatarBubble_grow2", 0.15f);
+					StartCoroutine(BubbleGrowed());
+				}
+				else if(bubbleGrowed){
+					bubble.ShowBubbleFor("avatarBubble_fire1", 0.3f);
+					//wantsToRelease = false;
+				}
+			}
+			else{
+				if(bubbleGrowed){
+					bubbleGrowed = false;
+				}
 			}
 			
 			break;
@@ -1495,6 +1530,14 @@ public class Avatar : ColourBeing
 	IEnumerator PlaySpeedFXBool(){
 		yield return new WaitForSeconds(1.0f);
 		_CantPlaySpeedFX = false;
+	}
+	IEnumerator BubbleGrowed(){
+		yield return new WaitForSeconds(0.3f);
+		bubbleGrowed = true;
+	}
+	IEnumerator BubbleShrinked(){
+		yield return new WaitForSeconds(0.15f);
+		bubbleShrinked = true;
 	}
 }
 

@@ -625,8 +625,9 @@ public class MainMenu : MonoBehaviour {
 				//BUY IT ON STEAM
 				if(_ADADAD){
 					GUI.skin = _GreenlightButton;
-					if(GUI.Button(new Rect(1065, -27.5f, 195, 185), "")){
-						Application.OpenURL("http://store.steampowered.com/");
+					if(GUI.Button(new Rect(920, 20f, 335, 137), "")){
+						//Application.OpenURL("http://steamcommunity.com/sharedfiles/filedetails/?id=174349688");
+						Application.ExternalEval("window.open('http://steamcommunity.com/sharedfiles/filedetails/?id=174349688','Chromatose Greenlight Page')");
 					}
 				}
 								
@@ -864,8 +865,9 @@ public class MainMenu : MonoBehaviour {
 				
 									
 				GUI.skin = _GreenlightButton;
-					if(GUI.Button(new Rect(578, 545, 273, 273), "")){
-						Application.OpenURL("http://store.steampowered.com/");
+					if(GUI.Button(new Rect(578, 615, 273, 120), "")){
+						//Application.OpenURL("http://steamcommunity.com/sharedfiles/filedetails/?id=174349688");
+						Application.ExternalEval("window.open('http://steamcommunity.com/sharedfiles/filedetails/?id=174349688','Chromatose Greenlight Page')");
 					}
 				
 			
@@ -880,7 +882,7 @@ public class MainMenu : MonoBehaviour {
 				//TODO Gerer la Progress Bar differement selon WebPlayer/StandAlone
 					//PROGRESS BAR
 				if(async != null){
-					GUI.DrawTexture(new Rect(140, 267, 500 * async.progress * 100f, inLoadRect.height*0.18f), mainMenuButtton.progressLine);
+					GUI.DrawTexture(new Rect(150, 278, 6 * async.progress * 100f, inLoadRect.height*0.10f), mainMenuButtton.progressLine);
 					GUI.DrawTexture(new Rect(130, 262, 590, inLoadRect.height*0.2f), mainMenuButtton.emptyProgressBar);
 				}	
 								

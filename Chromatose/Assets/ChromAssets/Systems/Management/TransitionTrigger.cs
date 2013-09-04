@@ -93,7 +93,7 @@ public class TransitionTrigger : MonoBehaviour {
 			
 			if (!_Popped) return;
 		
-			if(_LightCounter < 1){_LightCounter += 0.02f;}
+			if(_LightCounter < 1){_LightCounter += 0.05f;}
 			else{
 				myTrigger();
 			}
@@ -104,9 +104,9 @@ public class TransitionTrigger : MonoBehaviour {
 			if (!_Popped) return;
 			
 				
-			if (_LightCounter < 1 && _FadeIn){_LightCounter += 0.03f;}
+			if (_LightCounter < 1 && _FadeIn){_LightCounter += 0.05f;}
 			if (_LightCounter > 0 && _FadeOut){_LightCounter -= 0.015f;}
-			if (_LightCounter > 1){_FadeIn = false; _FadeOut = true; _Manager.ResetComicCounter(); myTrigger();}
+			if (_LightCounter > 1){_FadeIn = false; _FadeOut = true; _Manager.ResetComicCounter(); _Manager.ResetColl(); myTrigger();}
 				
 			break;
 		case transitionVers.TimeTrial:
@@ -119,7 +119,7 @@ public class TransitionTrigger : MonoBehaviour {
 			
 			if (!_Popped) return;
 			
-			if (_LightCounter < 1 && _FadeIn){_LightCounter += 0.03f;}
+			if (_LightCounter < 1 && _FadeIn){_LightCounter += 0.05f;}
 			if (_LightCounter > 0 && _FadeOut){_LightCounter -= 0.015f;}
 			if (_LightCounter > 1){_FadeIn = false; _FadeOut = true; _Cam.SwitchCamType(); myTrigger();}
 			
@@ -128,7 +128,7 @@ public class TransitionTrigger : MonoBehaviour {
 		case transitionVers.ReturnMainMenu:
 			if (!_Popped) return;
 			
-			if (_LightCounter < 1 && _FadeIn){_LightCounter += 0.03f;}
+			if (_LightCounter < 1 && _FadeIn){_LightCounter += 0.05f;}
 			if (_LightCounter > 0 && _FadeOut){_LightCounter -= 0.015f;}
 			if (_LightCounter > 1){_FadeIn = false; _FadeOut = true; myTrigger();}
 			break;
@@ -251,6 +251,7 @@ public class TransitionTrigger : MonoBehaviour {
 	IEnumerator DelaiBeforeOpti(){
 		yield return new WaitForSeconds(0.5f);
 		_Manager.ResetComicCounter();
+		_Manager.ResetColl();
 	}
 }
 #endregion

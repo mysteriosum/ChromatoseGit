@@ -84,6 +84,6 @@ public class ComicBG : MonoBehaviour {
 		yield return new WaitForSeconds(delai);
 		comic[index].SetActive(true);
 		alreadySpawn[index] = true;
-		sfxPlayer.Play ();
+		sfxPlayer.Play();
 	}
 }
