@@ -4,9 +4,7 @@ using System.Collections.Generic;
 
 public class Avatar : ColourBeing
 {
-	
-	public AudioSource sfxPlayer;
-	
+
 	//Commentaire du Chu
 	private Color partColor = Color.white;
 	public Color AvatarColor{
@@ -29,9 +27,6 @@ public class Avatar : ColourBeing
 	private int _SpriteIndex = 1;
 	private string _ColorFadeString = "";
 	private string _PlayerFadeString = "";
-	
-	private float _VolumeFade = 0.20f;
-	private float _VolumeFadeCounter = 0f;
 	
 	private float loseRate = 6f;
 	private float loseTimer = 0f;
@@ -658,7 +653,6 @@ public class Avatar : ColourBeing
 	{		
 		manager = ChromatoseManager.manager;
 		movement = GetComponent<Movement>();
-		sfxPlayer = GetComponent<AudioSource>();
 		curColor = Color.white;
 		_TimeTrialActivated = manager.TimeTrialMode;
 		_NoDeathModeActivated = manager.NoDeathMode;
@@ -878,7 +872,7 @@ public class Avatar : ColourBeing
 		
 		if (detectedSB){
 			if(!_CantPlaySpeedFX){
-				sfxPlayer.PlayOneShot(manager.sfx[12]);
+				MusicManager.soundManager.PlaySFX(16);
 				_CantPlaySpeedFX = true;
 				StartCoroutine(PlaySpeedFXBool());
 			}
@@ -906,31 +900,9 @@ public class Avatar : ColourBeing
 			}
 			
 			if(Input.GetKeyDown(KeyCode.O)){
-				sfxPlayer.volume = _VolumeFade;
-				if(!sfxPlayer.isPlaying){
-					sfxPlayer.clip = manager.sfx[0];
-					//sfxPlayer.loop = true;
-					sfxPlayer.Play();
-					_VolumeFadeCounter++;
-				}
-				/*
-				if(_VolumeFadeCounter > 1){
-					_VolumeFade = 0.40f;
-					if(_VolumeFadeCounter > 2){
-						_VolumeFade = 0.20f;
-						if(_VolumeFadeCounter > 3){
-							_VolumeFade = 0;
-						}
-					}				
-				}*/
+				MusicManager.soundManager.PlaySFX(0, 0.6f);
 			}
-			/*
-			else{
-				sfxPlayer.loop = false;
-				_VolumeFade = 0.60f;
-				_VolumeFadeCounter = 0;
-			}*/
-			
+					
 			
 			getA = Input.GetKey(KeyCode.Q);
 			if (Input.GetKey (KeyCode.LeftArrow)){
@@ -1016,7 +988,7 @@ public class Avatar : ColourBeing
 				
 				t.position = outline.transform.position;
 				t.rotation = outline.transform.rotation;
-				sfxPlayer.PlayOneShot(manager.sfx[5]);
+				MusicManager.soundManager.PlaySFX(17);
 				
 				Destroy(outline);
 				hasOutline = false;
@@ -1313,19 +1285,6 @@ public class Avatar : ColourBeing
 		}
 		velocity = this.movement.Displace(gonnaThrust);
 		t.position += new Vector3(velocity.x, velocity.y, 0) * multiplier;
-		/*
-		if(this.movement.thruster.velocity.magnitude == this.movement.thruster.maxSpeed){
-			if(!sfxPlayer.isPlaying){
-				sfxPlayer.clip = manager.sfx[13];
-				sfxPlayer.loop = true;
-				sfxPlayer.Play();
-			}
-		}
-		else{
-			sfxPlayer.loop = false;
-		}*/
-		
-		//Debug.Log(t.rotation.eulerAngles.z);
 		
 	}
 	protected void TranslateInputs(){
@@ -1470,8 +1429,7 @@ public class Avatar : ColourBeing
 		}
 		else{
 			Debug.Log("Pas le bon Setting");
-		}
-		//sfxPlayer.PlayOneShot(manager.sfx[4]);		
+		}	
 	}
 	
 	public void EmptyingBucket(){

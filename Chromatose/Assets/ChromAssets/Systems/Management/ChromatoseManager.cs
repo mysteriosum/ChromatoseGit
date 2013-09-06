@@ -54,7 +54,6 @@ public class ChromatoseManager : MonoBehaviour {
 	public static ChromatoseManager manager; 
 	private ChromaRoomManager _RoomManager;
 	private RoomInstancier _RoomSaver;
-	private AudioSource sfxPlayer;
 	private tk2dSprite spriteInfo;
 	public ChromHUD hud = new ChromHUD();
 	public TimeTrialTimes timeTrialClass = new TimeTrialTimes();
@@ -510,7 +509,6 @@ public class ChromatoseManager : MonoBehaviour {
 		_TotalComicThumb = _RoomManager.UpdateTotalComic();
 		_FaderList = FindObjectsOfType(typeof(SpriteFader)) as SpriteFader[];
 		avatar = GameObject.FindGameObjectWithTag("avatar").GetComponent<Avatar>();
-		sfxPlayer = GetComponent<AudioSource>();
 		
 		_GUIState = GUIStateEnum.OnStart;
 		
@@ -596,7 +594,7 @@ public class ChromatoseManager : MonoBehaviour {
 			if(Input.GetKeyDown(KeyCode.Space)){
 				_GUIState = GUIStateEnum.Interface;
 				avatar.CanControl();
-				sfxPlayer.PlayOneShot(sfx[6]);
+				MusicManager.soundManager.PlaySFX(19);
 			}
 			break;
 		}
@@ -730,7 +728,8 @@ public class ChromatoseManager : MonoBehaviour {
 			if(GUI.Button(new Rect(260, 70, 256, 256), "")){
 				_GUIState = GUIStateEnum.Interface;
 				avatar.CanControl();
-				sfxPlayer.PlayOneShot(sfx[6]);
+				MusicManager.soundManager.PlaySFX(19);
+				MusicManager.soundManager.CheckLevel();
 			}
 			
 			//IMAGE AVATAR
@@ -1001,7 +1000,7 @@ public class ChromatoseManager : MonoBehaviour {
 	public void Death(){
 		
 		if(!_NoDeathModeActivated){
-			sfxPlayer.PlayOneShot(sfx[11]);
+			MusicManager.soundManager.PlaySFX(6);
 			danim = new Avatar.DeathAnim();
 			danim.PlayDeath(Reset);
 			//avatar.SendMessage("FadeAlpha", 0f);
@@ -1015,7 +1014,7 @@ public class ChromatoseManager : MonoBehaviour {
 			avatar.Gone = true;
 		}
 		else{
-			sfxPlayer.PlayOneShot(sfx[11]);
+			MusicManager.soundManager.PlaySFX(6);
 			danim = new Avatar.DeathAnim();
 			danim.PlayDeath(Reset);
 			//avatar.SendMessage("FadeAlpha", 0f);
@@ -1061,7 +1060,7 @@ public class ChromatoseManager : MonoBehaviour {
 	
 	public void NewCheckpoint(Transform cp){
 		curCheckpoint = cp;
-		sfxPlayer.PlayOneShot(sfx[10]);
+		MusicManager.soundManager.PlaySFX(2);
 		GameObject[] cps = GameObject.FindGameObjectsWithTag("checkpoint");
 		foreach (GameObject check in cps){
 			Checkpoint script = check.GetComponent<Checkpoint>();
@@ -1141,7 +1140,7 @@ public class ChromatoseManager : MonoBehaviour {
 	}
 	
 	void BlowWhiteColl(int amount, Vector3 pos){
-		avatar.sfxPlayer.PlayOneShot(sfx[13]);
+		MusicManager.soundManager.PlaySFX(8);
 		for(int i = 0; i < amount; i++){
 			Vector2 randomVelocity = Random.insideUnitCircle.normalized * Random.Range(40, 65);
 			Vector3 randomPos = avatar.transform.position + (Vector3)randomVelocity;
@@ -1160,7 +1159,7 @@ public class ChromatoseManager : MonoBehaviour {
 			GameObject bCol = Instantiate(prefab.collectible, randomPos, Quaternion.identity)as GameObject;
 			bCol.GetComponent<Collectible2>().effect = true;
 			bCol.GetComponent<Collectible2>().colorCollectible = Collectible2._ColorCollectible.Blue;
-			avatar.sfxPlayer.PlayOneShot(sfx[7]);
+			MusicManager.soundManager.PlaySFX(12);
 			StartCoroutine(DelaiToBlowColl(0.5f, bCol));
 		}
 	}
@@ -1247,7 +1246,9 @@ public class ChromatoseManager : MonoBehaviour {
 	}
 	IEnumerator RestartRoom(){
 		yield return new WaitForSeconds(0.25f);
-		_RoomSaver.LoadRoom();
+		if(_RoomSaver){
+			_RoomSaver.LoadRoom();
+		}
 	}
 #endregion
 	

@@ -12,7 +12,6 @@ public class Collectible2 : MonoBehaviour {
 	private ChromatoseManager _Manager;
 	private Avatar _AvatarScript;
 	private tk2dAnimatedSprite _MainAnim;
-	private AudioSource sfxPlayer;
 	
 	private Color myColor;
 	private Vector2 _RandomVelocity;
@@ -138,7 +137,6 @@ public class Collectible2 : MonoBehaviour {
 		_Manager = ChromatoseManager.manager;
 		_AvatarScript = GameObject.FindGameObjectWithTag("avatar").GetComponent<Avatar>();
 		_MainAnim = GetComponent<tk2dAnimatedSprite>();
-		sfxPlayer = GetComponent<AudioSource>();
 		
 		
 		switch(colorCollectible){
@@ -177,7 +175,7 @@ public class Collectible2 : MonoBehaviour {
 			_MainAnim.CurrentClip.wrapMode = tk2dSpriteAnimationClip.WrapMode.Once;
 			_MainAnim.animationCompleteDelegate = Die;
 			if(!_Effect){
-				sfxPlayer.Play();
+				MusicManager.soundManager.PlaySFX(3);
 			}
 			popped = true;
 		}
