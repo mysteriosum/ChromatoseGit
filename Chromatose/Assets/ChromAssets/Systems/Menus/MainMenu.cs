@@ -261,7 +261,7 @@ public class MainMenu : MonoBehaviour {
 		GUI.skin.toggle.fontSize = 44;
 		
 		float horizRatio = Screen.width / 1280.0f;
-		float vertiRatio = Screen.height / 960.0f;
+		float vertiRatio = Screen.height / 720.0f;
 		
 		GUI.matrix = Matrix4x4.TRS(Vector3.zero, Quaternion.identity,new Vector3(horizRatio, vertiRatio, 1f));
 
@@ -296,25 +296,24 @@ public class MainMenu : MonoBehaviour {
 					//START BUTTON
 					GUIUtility.RotateAroundPivot(17.5f + _RotStartButton, new Vector2(435*horizRatio, 360*vertiRatio));
 					GUI.skin.button.fontSize = 76;
-					if(GUI.Button(new Rect(335, 310, 280, 85), "START")){
-						//_MenuWindows = _MenuWindowsEnum.LevelSelectionWindows;
-						_MenuWindows = _MenuWindowsEnum.LoadingScreen;
-						_lvlLoad = Application.LoadLevelAsync(Application.loadedLevel + 2);
-						//StartCoroutine(LoadLevel());
+					if(GUI.Button(new Rect(335, 510, 280, 85), "START")){
+						_MenuWindows = _MenuWindowsEnum.LevelSelectionWindows;
+						//_MenuWindows = _MenuWindowsEnum.LoadingScreen;
+						//_lvlLoad = Application.LoadLevelAsync(Application.loadedLevel + 2);
 					}
 					GUI.matrix = matrixBackup; 
 				}	
 				
 				GUI.skin.button.fontSize = 48;
 				GUIUtility.RotateAroundPivot(8f, new Vector2(920*horizRatio, 310*vertiRatio));
-				if(GUI.Button(new Rect(880, 290, 190, 60), "OPTIONS")){
+				if(GUI.Button(new Rect(880, 490, 190, 60), "OPTIONS")){
 					_MenuWindows = _MenuWindowsEnum.OptionWindows;
 				}
 				GUI.matrix = matrixBackup; 
 				
 				GUI.skin.button.fontSize = 32;
 				GUIUtility.RotateAroundPivot(-8f, new Vector2(50*horizRatio, 380*vertiRatio));
-				if(GUI.Button(new Rect(25, 360, 220, 50), "> CREDITS <")){
+				if(GUI.Button(new Rect(25, 560, 220, 50), "> CREDITS <")){
 					
 				}
 				GUI.matrix = matrixBackup; 
@@ -348,8 +347,60 @@ public class MainMenu : MonoBehaviour {
 				
 			#region LevelSelection Windows
 			case _MenuWindowsEnum.LevelSelectionWindows:
-			
 				
+				GUI.skin = null;
+				GUI.skin.button.fontSize = 22;
+				if(GUI.Button(new Rect(250, 50, 300, 50), "TUTO - BLANC 1")){
+					_MenuWindows = _MenuWindowsEnum.LoadingScreen;
+					StartCoroutine(LoadALevel(1));
+				}
+				if(GUI.Button(new Rect(250, 125, 300, 50), "NIV 1 - ROUGE 1")){
+					_MenuWindows = _MenuWindowsEnum.LoadingScreen;
+					StartCoroutine(LoadALevel(2));
+				}
+				if(GUI.Button(new Rect(250, 200, 300, 50), "NIV 2 - BLANC 2")){
+					_MenuWindows = _MenuWindowsEnum.LoadingScreen;
+					StartCoroutine(LoadALevel(3));
+				}
+				if(GUI.Button(new Rect(250, 275, 300, 50), "NIV 3 - ROUGE 2")){
+					_MenuWindows = _MenuWindowsEnum.LoadingScreen;
+					StartCoroutine(LoadALevel(4));
+				}
+				if(GUI.Button(new Rect(250, 350, 300, 50), "NIV 4 - BLANC 3")){
+					_MenuWindows = _MenuWindowsEnum.LoadingScreen;
+					StartCoroutine(LoadALevel(5));
+				}
+				
+				
+				
+				
+				if(GUI.Button(new Rect(600, 50, 300, 50), "NIV 5 - ROUGE/BLEU 3")){
+					_MenuWindows = _MenuWindowsEnum.LoadingScreen;
+					StartCoroutine(LoadALevel(6));
+				}
+				if(GUI.Button(new Rect(600, 125, 300, 50), "NIV 6 - BLANC 4")){
+					_MenuWindows = _MenuWindowsEnum.LoadingScreen;
+					StartCoroutine(LoadALevel(7));
+				}
+				if(GUI.Button(new Rect(600, 200, 300, 50), "NIV 7 - BLEU 4")){
+					_MenuWindows = _MenuWindowsEnum.LoadingScreen;
+					StartCoroutine(LoadALevel(8));
+				}
+				if(GUI.Button(new Rect(600, 275, 300, 50), "NIV 8 - ROUGE/BLEU 5")){
+					_MenuWindows = _MenuWindowsEnum.LoadingScreen;
+					StartCoroutine(LoadALevel(9));
+				}
+				if(GUI.Button(new Rect(600, 350, 300, 50), "NIV 9 - ROUGE 6")){
+					_MenuWindows = _MenuWindowsEnum.LoadingScreen;
+					StartCoroutine(LoadALevel(10));
+				}
+				
+				
+				
+				if(GUI.Button(new Rect(250, 425, 650, 50), "BOSS FINAL")){
+					_MenuWindows = _MenuWindowsEnum.LoadingScreen;
+					StartCoroutine(LoadALevel(11));
+				}
 				
 				break;
 				#endregion
@@ -599,7 +650,7 @@ public class MainMenu : MonoBehaviour {
 				if(GUI.Button(new Rect(195, 408, 400, 400), "")){
 					_MenuWindows = _MenuWindowsEnum.LoadingScreen;
 					//Application.LoadLevelAsync(1);
-					StartCoroutine(LoadALevel());
+					StartCoroutine(LoadALevel(1));
 				}
 				GUI.matrix = matrixBackup; 
 
@@ -911,9 +962,9 @@ public class MainMenu : MonoBehaviour {
 		}
 	}
 	
-	private IEnumerator LoadALevel(){
+	private IEnumerator LoadALevel(int levelInt){
 		
-		async = Application.LoadLevelAsync(Application.loadedLevel + 1);
+		async = Application.LoadLevelAsync(levelInt);
 		
 		yield return async;
 	}

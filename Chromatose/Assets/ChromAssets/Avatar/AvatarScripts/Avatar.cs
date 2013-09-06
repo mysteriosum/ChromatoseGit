@@ -30,7 +30,7 @@ public class Avatar : ColourBeing
 	private string _ColorFadeString = "";
 	private string _PlayerFadeString = "";
 	
-	private float _VolumeFade = 0.60f;
+	private float _VolumeFade = 0.20f;
 	private float _VolumeFadeCounter = 0f;
 	
 	private float loseRate = 6f;
@@ -905,7 +905,7 @@ public class Avatar : ColourBeing
 				getW = true;
 			}
 			
-			if(Input.GetKey(KeyCode.O)){
+			if(Input.GetKeyDown(KeyCode.O)){
 				sfxPlayer.volume = _VolumeFade;
 				if(!sfxPlayer.isPlaying){
 					sfxPlayer.clip = manager.sfx[0];
@@ -913,6 +913,7 @@ public class Avatar : ColourBeing
 					sfxPlayer.Play();
 					_VolumeFadeCounter++;
 				}
+				/*
 				if(_VolumeFadeCounter > 1){
 					_VolumeFade = 0.40f;
 					if(_VolumeFadeCounter > 2){
@@ -921,13 +922,14 @@ public class Avatar : ColourBeing
 							_VolumeFade = 0;
 						}
 					}				
-				}
+				}*/
 			}
+			/*
 			else{
 				sfxPlayer.loop = false;
 				_VolumeFade = 0.60f;
 				_VolumeFadeCounter = 0;
-			}
+			}*/
 			
 			
 			getA = Input.GetKey(KeyCode.Q);
