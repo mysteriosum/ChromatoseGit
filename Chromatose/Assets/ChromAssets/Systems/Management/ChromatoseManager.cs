@@ -312,7 +312,7 @@ public class ChromatoseManager : MonoBehaviour {
 				set{_TimeString = value;}
 			}
 
-		public static List<float> _TimesList;// = new List<float>(10);
+		public static List<float> _TimesList;	// = new List<float>(10);
 			public List<float> TimeList{
 				get{return _TimesList;}
 			}

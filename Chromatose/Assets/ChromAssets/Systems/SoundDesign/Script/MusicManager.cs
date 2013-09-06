@@ -130,7 +130,7 @@ public class MusicManager : MonoBehaviour{
 	private AudioSource[] _SFXPlayer;
 	
 	private bool setuped = false;
-	
+	private bool onCrossfade = false;
 	
 	
 	
@@ -166,12 +166,12 @@ public class MusicManager : MonoBehaviour{
 			
 			//TUTO
 		case 1:
-			_MusicSources[1].Play();
+			CrossFadeMusic(1, 0.0025f);
 			break;
 			
 			//LEVEL
 		case 2:
-			_MusicSources[2].Play();
+			CrossFadeMusic(2, 0.0025f);
 			break;
 		case 3:
 			_MusicSources[3].Play();
@@ -204,11 +204,6 @@ public class MusicManager : MonoBehaviour{
 
 	void Update () {
 		if(!setuped)Setup();
-		
-		
-		//DEBUG CALL
-		Debug.Log(_SFXPlayer.Length);
-	
 	}
 	
 	public void PlaySFX(int sfxIndex, float volume){
@@ -216,7 +211,6 @@ public class MusicManager : MonoBehaviour{
 		foreach(AudioSource sfxP in _SFXPlayer){
 			if(!sfxP.isPlaying){
 				sfxP.PlayOneShot(_SFXList[sfxIndex], volume);
-				Debug.Log("Play on Player ");
 				return;
 			}
 		}
@@ -225,5 +219,42 @@ public class MusicManager : MonoBehaviour{
 		PlaySFX(sfxIndex, 1.0f);
 	}
 	
+	
+	void CrossFadeMusic(int musicIndex, float fadeRate){
+		
+		int curPlayer = 0;
+			
+		for(int i = 0; i < _MusicSources.Count; i++){
+			if (_MusicSources[i].isPlaying){
+				curPlayer = i;
+			}
+		}
+		
+		_MusicSources[musicIndex].volume = 0.0f;
+		_MusicSources[musicIndex].Play();
+			
+		onCrossfade = true;
+		
+		for(float f = 1f; f >= fadeRate; f = f - fadeRate){
+			_MusicSources[curPlayer].volume = f;
+			_MusicSources[musicIndex].volume += fadeRate * 2f;
+			Debug.Log("f = " + f);
+			if(f <= 0){
+				_MusicSources[curPlayer].Stop ();
+			}
+		}		
+	}
+	
+	void SkipToNextTrack(){
+		
+	}
+	
+	void SkipToThisTrack(int musicIndex){
+		
+	}
+	
+	IEnumerator ResetCrossfade(){
+		yield return new WaitForSeconds(0.5f);
+	}
 }
 

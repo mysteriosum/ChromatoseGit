@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using ChromaStats;
 
 public class MainMenu : MonoBehaviour {
 	
@@ -11,7 +12,9 @@ public class MainMenu : MonoBehaviour {
 	public enum _OptionWindowsEnum{
 		MainOption, Sound, GameMode, Stats, DeleteSavegame,
 	}
-		
+	
+	
+	
 	public MainMenuButton mainMenuButtton = new MainMenuButton();
 	private StatsDisplay _StatsDisplay = new StatsDisplay();
 	
@@ -30,7 +33,7 @@ public class MainMenu : MonoBehaviour {
 	public GUISkin _SkinMenuSansBox;
 	public GUISkin _SkinMenuAvecPetitBox;
 	
-	public GUISkin _StartButtonSkin, _CreditButtonSkin, _FbookButtonSkin, _TwitterButtonSkin, _BackButtonSkin, _BulleSteamSkin, _GreenlightButton;
+	public GUISkin _StartButtonSkin, _CreditButtonSkin, _FbookButtonSkin, _TwitterButtonSkin, _BackButtonSkin, _GreenlightButton;
 	public Texture _LoadingText, _AvatarLoadingLoop1, _AvatarLoadingLoop2, _BulleLoadLoop1, _BulleLoadLoop2;
 	
 	private Color _FontColor;
@@ -287,7 +290,7 @@ public class MainMenu : MonoBehaviour {
 					//RESUME BUTTON
 					GUIUtility.RotateAroundPivot(17.5f + _RotStartButton, new Vector2(435*horizRatio, 360*vertiRatio));
 					GUI.skin.button.fontSize = 76;
-					if(GUI.Button(new Rect(335, 310, 280, 85), "RESUME")){
+					if(GUI.Button(new Rect(335, 510, 280, 85), "RESUME")){
 						_MenuWindows = _MenuWindowsEnum.LevelSelectionWindows;
 					}
 					GUI.matrix = matrixBackup; 
