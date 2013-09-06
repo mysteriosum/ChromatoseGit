@@ -7,6 +7,11 @@ public class MusicManager : MonoBehaviour{
 	public enum _DevStateEnum{
 		EditorDevelopment, StandAlone, WebPlayer
 	}
+	
+	
+	public static MusicManager soundManager;
+	
+	
 	[HideInInspector]
 	public _DevStateEnum _DevState;
 	private bool _MuteControl = false;
@@ -105,8 +110,8 @@ public class MusicManager : MonoBehaviour{
 			set{_MusicToPlay = value;}
 		}
 	
-	private AudioSource _SFXSource;
-
+	
+	public AudioClip[] _SFXList;
 	
 	
 	private ChromatoseManager _Manager;
@@ -120,21 +125,105 @@ public class MusicManager : MonoBehaviour{
 
 	}
 	
+	
+	//Var Very Private
+	private AudioSource[] _SFXPlayer;
+	
+	private bool setuped = false;
+	
+	
+	
+	
+	
 	void Start () {
 		DontDestroyOnLoad(this.gameObject);
 		DontDestroyOnLoad(this);
 		
-		_Manager = ChromatoseManager.manager;
-				
+		Setup();
 	}
 	
+	void Setup(){
+		soundManager = this;
+		
+		_Manager = ChromatoseManager.manager;
+		GameObject sfxTempObj = GameObject.FindGameObjectWithTag("SFXPlayer");
+		_SFXPlayer = sfxTempObj.GetComponents<AudioSource>();
+		
+		CheckLevel();
+		
+		setuped = true;
+	}
+	
+	public void CheckLevel(){
+		
+		int curLevel = Application.loadedLevel;
+		
+		switch(curLevel){
+			//MAIN MENU
+		case 0:
+			_MusicSources[0].Play();
+			break;
+			
+			//TUTO
+		case 1:
+			_MusicSources[1].Play();
+			break;
+			
+			//LEVEL
+		case 2:
+			_MusicSources[2].Play();
+			break;
+		case 3:
+			_MusicSources[3].Play();
+			break;
+		case 4:
+			_MusicSources[4].Play();
+			break;
+		case 5:
+			_MusicSources[5].Play();
+			break;
+		case 6:
+			_MusicSources[6].Play();
+			break;
+		case 7:
+			_MusicSources[7].Play();
+			break;
+		case 8:
+			_MusicSources[8].Play();
+			break;
+		case 9:
+			_MusicSources[9].Play();
+			break;
+			
+			//BOSS FINAL
+		case 10:
+			_MusicSources[10].Play();
+			break;			
+		}
+	}
 
 	void Update () {
+		if(!setuped)Setup();
 		
 		
-
+		//DEBUG CALL
+		Debug.Log(_SFXPlayer.Length);
 	
 	}
 	
-
+	public void PlaySFX(int sfxIndex, float volume){
+		
+		foreach(AudioSource sfxP in _SFXPlayer){
+			if(!sfxP.isPlaying){
+				sfxP.PlayOneShot(_SFXList[sfxIndex], volume);
+				Debug.Log("Play on Player ");
+				return;
+			}
+		}
+	}	
+	public void PlaySFX(int sfxIndex){
+		PlaySFX(sfxIndex, 1.0f);
+	}
+	
 }
+

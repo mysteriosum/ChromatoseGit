@@ -10,8 +10,7 @@ public class ComicThumb : MonoBehaviour {
 	
 	public int myIndex;
 	public GameObject myComicBG;
-	public AudioClip thumbSound;
-	
+		
 	private ChromatoseManager _Manager;
 	private Camera _Camera;
 	private GameObject _Moi = null;
@@ -20,8 +19,7 @@ public class ComicThumb : MonoBehaviour {
 	private tk2dSprite spriteInfo;
 	public GameObject myCircleParent;
 	private tk2dAnimatedSprite myCircle;
-	private AudioSource _Player;
-	
+		
 	private float _TargetXOffset = 50f;
 	private float _TargetYOffset = 20f;
 	private float _MaxVitesseDelta = 150f;
@@ -58,7 +56,6 @@ public class ComicThumb : MonoBehaviour {
 		_Manager = ChromatoseManager.manager;
 		_Moi = this.gameObject;
 		_Camera = Camera.mainCamera;
-		_Player = GetComponent<AudioSource>();
 
 		spriteInfo = GetComponent<tk2dSprite>();
 		
@@ -147,7 +144,7 @@ public class ComicThumb : MonoBehaviour {
 		myComicBG.GetComponent<ComicBG>().MakeActive(myIndex);
 		_OnIdle = false;
 		ThumbStartGoBig();
-		_Player.Play();
+		MusicManager.soundManager.PlaySFX(5);
 	}
 	
 	void ThumbStartGoBig(){

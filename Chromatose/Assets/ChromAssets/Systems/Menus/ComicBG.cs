@@ -16,12 +16,11 @@ public class ComicBG : MonoBehaviour {
 	private bool _AvatarInHall = false;
 	private bool[] onWait = new bool[]{false, false, false, false, false, false, false, false, false, false};
 	private bool[] alreadySpawn = new bool[]{false, false, false, false, false, false, false, false, false, false};
-	
-	private AudioSource sfxPlayer;
+
 	
 	// Use this for initialization
 	void Start () {
-		sfxPlayer = GetComponent<AudioSource>();
+
 	}
 	
 	// Update is called once per frame
@@ -84,6 +83,6 @@ public class ComicBG : MonoBehaviour {
 		yield return new WaitForSeconds(delai);
 		comic[index].SetActive(true);
 		alreadySpawn[index] = true;
-		sfxPlayer.Play();
+		MusicManager.soundManager.PlaySFX(1);
 	}
 }
