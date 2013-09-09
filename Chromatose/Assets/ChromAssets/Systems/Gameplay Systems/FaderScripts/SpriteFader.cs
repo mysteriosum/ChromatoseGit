@@ -35,13 +35,15 @@ public class SpriteFader : MonoBehaviour {
 	
 	
 	void Start () {
-		
+		StartCoroutine(Setup ());		
+	}
+	IEnumerator Setup(){
+		yield return new WaitForSeconds(0.5f);
 		_Chromera = Camera.mainCamera;
 		_InitialBGColor = _Chromera.backgroundColor;
 		
 		inAlpha = -fadeRate;
 		outAlpha = 1 + fadeRate;
-		
 		
 		foreach (GameObject sprite in spritesIn){
 			if(sprite != null){

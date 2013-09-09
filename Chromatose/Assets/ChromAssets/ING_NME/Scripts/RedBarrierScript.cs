@@ -1,13 +1,12 @@
 using UnityEngine;
 using System.Collections;
 
-public class RedBarrierScript : MonoBehaviour {
+public class RedBarrierScript : MainManager {
 	
 	public tk2dSpriteAnimation flameAnim;
 	
 	
 	private tk2dAnimatedSprite[] myFlames;
-	private Transform avatarT;
 	
 	private bool _CanDie = false;
 	private bool _Gone = false;
@@ -17,8 +16,6 @@ public class RedBarrierScript : MonoBehaviour {
 	
 	#region Start
 	void Start () {
-			
-		avatarT = GameObject.FindWithTag("avatar").transform;
 		myFlames = GetComponentsInChildren<tk2dAnimatedSprite>();
 		
 		foreach(tk2dAnimatedSprite flames in myFlames){
@@ -27,8 +24,9 @@ public class RedBarrierScript : MonoBehaviour {
 			flames.anim = flameAnim;
 			flames.Play("flame1", animOffset);
 			flames.transform.rotation = Quaternion.identity;
-		}	
+		}
 	}
+	
 	#endregion
 	
 	

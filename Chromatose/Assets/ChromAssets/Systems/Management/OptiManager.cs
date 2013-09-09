@@ -1,28 +1,23 @@
 using UnityEngine;
 using System.Collections;
+using System.Linq;
+using System.Collections.Generic;
 
-public class OptiManager : MonoBehaviour {
+
+public class OptiManager : MainManager {
 	
 	[SerializeField]
 	public GameObject[] roomList;
+
 	
-	private int _CurRoom = 0;
-		public int curRoom{
-			get{return _CurRoom;}
-		}
-	private int _RoomToDisplay = 0;
-		public int roomToDisplay{
-			get{return _RoomToDisplay;}
-			set{_RoomToDisplay = value;}
-		}
-	
-	private ChromaRoomManager _RoomManager;
-	private RoomInstancier _RoomSaver;
-	// Use this for initialization
-	void Start () {
-		_RoomManager = GameObject.FindGameObjectWithTag("RoomManager").GetComponent<ChromaRoomManager>();
-		_RoomSaver = GameObject.FindGameObjectWithTag("SaveManager").GetComponent<RoomInstancier>();
+	void OnLevelWasLoaded(){
 		StartCoroutine(DelaiBeforeStartOpti());
+		FindAllRoom();
+	}
+	void Start () {
+		//DontDestroyOnLoad(this);
+		StartCoroutine(DelaiBeforeStartOpti());
+		FindAllRoom();
 	}
 	
 	// Update is called once per frame
@@ -30,38 +25,49 @@ public class OptiManager : MonoBehaviour {
 	
 	}
 	
-	public void OptimizeZone(){
-		
-		_CurRoom = _RoomManager.curRoom;
+	public void FindAllRoom(){
+		roomList = GameObject.FindGameObjectsWithTag("room").OrderBy( go => go.name).ToArray();
+		//Debug.Log(roomList[0].name);
+	}
 
-		foreach(GameObject go in roomList){
-			if(go != null){
-				go.SetActive(false);
+	public void OptimizeZone(){
+
+		if(currentLevel == 1 || currentLevel == 3 || currentLevel == 5 || currentLevel == 7){
+			foreach(GameObject go in roomList){
+				if(go != null){
+					go.SetActive(false);
+				}
 			}
+			roomList[currentRoomInt].SetActive(true);
+			Invoke("SaveRoom", 0.5f);
 		}
-		roomList[_CurRoom].SetActive(true);
-		_RoomSaver.SaveRoom();
+		else{
+			Debug.LogWarning("TU NE PEUX PAS OPTIMISER CE NIVEAU");
+		}		
 	}
 	
 	public void OptimizeZone(int roomNumber){
-		_CurRoom = roomNumber;
-		foreach(GameObject go in roomList){
-			if(go != null){
-				go.SetActive(false);
+		int _CurRoom = roomNumber;
+		
+		if(currentLevel == 1 || currentLevel == 3 || currentLevel == 5 || currentLevel == 7){
+			foreach(GameObject go in roomList){
+				if(go != null){
+					go.SetActive(false);
+				}
 			}
+			roomList[_CurRoom].SetActive(true);
+			Invoke("SaveRoom", 0.5f);
 		}
-		roomList[_CurRoom].SetActive(true);
-		_RoomSaver.SaveRoom();
+		else{
+			Debug.LogWarning("TU NE PEUX PAS OPTIMISER CE NIVEAU");
+		}
+
 	}
 	
-	IEnumerator DelaiToDesactive(){
-		yield return new WaitForSeconds(5.0f);
-		foreach(GameObject go in roomList){
-			if(go != null){
-				go.SetActive(false);
-			}
-		}
+	void SaveRoom(){
+		RoomInstancier.instancier.SaveRoom();
 	}
+	
 	IEnumerator DelaiBeforeStartOpti(){
 		yield return new WaitForSeconds(0.5f);
 		OptimizeZone();

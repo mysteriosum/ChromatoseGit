@@ -1,12 +1,16 @@
 using UnityEngine;
 using System.Collections;
 
-public class RoomInstancier : MonoBehaviour {
+public class RoomInstancier : MainManager {
 	
+	public static RoomInstancier instancier;
 	
-	public GameObject[] RoomPrefab;
+	public GameObject[] RoomPrefab_LVL_1, RoomPrefab_LVL_2,
+						RoomPrefab_LVL_3, RoomPrefab_LVL_4,
+						RoomPrefab_LVL_5, RoomPrefab_LVL_6,
+						RoomPrefab_LVL_7, RoomPrefab_LVL_8,
+						RoomPrefab_LVL_9, RoomPrefab_LVL_10;
 	
-	private OptiManager optiManager;
 	
 	private GameObject roomSaved;
 	
@@ -18,38 +22,113 @@ public class RoomInstancier : MonoBehaviour {
 	private Quaternion realRot;
 	
 	
-	// Use this for initialization
+	void Awake(){
+		instancier = this;
+	}
 	void Start () {
-		if(GameObject.FindGameObjectWithTag("OptiManager").GetComponent<OptiManager>() != null){
-			optiManager = GameObject.FindGameObjectWithTag("OptiManager").GetComponent<OptiManager>();
-		}
+		
 	}
 	
 	void Update(){}
+	
+	
 		
 	public void SaveRoom(){
-		if(optiManager != null){
-			roomPos = GameObject.Find("room" + optiManager.curRoom).transform.position;
-			roomRot = GameObject.Find("room" + optiManager.curRoom).transform.rotation;
-			Debug.Log("room" + optiManager.curRoom + " was Saved");
+				
+		if(_RoomManager != null){
+			roomPos = GameObject.Find(currentRoomString).transform.position;
+			roomRot = GameObject.Find(currentRoomString).transform.rotation;
+			Debug.Log(currentRoomString + " was Saved");
 		}
 	}
 	
+	//POUR DEV OU CALL EXTERNE
 	public void SaveRoom(GameObject roomToSave){
-		if(optiManager != null){
-			roomPos = GameObject.Find("room" + optiManager.curRoom).transform.position;
-			roomRot = GameObject.Find("room" + optiManager.curRoom).transform.rotation;
+		
+		
+		
+		if(_RoomManager != null){
+			roomPos = GameObject.Find(currentRoomString).transform.position;
+			roomRot = GameObject.Find(currentRoomString).transform.rotation;
 			Debug.Log("New Room was Saved");
 		}
 	}
 	
 	public void LoadRoom(){
-		if(optiManager != null){
-			Destroy(GameObject.Find("room" + optiManager.curRoom));
-			GameObject newRoom = Instantiate(RoomPrefab[optiManager.curRoom], roomPos, roomRot)as GameObject;
-			newRoom.name = "room" + optiManager.curRoom.ToString();
-			SaveRoom(newRoom);
-			Debug.Log("room" + optiManager.curRoom + " was Loaded");
+		if(_RoomManager != null){
+			GameObject newRoom = null;
+		switch(currentLevel){
+			case 1:					
+				Destroy(GameObject.Find(currentRoomString));
+				newRoom = Instantiate(RoomPrefab_LVL_1[currentRoomInt], roomPos, roomRot)as GameObject;
+				newRoom.name = currentRoomString;
+				SaveRoom(newRoom);
+				Debug.Log(currentRoomString + " was Loaded");
+				break;
+			case 2:					
+				Destroy(GameObject.Find(currentRoomString));
+				newRoom = Instantiate(RoomPrefab_LVL_2[currentRoomInt], roomPos, roomRot)as GameObject;
+				newRoom.name = currentRoomString;
+				SaveRoom(newRoom);
+				Debug.Log(currentRoomString + " was Loaded");
+				break;
+			case 3:					
+				Destroy(GameObject.Find(currentRoomString));
+				newRoom = Instantiate(RoomPrefab_LVL_3[currentRoomInt], roomPos, roomRot)as GameObject;
+				newRoom.name = currentRoomString;
+				SaveRoom(newRoom);
+				Debug.Log(currentRoomString + " was Loaded");
+				break;
+			case 4:					
+				Destroy(GameObject.Find(currentRoomString));
+				newRoom = Instantiate(RoomPrefab_LVL_4[currentRoomInt], roomPos, roomRot)as GameObject;
+				newRoom.name = currentRoomString;
+				SaveRoom(newRoom);
+				Debug.Log(currentRoomString + " was Loaded");
+				break;
+			case 5:					
+				Destroy(GameObject.Find(currentRoomString));
+				newRoom = Instantiate(RoomPrefab_LVL_5[currentRoomInt], roomPos, roomRot)as GameObject;
+				newRoom.name = currentRoomString;
+				SaveRoom(newRoom);
+				Debug.Log(currentRoomString + " was Loaded");
+				break;
+			case 6:					
+				Destroy(GameObject.Find(currentRoomString));
+				newRoom = Instantiate(RoomPrefab_LVL_6[currentRoomInt], roomPos, roomRot)as GameObject;
+				newRoom.name = currentRoomString;
+				SaveRoom(newRoom);
+				Debug.Log(currentRoomString + " was Loaded");
+				break;
+			case 7:					
+				Destroy(GameObject.Find(currentRoomString));
+				newRoom = Instantiate(RoomPrefab_LVL_7[currentRoomInt], roomPos, roomRot)as GameObject;
+				newRoom.name = currentRoomString;
+				SaveRoom(newRoom);
+				Debug.Log(currentRoomString + " was Loaded");
+				break;
+			case 8:					
+				Destroy(GameObject.Find(currentRoomString));
+				newRoom = Instantiate(RoomPrefab_LVL_8[currentRoomInt], roomPos, roomRot)as GameObject;
+				newRoom.name = currentRoomString;
+				SaveRoom(newRoom);
+				Debug.Log(currentRoomString + " was Loaded");
+				break;
+			case 9:					
+				Destroy(GameObject.Find(currentRoomString));
+				newRoom = Instantiate(RoomPrefab_LVL_9[currentRoomInt], roomPos, roomRot)as GameObject;
+				newRoom.name = currentRoomString;
+				SaveRoom(newRoom);
+				Debug.Log(currentRoomString + " was Loaded");
+				break;
+			case 10:					
+				Destroy(GameObject.Find(currentRoomString));
+				newRoom = Instantiate(RoomPrefab_LVL_10[currentRoomInt], roomPos, roomRot)as GameObject;
+				newRoom.name = currentRoomString;
+				SaveRoom(newRoom);
+				Debug.Log(currentRoomString + " was Loaded");
+				break;
+			}
 		}
 	}
 }

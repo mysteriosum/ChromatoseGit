@@ -33,6 +33,7 @@ namespace ChromaStats{
 		
 		
 		
+		
 		//STATIC STATS VARIABLES
 			
 		public static int currentLevelUnlocked = 0;
@@ -62,26 +63,33 @@ namespace ChromaStats{
 				SAVETEST=!SAVETEST;
 			}
 			
-			//Check Si une Sauvegarde existe
-			//Debug.Log(File.Exists(Application.persistentDataPath + "/" + "Chromasave"));
+			
 		}
 		
 			//VERIFIE SI UNE SAVEGAME EXISTE, SI OUI, IL LOAD LE CONTENU ET INDIQUE AU MAINMENU
 			//D'AFFICHER LE BOUTON "RESUME", SINON IL NE LOAD RIEN ET INDIQUE AU MAINMENU D'AFFICHER
 			//LE BOUTON "START".
 		void CheckForLoad(){
-			MainMenu mainMenu = GameObject.FindObjectOfType(typeof(MainMenu))as MainMenu;
-			if(!File.Exists(Application.persistentDataPath + "/" + "Chromasave")){
-				mainManager = Instantiate(Resources.Load("pre_MainManager"))as GameObject;
-				mainMenu.firstStart = true;
-			}
-			else{
-				LevelSerializer.LoadObjectTreeFromFile("Chromasave");
-				mainMenu.firstStart = false;
+			
+			//Check Si une Sauvegarde existe
+			//Debug.Log(File.Exists(Application.persistentDataPath + "/" + "Chromasave"));
+			
+			
+			
+			if(!GameObject.FindGameObjectWithTag("MainManager")){
+				if(!File.Exists(Application.persistentDataPath + "/" + "Chromasave")){
+					mainManager = Instantiate(Resources.Load("pre_MainManager"))as GameObject;
+					HUDManager hudMan = mainManager.GetComponent<HUDManager>();
+					hudMan.firstStart = true;
+				}
+				else{
+					LevelSerializer.LoadObjectTreeFromFile("Chromasave");
+					HUDManager hudMan = mainManager.GetComponent<HUDManager>();
+					hudMan.firstStart = false;
+				}
 			}
 		}
-		
-		
+
 		
 		
 		void OnGUI(){

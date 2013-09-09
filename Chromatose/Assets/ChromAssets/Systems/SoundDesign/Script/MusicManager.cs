@@ -136,8 +136,8 @@ public class MusicManager : MonoBehaviour{
 	
 	
 	void Start () {
-		DontDestroyOnLoad(this.gameObject);
-		DontDestroyOnLoad(this);
+		//DontDestroyOnLoad(this.gameObject);
+		//DontDestroyOnLoad(this);
 		
 		Setup();
 	}
@@ -238,7 +238,7 @@ public class MusicManager : MonoBehaviour{
 		for(float f = 1f; f >= fadeRate; f = f - fadeRate){
 			_MusicSources[curPlayer].volume = f;
 			_MusicSources[musicIndex].volume += fadeRate * 2f;
-			Debug.Log("f = " + f);
+			//Debug.Log("f = " + f);
 			if(f <= 0){
 				_MusicSources[curPlayer].Stop ();
 			}

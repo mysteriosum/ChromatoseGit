@@ -649,13 +649,15 @@ public class Avatar : ColourBeing
 	
 #endregion
 
-	void Start ()
-	{		
-		manager = ChromatoseManager.manager;
+	void Start (){	
+		
+		t = this.transform;
+		t.rotation = Quaternion.identity;
+				
 		movement = GetComponent<Movement>();
 		curColor = Color.white;
-		_TimeTrialActivated = manager.TimeTrialMode;
-		_NoDeathModeActivated = manager.NoDeathMode;
+		//_TimeTrialActivated = manager.TimeTrialMode;
+		//_NoDeathModeActivated = manager.NoDeathMode;
 
 		basicTurnSpeed = movement.rotator.rotationRate;
 		basicAccel = movement.thruster.accel;
@@ -677,9 +679,6 @@ public class Avatar : ColourBeing
 			_SpaceBarActive = false;
 			break;
 		}
-		
-		t = this.transform;
-		t.rotation = Quaternion.identity;
 												//initializing my particle objects, as necessary
 		spriteInfo = GetComponent<tk2dSprite>();
 		turboPart = new TurboParticle(particleCollection, partAnimations, t);
@@ -715,33 +714,20 @@ public class Avatar : ColourBeing
 		myKnockTarget = VectorFunctions.FindClosestOfTag(t.position, "knockTarget", 1000000);
 		
 		allTheFaders = GameObject.FindGameObjectsWithTag("spriteFader");
-		/*if (tankStates == null){
-		
-			tankStates = new TankStates[3, 5]
-				{{TankStates.Full, TankStates.Full, TankStates.None, TankStates.None, TankStates.None}, 
-					{TankStates.None, TankStates.None, TankStates.None, TankStates.None, TankStates.None}, 
-					{TankStates.None, TankStates.None, TankStates.None, TankStates.None, TankStates.None} 
-				};
-			
-		}*/
 		
 		//MAKE ME AN EYE BABY
 		travisMcGee = new Eye(t, particleCollection);
-		
 		bubble = new SpeechBubble (t, particleCollection);
-		
-		
 		spriteInfo.Collection = normalCollection;
-		
 		StartCoroutine(LateCPCreation(1.0f));
+		
+		StartCoroutine(Setup ());
 		
 	}
 	
 
 	void FixedUpdate ()
 	{
-		
-		
 		travisMcGee.EyeFollow();
 								//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
 								//<--------------Color Fading!--------------->
@@ -914,19 +900,16 @@ public class Avatar : ColourBeing
 				getD = true;
 			}
 			
-		
-			if (!manager.InComic){
-				if(_SpaceBarActive){
-					getS = Input.GetKeyDown(KeyCode.Space);
-					if (Input.GetKeyDown(KeyCode.DownArrow)){
-						getS = true;
+			if(manager){
+				if (!manager.InComic){
+					if(_SpaceBarActive){
+						getS = Input.GetKeyDown(KeyCode.Space);
+						if (Input.GetKeyDown(KeyCode.DownArrow)){
+							getS = true;
+						}
 					}
 				}
-			}
-			
-			
-			
-				
+			}				
 		}
 			
 								//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
@@ -1333,6 +1316,9 @@ public class Avatar : ColourBeing
 	public void CanControl(){
 		canControl = true;
 	}
+	public void InverseControlRight(){
+		canControl = !canControl;
+	}
 	
 	override public void Trigger(){
 		
@@ -1383,7 +1369,7 @@ public class Avatar : ColourBeing
 	}
 	
 	void CreateCP(){
-			GameObject _NewCP = manager.prefab.checkPoint;
+			GameObject _NewCP = Resources.Load("pre_checkpoint")as GameObject;
 			GameObject _NewLevelCP = Instantiate(_NewCP, this.transform.position, Quaternion.identity)as GameObject;
 			
 			_NewLevelCP.transform.position = new Vector3(_NewLevelCP.transform.position.x, _NewLevelCP.transform.position.y, 2);	
@@ -1396,7 +1382,7 @@ public class Avatar : ColourBeing
 	
 	void CreatFirstCP(){
 		if(!manager.FirstLevelCPDone){
-			GameObject _NewCP = manager.prefab.checkPoint;
+			GameObject _NewCP = Resources.Load("pre_checkpoint")as GameObject;
 			GameObject _FirstLevelCP = Instantiate(_NewCP, this.transform.position, this.transform.rotation)as GameObject;
 			
 			_FirstLevelCP.transform.position = new Vector3(_FirstLevelCP.transform.position.x, _FirstLevelCP.transform.position.y, 2);
@@ -1464,13 +1450,7 @@ public class Avatar : ColourBeing
 	public void CallFromFar(){
 		StartCoroutine(CPCreationForRoom(1.5f));
 	}
-	
-	/// <summary>
-	/// Pause or Unpause this instance.
-	/// </summary>
-	public void Pause(){
-		canControl = !canControl;
-	}
+
 	
 	
 	
@@ -1498,6 +1478,14 @@ public class Avatar : ColourBeing
 	IEnumerator BubbleShrinked(){
 		yield return new WaitForSeconds(0.15f);
 		bubbleShrinked = true;
+	}
+	
+	IEnumerator Setup(){
+		yield return new WaitForSeconds(0.1f);
+		manager = ChromatoseManager.manager;
+		
+		
+		
 	}
 }
 

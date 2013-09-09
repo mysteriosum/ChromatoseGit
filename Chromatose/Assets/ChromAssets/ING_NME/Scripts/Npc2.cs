@@ -37,7 +37,7 @@ public class Npc2 : MonoBehaviour {
 		if(other.tag != "avatar") return;
 		
 		if(!_ColorGone){
-			_Manager.UpdateAction(Actions.Absorb, Trigger);		//this tells the hud that I want to do something. But I'll have to wait in line!
+			HUDManager.hudManager.UpdateAction(Actions.Absorb, Trigger);		//this tells the hud that I want to do something. But I'll have to wait in line!
 			
 		}
 	}
@@ -54,7 +54,8 @@ public class Npc2 : MonoBehaviour {
 		
 	}
 		
-	void Setup(){
+	IEnumerator Setup(){
+		yield return new WaitForSeconds(0.5f);
 		_MainAnim = GetComponent<tk2dAnimatedSprite>();
 		_Manager = ChromatoseManager.manager;
 		_AvatarScript = GameObject.FindGameObjectWithTag("avatar").GetComponent<Avatar>();

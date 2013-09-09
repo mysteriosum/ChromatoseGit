@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 
 public class EnergyLineStart : MonoBehaviour {
+	/*
 	private EnergyLine parentGuy;
 	// Use this for initialization
 	void Start () {
@@ -20,5 +21,5 @@ public class EnergyLineStart : MonoBehaviour {
 		if (other.GetComponent<Avatar>()){
 			parentGuy.Active = true;
 		}
-	}
+	}*/
 }

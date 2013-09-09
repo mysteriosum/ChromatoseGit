@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class ChromatoseCamera : MonoBehaviour {
+public class ChromatoseCamera : MainManager {
 	private Transform t;
 	
 	public Transform avatar;
@@ -25,7 +25,7 @@ public class ChromatoseCamera : MonoBehaviour {
 		if (Application.loadedLevelName == "Menu") return;
 		manager = ChromatoseManager.manager;
 		if (!avatar){
-			avatar = GameObject.FindWithTag("avatar").transform;
+			avatar = GameObject.FindGameObjectWithTag("avatar").transform;
 		}
 		t = GetComponent<Transform>();
 		cam2d = GetComponent<tk2dCamera>();
@@ -49,12 +49,9 @@ public class ChromatoseCamera : MonoBehaviour {
 		//height = cam2d.nativeResolutionHeight;
 	}
 	
-	// Update is called once per frame
-	void Update () {
-		
-		
-		
+	void FixedUpdate () {
 		if (Application.loadedLevelName == "Menu") return;
+		if (avatar == null)return;
 		
 		if (manager.InComic){
 			t.position = new Vector3(0, 0 + _BdOffset, t.position.z);

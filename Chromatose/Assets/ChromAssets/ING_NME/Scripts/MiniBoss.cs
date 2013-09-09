@@ -38,35 +38,40 @@ public class MiniBoss : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 	
-		if(_PayZoneScript.inPayZone){
+		if(_ShootingZone != null){
+			if(_PayZoneScript.inPayZone){
+				
+				HUDManager.hudManager.UpdateAction(Actions.Release, DelegateActionTest);
+				_AvatarScript.requieredPayment = requiredPayment.ToString();
+				_AvatarScript.wantFightBoss = true;
+			}
 			
-			_Manager.UpdateAction(Actions.Release, DelegateActionTest);
-			_AvatarScript.requieredPayment = requiredPayment.ToString();
-			_AvatarScript.wantFightBoss = true;
-		}
-		
-		if(_CanDie){
-			_FadingCounter -= _FadeRate;
-			_MainAnim.color = new Color(0, 0, 0 ,_FadingCounter);
-			/*
-			if(myFlames != null){
-				foreach(tk2dAnimatedSprite sprite in myFlames){
-					sprite.color = new Color(0, 0, 0, _FadingCounter);
+			if(_CanDie){
+				_FadingCounter -= _FadeRate;
+				_MainAnim.color = new Color(0, 0, 0 ,_FadingCounter);
+				/*
+				if(myFlames != null){
+					foreach(tk2dAnimatedSprite sprite in myFlames){
+						sprite.color = new Color(0, 0, 0, _FadingCounter);
+					}
+				}*/
+				if(_FadingCounter <= 0 ){
+					Die ();
 				}
-			}*/
-			if(_FadingCounter <= 0 ){
-				Die ();
+			}
+			
+			if (shootFlame && _ShootingZone.inShootingZone){
+				
+				_ShooterCounter += Time.deltaTime;
+				
+				if (_ShooterCounter >= fireRate){
+					GameObject bullet = Instantiate(flameBullet, transform.position, Quaternion.identity)as GameObject;
+					_ShooterCounter = 0;
+				}
 			}
 		}
-		
-		if (shootFlame && _ShootingZone.inShootingZone){
-			
-			_ShooterCounter += Time.deltaTime;
-			
-			if (_ShooterCounter >= fireRate){
-				GameObject bullet = Instantiate(flameBullet, transform.position, Quaternion.identity)as GameObject;
-				_ShooterCounter = 0;
-			}
+		else{
+			Setup();
 		}
 	}
 	
@@ -86,7 +91,8 @@ public class MiniBoss : MonoBehaviour {
 		}
 	}
 	
-	void Setup(){
+	IEnumerator Setup(){
+		yield return new WaitForSeconds(0.1f);
 		_MainAnim = GetComponent<tk2dAnimatedSprite>();
 		_AvatarT = GameObject.FindGameObjectWithTag("avatar").transform;
 		_AvatarScript = GameObject.FindGameObjectWithTag("avatar").GetComponent<Avatar>();

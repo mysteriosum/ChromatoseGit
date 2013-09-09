@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using ChromaConst;
 
 public class Collectible2 : MonoBehaviour {
 
@@ -48,9 +49,26 @@ public class Collectible2 : MonoBehaviour {
 		}
 	
 	void Start () {
-		Setup ();
+		_MainAnim = GetComponent<tk2dAnimatedSprite>();
 		
+		switch(colorCollectible){
+		case _ColorCollectible.White:
+			myColor = Color.white;
+			_MainAnim.Play(idleAnimWhite);
+			break;
+		case _ColorCollectible.Red:
+			myColor = Color.red;
+			_MainAnim.Play(idleAnimRed);
+			
+			break;
+		case _ColorCollectible.Blue:
+			myColor = Color.blue;
+			_MainAnim.Play(idleAnimBlue);
+			
+			break;
+		}
 		
+		Setup ();		
 	}
 	
 	// Update is called once per frame
@@ -132,34 +150,17 @@ public class Collectible2 : MonoBehaviour {
 		}
 	}
 	
-	void Setup(){
-		
+	IEnumerator Setup(){
+		yield return new WaitForSeconds(0.5f);
 		_Manager = ChromatoseManager.manager;
 		_AvatarScript = GameObject.FindGameObjectWithTag("avatar").GetComponent<Avatar>();
-		_MainAnim = GetComponent<tk2dAnimatedSprite>();
-		
-		
-		switch(colorCollectible){
-		case _ColorCollectible.White:
-			myColor = Color.white;
-			_MainAnim.Play(idleAnimWhite);
-			break;
-		case _ColorCollectible.Red:
-			myColor = Color.red;
-			_MainAnim.Play(idleAnimRed);
-			
-			break;
-		case _ColorCollectible.Blue:
-			myColor = Color.blue;
-			_MainAnim.Play(idleAnimBlue);
-			
-			break;
-		}		
+				
 	}
 	
 	void TakeCollectible(){
 		if(!popped){
 			ChromatoseManager.manager.AddCollectible(myColor);
+			_MainAnim = GetComponent<tk2dAnimatedSprite>();
 			
 			switch(colorCollectible){
 			case _ColorCollectible.White:

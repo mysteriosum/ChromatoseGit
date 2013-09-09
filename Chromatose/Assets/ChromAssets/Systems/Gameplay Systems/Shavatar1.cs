@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-public class Shavatar1 : MonoBehaviour {
+public class Shavatar1 : MainManager {
 
 	public enum _BehaviourEnum{
 		idle, patrol, idle_Follow, patrol_Follow, bossFight
@@ -19,7 +19,6 @@ public class Shavatar1 : MonoBehaviour {
 	
 	private Vector3 _Target;
 	private Transform t;
-	private GameObject _Avatar;
 	
 	private Transform _InitTransform;
 	private Vector3 _InitPosition;
@@ -32,6 +31,7 @@ public class Shavatar1 : MonoBehaviour {
 	private RaycastHit _Hit;
 	private RaycastHit _Hit2;
 	private bool colourAppropriate = false;
+	private bool setuped = false;
 	
 	
 	private Vector3 targetPoint;
@@ -61,6 +61,8 @@ public class Shavatar1 : MonoBehaviour {
 
 	
 	void Start () {
+		
+		
 
 		Setup ();
 		
@@ -103,12 +105,19 @@ public class Shavatar1 : MonoBehaviour {
 		#endregion
 	}
 	void Update () {
+		if(!_Avatar){
+			_Avatar = GameObject.FindGameObjectWithTag("avatar");
+		}
+		
+		
+		if(!GameObject.FindGameObjectWithTag("avatar"))return;
+		
 		
 		#region Idle
 		switch(behaviours){
 		case _BehaviourEnum.idle:
 			
-			if(!_DetectionScript.AvatarDetected)return;
+			if(_DetectionScript && !_DetectionScript.AvatarDetected)return;
 			
 			LookAtAvatar();
 	
@@ -127,9 +136,9 @@ public class Shavatar1 : MonoBehaviour {
 			}
 			
 			
-			if(!_DetectionScript.AvatarDetected && Vector2.Distance(t.position, _InitPosition) < 20)return;
+			if(_DetectionScript && !_DetectionScript.AvatarDetected && Vector2.Distance(t.position, _InitPosition) < 20)return;
 			else{
-				if(!_DetectionScript.AvatarDetected && Vector2.Distance(t.position, _InitPosition) > 25){
+				if(_DetectionScript && !_DetectionScript.AvatarDetected && Vector2.Distance(t.position, _InitPosition) > 25){
 					if(backToIdle){
 						BackToIdlePos();
 						if (Vector2.Distance(t.position, _InitPosition) < 25){
@@ -159,15 +168,17 @@ public class Shavatar1 : MonoBehaviour {
 				}
 			}
 			else{
-				if(Vector2.Distance(t.position, _InitPosition) > 25){
-					if(backToIdle){
-						BackToIdlePos();
-						if (Vector2.Distance(t.position, _InitPosition) < 25){
+				if(t){
+					if(Vector2.Distance(t.position, _InitPosition) > 25){
+						if(backToIdle){
+							BackToIdlePos();
+							if (Vector2.Distance(t.position, _InitPosition) < 25){
+								_InitPosition = t.position;
+							}
+						}
+						else{
 							_InitPosition = t.position;
 						}
-					}
-					else{
-						_InitPosition = t.position;
 					}
 				}
 			}
@@ -193,16 +204,15 @@ public class Shavatar1 : MonoBehaviour {
 			else{
 				colourAppropriate = false;
 			}
-			
-			
-			
-			if(!_DetectionScript.AvatarDetected || !colourAppropriate){
-				LookAtTarget();
-				Forward();			
-			}
-			else{
-				if(!_InCharge){
-					LookAtAvatar();
+			if(_DetectionScript!=null){
+				if(!_DetectionScript.AvatarDetected || !colourAppropriate){
+					LookAtTarget();
+					Forward();			
+				}
+				else{
+					if(!_InCharge){
+						LookAtAvatar();
+					}
 				}
 			
 				if(!Physics.Linecast(_Avatar.transform.position, t.position, out _Hit, _ColLayerMask)){
@@ -226,8 +236,8 @@ public class Shavatar1 : MonoBehaviour {
 	}
 	
 	
-	void Setup(){
-		_Avatar = GameObject.FindGameObjectWithTag("avatar");
+	IEnumerator Setup(){
+		yield return new WaitForSeconds(0.1f);
 		t = gameObject.transform;
 		_ColourTarget = _Avatar.GetComponent<Avatar>().curColor;
 		_MainAnim = GetComponentInChildren<tk2dAnimatedSprite>();
@@ -244,6 +254,7 @@ public class Shavatar1 : MonoBehaviour {
 		
 		_ColLayerMask = 1 << LayerMask.NameToLayer("collision");		//for teh linecasts
 		_MainAnim.Play("Shavatar");
+		setuped = true;
 	}
 	
 	/*

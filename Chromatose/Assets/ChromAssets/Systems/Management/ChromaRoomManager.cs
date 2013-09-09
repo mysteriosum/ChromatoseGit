@@ -2,29 +2,27 @@ using UnityEngine;
 using System.Collections;
 
 [System.Serializable]
-public class ChromaRoomManager : MonoBehaviour {
+public class ChromaRoomManager : MainManager {
 	
 	public static ChromaRoomManager roomManager;
-	
-	public enum _RoomTypeEnum{
-		WhiteRoom, BlueOrRedRoom, FinalBoss
-	}
-
-	public _RoomTypeEnum _RoomType;
 		
-	public int[] comicInLevel;
+	public int[] comicInModBlanc1;
+	public int[] comicInModBlanc2;
+	public int[] comicInModBlanc3;
+	public int[] comicInModBlanc4;
 	
-	private bool _CanAddRoom;
-	private int _CurRoom = 0;
-		public int curRoom{
-			get{return _CurRoom;}
-		}
-
+	private bool _CanAddRoom = false;
 	
-	// Use this for initialization
+	void OnLevelWasLoaded(){
+		currentRoomString = "room00";
+		currentRoomInt = 0;
+	}
 	void Start () {
+		roomManager = this;
+		
 		_CanAddRoom = true;
-		_CurRoom = 0;
+		currentRoomString = "room00";
+		currentRoomInt = 0;
 		
 	}
 	
@@ -33,7 +31,8 @@ public class ChromaRoomManager : MonoBehaviour {
 	
 	public void NextLilRoom(){
 		if(_CanAddRoom){
-			_CurRoom++;
+			currentRoomInt++;
+			currentRoomString = _OptiManager.roomList[currentRoomInt].name;
 			_CanAddRoom = false;
 			StartCoroutine(DelaiToAddRoom(5.0f));
 		}
@@ -50,16 +49,28 @@ public class ChromaRoomManager : MonoBehaviour {
 	public int UpdateTotalComic(){
 		
 		int retTotalComic = 0;
+		int curLevel = Application.loadedLevel;
 		
-		if(_RoomType != _RoomTypeEnum.WhiteRoom){
+		if(curLevel != 1 && curLevel != 3 && curLevel != 5 && curLevel != 7){
 			
 			retTotalComic = FindComicBySearch();
 						
 		}	
 		else{
-			
-			retTotalComic = comicInLevel[_CurRoom];
-			
+			switch(curLevel){
+			case 1:
+				retTotalComic = comicInModBlanc1[currentRoomInt];
+				break;
+			case 3:
+				retTotalComic = comicInModBlanc2[currentRoomInt];
+				break;
+			case 5:
+				retTotalComic = comicInModBlanc3[currentRoomInt];
+				break;
+			case 7:
+				retTotalComic = comicInModBlanc4[currentRoomInt];
+				break;
+			}
 		}
 		
 		if(retTotalComic == 0){return 0;}

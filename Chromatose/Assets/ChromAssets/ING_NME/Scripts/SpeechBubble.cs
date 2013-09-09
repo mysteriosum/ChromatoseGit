@@ -14,7 +14,6 @@ public class SpeechBubble : MonoBehaviour{				//THE BUBBLE AND ITS DECLARATION!
 	private string collectibleBubbleName = "redBubble_veryHappy";
 	public string CollectibleBubbleName{ get { return collectibleBubbleName; } }
 	
-	private tk2dTextMesh myNumber;
 	private Vector3 digitOffset = new Vector3(10, 3, -2);
 	private int myDigit = 0;
 	
@@ -41,7 +40,6 @@ public class SpeechBubble : MonoBehaviour{				//THE BUBBLE AND ITS DECLARATION!
 	public bool Showing {
 		get{ return r.enabled; }
 		set{ r.enabled = value;
-			 myNumber.renderer.enabled = value;
 			 if (value == false){
 				Digit = 0;
 			}
@@ -54,7 +52,6 @@ public class SpeechBubble : MonoBehaviour{				//THE BUBBLE AND ITS DECLARATION!
 	}
 	
 	public SpeechBubble(Transform toFollow, tk2dSpriteCollectionData sprcol){  //constructor!
-		
 		go = new GameObject(toFollow.name + "Bubble");
 		parent = toFollow;
 		tk2dSprite.AddComponent(go, sprcol, 0);
@@ -62,42 +59,14 @@ public class SpeechBubble : MonoBehaviour{				//THE BUBBLE AND ITS DECLARATION!
 		
 		r = go.renderer;
 		t = go.transform;
-		//t.parent = parent;
-		//t.localPosition = (Vector3) offset;
-		GameObject numberObj = new GameObject(go.name + "Number");
-		myNumber = numberObj.AddComponent<tk2dTextMesh>();
-		myNumber.font = ChromatoseManager.manager.chromatoseFont;
-		myNumber.anchor = TextAnchor.MiddleCenter;
-		myNumber.maxChars = 1;
-		myNumber.Commit();
 	}
 	
-	public SpeechBubble(Transform toFollow): this(toFollow, ChromatoseManager.manager.bubbleCollection)
-	{
+	public SpeechBubble(Transform toFollow): this(toFollow, ChromatoseManager.manager.bubbleCollection){
+		
 	}
-	
-	void Update(){
-		if(_CanShow){
-			if(!bubbleGrowed){
-				
-			}
-			else if(bubbleGrowed){
-				
-			}
-		}
-		else{
-			if(!bubbleShrinked){
-				
-			}
-			else{
-			
-			}
-		}
-	}
+
 	
 	public void Main(){
-		
-		
 		if (timer > 0){
 			timer -= Time.deltaTime;
 		}
@@ -106,8 +75,6 @@ public class SpeechBubble : MonoBehaviour{				//THE BUBBLE AND ITS DECLARATION!
 			Blend(Color.white);
 		}
 		t.position = parent.position + (Vector3)offset;
-		myNumber.transform.position = t.position + digitOffset;
-		
 	}
 	
 	public void ShowBubbleFor(string bubble, float time, int digit){
@@ -135,9 +102,5 @@ public class SpeechBubble : MonoBehaviour{				//THE BUBBLE AND ITS DECLARATION!
 		offset = new Vector2(left? -offset.x : offset.x, bottom? -offset.y : offset.y);
 		
 		t.localPosition = (Vector3) offset;
-	}
-	
-	void ManualPlay(){
-		
 	}
 }
