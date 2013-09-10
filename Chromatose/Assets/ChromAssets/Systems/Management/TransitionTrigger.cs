@@ -158,7 +158,6 @@ public class TransitionTrigger : MonoBehaviour {
 #region Methodes de Transition
 	
 	void NextLevel(){
-		_AvatarScript.LoseAllColour();
 		if(_AvatarScript.HasOutline){
 			_AvatarScript.CancelOutline();
 		}

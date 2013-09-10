@@ -115,7 +115,6 @@ public class Destructible : MonoBehaviour {		//move sprite @ 15 frames or 0.5f s
 //		Debug.Log("Wanna Destroy Me?");
 		avatarScript.HasDestroyed = true;
 		avatarScript.GiveColourTo(transform, avatar);
-		avatarScript.SetColour(0, avatarScript.colour.g, avatarScript.colour.b);
 		StartCoroutine(DelaiSFX());
 		Invoke("Destruct", 0.5f);
 	}

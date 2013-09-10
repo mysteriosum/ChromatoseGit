@@ -64,10 +64,10 @@ public class HUDManager : MainManager {
 					showingAction = false,
 					_FirstStart = false;
 
-	private float flashTimer = 0.0f, aX = 0.0f, actionSlideSpeed = 10.0f;
+	private float flashTimer = 0.0f, aX, actionSlideSpeed = 10.0f;
 	private Vector2 textOffset = new Vector2 (55f, 8);
 	
-	public delegate void ActionDelegate();
+	public  delegate void ActionDelegate();
 	public ActionDelegate actionMethod;
 	
 	private int _TotalComicThumb = 0;
@@ -103,7 +103,9 @@ public class HUDManager : MainManager {
 	}
 	
 	void Start () {
-		
+		aX = absorbAction.width * 1.5f;		
+		actionTexture = absorbAction;
+		shownActionTexture = actionTexture;
 		//SETUP LE TOUT, ON LE FAIT A L'EXTERNE CAR J'AIME BIEN POUVOIR LE RAPPELLER, EN CAS DE PROBLEME
 		StartCoroutine(Setup(0.1f));
 		
@@ -144,15 +146,7 @@ public class HUDManager : MainManager {
 			actionMethod = null;
 			break;
 		}
-		
-		
-		//Effectue l'action si une action peut etre effectuer et si la touche P est presser
-		if (Input.GetKeyDown(KeyCode.P) && currentAction > 0 && actionMethod != null && !ChromatoseManager.manager.InComic){
-			actionMethod();
-		}
-		showingAction = false;
-		
-		
+				
 		if (currentAction == Actions.Nothing && aX < absorbAction.width){
 			aX -= actionSlideSpeed;
 			if (aX < -absorbAction.width){
@@ -164,7 +158,6 @@ public class HUDManager : MainManager {
 		}
 		
 		if (showingAction && aX != 0 && shownActionTexture == actionTexture){
-			
 			aX -= actionSlideSpeed;
 			if (aX > -9 && aX < 9) aX = 0;
 			if (aX < -absorbAction.width){
@@ -173,7 +166,6 @@ public class HUDManager : MainManager {
 		}
 		
 		if (showingAction && shownActionTexture != actionTexture){
-			Debug.Log("Should be working to update the action texture");
 			if (aX >= absorbAction.width){
 				UpdateActionTexture();
 			}
@@ -181,6 +173,11 @@ public class HUDManager : MainManager {
 				aX -= actionSlideSpeed;
 			}
 		}
+			//Effectue l'action si une action peut etre effectuer et si la touche P est presser
+		if (Input.GetKeyDown(KeyCode.P) && currentAction > 0 && actionMethod != null && !ChromatoseManager.manager.InComic){
+			actionMethod();
+		}
+		showingAction = false;
 	}
 	
 	
@@ -200,7 +197,6 @@ public class HUDManager : MainManager {
 	
 	
 	public void SetupHud(){
-		Debug.Log("SetupHUD");
 		if(Application.loadedLevel!=0){
 				//SET LE HUD POUR LE DEBUT D'UN NIVEAU
 			_GUIState = GUIStateEnum.OnStart;
@@ -243,6 +239,13 @@ public class HUDManager : MainManager {
 			
 		switch(_GUIState){
 			
+				//DRAW L'INTERFACE EN JEU
+		case GUIStateEnum.Interface:
+			DrawInterfaceHUD();
+			return;
+			break;
+			
+			
 		case GUIStateEnum.MainMenu:
 			
 			switch (_MenuWindows){
@@ -269,7 +272,7 @@ public class HUDManager : MainManager {
 
 				//DRAW LA FENETRE DES CREDITS
 			case _MenuWindowsEnum.CreditWindows:
-				
+				DrawCreditsScreen();
 				break;
 	
 				//DRAW LA FENETRE DE SELECTION DE KEYBOARD
@@ -277,17 +280,12 @@ public class HUDManager : MainManager {
 				DrawKeyboardSelectionScreen();
 				break;
 			}
-			
+			return;
 			break;
 			
 			//DRAW LA FENETRE START DES NIVEAUX
 		case GUIStateEnum.OnStart:
 			DrawInGameStart();
-			break;
-			
-			//DRAW L'INTERFACE EN JEU
-		case GUIStateEnum.Interface:
-			DrawInterfaceHUD();
 			break;
 			
 			//DRAW LE MENU PAUSE INGAME
@@ -613,7 +611,7 @@ public class HUDManager : MainManager {
 		GUI.skin.button.fontSize = 78;
 		if(GUI.Button(new Rect(350, 70, 512, 512), "")){
 			_GUIState = GUIStateEnum.Interface;
-			_AvatarScript.CanControl();
+			GameObject.FindGameObjectWithTag("avatar").GetComponent<Avatar>().CanControl();
 			MusicManager.soundManager.PlaySFX(19);
 			MusicManager.soundManager.CheckLevel();
 		}
@@ -679,51 +677,54 @@ public class HUDManager : MainManager {
 		
 		if(GUI.Button(new Rect(250, 50, 300, 50), "TUTO - BLANC 1")){
 			_MenuWindows = _MenuWindowsEnum.LoadingScreen;
-			StartCoroutine(LoadALevel(1));
+			LoadALevel(1);
+			//StartCoroutine(LoadALevel(1));
 		}
 		if(GUI.Button(new Rect(250, 125, 300, 50), "NIV 1 - ROUGE 1")){
 			_MenuWindows = _MenuWindowsEnum.LoadingScreen;
-			StartCoroutine(LoadALevel(2));
+			LoadALevel(2);
+			//StartCoroutine(LoadALevel(2));
 		}
 		if(GUI.Button(new Rect(250, 200, 300, 50), "NIV 2 - BLANC 2")){
 			_MenuWindows = _MenuWindowsEnum.LoadingScreen;
-			StartCoroutine(LoadALevel(3));
+			//StartCoroutine(LoadALevel(3));
 		}
 		if(GUI.Button(new Rect(250, 275, 300, 50), "NIV 3 - ROUGE 2")){
 			_MenuWindows = _MenuWindowsEnum.LoadingScreen;
-			StartCoroutine(LoadALevel(4));
+			//StartCoroutine(LoadALevel(4));
 		}
 		if(GUI.Button(new Rect(250, 350, 300, 50), "NIV 4 - BLANC 3")){
 			_MenuWindows = _MenuWindowsEnum.LoadingScreen;
-			StartCoroutine(LoadALevel(5));
+			//StartCoroutine(LoadALevel(5));
 		}		
 		if(GUI.Button(new Rect(600, 50, 400, 50), "NIV 5 - ROUGE/BLEU 3")){
 			_MenuWindows = _MenuWindowsEnum.LoadingScreen;
-			StartCoroutine(LoadALevel(6));
+			//StartCoroutine(LoadALevel(6));
 		}
 		if(GUI.Button(new Rect(600, 125, 300, 50), "NIV 6 - BLANC 4")){
 			_MenuWindows = _MenuWindowsEnum.LoadingScreen;
-			StartCoroutine(LoadALevel(7));
+			//StartCoroutine(LoadALevel(7));
 		}
 		if(GUI.Button(new Rect(600, 200, 300, 50), "NIV 7 - BLEU 4")){
 			_MenuWindows = _MenuWindowsEnum.LoadingScreen;
-			StartCoroutine(LoadALevel(8));
+			//StartCoroutine(LoadALevel(8));
 		}
 		if(GUI.Button(new Rect(600, 275, 400, 50), "NIV 8 - ROUGE/BLEU 5")){
 			_MenuWindows = _MenuWindowsEnum.LoadingScreen;
-			StartCoroutine(LoadALevel(9));
+			//StartCoroutine(LoadALevel(9));
 		}
 		if(GUI.Button(new Rect(600, 350, 300, 50), "NIV 9 - ROUGE 6")){
 			_MenuWindows = _MenuWindowsEnum.LoadingScreen;
-			StartCoroutine(LoadALevel(10));
+			//StartCoroutine(LoadALevel(10));
 		}
 		if(GUI.Button(new Rect(250, 425, 650, 50), "BOSS FINAL")){
 			_MenuWindows = _MenuWindowsEnum.LoadingScreen;
-			StartCoroutine(LoadALevel(11));
+			//StartCoroutine(LoadALevel(11));
 		}
 		if(GUI.Button(new Rect(800, 600, 350, 50), "GYM DU CHU")){
 			_MenuWindows = _MenuWindowsEnum.LoadingScreen;
-			StartCoroutine(LoadALevel(11));
+			LoadALevel(12);
+			//StartCoroutine(LoadALevel(12));
 		}
 			//BACK BUTTON
 		GUI.skin.button.fontSize = 48;
@@ -773,20 +774,29 @@ public class HUDManager : MainManager {
 			//BACKGROUND
 		GUI.DrawTexture(new Rect(0, 0, 1280, 720), loadingBG);
 		GUI.BeginGroup(inLoadRect);
+		/*
 			//PROGRESS BAR
 		if(async != null){
 			GUI.DrawTexture(new Rect(150, 278, 6 * async.progress * 100f, inLoadRect.height*0.10f), progressLine);
 			GUI.DrawTexture(new Rect(130, 262, 590, inLoadRect.height*0.2f), emptyProgressBar);
-		}
+		}*/
 		GUI.EndGroup();
 	}
-
+	
+		//DRAW LE CREDITS SCREEN
+	void DrawCreditsScreen(){
+		GUI.DrawTexture(new Rect(0, 0, 1280, 720), credits);
+		GUI.skin = _SkinMenuSansBox;
+			//BACK BUTTON
+		GUI.skin.button.fontSize = 48;
+		if(GUI.Button(new Rect(125, 605, 300, 80), "- BACK -")){
+			_MenuWindows = _MenuWindowsEnum.MainMenu;
+		}
+	}
+	
 	IEnumerator Setup(float delai){
 		yield return new WaitForSeconds(delai);
-		aX = absorbAction.width * 1.5f;
 		
-		actionTexture = absorbAction;
-		shownActionTexture = actionTexture;
 		if(currentLevel != 0){
 			_RoomManager = GetComponent<ChromaRoomManager>();
 			_TotalComicThumb = _RoomManager.UpdateTotalComic();

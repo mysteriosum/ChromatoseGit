@@ -3,19 +3,23 @@ using System.Collections;
 using System.Linq;
 using System.Collections.Generic;
 
-
+[System.Serializable]
 public class OptiManager : MainManager {
+	
+	public static OptiManager manager;
 	
 	[SerializeField]
 	public GameObject[] roomList;
 
-	
+	void Awake(){
+		DontDestroyOnLoad(this);
+	}
 	void OnLevelWasLoaded(){
 		StartCoroutine(DelaiBeforeStartOpti());
 		FindAllRoom();
 	}
 	void Start () {
-		//DontDestroyOnLoad(this);
+		manager = this;
 		StartCoroutine(DelaiBeforeStartOpti());
 		FindAllRoom();
 	}
@@ -40,9 +44,6 @@ public class OptiManager : MainManager {
 			}
 			roomList[currentRoomInt].SetActive(true);
 			Invoke("SaveRoom", 0.5f);
-		}
-		else{
-			Debug.LogWarning("TU NE PEUX PAS OPTIMISER CE NIVEAU");
 		}		
 	}
 	
@@ -58,10 +59,6 @@ public class OptiManager : MainManager {
 			roomList[_CurRoom].SetActive(true);
 			Invoke("SaveRoom", 0.5f);
 		}
-		else{
-			Debug.LogWarning("TU NE PEUX PAS OPTIMISER CE NIVEAU");
-		}
-
 	}
 	
 	void SaveRoom(){

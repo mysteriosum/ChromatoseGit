@@ -3,8 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 
 #pragma warning disable 0414 
-public class EnemyAvatar : Avatar {
-	
+public class EnemyAvatar : MonoBehaviour {
+	/*
 	
 	public enum _BehaviourEnum{
 		idle, patrol, idle_Follow, patrol_Follow, bossFight
@@ -289,5 +289,5 @@ public class EnemyAvatar : Avatar {
 			nextIndex = (index + 1) % maxIndex;
 		}
 	}
-	
+	*/
 }

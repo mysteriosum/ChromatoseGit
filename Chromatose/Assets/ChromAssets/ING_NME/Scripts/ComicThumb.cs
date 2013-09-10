@@ -175,7 +175,7 @@ public class ComicThumb : MonoBehaviour {
 		CalculeDistanceDepart();
 	}
 	void CalculateHUDPosition(){
-		_HUDPos = _Camera.GetComponent<ChromatoseCamera>()._HUDHelper_Comics.transform.position;
+		_HUDPos = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<ChromatoseCamera>()._HUDHelper_Comics.transform.position;
 	}
 	void CalculeDistance(){
 		_DistanceRemaining = Vector3.Distance(_MyPos, _HUDPos);

@@ -32,15 +32,14 @@ public class ChromaRoomManager : MainManager {
 	public void NextLilRoom(){
 		if(_CanAddRoom){
 			currentRoomInt++;
-			currentRoomString = _OptiManager.roomList[currentRoomInt].name;
+			currentRoomString = OptiManager.manager.roomList[currentRoomInt].name;
 			_CanAddRoom = false;
 			StartCoroutine(DelaiToAddRoom(5.0f));
+			OptiManager.manager.OptimizeZone();
 		}
-		
 	}
 	
 	int FindComicBySearch(){
-		
 		GameObject[] comicTempList = GameObject.FindGameObjectsWithTag("comicThumb");
 		int totalTemp = comicTempList.Length;
 		return totalTemp;

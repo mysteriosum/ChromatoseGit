@@ -38,13 +38,11 @@ public class SpriteFader : MonoBehaviour {
 		StartCoroutine(Setup ());		
 	}
 	IEnumerator Setup(){
-		yield return new WaitForSeconds(0.5f);
-		_Chromera = Camera.mainCamera;
+		yield return new WaitForSeconds(0.1f);
+		_Chromera = GameObject.FindGameObjectWithTag("MainCamera").camera;
 		_InitialBGColor = _Chromera.backgroundColor;
-		
 		inAlpha = -fadeRate;
 		outAlpha = 1 + fadeRate;
-		
 		foreach (GameObject sprite in spritesIn){
 			if(sprite != null){
 				sprite.BroadcastMessage("FadeAlpha", inAlpha, SendMessageOptions.DontRequireReceiver);
