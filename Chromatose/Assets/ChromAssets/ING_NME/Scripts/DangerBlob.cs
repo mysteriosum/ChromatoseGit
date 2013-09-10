@@ -1,10 +1,10 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using ChromaConst;
 
-
-public class DangerBlob : ColourBeing {
-	
+public class DangerBlob : MonoBehaviour {
+	/*
 	private Rigidbody _AvatarRigid;
 	public float knockback = 50f;
 	public bool diesOnImpact = false;
@@ -70,24 +70,7 @@ public class DangerBlob : ColourBeing {
 	
 	// Use this for initialization
 	void Start () {
-		_AvatarRigid = GameObject.FindWithTag("avatar").GetComponent<Rigidbody>();
-		movement.Setup(gameObject);
-		movement.t = transform;
-		avatarT = GameObject.FindWithTag("avatar").transform;
-		anim = GetComponent<tk2dAnimatedSprite>();
-		if (colour.Red || isBlackFlame){
-			myFlames = GetComponentsInChildren<tk2dAnimatedSprite>();
-			
-			GameObject obj = Resources.Load("animref_nme") as GameObject;
-			tk2dSpriteAnimation nmeAnim = obj.GetComponent<tk2dAnimatedSprite>().anim;
-			foreach (tk2dAnimatedSprite flanim in myFlames){
-				if (flanim == GetComponent<tk2dAnimatedSprite>()) continue;
-				int i = 1;//Random.Range(1, 11);
-				flanim.anim = nmeAnim;
-				flanim.Play(flameName + i.ToString());
-				flanim.transform.rotation = Quaternion.identity;
-			}
-		}
+		StartCoroutine(Setup());
 	}
 	
 	// Update is called once per frame
@@ -140,7 +123,7 @@ public class DangerBlob : ColourBeing {
 			return;
 		}
 		
-		/*
+		
 		Avatar avatar = other.gameObject.GetComponent<Avatar>();
 		bool sameColour = avatar.curColor == Color.red? true : false;
 		if (sameColour && diesOnImpact){
@@ -155,7 +138,7 @@ public class DangerBlob : ColourBeing {
 		
 		if (anim != null && colour.Blue){
 			anim.Play();
-		}*/
+		}
 		
 		ChromatoseManager.manager.Death();
 		other.gameObject.GetComponent<Avatar>().EmptyingBucket();
@@ -201,5 +184,26 @@ public class DangerBlob : ColourBeing {
 			this.movement.patrol = true;
 	}
 	
+	IEnumerator Setup(){
+		yield return new WaitForSeconds(0.1f);
+		_AvatarRigid = GameObject.FindWithTag("avatar").GetComponent<Rigidbody>();
+		movement.Setup(gameObject);
+		movement.t = transform;
+		avatarT = GameObject.FindWithTag("avatar").transform;
+		anim = GetComponent<tk2dAnimatedSprite>();
+		if (colour.Red || isBlackFlame){
+			myFlames = GetComponentsInChildren<tk2dAnimatedSprite>();
+			
+			GameObject obj = Resources.Load("animref_nme") as GameObject;
+			tk2dSpriteAnimation nmeAnim = obj.GetComponent<tk2dAnimatedSprite>().anim;
+			foreach (tk2dAnimatedSprite flanim in myFlames){
+				if (flanim == GetComponent<tk2dAnimatedSprite>()) continue;
+				int i = 1;//Random.Range(1, 11);
+				flanim.anim = nmeAnim;
+				flanim.Play(flameName + i.ToString());
+				flanim.transform.rotation = Quaternion.identity;
+			}
+		}
+	}*/
 }
 

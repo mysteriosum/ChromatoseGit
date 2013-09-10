@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 public class EnergyLine : MonoBehaviour {
-	
+	/*
 	private tk2dAnimatedSprite[] chilluns;
 	private List<tk2dAnimatedSprite> registered = new List<tk2dAnimatedSprite>();
 	private int minDist = 30;
@@ -73,5 +73,5 @@ public class EnergyLine : MonoBehaviour {
 	
 	void FadeOut(tk2dAnimatedSprite sprite, int index){
 		sprite.gameObject.SendMessage("Trigger");
-	}
+	}*/
 }

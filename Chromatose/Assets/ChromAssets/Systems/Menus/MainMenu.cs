@@ -5,7 +5,7 @@ using System.IO;
 using ChromaStats;
 
 public class MainMenu : MonoBehaviour {
-	
+	/*
 	public enum _MenuWindowsEnum{
 		MainMenu, LevelSelectionWindows, CreditWindows, OptionWindows, LoadingScreen
 	}
@@ -71,13 +71,13 @@ public class MainMenu : MonoBehaviour {
 	private bool _ExtraModeUnlocked = false;
 	private bool _TimeTrialActive = false;
 	private bool _NoDeathModeActive = false;
-	
+	/*
 	//VARIABLE LOADING SCREEN
 	private float _LoadProgress = 0;
 	private AsyncOperation async = null;
 	private bool _loop2 = false;
-	private float loopingCounter = 0;
-	
+	private float loopingCounter = 0;*/
+	/*
 	[System.Serializable]
 	public class MainMenuButton{
 		
@@ -401,6 +401,11 @@ public class MainMenu : MonoBehaviour {
 				
 				
 				if(GUI.Button(new Rect(250, 425, 650, 50), "BOSS FINAL")){
+					_MenuWindows = _MenuWindowsEnum.LoadingScreen;
+					StartCoroutine(LoadALevel(11));
+				}
+				
+				if(GUI.Button(new Rect(800, 600, 650, 50), "GYM DU CHU")){
 					_MenuWindows = _MenuWindowsEnum.LoadingScreen;
 					StartCoroutine(LoadALevel(11));
 				}
@@ -944,7 +949,7 @@ public class MainMenu : MonoBehaviour {
 					if(_LoadCounter > 50){GUI.TextArea(new Rect(inLoadRect.width*0.605f, inLoadRect.height*0.25f,inLoadRect.width*0.2f, inLoadRect.height*0.3f), ".");}
 					else if(_LoadCounter > 100){GUI.TextArea(new Rect(inLoadRect.width*0.625f, inLoadRect.height*0.25f,inLoadRect.width*0.2f, inLoadRect.height*0.3f), ".");}
 					else if(_LoadCounter > 150){GUI.TextArea(new Rect(inLoadRect.width*0.645f, inLoadRect.height*0.25f,inLoadRect.width*0.2f, inLoadRect.height*0.3f), ".");}*/
-				GUI.EndGroup();
+				/*GUI.EndGroup();
 				
 				break;
 				#endregion
@@ -970,5 +975,5 @@ public class MainMenu : MonoBehaviour {
 		async = Application.LoadLevelAsync(levelInt);
 		
 		yield return async;
-	}
+	}	                */
 }

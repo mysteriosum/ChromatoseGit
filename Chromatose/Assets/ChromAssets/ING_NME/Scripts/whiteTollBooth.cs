@@ -32,14 +32,6 @@ public class whiteTollBooth : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 		myColor = Color.white;
-		
-		Setup();
-	}
-	
-	protected void Setup(){
-		chroManager = ChromatoseManager.manager;
-		sfxPlayer = GetComponent<AudioSource>();
-		avatarT = GameObject.FindGameObjectWithTag("avatar").GetComponent<Transform>();
 		//Debug.Log("Did I find avatar? " + avatarT.name);
 		BoxCollider[] chilluns = gameObject.GetAllComponentsInChildren<BoxCollider>();
 		foreach (BoxCollider c in chilluns){
@@ -63,24 +55,36 @@ public class whiteTollBooth : MonoBehaviour {
 		indicator.renderer.enabled = false;
 		inString = "boothWhiteIn_" + requiredPayment.ToString();
 		outString = "boothWhiteOut_" + requiredPayment.ToString();
+		Setup();
+	}
+	
+	protected IEnumerator Setup(){
+		yield return new WaitForSeconds(0.1f);
+		chroManager = ChromatoseManager.manager;
+		sfxPlayer = GetComponent<AudioSource>();
+		avatarT = GameObject.FindGameObjectWithTag("avatar").GetComponent<Transform>();
 		
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		Check(Actions.whitePay);
-		
-		if (triggered) return;
-		
-		//string clipName = indicator.CurrentClip == null? "" : indicator.CurrentClip.name;
-		float dist = Vector3.Distance(avatarT.position, transform.position);
-		if (dist < avatarCloseDist && isIn){
-			StartOut();
+		if(avatarT != null){
+			Check(Actions.WhitePay);
+			
+			if (triggered) return;
+			
+			//string clipName = indicator.CurrentClip == null? "" : indicator.CurrentClip.name;
+			float dist = Vector3.Distance(avatarT.position, transform.position);
+			if (dist < avatarCloseDist && isIn){
+				StartOut();
+			}
+			else if (dist > avatarCloseDist && isOut){
+				StartIn();
+			}
 		}
-		else if (dist > avatarCloseDist && isOut){
-			StartIn();
+		else{
+			Setup();
 		}
-		
 	}
 	
 	protected bool Check(Actions action){
@@ -89,7 +93,7 @@ public class whiteTollBooth : MonoBehaviour {
 			return false;
 		}
 		if (myCollider.bounds.Contains(avatarT.position)){
-			chroManager.UpdateAction(action, whitePay);
+			HUDManager.hudManager.UpdateAction(action, whitePay);
 			return true;
 		}
 		return false;

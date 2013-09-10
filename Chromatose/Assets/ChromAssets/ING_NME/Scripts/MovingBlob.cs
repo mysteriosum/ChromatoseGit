@@ -29,7 +29,7 @@ public class MovingBlob : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if(_DetectionZone.inZone){
+		if(_DetectionZone && _DetectionZone.inZone){
 			Move();
 		}
 	}
@@ -39,7 +39,8 @@ public class MovingBlob : MonoBehaviour {
 		
 	}
 	
-	void SetupBlob(){
+	IEnumerator SetupBlob(){
+		yield return new WaitForSeconds(0.1f);
 		_AvatarT = GameObject.FindGameObjectWithTag("avatar").transform;
 		_AvatarScript = GameObject.FindGameObjectWithTag("avatar").GetComponent<Avatar>();
 		_Manager = ChromatoseManager.manager;

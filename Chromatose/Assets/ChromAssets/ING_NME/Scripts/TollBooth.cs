@@ -78,7 +78,7 @@ public class TollBooth : MonoBehaviour {
 			return false;
 		}
 		if (myCollider.bounds.Contains(avatarT.position)){
-			chroManager.UpdateAction(action, Pay);
+			HUDManager.hudManager.UpdateAction(action, Pay);
 			return true;
 		}
 		return false;

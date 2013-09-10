@@ -88,8 +88,14 @@ public class Movement : MonoBehaviour {
 	//<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>
 	
 	public Vector2 Displace(bool thrust){
-		float zRotR = t.rotation.eulerAngles.z * Mathf.Deg2Rad;
-		return Displace(thrust, zRotR);
+		if(t != null){
+			float zRotR = t.rotation.eulerAngles.z * Mathf.Deg2Rad;
+			return Displace(thrust, zRotR);
+		}
+		else{
+			t = GetComponent<Transform>();
+			return Displace(thrust);
+		}
 	}
 	
 	public Vector2 Displace(bool thrust, float angle){								//Displacement : Thrust, accel, stuff

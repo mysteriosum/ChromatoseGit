@@ -32,61 +32,43 @@ public class TransitionTrigger : MonoBehaviour {
 	public Texture staticComic;			//<--Devra peut-etre etre changer dependant comment il faut transitionner vers sa
 	public Transform dynamicComicTarget;
 	
-	void Start () {
-		
-		_Manager = ChromatoseManager.manager;
-		_RoomManager = GameObject.FindGameObjectWithTag("RoomManager").GetComponent<ChromaRoomManager>();
-		_AvatarScript = GameObject.FindGameObjectWithTag("avatar").GetComponent<Avatar>();
-		avatarT = GameObject.FindWithTag("avatar").transform;
-		_Cam = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<ChromatoseCamera>();
-		
-		
-		
-		if(_Manager.TimeTrialMode) {
-			_TransitEnum = transitionVers.TimeTrial;
-		}
-		
+	void Start(){
+				
 		switch (_TransitEnum){
 		case transitionVers.NextLevel:
-			
 			myTrigger = NextLevel;
-			
 			break;
+			
 		case transitionVers.LocalTarget:
-			
 			if(localTarget != null){
-					myTrigger = ToTarget;
-				}
-				else{
-					myTrigger = NextLevel;
-				}
-			
+				myTrigger = ToTarget;
+			}
+			else{
+				myTrigger = NextLevel;
+			}
 			break;
+			
 		case transitionVers.TimeTrial:
-			
 			myTrigger = FinishTimeTrialChallenge;
-			
 			break;
+			
 		case transitionVers.DynamicComic:
-			
-				if(dynamicComicTarget != null){
-					myTrigger = ToDynamicComic;
-				}
-				else{
-					myTrigger = NextLevel;
-				}
-			
+			if(dynamicComicTarget != null){
+				myTrigger = ToDynamicComic;
+			}
+			else{
+				myTrigger = NextLevel;
+			}
 			break;
+			
 		case transitionVers.ReturnMainMenu:
-			
 			myTrigger = ReturnMainMenu;
-			
 			break;
 		}
+		StartCoroutine(Setup());
 	}	
 
 	void FixedUpdate () {
-		
 		
 		switch (_TransitEnum){
 		case transitionVers.NextLevel:
@@ -189,7 +171,7 @@ public class TransitionTrigger : MonoBehaviour {
 		avatarT.SendMessage ("SetVelocity", Vector2.zero);
 		
 		
-		if(_RoomManager._RoomType == ChromaRoomManager._RoomTypeEnum.WhiteRoom){
+		if(_RoomManager.roomType == ChromaRoomManager._RoomTypeEnum.WhiteRoom){
 			_RoomManager.NextLilRoom();
 			//Debug.Log("NextLilRoom");
 		}
@@ -207,42 +189,38 @@ public class TransitionTrigger : MonoBehaviour {
 		if(_AvatarScript.HasOutline){
 			_AvatarScript.CancelOutline();
 		}
-		_Manager.hud._AfterComic = false;
+		HUDManager.hudManager.afterComic = false;
 	}
 	
-	void FinishTimeTrialChallenge(){
+	void FinishTimeTrialChallenge(){/*
 		if(_Manager.timeTrialClass.StopChallenge()){
 			//Faire afficher la fenetre de reussite du TimeTrial
 			_Manager.timeTrialClass.DisplayWinWindows = true;
 		}
-		StartCoroutine(DelaiToDisplay());
+		StartCoroutine(DelaiToDisplay());*/
 	}
 	
 	void ToDynamicComic(){
 		avatarT.position = dynamicComicTarget.position;
 		avatarT.rotation = dynamicComicTarget.rotation;
 		avatarT.SendMessage ("SetVelocity", Vector2.zero);
-		_Manager.hud._CanFlash = false;
-		_Manager.hud._AfterComic = true;
-		_Manager.hud._OnFlash = false;
+		HUDManager.hudManager.canFlash = false;
+		HUDManager.hudManager.afterComic = true;
+		HUDManager.hudManager.onFlash = false;
 		ResetBool();
-		/*
-		_AvatarScript.LoseAllColour();		
-		if(_AvatarScript.HasOutline){
-			_AvatarScript.CancelOutline();
-		}*/
+
 	}
 	
 	void ReturnMainMenu(){
 		Application.LoadLevel(0);
-		//_Manager.SwitchGUIToBlank();
 	}
+	
 #endregion	
 	
 #region CoRoutine	
 	IEnumerator DelaiToDisplay(){
 		yield return new WaitForSeconds(0.5f);
-		_Manager.timeTrialClass.DisplayScore = true;
+		//_Manager.timeTrialClass.DisplayScore = true;
 	}
 	IEnumerator DelaiToFadeOut(){
 		yield return new WaitForSeconds(1f);
@@ -252,6 +230,18 @@ public class TransitionTrigger : MonoBehaviour {
 		yield return new WaitForSeconds(0.5f);
 		_Manager.ResetComicCounter();
 		_Manager.ResetColl();
+	}
+	IEnumerator Setup(){
+		yield return new WaitForSeconds(0.5f);
+		_Manager = ChromatoseManager.manager;
+		_RoomManager = ChromaRoomManager.roomManager;
+		_AvatarScript = GameObject.FindGameObjectWithTag("avatar").GetComponent<Avatar>();
+		avatarT = GameObject.FindWithTag("avatar").transform;
+		_Cam = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<ChromatoseCamera>();
+		
+		if(_Manager.TimeTrialMode) {
+			_TransitEnum = transitionVers.TimeTrial;
+		}
 	}
 }
 #endregion

@@ -87,7 +87,7 @@ public class Destructible : MonoBehaviour {		//move sprite @ 15 frames or 0.5f s
 //		Debug.Log("Ma Couleur est Rouge = " + avatarScript.colour.Red);
 										//<----C'est ici que le check se fait mal
 		if (collider.bounds.Contains(avatar.position)){
-			ChromatoseManager.manager.UpdateAction(Actions.Destroy, Action);	//<----Peut que si on a pas fait d'autre action, le trigger se ne se reinitialise pas
+			HUDManager.hudManager.UpdateAction(Actions.Destroy, Action);	//<----Peut que si on a pas fait d'autre action, le trigger se ne se reinitialise pas
 			avatarScript.AtDestructible = true;									//<----sert que pour la Bubble
 		}
 		

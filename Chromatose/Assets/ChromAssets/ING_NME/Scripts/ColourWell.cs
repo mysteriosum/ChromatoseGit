@@ -35,7 +35,7 @@ public class ColourWell : MonoBehaviour {
 		if (myColor == Color.red)
 			_AvatarScript.OnRedWell = true;
 		
-		_Manager.UpdateAction(Actions.Absorb, Trigger);		//this tells the manager that I want to do something. But I'll have to wait in line!
+	 	HUDManager.hudManager.UpdateAction(Actions.Absorb, Trigger);		//this tells the manager that I want to do something. But I'll have to wait in line!
 	}
 	void OnTriggerExit(Collider collider){
 		if(collider.tag != "avatar") return;
@@ -54,7 +54,8 @@ public class ColourWell : MonoBehaviour {
 		
 	}
 	
-	void Setup(){
+	IEnumerator Setup(){
+		yield return new WaitForSeconds(0.5f);
 		_Manager = ChromatoseManager.manager;
 		_AvatarScript = GameObject.Find("Avatar").GetComponent<Avatar>();
 		_MainAnim = GetComponent<tk2dAnimatedSprite>();
