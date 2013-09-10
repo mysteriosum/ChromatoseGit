@@ -9,7 +9,8 @@ public class RoomInstancier : MainManager {
 						RoomPrefab_LVL_3, RoomPrefab_LVL_4,
 						RoomPrefab_LVL_5, RoomPrefab_LVL_6,
 						RoomPrefab_LVL_7, RoomPrefab_LVL_8,
-						RoomPrefab_LVL_9, RoomPrefab_LVL_10;
+						RoomPrefab_LVL_9, RoomPrefab_LVL_10,
+						RoomPrefab_BossFinal, RoomPrefab_Gym;
 	
 	
 	private GameObject roomSaved;
@@ -124,6 +125,20 @@ public class RoomInstancier : MainManager {
 			case 10:					
 				Destroy(GameObject.Find(currentRoomString));
 				newRoom = Instantiate(RoomPrefab_LVL_10[currentRoomInt], roomPos, roomRot)as GameObject;
+				newRoom.name = currentRoomString;
+				SaveRoom(newRoom);
+				Debug.Log(currentRoomString + " was Loaded");
+				break;
+			case 11:
+				Destroy(GameObject.Find(currentRoomString));
+				newRoom = Instantiate(RoomPrefab_BossFinal[currentRoomInt], roomPos, roomRot)as GameObject;
+				newRoom.name = currentRoomString;
+				SaveRoom(newRoom);
+				Debug.Log(currentRoomString + " was Loaded");
+				break;
+			case 12:
+				Destroy(GameObject.Find(currentRoomString));
+				newRoom = Instantiate(RoomPrefab_Gym[currentRoomInt], roomPos, roomRot)as GameObject;
 				newRoom.name = currentRoomString;
 				SaveRoom(newRoom);
 				Debug.Log(currentRoomString + " was Loaded");

@@ -194,11 +194,15 @@ public class MusicManager : MonoBehaviour{
 		case 9:
 			_MusicSources[9].Play();
 			break;
-			
-			//BOSS FINAL
 		case 10:
 			_MusicSources[10].Play();
-			break;			
+			break;
+		case 11:
+			_MusicSources[11].Play();
+			break;
+		case 12:
+			CrossFadeMusic(2, 0.0025f);
+			break;
 		}
 	}
 

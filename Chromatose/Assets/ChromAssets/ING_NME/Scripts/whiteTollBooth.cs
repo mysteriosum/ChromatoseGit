@@ -26,13 +26,13 @@ public class whiteTollBooth : MonoBehaviour {
 	private int avatarCloseDist = 150;
 	private bool isOut = false;
 	private bool isIn = true;
+	private bool setuped = false;
 	
 	protected bool triggered = false;
 	protected bool waiting = false;
 	// Use this for initialization
 	void Start () {
 		myColor = Color.white;
-		//Debug.Log("Did I find avatar? " + avatarT.name);
 		BoxCollider[] chilluns = gameObject.GetAllComponentsInChildren<BoxCollider>();
 		foreach (BoxCollider c in chilluns){
 			if (c.isTrigger){
@@ -55,25 +55,24 @@ public class whiteTollBooth : MonoBehaviour {
 		indicator.renderer.enabled = false;
 		inString = "boothWhiteIn_" + requiredPayment.ToString();
 		outString = "boothWhiteOut_" + requiredPayment.ToString();
-		Setup();
 	}
 	
-	protected IEnumerator Setup(){
-		yield return new WaitForSeconds(0.1f);
+	void Setup(){
 		chroManager = ChromatoseManager.manager;
 		sfxPlayer = GetComponent<AudioSource>();
 		avatarT = GameObject.FindGameObjectWithTag("avatar").GetComponent<Transform>();
-		
+		setuped = true;
 	}
 	
 	// Update is called once per frame
 	void Update () {
+		if(!setuped)Setup ();
+
 		if(avatarT != null){
 			Check(Actions.WhitePay);
 			
 			if (triggered) return;
-			
-			//string clipName = indicator.CurrentClip == null? "" : indicator.CurrentClip.name;
+
 			float dist = Vector3.Distance(avatarT.position, transform.position);
 			if (dist < avatarCloseDist && isIn){
 				StartOut();
@@ -82,14 +81,10 @@ public class whiteTollBooth : MonoBehaviour {
 				StartIn();
 			}
 		}
-		else{
-			Setup();
-		}
 	}
 	
 	protected bool Check(Actions action){
 		if (triggered){
-			
 			return false;
 		}
 		if (myCollider.bounds.Contains(avatarT.position)){

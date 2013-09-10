@@ -133,25 +133,9 @@ public class ChromatoseManager : MainManager {
 	void Start(){
 		Setup ();
 	}
-	void Setup(){/*
-
+	void Setup(){
 		
-		_RoomManager = GetComponent<ChromaRoomManager>();
-			
-		if(currentLevel != 0){
-			CheckStartPos();
-			CalculeCollectiblesInLevel();
-				
-			_TotalComicThumb = _RoomManager.UpdateTotalComic();
-			_FaderList = FindObjectsOfType(typeof(SpriteFader)) as SpriteFader[];
-		}
-		/*
-		if(_TimeTrialModeActivated){
-			timeTrialClass.SetupTTT();
-			timeTrialClass.DisplayTimes2Beat();
-		}*/
-		
-		//Initialise pour la premiere la security pour le FirstCP
+			//Initialise pour la premiere la security pour le FirstCP
 		_FirstLevelCPDone = false;
 	}
 
@@ -160,7 +144,7 @@ public class ChromatoseManager : MainManager {
 	
 #region Update & LateUpdate
 	void Update () {
-		
+		/*
 		switch(_GUIState){
 		case GUIStateEnum.OnStart:
 			if(Input.GetKeyDown(KeyCode.Space)){
@@ -169,7 +153,7 @@ public class ChromatoseManager : MainManager {
 				MusicManager.soundManager.PlaySFX(19);
 			}
 			break;
-		}
+		}*/
 	}
 
 #endregion
@@ -184,7 +168,6 @@ public class ChromatoseManager : MainManager {
 			if(col == Color.white){
 				whiteCollCollected++;
 				whiteCollDisplayed++;
-				Debug.Log("Nb de wCol : " + whiteCollDisplayed);
 			}
 			else if(col == Color.red){
 				redCollCollected++;
@@ -203,13 +186,13 @@ public class ChromatoseManager : MainManager {
 	public int GetCollectibles(Color color){
 		
 		if(color == Color.white){
-			return _WhiteCollected;
+			return whiteCollDisplayed;
 		}
 		else if(color == Color.red){
-			return _RedCollected;
+			return redCollDisplayed;
 		}
 		else if(color == Color.blue){
-			return _BlueCollected;
+			return blueCollDisplayed;
 		}
 		else{
 			Debug.Log("CANT CHECK THIS COLOR?");
@@ -221,16 +204,16 @@ public class ChromatoseManager : MainManager {
 		
 		
 		if(color == Color.white){
-			_WhiteCollected -= amount;
+			whiteCollDisplayed -= amount;
 			BlowWhiteColl(amount, pos);			
 		}
 		else if(color == Color.red){
-			_RedCollected -= amount;
+			redCollDisplayed -= amount;
 			ShootRedCollOnMini(amount, pos);
 			Debug.Log("Remove "+amount);
 		}
 		else if(color == Color.blue){
-			_BlueCollected -= amount;
+			blueCollDisplayed -= amount;
 			BlowBlueColl(amount, pos);
 		}
 		else{
@@ -354,6 +337,12 @@ public class ChromatoseManager : MainManager {
 		//<-------------FONCTION DU CHU!--------------->
 		//<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>	
 	
+	
+	public void CheckNewfaderList(){
+		_FaderList = FindObjectsOfType(typeof(SpriteFader)) as SpriteFader[];
+		//OptiManager.manager.OptimizeZone();
+	}
+	
 	void CheckStartPos(){
 		if(_Avatar){
 			_AvatarStartingPos = _Avatar.transform.position;
@@ -379,10 +368,11 @@ public class ChromatoseManager : MainManager {
 	}
 	
 	void BlowWhiteColl(int amount, Vector3 pos){
+		
 		MusicManager.soundManager.PlaySFX(8);
 		for(int i = 0; i < amount; i++){
 			Vector2 randomVelocity = Random.insideUnitCircle.normalized * Random.Range(40, 65);
-			Vector3 randomPos = avatar.transform.position + (Vector3)randomVelocity;
+			Vector3 randomPos = _Avatar.transform.position + (Vector3)randomVelocity;
 			randomPos.z = -5;
 			GameObject wCol = Instantiate(Resources.Load("pre_Collectible"), randomPos, Quaternion.identity)as GameObject;
 			wCol.GetComponent<Collectible2>().effect = true;
@@ -394,7 +384,7 @@ public class ChromatoseManager : MainManager {
 	void BlowBlueColl(int amount, Vector3 pos){
 		for(int i = 0; i < amount; i++){
 			Vector2 randomVelocity = Random.insideUnitCircle.normalized * Random.Range(40, 65);
-			Vector3 randomPos = avatar.transform.position + (Vector3)randomVelocity;
+			Vector3 randomPos = _Avatar.transform.position + (Vector3)randomVelocity;
 			GameObject bCol = Instantiate(Resources.Load("pre_Collectible"), randomPos, Quaternion.identity)as GameObject;
 			bCol.GetComponent<Collectible2>().effect = true;
 			bCol.GetComponent<Collectible2>().colorCollectible = Collectible2._ColorCollectible.Blue;

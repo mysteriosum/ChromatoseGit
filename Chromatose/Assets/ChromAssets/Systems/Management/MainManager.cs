@@ -9,7 +9,7 @@ public class MainManager : MonoBehaviour {
 		Tuto, ModuleBlanc_2, ModuleBlanc_3, ModuleBlanc_4, None
 	}
 	public enum _RoomTypeEnum{
-		Menu, WhiteRoom, RedRoom, BlueRoom, RedAndBlueRoom, FinalBoss, None
+		Menu, WhiteRoom, RedRoom, BlueRoom, RedAndBlueRoom, FinalBoss, GYM, None
 	}
 	public enum _KeyboardTypeEnum{
 		QWERTY, AZERTY
@@ -33,14 +33,22 @@ public class MainManager : MonoBehaviour {
 	
 	public static bool _CanControl = false;
 	
-	protected bool getForward;
-	protected bool getLeft;
-	protected bool getRight;
-	
 	
 	//PRIVATE VARIABLES -- INMANAGER USED
 	private bool lvlSetuped = false;
 	private bool childrenLinked = false;
+	
+	private bool gone;
+	public bool Gone{
+		get{
+			return gone;
+		}
+		set{
+			gone = value;
+			transform.position = gone? new Vector3(_Avatar.transform.position.x, _Avatar.transform.position.y, -3000)
+									 : new Vector3(_Avatar.transform.position.x, _Avatar.transform.position.y, 0);
+		}
+	}
 		
 	//VARIABLE STATIC STATS		
 	public static int currentLevelUnlocked = 0;
@@ -112,6 +120,7 @@ public class MainManager : MonoBehaviour {
 	
 	//START, SETUP & INIT
 	void Awake(){
+		Debug.Log("LEVEL : " + Application.loadedLevel);
 		DontDestroyOnLoad(transform.gameObject);
 		
 		_MainManager = this;
@@ -122,21 +131,13 @@ public class MainManager : MonoBehaviour {
 		_RoomInstancier = GetComponent<RoomInstancier>();
 	}
 	void OnLevelWasLoaded(){
-
+		if(Application.loadedLevel!=0){
+			SetupAvatarAndCam();
+		}
 	}	
 	void Start () {
 		
-		//A EFFACER
-		_CanControl = true;
 		
-		
-		if(_KeyboardType == null){
-			_KeyboardType = _KeyboardTypeEnum.QWERTY;
-		}
-	
-		CheckWhereIAm();
-		LinkChildren();
-		SetupLvl();
 		
 		Debug.LogWarning("MainManager-Start_log - Started in Lvl " + Application.loadedLevel + ". Also, the keyboard is a " + _KeyboardType + " type."
 			
@@ -144,81 +145,40 @@ public class MainManager : MonoBehaviour {
 							", RoomManager is : " + (_RoomManager!=null) + ", OptiManager is : " + (_OptiManager!=null) + 
 							", RoomInstancier is : " + (_RoomInstancier!=null) + ". Also, the Room was a : " + _RoomType + 
 							" which contains " + GetComponent<OptiManager>().roomList.Length + " room(s). The keyboard is " + _KeyboardType + "."*/);
-	}
-	
-	void Update(){
-		Debug.Log("Forward est a : " + getForward);
-	}
-
-	
-	//PRIVATE FUNCTION
-	private void LinkChildren(){
 		
+		//A EFFACER
+		_CanControl = true;
+		
+		if(_KeyboardType == null){
+			_KeyboardType = _KeyboardTypeEnum.QWERTY;
+		}
+		CheckWhereIAm();
+		StartCoroutine(SetupRoom());
+		ChromatoseManager.manager.CheckNewfaderList();
 	}
 	
-	public void SetupLvl(){
+	
+	void SetupAvatarAndCam(){
 		if(GameObject.FindGameObjectWithTag("StartPoint")){
-			startPoint = GameObject.FindGameObjectWithTag("StartPoint");
-			if(startPoint != null){
-				Debug.Log("StartPoint Finded");
-			}	
+			startPoint = GameObject.FindGameObjectWithTag("StartPoint");	
+			Debug.Log("1");
 		}
-		
-		switch(Application.loadedLevel){
-		case 0:
-			_RoomType = _RoomTypeEnum.Menu;
-			_WhiteRoom = _WhiteRoomEnum.None;
-			break;
-		case 1:
-			_RoomType = _RoomTypeEnum.WhiteRoom;
-			_WhiteRoom = _WhiteRoomEnum.Tuto;
-			break;
-		case 2:
-			_RoomType = _RoomTypeEnum.RedRoom;
-			_WhiteRoom = _WhiteRoomEnum.None;
-			break;
-		case 3: 
-			_RoomType = _RoomTypeEnum.WhiteRoom;
-			_WhiteRoom = _WhiteRoomEnum.ModuleBlanc_2;
-			break;
-		case 4:
-			_RoomType = _RoomTypeEnum.RedRoom;
-			_WhiteRoom = _WhiteRoomEnum.None;
-			break;
-		case 5:
-			_RoomType = _RoomTypeEnum.WhiteRoom;
-			_WhiteRoom = _WhiteRoomEnum.ModuleBlanc_3;
-			break;
-		case 6:
-			_RoomType = _RoomTypeEnum.RedRoom;
-			_WhiteRoom = _WhiteRoomEnum.None;
-			break;
-		case 7:
-			_RoomType = _RoomTypeEnum.WhiteRoom;
-			_WhiteRoom = _WhiteRoomEnum.ModuleBlanc_4;
-			break;
-		case 8:
-			_RoomType = _RoomTypeEnum.RedRoom;
-			_WhiteRoom = _WhiteRoomEnum.None;
-			break;
-		}
-				
+			//S'ASSURE QU'IL N'Y A PAS D'AVATAR, PUIS EN CREE UN
 		if(!GameObject.FindGameObjectWithTag("avatar") && Application.loadedLevel != 0){
 			_Avatar = Instantiate(Resources.Load("Avatar"), startPoint.transform.position, Quaternion.identity)as GameObject;
-			
-			if(_Avatar != null){
-				Debug.Log("Avatar Created");
-			}
 			_Avatar.name = "Avatar";
 			_AvatarScript = _Avatar.GetComponent<Avatar>();
 		}
-		
+		else if(Application.loadedLevel!=0){
+			_Avatar = GameObject.FindGameObjectWithTag("avatar");
+			_AvatarScript = _Avatar.GetComponent<Avatar>();
+		}
+			//S'ASSURE QU'IL N'Y AI PAS DE CAMERA, PUIS EN CREE UNE
 		if(!GameObject.FindGameObjectWithTag("MainCamera")){
 			Vector3 camPos = new Vector3(0, 0, -25);
 			_Chromera = Instantiate(Resources.Load("Chromera"), camPos, Quaternion.identity)as GameObject;
 			_ChromeraScript = _Chromera.GetComponent<ChromatoseCamera>();
 		}	
-		StartCoroutine(SetupRoom());
 	}
 	
 	
@@ -226,6 +186,7 @@ public class MainManager : MonoBehaviour {
 	public int CheckWhereIAm(){
 		return currentLevel = Application.loadedLevel;
 	}
+	
 	public void Pause(){
 		GameObject.FindGameObjectWithTag("avatar").GetComponent<Avatar>().InverseControlRight();
 		
@@ -240,10 +201,13 @@ public class MainManager : MonoBehaviour {
 	}
 	
 	
+	public void LoadALevel(int levelInt){
+		Application.LoadLevel(levelInt);
+	}
 	
 	
 	//INHERITANCE COROUTINE
-	public IEnumerator LoadALevel(int levelInt){
+	public IEnumerator LoadALevelAsync(int levelInt){
 		async = Application.LoadLevelAsync(levelInt);
 		yield return async;
 	}
@@ -253,86 +217,100 @@ public class MainManager : MonoBehaviour {
 		lvlSetuped = false;
 	}
 	
+
+	
 	IEnumerator SetupRoom(){
 		yield return new WaitForSeconds(0.1f);
 		int curLevel = Application.loadedLevel;
 		
 		switch(curLevel){
-		//MAIN MENU
+			//MAIN MENU
 		case 0:
 			_RoomType = _RoomTypeEnum.Menu;
 			_WhiteRoom = _WhiteRoomEnum.None;
 			currentLevel = 0;
 			break;
 			
-		//TUTORIAL
+			//TUTORIAL - MODULE_BLANC_1
 		case 1:
 			_RoomType = _RoomTypeEnum.WhiteRoom;
 			_WhiteRoom = _WhiteRoomEnum.Tuto;
 			currentLevel = 1;
 			break;
 			
-		//LEVEL 1 - MODULE_BLANC_1
+			//LEVEL 2 - MODULE_1_SCENE_1
 		case 2:
 			_RoomType = _RoomTypeEnum.RedRoom;
 			_WhiteRoom = _WhiteRoomEnum.None;
 			currentLevel = 2;
 			break;
 			
-		//LEVEL 2 - MODULE_1_SCENE_1
+			//LEVEL 3 - MODULE_BLANC_2
 		case 3:
 			_RoomType = _RoomTypeEnum.WhiteRoom;
 			_WhiteRoom = _WhiteRoomEnum.ModuleBlanc_2;
 			currentLevel = 3;
 			break;
 			
-		//LEVEL 3 - MODULE_BLANC_2
+			//LEVEL 4 = MODULE_1_SCENE_2
 		case 4:
 			_RoomType = _RoomTypeEnum.RedRoom;
 			_WhiteRoom = _WhiteRoomEnum.None;
 			currentLevel = 4;
 			break;
 			
-		//LEVEL 4 = MODULE_1_SCENE_2
+			//LEVEL 5 - MODULE_BLANC_3
 		case 5:
 			_RoomType = _RoomTypeEnum.WhiteRoom;
 			_WhiteRoom = _WhiteRoomEnum.ModuleBlanc_3;
 			currentLevel = 5;
 			break;
 			
-		//LEVEL 5 - MODULE_BLANC_3
+			//LEVEL 6 - MODULE_1_SCENE_3
 		case 6:
 			_RoomType = _RoomTypeEnum.RedRoom;
 			_WhiteRoom = _WhiteRoomEnum.None;
 			currentLevel = 6;
 			break;
 			
-		//LEVEL 6 - MODULE_1_SCENE_3
+			//LEVEL 7 - MODULE_BLANC_4
 		case 7:
 			_RoomType = _RoomTypeEnum.WhiteRoom;
 			_WhiteRoom = _WhiteRoomEnum.ModuleBlanc_4;
 			currentLevel = 7;
 			break;
 			
-		//LEVEL 7 - MODULE_BLANC_4
+			//LEVEL 8 - MODULE_1_SCENE_4
 		case 8:
 			_RoomType = _RoomTypeEnum.RedRoom;
 			_WhiteRoom = _WhiteRoomEnum.None;
 			currentLevel = 8;
 			break;
 			
-		//LEVEL 8 - MODULE_1_SCENE_4
+			//LEVEL 9 - MODULE_1_SCENE_5
 		case 9:
 			_RoomType = _RoomTypeEnum.RedRoom;
 			_WhiteRoom = _WhiteRoomEnum.None;
 			currentLevel = 9;
 			break;
 			
-		//LEVEL 9 - MODULE_1_SCENE_5
+			//LEVEL 10 - MODULE_1_SCENE_6
 		case 10:
 			_RoomType = _RoomTypeEnum.FinalBoss;
 			_WhiteRoom = _WhiteRoomEnum.None;
 			currentLevel = 10;
+			break;
+			//FINAL BOSS
+		case 11:
+			_RoomType = _RoomTypeEnum.FinalBoss;
+			_WhiteRoom = _WhiteRoomEnum.None;
+			currentLevel = 11;
+			break;
+			//GYM DU CHU
+		case 12:
+			_RoomType = _RoomTypeEnum.GYM;
+			_WhiteRoom = _WhiteRoomEnum.None;
+			currentLevel = 12;
 			break;
 		}
 	}

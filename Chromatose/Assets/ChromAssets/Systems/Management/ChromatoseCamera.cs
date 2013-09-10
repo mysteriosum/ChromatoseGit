@@ -49,12 +49,13 @@ public class ChromatoseCamera : MainManager {
 		//height = cam2d.nativeResolutionHeight;
 	}
 	
-	void FixedUpdate () {
+	void Update () {
 		if (Application.loadedLevelName == "Menu") return;
 		if (avatar == null)return;
 		
-		if (manager.InComic){
+		if (ChromatoseManager.manager.InComic){
 			t.position = new Vector3(0, 0 + _BdOffset, t.position.z);
+			return;
 		}
 		else{
 			t.position = new Vector3(avatar.position.x - width/2, avatar.position.y - height/2 + _BdOffset, t.position.z);

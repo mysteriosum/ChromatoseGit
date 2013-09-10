@@ -25,39 +25,6 @@ public class ColourWell : MonoBehaviour {
 	private string blueWellString3 = "blueWell_leakPomp";
 	
 	void Start () {
-		Setup();		
-	}
-	
-	
-	void OnTriggerStay(Collider collider){
-		
-		if (collider.tag != "avatar") return;
-		if (myColor == Color.red)
-			_AvatarScript.OnRedWell = true;
-		
-	 	HUDManager.hudManager.UpdateAction(Actions.Absorb, Trigger);		//this tells the manager that I want to do something. But I'll have to wait in line!
-	}
-	void OnTriggerExit(Collider collider){
-		if(collider.tag != "avatar") return;
-		if(myColor == Color.red){
-			_AvatarScript.OnRedWell = false;
-		}
-	}
-	
-	
-	void Trigger(){
-
-		_AvatarScript.FillBucket(myColor);
-		sfxPlayer.clip = _FillBucketSound;
-		sfxPlayer.loop = false;
-		sfxPlayer.Play();
-		
-	}
-	
-	IEnumerator Setup(){
-		yield return new WaitForSeconds(0.5f);
-		_Manager = ChromatoseManager.manager;
-		_AvatarScript = GameObject.Find("Avatar").GetComponent<Avatar>();
 		_MainAnim = GetComponent<tk2dAnimatedSprite>();
 		sfxPlayer = GetComponent<AudioSource>();
 		sfxPlayer.Play();
@@ -96,5 +63,32 @@ public class ColourWell : MonoBehaviour {
 			
 			break;
 		}
+	}
+	
+	
+	void OnTriggerStay(Collider collider){
+		
+		if (collider.tag != "avatar") return;
+		if (myColor == Color.red){
+			GameObject.FindGameObjectWithTag("avatar").GetComponent<Avatar>().OnRedWell = true;
+		}
+		
+	 	HUDManager.hudManager.UpdateAction(Actions.Absorb, Trigger);		//this tells the manager that I want to do something. But I'll have to wait in line!
+	}
+	void OnTriggerExit(Collider collider){
+		if(collider.tag != "avatar") return;
+		if(myColor == Color.red){
+			GameObject.FindGameObjectWithTag("avatar").GetComponent<Avatar>().OnRedWell = false;
+		}
+	}
+	
+	
+	void Trigger(){
+
+		GameObject.FindGameObjectWithTag("avatar").GetComponent<Avatar>().FillBucket(myColor);
+		sfxPlayer.clip = _FillBucketSound;
+		sfxPlayer.loop = false;
+		sfxPlayer.Play();
+		
 	}
 }

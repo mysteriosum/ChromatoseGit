@@ -2,10 +2,12 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-public class Avatar : ColourBeing
-{
+[System.Serializable]
+public class Avatar : MainManager{
 
-	//Commentaire du Chu
+	private MainManager _MainManager;
+	private tk2dSprite spriteInfo;
+	
 	private Color partColor = Color.white;
 	public Color AvatarColor{
 		get{return partColor;}
@@ -79,10 +81,17 @@ public class Avatar : ColourBeing
 	private SpeechBubble bubble;
 
 	//inputs. Up, left and right will also work, but getW seems intuitive to me
+	/*
 	protected bool getW;
 	protected bool getA;
 	protected bool getS;	//This is there for solidarity
 	protected bool getD;
+	*/
+	
+	private bool getForward;	public bool getforward { get { return getForward; } set { getForward = value; } }
+	private bool getLeft;		public bool getleft { get { return getLeft; } set { getLeft = value; } }
+	private bool getRight;		public bool getright { get { return getRight; } set { getRight = value; } }
+	
 	private bool getSpace;
 	private bool _SpaceBarActive;
 		public bool spaceBarActive{
@@ -450,7 +459,9 @@ public class Avatar : ColourBeing
 		}
 		
 		public void Stop(){
-			go.SetActive(false);
+			if(go){
+				go.SetActive(false);
+			}
 		}
 	}
 	#endregion
@@ -651,6 +662,8 @@ public class Avatar : ColourBeing
 
 	void Start (){	
 		
+		_MainManager = MainManager._MainManager;
+		
 		t = this.transform;
 		t.rotation = Quaternion.identity;
 				
@@ -721,13 +734,12 @@ public class Avatar : ColourBeing
 		spriteInfo.Collection = normalCollection;
 		StartCoroutine(LateCPCreation(1.0f));
 		
-		StartCoroutine(Setup ());
-		
 	}
 	
 
 	void FixedUpdate ()
 	{
+		
 		travisMcGee.EyeFollow();
 								//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
 								//<--------------Color Fading!--------------->
@@ -770,7 +782,7 @@ public class Avatar : ColourBeing
 				_CurColor = Color.white;
 			}
 			
-			if(!getA && !getD){	
+			if(!getLeft && !getRight){	
 				if(currentSubimg == ccw2){
 					_PlayerFadeString = "Player2";
 					spriteInfo.SetSprite("Player2_"+_ColorFadeString+_SpriteIndex);
@@ -787,7 +799,7 @@ public class Avatar : ColourBeing
 				}
 			}
 			else{
-				if(getA){
+				if(getLeft){
 					
 					if(currentSubimg != ccw1 && currentSubimg != ccw2){
 						_PlayerFadeString = "Player2";
@@ -879,6 +891,8 @@ public class Avatar : ColourBeing
 								//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
 								//<-------------Getting Inputs!-------------->
 								//<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>
+		
+		/*
 		if (canControl){
 			getW = Input.GetKey(KeyCode.O);
 			if (Input.GetKey (KeyCode.UpArrow)){
@@ -910,7 +924,7 @@ public class Avatar : ColourBeing
 					}
 				}
 			}				
-		}
+		}*/
 			
 								//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
 								//<------------Handling Movement!------------>
@@ -947,7 +961,7 @@ public class Avatar : ColourBeing
 		
 												//Self-made checkpoints! Or whatever you want to call it
 		
-		if (getS){
+		if (getSpace){
 			
 			if (!hasOutline){
 				outline = new GameObject("Outline");
@@ -1007,7 +1021,7 @@ public class Avatar : ColourBeing
 		
 		
 															//drop particles where necessary
-		if (getW && ((!getA && !getD) || (getA && getD))){
+		if (getForward && ((!getLeft && !getRight) || (getLeft && getRight))){
 			accelPartTimer += Time.deltaTime;
 			if (accelPartTimer >= accelPartTiming){
 				accelParts.Add(new MovementLines(t,-t.right, 1f, particleCollection, partAnimations));
@@ -1082,7 +1096,7 @@ public class Avatar : ColourBeing
 				}
 			}
 			
-			if (!colour.White && !hasChangedColour){
+			if (AvatarColor != Color.white && !hasChangedColour){
 				hasChangedColour = true;
 			}
 			if (onRedWell && !hasChangedColour){
@@ -1091,7 +1105,7 @@ public class Avatar : ColourBeing
 			}
 			
 			if (atDestructible && !hasDestroyed){
-				bubble.ShowBubbleFor(colour.Red? "avatarBubble_P1" : "avatarBubble_redColor2", 0.2f);
+				bubble.ShowBubbleFor(AvatarColor==Color.red? "avatarBubble_P1" : "avatarBubble_redColor2", 0.2f);
 				atDestructible = true;
 			}
 			
@@ -1112,7 +1126,7 @@ public class Avatar : ColourBeing
 				onRedCol = false;
 			}
 			
-			if (!colour.White && !hasChangedColour){
+			if (AvatarColor != Color.white && !hasChangedColour){
 				hasChangedColour = true;
 			}
 			if (onRedWell && !hasChangedColour){
@@ -1121,7 +1135,7 @@ public class Avatar : ColourBeing
 			}
 			
 			if (atDestructible && !hasDestroyed){
-				bubble.ShowBubbleFor(colour.Red? "avatarBubble_P1" : "avatarBubble_redColor2", 0.2f);
+				bubble.ShowBubbleFor(AvatarColor==Color.red? "avatarBubble_P1" : "avatarBubble_redColor2", 0.2f);
 				atDestructible = false;
 			}
 			
@@ -1142,7 +1156,7 @@ public class Avatar : ColourBeing
 					//onRedCol = false;
 				}
 			}
-			else if (!colour.White && !hasChangedColour){				
+			else if (AvatarColor != Color.white && !hasChangedColour){				
 				hasChangedColour = true;
 			}
 			else if (onRedWell && !hasChangedColour){
@@ -1161,7 +1175,7 @@ public class Avatar : ColourBeing
 					StartCoroutine(BubbleGrowed());
 				}
 				else if(bubbleGrowed){				
-					bubble.ShowBubbleFor(colour.Red? "avatarBubble_P1" : "avatarBubble_redColor2", 0.2f);
+					bubble.ShowBubbleFor(AvatarColor==Color.red? "avatarBubble_P1" : "avatarBubble_redColor2", 0.2f);
 					//atDestructible = false;
 				}
 			}
@@ -1200,28 +1214,28 @@ public class Avatar : ColourBeing
 		
 	}
 	
-	protected void TranslateInputs(float multiplier){
+	void TranslateInputs(float multiplier){
 		
 		if (Time.timeScale == 0) return;
 		bool gonnaRotate = false;
 		bool clockwise = false;
 		bool gonnaThrust = false;
-		if (getW){
+		if (getForward){
 			gonnaThrust = true;
 		}
 		
-		if (getA){
+		if (getLeft){
 			rotCounter --;
 			gonnaRotate = true;
 			clockwise = false;
 		}
 		
-		if (getD){
+		if (getRight){
 			rotCounter ++;
-			if (getA){
+			if (getLeft){
 				gonnaRotate = false;
-				getA = false;
-				getD = false;
+				getLeft = false;
+				getRight = false;
 			}
 			else{
 				gonnaRotate = true;
@@ -1232,7 +1246,7 @@ public class Avatar : ColourBeing
 		rotCounter = Mathf.Clamp(rotCounter, -rotAnimTiming, rotAnimTiming);
 		
 		
-		if (!getA && !getD && currentSubimg != noRotSubimg){
+		if (!getLeft && !getRight && currentSubimg != noRotSubimg){
 			int newCounter = Mathf.Abs(rotCounter) - 1;
 			rotCounter = Mathf.Clamp(rotCounter, -newCounter, newCounter);
 			if (rotCounter == 0){
@@ -1270,7 +1284,7 @@ public class Avatar : ColourBeing
 		t.position += new Vector3(velocity.x, velocity.y, 0) * multiplier;
 		
 	}
-	protected void TranslateInputs(){
+	void TranslateInputs(){
 		TranslateInputs(1f);
 	}
 	
@@ -1293,25 +1307,22 @@ public class Avatar : ColourBeing
 	
 	public void CannotControlFor(float t){
 		canControl = false;
-		getW = false;
-		getA = false;
-		getD = false;
+		getForward = false;
+		getLeft = false;
+		getRight = false;
 		Invoke("CanControl", t);
 	}
 	//Overriding the methods
 	public void CannotControlFor(bool needTimes, float t){
 		canControl = false;
-		getW = false;
-		getA = false;
-		getD = false;
+		getForward = false;
+		getLeft = false;
+		getRight = false;
 		if(needTimes){
 			Invoke("CanControl", t);
 		}
 	}
-	
-	public bool CheckIsBlue(){
-		return colour.b > 0;
-	}
+
 	
 	public void CanControl(){
 		canControl = true;
@@ -1320,7 +1331,7 @@ public class Avatar : ColourBeing
 		canControl = !canControl;
 	}
 	
-	override public void Trigger(){
+	public void Trigger(){
 		
 	}
 	
@@ -1328,15 +1339,7 @@ public class Avatar : ColourBeing
 		Destroy(outline);
 		hasOutline = false;
 	}
-	
-	public void LoseAllColour(){
-		int highestColour = Mathf.Max(colour.r, colour.g, colour.b);		//Decide what colour the avatar is
-		Color blendColour = new Color(colour.r - highestColour + 1, colour.g - highestColour + 1, colour.b - highestColour + 1, 1);
-		loseAllColourPart = new LoseAllColourParticle(particleCollection, partAnimations, t, blendColour);
-		colour.r = 0;
-		colour.g = 0;
-		colour.b = 0;
-	}
+
 	
 	public void LoseAllColourHidden(){
 		if(_CurColor == Color.white)return;
@@ -1349,24 +1352,7 @@ public class Avatar : ColourBeing
 		giveColourParts.Add(new GiveColourParticle(particleCollection, target, origin));
 	}
 	
-	
-															//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
-															//<-----------PAIN AND PUSHING!----------->
-															//<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>
-	
-	
-	private void Ouch(GameObject go){
-		
-		if (hurt){
-			hurtTimer = 0;
-		}
-		else{
-			curEnergy -= 10;
-			hurt = true;
-			CannotControlFor(0.5f);
-			invisible = true;
-		}
-	}
+
 	
 	void CreateCP(){
 			GameObject _NewCP = Resources.Load("pre_checkpoint")as GameObject;
@@ -1381,7 +1367,7 @@ public class Avatar : ColourBeing
 	}
 	
 	void CreatFirstCP(){
-		if(!manager.FirstLevelCPDone){
+		if(!ChromatoseManager.manager.FirstLevelCPDone){
 			GameObject _NewCP = Resources.Load("pre_checkpoint")as GameObject;
 			GameObject _FirstLevelCP = Instantiate(_NewCP, this.transform.position, this.transform.rotation)as GameObject;
 			
@@ -1392,7 +1378,7 @@ public class Avatar : ColourBeing
 			
 			_FirstLevelCP.GetComponent<Checkpoint>().CallOnStart(_FirstLevelCP);
 			
-			manager.FirstLevelCPDone = true;
+			ChromatoseManager.manager.FirstLevelCPDone = true;
 		}
 	}
 	
@@ -1478,14 +1464,6 @@ public class Avatar : ColourBeing
 	IEnumerator BubbleShrinked(){
 		yield return new WaitForSeconds(0.15f);
 		bubbleShrinked = true;
-	}
-	
-	IEnumerator Setup(){
-		yield return new WaitForSeconds(0.1f);
-		manager = ChromatoseManager.manager;
-		
-		
-		
 	}
 }
 
