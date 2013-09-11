@@ -166,16 +166,16 @@ public class ChromatoseManager : MainManager {
 			StartCoroutine(ResetCanGrabCollectibles(0.05f));
 			
 			if(col == Color.white){
-				whiteCollCollected++;
-				whiteCollDisplayed++;
+				StatsManager.whiteCollCollected++;
+				StatsManager.whiteCollDisplayed++;
 			}
 			else if(col == Color.red){
-				redCollCollected++;
-				redCollDisplayed++;
+				StatsManager.redCollCollected++;
+				StatsManager.redCollDisplayed++;
 			}
 			else if(col == Color.blue){
-				blueCollCollected++;
-				blueCollDisplayed++;
+				StatsManager.blueCollCollected++;
+				StatsManager.blueCollDisplayed++;
 			}
 			else{
 				Debug.LogWarning("Not a real collectible.");
@@ -186,13 +186,13 @@ public class ChromatoseManager : MainManager {
 	public int GetCollectibles(Color color){
 		
 		if(color == Color.white){
-			return whiteCollDisplayed;
+			return StatsManager.whiteCollDisplayed;
 		}
 		else if(color == Color.red){
-			return redCollDisplayed;
+			return StatsManager.redCollDisplayed;
 		}
 		else if(color == Color.blue){
-			return blueCollDisplayed;
+			return StatsManager.blueCollDisplayed;
 		}
 		else{
 			Debug.Log("CANT CHECK THIS COLOR?");
@@ -204,16 +204,16 @@ public class ChromatoseManager : MainManager {
 		
 		
 		if(color == Color.white){
-			whiteCollDisplayed -= amount;
+			StatsManager.whiteCollDisplayed -= amount;
 			BlowWhiteColl(amount, pos);			
 		}
 		else if(color == Color.red){
-			redCollDisplayed -= amount;
+			StatsManager.redCollDisplayed -= amount;
 			ShootRedCollOnMini(amount, pos);
 			Debug.Log("Remove "+amount);
 		}
 		else if(color == Color.blue){
-			blueCollDisplayed -= amount;
+			StatsManager.blueCollDisplayed -= amount;
 			BlowBlueColl(amount, pos);
 		}
 		else{

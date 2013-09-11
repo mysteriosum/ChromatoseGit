@@ -218,7 +218,7 @@ public class HUDManager : MainManager {
 	//RESET FUNCTION
 	public void ResetComicCounter(){
 		_TotalComicThumb = _RoomManager.UpdateTotalComic();
-		comicThumbCollected = 0;
+		StatsManager.comicThumbCollected = 0;
 	}
 	
 	
@@ -449,10 +449,10 @@ public class HUDManager : MainManager {
 				GUI.TextArea(new Rect(inMenuRect.width*0.15f, inMenuRect.height*0.9f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), "TOTAL PLAYTIME");
 					//STATISTIC STRING
 				GUI.TextArea(new Rect(inMenuRect.width*0.675f, inMenuRect.height*0.2f, inMenuRect.width*0.3f, inMenuRect.height*0.21f), ""); 	//AJOUTER LE NB DE NPC TUER
-				GUI.TextArea(new Rect(inMenuRect.width*0.65f, inMenuRect.height*0.3f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), whiteCollCollected.ToString());
-				GUI.TextArea(new Rect(inMenuRect.width*0.65f, inMenuRect.height*0.4f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), redCollCollected.ToString());
-				GUI.TextArea(new Rect(inMenuRect.width*0.65f, inMenuRect.height*0.5f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), blueCollCollected.ToString());
-				GUI.TextArea(new Rect(inMenuRect.width*0.65f, inMenuRect.height*0.6f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), comicThumbCollected.ToString());
+				GUI.TextArea(new Rect(inMenuRect.width*0.65f, inMenuRect.height*0.3f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), StatsManager.whiteCollCollected.ToString());
+				GUI.TextArea(new Rect(inMenuRect.width*0.65f, inMenuRect.height*0.4f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), StatsManager.redCollCollected.ToString());
+				GUI.TextArea(new Rect(inMenuRect.width*0.65f, inMenuRect.height*0.5f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), StatsManager.blueCollCollected.ToString());
+				GUI.TextArea(new Rect(inMenuRect.width*0.65f, inMenuRect.height*0.6f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), StatsManager.comicThumbCollected.ToString());
 				GUI.TextArea(new Rect(inMenuRect.width*0.65f, inMenuRect.height*0.7f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), "");	//AJOUTER LE NB D'ACHIEVEMENTS DEBLOQUER
 				GUI.TextArea(new Rect(inMenuRect.width*0.675f, inMenuRect.height*0.8f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), "");	//AJOUTER LE NB DE FOIS QUE LE PLAYER EST MORT
 				GUI.TextArea(new Rect(inMenuRect.width*0.65f, inMenuRect.height*0.9f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), "");	//AJOUTER LE TEMPS TOTAL JOUER
@@ -526,7 +526,7 @@ public class HUDManager : MainManager {
 		
 		GUI.BeginGroup(comicRect);										//comic counter		
 			GUI.skin.textArea.normal.textColor = Color.black;
-			if(comicThumbCollected >=  _TotalComicThumb && _TotalComicThumb != 0 && !_AfterComic){
+			if(StatsManager.comicThumbCollected >=  _TotalComicThumb && _TotalComicThumb != 0 && !_AfterComic){
 				_CanFlash = true;
 			}
 			if(_CanFlash){
@@ -544,7 +544,7 @@ public class HUDManager : MainManager {
 			}
 			GUI.skin.textArea.fontSize = 22;
 			GUI.skin.textArea.normal.textColor = Color.black;
-			GUI.TextArea(new Rect(textOffset.x, textOffset.y, 100, 50), comicThumbCollected + " / " + _TotalComicThumb);
+			GUI.TextArea(new Rect(textOffset.x, textOffset.y, 100, 50), StatsManager.comicThumbCollected + " / " + _TotalComicThumb);
 			
 			
 		GUI.EndGroup();
@@ -552,14 +552,14 @@ public class HUDManager : MainManager {
 		GUI.BeginGroup(wColRect);										//white collectible
 			GUI.skin.textArea.normal.textColor = Color.white;
 			GUI.DrawTexture(new Rect(0, 0, whiteCollectible.width, whiteCollectible.height), whiteCollectible);
-			GUI.TextArea(new Rect(textOffset.x + 10, textOffset.y, 100, 50), whiteCollDisplayed.ToString());// + " / " + _TotalWhiteColl.ToString());
+			GUI.TextArea(new Rect(textOffset.x + 10, textOffset.y, 100, 50), StatsManager.whiteCollDisplayed.ToString());// + " / " + _TotalWhiteColl.ToString());
 			
 		GUI.EndGroup();
 		
 		GUI.BeginGroup(rColRect);										//red collectible
 			GUI.skin.textArea.normal.textColor = Color.red;
 			GUI.DrawTexture(new Rect(0, 0, redCollectible.width, redCollectible.height), redCollectible);
-			GUI.TextArea(new Rect(textOffset.x + 10, textOffset.y, 100, 50), redCollCollected.ToString());// + " / " + _TotalRedColl.ToString());
+			GUI.TextArea(new Rect(textOffset.x + 10, textOffset.y, 100, 50), StatsManager.redCollCollected.ToString());// + " / " + _TotalRedColl.ToString());
 			
 		GUI.EndGroup();
 
@@ -567,7 +567,7 @@ public class HUDManager : MainManager {
 		GUI.BeginGroup(bColRect);										//blue collectible
 			GUI.skin.textArea.normal.textColor = Color.blue;
 			GUI.DrawTexture(new Rect(0, 0, blueCollectible.width, blueCollectible.height), blueCollectible);
-			GUI.TextArea(new Rect(textOffset.x + 10, textOffset.y, 100, 50), blueCollCollected.ToString());// + " / " + _TotalBlueColl.ToString());
+			GUI.TextArea(new Rect(textOffset.x + 10, textOffset.y, 100, 50), StatsManager.blueCollCollected.ToString());// + " / " + _TotalBlueColl.ToString());
 			
 		GUI.EndGroup();
 		

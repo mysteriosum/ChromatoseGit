@@ -30,7 +30,7 @@ namespace ChromaStats{
 		
 		//PRIVATE VARIABLES
 		private GameObject mainManager;
-		
+		private GameObject statsManager;
 		
 		
 		
@@ -71,14 +71,14 @@ namespace ChromaStats{
 			//LE BOUTON "START".
 		void CheckForLoad(){
 			
-			//Check Si une Sauvegarde existe
-			//Debug.Log(File.Exists(Application.persistentDataPath + "/" + "Chromasave"));
-			
-			
-			
+				//Check Si une Sauvegarde existe
+						//Debug.Log(File.Exists(Application.persistentDataPath + "/" + "Chromasave"));
 			if(!GameObject.FindGameObjectWithTag("MainManager")){
+				mainManager = Instantiate(Resources.Load("pre_MainManager"))as GameObject;
+								
 				if(!File.Exists(Application.persistentDataPath + "/" + "Chromasave")){
-					mainManager = Instantiate(Resources.Load("pre_MainManager"))as GameObject;
+					statsManager = Instantiate(Resources.Load("pre_StatsManager"))as GameObject;
+					statsManager.transform.parent = mainManager.transform;
 					HUDManager hudMan = mainManager.GetComponent<HUDManager>();
 					hudMan.firstStart = true;
 				}
@@ -87,7 +87,7 @@ namespace ChromaStats{
 					HUDManager hudMan = mainManager.GetComponent<HUDManager>();
 					hudMan.firstStart = false;
 				}
-			}
+			}			
 		}
 
 		
@@ -98,7 +98,7 @@ namespace ChromaStats{
 			
 			if(SAVETEST){
 				if(GUI.Button(new Rect(Screen.width*0.1f, Screen.height*0.2f, 120f, 80f), "SAVE")){
-					LevelSerializer.SaveObjectTreeToFile("Chromasave", mainManager);
+					LevelSerializer.SaveObjectTreeToFile("Chromasave", GameObject.FindGameObjectWithTag("StatsManager"));
 				}
 				if(GUI.Button(new Rect(Screen.width*0.3f, Screen.height*0.2f, 250f, 80f), "DELETE MANAGER")){
 					Destroy(mainManager.gameObject);

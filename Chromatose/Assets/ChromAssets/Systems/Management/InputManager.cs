@@ -34,11 +34,23 @@ public class InputManager : MainManager {
 				if(Input.GetKeyDown(KeyCode.O)){
 					MusicManager.soundManager.PlaySFX(0, 0.6f);
 				}
-					//INPUT DU LEFT
-				avatarScript.getleft = Input.GetKey(KeyCode.Q);
-	
-					//INPUT DU RIGHT
-				avatarScript.getright = Input.GetKey(KeyCode.W);
+				
+					//SI LE KEYBOARD SETTING EST SUR QWERTY
+				if(keyboardType == MainManager._KeyboardTypeEnum.QWERTY){
+						//INPUT DU LEFT
+					avatarScript.getleft = Input.GetKey(KeyCode.Q);
+		
+						//INPUT DU RIGHT
+					avatarScript.getright = Input.GetKey(KeyCode.W);
+				}
+					//SI LE KEYBOARD SETTING EST SUR AZERTY
+				else{
+						//INPUT DU LEFT
+					avatarScript.getleft = Input.GetKey(KeyCode.A);
+		
+						//INPUT DU RIGHT
+					avatarScript.getright = Input.GetKey(KeyCode.Z);
+				}
 			}
 		}		
 	}
