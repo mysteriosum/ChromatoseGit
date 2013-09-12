@@ -51,6 +51,7 @@ public class MainManager : MonoBehaviour {
 	}
 		
 	//VARIABLE STATIC STATS		
+	/*
 	public static int currentLevelUnlocked = 0;
 	
 	public static int redCollCollected = 0;
@@ -68,7 +69,7 @@ public class MainManager : MonoBehaviour {
 	
 	public static bool doneOneTime = false;
 	public static bool versionPirate = false;
-	
+	*/
 	
 	//VARIABLE SOUND
 	public static bool _MusicMute = false;
@@ -112,6 +113,7 @@ public class MainManager : MonoBehaviour {
 	public static Avatar _AvatarScript;
 	public static GameObject _Chromera;
 	public static ChromatoseCamera _ChromeraScript;
+	public static StatsManager _StatsManager;
 		
 	
 	//GET/SET ACCESSOR
@@ -120,7 +122,10 @@ public class MainManager : MonoBehaviour {
 	
 	//START, SETUP & INIT
 	void Awake(){
-		Debug.Log("LEVEL : " + Application.loadedLevel);
+		if(Application.isEditor){
+			Debug.Log("LEVEL : " + Application.loadedLevel);
+		}
+		
 		DontDestroyOnLoad(transform.gameObject);
 		
 		_MainManager = this;
@@ -129,6 +134,7 @@ public class MainManager : MonoBehaviour {
 		_RoomManager = GetComponent<ChromaRoomManager>();
 		_OptiManager = GetComponent<OptiManager>();
 		_RoomInstancier = GetComponent<RoomInstancier>();
+		_StatsManager = GetComponentInChildren<StatsManager>();
 	}
 	void OnLevelWasLoaded(){
 		if(Application.loadedLevel!=0){
@@ -139,12 +145,13 @@ public class MainManager : MonoBehaviour {
 		
 		
 		
-		Debug.LogWarning("MainManager-Start_log - Started in Lvl " + Application.loadedLevel + ". Also, the keyboard is a " + _KeyboardType + " type."
+		Debug.LogWarning("MainManager-Start_log - Started in Lvl " + Application.loadedLevel + ". Also, the keyboard is a " +
+							_KeyboardType + " type. Already own " + StatsManager.whiteCollCollected + " whiteCollectibles but only " +
+							StatsManager.whiteCollDisplayed + " will be displayed. Already own " + StatsManager.redCollCollected + " whiteCollectibles but only " +
+							StatsManager.redCollDisplayed + " will be displayed. Already own " + StatsManager.blueCollCollected + " whiteCollectibles but only " +
+							StatsManager.blueCollDisplayed + " will be displayed. " );
 			
-							/*", HudManager is : " + (_HudManager!=null) + ", ChroManager is : " + (_ChroManager!=null) + 
-							", RoomManager is : " + (_RoomManager!=null) + ", OptiManager is : " + (_OptiManager!=null) + 
-							", RoomInstancier is : " + (_RoomInstancier!=null) + ". Also, the Room was a : " + _RoomType + 
-							" which contains " + GetComponent<OptiManager>().roomList.Length + " room(s). The keyboard is " + _KeyboardType + "."*/);
+						
 		
 		//A EFFACER
 		_CanControl = true;
