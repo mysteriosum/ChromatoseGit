@@ -168,7 +168,8 @@ public class TransitionTrigger : MonoBehaviour {
 		avatarT.position = localTarget.position;
 		avatarT.rotation = localTarget.rotation;
 		avatarT.SendMessage ("SetVelocity", Vector2.zero);
-		
+		StatsManager.lastSpawnPos = localTarget.position;
+		Debug.Log("Last target Changed");
 		
 		if(_RoomManager.roomType == ChromaRoomManager._RoomTypeEnum.WhiteRoom){
 			_RoomManager.NextLilRoom();

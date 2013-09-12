@@ -166,20 +166,24 @@ public class MainManager : MonoBehaviour {
 	
 	
 	void SetupAvatarAndCam(){
-		if(GameObject.FindGameObjectWithTag("StartPoint")){
-			startPoint = GameObject.FindGameObjectWithTag("StartPoint");	
-			Debug.Log("1");
+			//DETERMINE LA POSITION DU SPAWN DE DEPART SELON SI C'EST UNE NEW GAME OU UNE GAME LOADER
+		if(StatsManager.lastSpawnPos==null){
+			if(GameObject.FindGameObjectWithTag("StartPoint")){
+				startPoint = GameObject.FindGameObjectWithTag("StartPoint");	
+			}			
 		}
+		else{
+			startPoint.transform.position = StatsManager.lastSpawnPos;
+		}
+		
 			//S'ASSURE QU'IL N'Y A PAS D'AVATAR, PUIS EN CREE UN
 		if(!GameObject.FindGameObjectWithTag("avatar") && Application.loadedLevel != 0){
 			_Avatar = Instantiate(Resources.Load("Avatar"), startPoint.transform.position, Quaternion.identity)as GameObject;
 			_Avatar.name = "Avatar";
 			_AvatarScript = _Avatar.GetComponent<Avatar>();
+			StatsManager.lastSpawnPos = startPoint.transform.position;
 		}
-		else if(Application.loadedLevel!=0){
-			_Avatar = GameObject.FindGameObjectWithTag("avatar");
-			_AvatarScript = _Avatar.GetComponent<Avatar>();
-		}
+
 			//S'ASSURE QU'IL N'Y AI PAS DE CAMERA, PUIS EN CREE UNE
 		if(!GameObject.FindGameObjectWithTag("MainCamera")){
 			Vector3 camPos = new Vector3(0, 0, -25);

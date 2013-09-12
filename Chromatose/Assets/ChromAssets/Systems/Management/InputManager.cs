@@ -52,6 +52,17 @@ public class InputManager : MainManager {
 					avatarScript.getright = Input.GetKey(KeyCode.Z);
 				}
 			}
+		}
+		
+		
+			//SPACE BAR
+		if(Input.GetKeyDown(KeyCode.Space)){
+			if(HUDManager._GUIState == GUIStateEnum.OnStart){
+				HUDManager._GUIState = GUIStateEnum.Interface;
+				GameObject.FindGameObjectWithTag("avatar").GetComponent<Avatar>().CanControl();
+				MusicManager.soundManager.PlaySFX(19);
+				MusicManager.soundManager.CheckLevel();
+			}
 		}		
 	}
 	
