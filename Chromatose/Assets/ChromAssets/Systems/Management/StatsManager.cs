@@ -7,6 +7,11 @@ public class StatsManager : MainManager {
 	public static StatsManager manager;
 	
 	public static int currentLevelUnlocked = 0;
+	public static Vector3 lastSpawnPos;
+	
+	public static bool[] levelUnlocked = new bool[12]{true, false, false, false, false,
+														false, false, false, false, false,
+														false, true};
 	
 	public static int redCollCollected = 0;
 	public static int blueCollCollected = 0;
@@ -23,6 +28,8 @@ public class StatsManager : MainManager {
 	
 	public static bool doneOneTime = false;
 	public static bool versionPirate = false;
+	public static bool newManager;
+	public static bool newLevel;
 	
 	void Awake(){
 		manager = this;		
@@ -30,10 +37,5 @@ public class StatsManager : MainManager {
 	
 	void Start () {
 		this.transform.parent = GameObject.FindGameObjectWithTag("MainManager").transform;
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		Debug.Log(whiteCollCollected);
 	}
 }
