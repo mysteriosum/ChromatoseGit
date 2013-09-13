@@ -59,11 +59,6 @@ namespace ChromaStats{
 		
 		void Update(){
 			
-			if(Input.GetKeyDown(KeyCode.F12)){
-				SAVETEST=!SAVETEST;
-			}
-			
-			
 		}
 		
 			//VERIFIE SI UNE SAVEGAME EXISTE, SI OUI, IL LOAD LE CONTENU ET INDIQUE AU MAINMENU
@@ -79,6 +74,7 @@ namespace ChromaStats{
 				if(!File.Exists(Application.persistentDataPath + "/" + "Chromasave")){
 					statsManager = Instantiate(Resources.Load("pre_StatsManager"))as GameObject;
 					statsManager.transform.parent = mainManager.transform;
+					StatsManager.newManager = true;
 					HUDManager hudMan = mainManager.GetComponent<HUDManager>();
 					hudMan.firstStart = true;
 				}
@@ -86,32 +82,9 @@ namespace ChromaStats{
 					LevelSerializer.LoadObjectTreeFromFile("Chromasave");
 					HUDManager hudMan = mainManager.GetComponent<HUDManager>();
 					hudMan.firstStart = false;
+					StatsManager.newManager = false;
 				}
 			}			
-		}
-
-		
-		
-		void OnGUI(){
-			GUI.skin = tempGuiSkin;
-			GUI.skin.button.fontSize = 30;
-			
-			if(SAVETEST){
-				if(GUI.Button(new Rect(Screen.width*0.1f, Screen.height*0.2f, 120f, 80f), "SAVE")){
-					LevelSerializer.SaveObjectTreeToFile("Chromasave", GameObject.FindGameObjectWithTag("StatsManager"));
-				}
-				if(GUI.Button(new Rect(Screen.width*0.3f, Screen.height*0.2f, 250f, 80f), "DELETE MANAGER")){
-					Destroy(mainManager.gameObject);
-				}
-				if(GUI.Button(new Rect(Screen.width*0.1f, Screen.height*0.33f, 150f, 80f), "LOAD")){
-					LevelSerializer.LoadObjectTreeFromFile("Chromasave");
-					
-				}
-				if(GUI.Button(new Rect(Screen.width*0.3f, Screen.height*0.33f, 250f, 80f), "DELETE SAVE")){
-					File.Delete(Application.persistentDataPath + "/" + "Chromasave");
-					Application.LoadLevel(Application.loadedLevel);
-				}
-			}
 		}
 	}
 }

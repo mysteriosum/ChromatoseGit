@@ -20,7 +20,7 @@ public class HUDManager : MainManager {
 	
 	public static HUDManager hudManager;
 	
-	public GUIStateEnum _GUIState;
+	public static GUIStateEnum _GUIState;
 	private _MenuWindowsEnum _MenuWindows;
 	private _OptionWindowsEnum _OptionWindows;
 	
@@ -47,7 +47,7 @@ public class HUDManager : MainManager {
 	public Texture pauseWindows, mainMenuBG, whiteBG, optionBG, loadingBG, greyFilterBG, endResultWindows, emptyProgressBar, progressLine, credits;
 	public Texture _AvatarLoadingLoop1, _AvatarLoadingLoop2, _BulleLoadingLoop1, _BulleLoadingLoop2;
 	
-	public GUISkin _PlayButtonSkin, _GreenlightSkin, skinSansBox, pauseBackButton, _SkinMenuSansBox;
+	public GUISkin _PlayButtonSkin, _GreenlightSkin, skinSansBox, pauseBackButton, _SkinMenuSansBox, _VoidSkin;
 	public GUISkin _StartButtonSkin, _CreditButtonSkin, _FbookButtonSkin, _TwitterButtonSkin, _BackButtonSkin, _GreenlightButton;
 	
 	public Texture qwertyKeyboard, azertyKeyboard, leftArrow, rightArrow;	
@@ -624,7 +624,7 @@ public class HUDManager : MainManager {
 		if(!_FirstStart){
 				//RESUME BUTTON
 			GUI.skin.button.fontSize = 76;
-			if(GUI.Button(new Rect(195, 305, 400, 300), "RESUME")){
+			if(GUI.Button(new Rect(195, 455, 400, 150), "RESUME")){
 				_MenuWindows = _MenuWindowsEnum.LevelSelectionWindows;
 			}
 		}
@@ -675,58 +675,189 @@ public class HUDManager : MainManager {
 		GUI.skin = _SkinMenuSansBox;
 		GUI.skin.button.fontSize = 40;
 		
-		if(GUI.Button(new Rect(250, 50, 300, 50), "TUTO - BLANC 1")){
-			_MenuWindows = _MenuWindowsEnum.LoadingScreen;
-			LoadALevel(1);
-			//StartCoroutine(LoadALevel(1));
+			//BOUTON SELECTION NIVEAU 1 -- TUTO
+		if(StatsManager.levelUnlocked[0] == true){
+			GUI.skin = _SkinMenuSansBox;
+			GUI.skin.button.fontSize = 40;
+			if(GUI.Button(new Rect(250, 50, 300, 50), "TUTO - BLANC 1")){
+				_MenuWindows = _MenuWindowsEnum.LoadingScreen;
+				LoadALevel(1);
+				StatsManager.newLevel = true;
+			}
 		}
-		if(GUI.Button(new Rect(250, 125, 300, 50), "NIV 1 - ROUGE 1")){
-			_MenuWindows = _MenuWindowsEnum.LoadingScreen;
-			LoadALevel(2);
-			//StartCoroutine(LoadALevel(2));
+		else{
+			GUI.skin = _VoidSkin;
+			GUI.skin.button.fontSize = 40;
+			if(GUI.Button(new Rect(250, 50, 300, 50), "TUTO - BLANC 1")){}
 		}
-		if(GUI.Button(new Rect(250, 200, 300, 50), "NIV 2 - BLANC 2")){
-			_MenuWindows = _MenuWindowsEnum.LoadingScreen;
-			//StartCoroutine(LoadALevel(3));
+		
+			//BOUTON SELECTION NIVEAU 2 -- MODULE ROUGE 1
+		if(StatsManager.levelUnlocked[1] == true){
+			GUI.skin = _SkinMenuSansBox;
+			GUI.skin.button.fontSize = 40;		
+			if(GUI.Button(new Rect(250, 125, 300, 50), "NIV 1 - ROUGE 1")){
+				_MenuWindows = _MenuWindowsEnum.LoadingScreen;
+				LoadALevel(2);
+			}
 		}
-		if(GUI.Button(new Rect(250, 275, 300, 50), "NIV 3 - ROUGE 2")){
-			_MenuWindows = _MenuWindowsEnum.LoadingScreen;
-			//StartCoroutine(LoadALevel(4));
+		else{
+			GUI.skin = _VoidSkin;
+			GUI.skin.button.fontSize = 40; 
+			if(GUI.Button(new Rect(250, 125, 300, 50), "NIV 1 - ROUGE 1")){}
 		}
-		if(GUI.Button(new Rect(250, 350, 300, 50), "NIV 4 - BLANC 3")){
-			_MenuWindows = _MenuWindowsEnum.LoadingScreen;
-			//StartCoroutine(LoadALevel(5));
-		}		
-		if(GUI.Button(new Rect(600, 50, 400, 50), "NIV 5 - ROUGE/BLEU 3")){
-			_MenuWindows = _MenuWindowsEnum.LoadingScreen;
-			//StartCoroutine(LoadALevel(6));
+		
+			//BOUTON SELECTION NIVEAU 3 -- MODULE BLANC 2
+		if(StatsManager.levelUnlocked[2] == true){
+			GUI.skin = _SkinMenuSansBox;
+			GUI.skin.button.fontSize = 40;
+			if(GUI.Button(new Rect(250, 200, 300, 50), "NIV 2 - BLANC 2")){
+				_MenuWindows = _MenuWindowsEnum.LoadingScreen;
+				LoadALevel(3);
+			}
 		}
-		if(GUI.Button(new Rect(600, 125, 300, 50), "NIV 6 - BLANC 4")){
-			_MenuWindows = _MenuWindowsEnum.LoadingScreen;
-			//StartCoroutine(LoadALevel(7));
+		else{
+			GUI.skin = _VoidSkin;
+			GUI.skin.button.fontSize = 40;
+			if(GUI.Button(new Rect(250, 200, 300, 50), "NIV 2 - BLANC 2")){}
 		}
-		if(GUI.Button(new Rect(600, 200, 300, 50), "NIV 7 - BLEU 4")){
-			_MenuWindows = _MenuWindowsEnum.LoadingScreen;
-			//StartCoroutine(LoadALevel(8));
+		
+			//BOUTON SLECTION NIVEAU 4 -- MODULE ROUGE 2
+		if(StatsManager.levelUnlocked[3] == true){
+			GUI.skin = _SkinMenuSansBox;
+			GUI.skin.button.fontSize = 40;
+			if(GUI.Button(new Rect(250, 275, 300, 50), "NIV 3 - ROUGE 2")){
+				_MenuWindows = _MenuWindowsEnum.LoadingScreen;
+				LoadALevel(4);
+			}
 		}
-		if(GUI.Button(new Rect(600, 275, 400, 50), "NIV 8 - ROUGE/BLEU 5")){
-			_MenuWindows = _MenuWindowsEnum.LoadingScreen;
-			//StartCoroutine(LoadALevel(9));
+		else{
+			GUI.skin = _VoidSkin;
+			GUI.skin.button.fontSize = 40;
+			if(GUI.Button(new Rect(250, 275, 300, 50), "NIV 3 - ROUGE 2")){}
 		}
-		if(GUI.Button(new Rect(600, 350, 300, 50), "NIV 9 - ROUGE 6")){
-			_MenuWindows = _MenuWindowsEnum.LoadingScreen;
-			//StartCoroutine(LoadALevel(10));
+		
+			//BOUTON SELECTION NIVEAU 5 -- MODULE BLANC 3
+		if(StatsManager.levelUnlocked[4] == true){
+			GUI.skin = _SkinMenuSansBox;
+			GUI.skin.button.fontSize = 40;
+			if(GUI.Button(new Rect(250, 350, 300, 50), "NIV 4 - BLANC 3")){
+				_MenuWindows = _MenuWindowsEnum.LoadingScreen;
+				LoadALevel(5);
+			}
 		}
-		if(GUI.Button(new Rect(250, 425, 650, 50), "BOSS FINAL")){
-			_MenuWindows = _MenuWindowsEnum.LoadingScreen;
-			//StartCoroutine(LoadALevel(11));
+		else{
+			GUI.skin = _VoidSkin;
+			GUI.skin.button.fontSize = 40;
+			if(GUI.Button(new Rect(250, 350, 300, 50), "NIV 4 - BLANC 3")){}
 		}
-		if(GUI.Button(new Rect(800, 600, 350, 50), "GYM DU CHU")){
-			_MenuWindows = _MenuWindowsEnum.LoadingScreen;
-			LoadALevel(12);
-			//StartCoroutine(LoadALevel(12));
+		
+			//BOUTON SELECTION NIVEAU 6 -- MODULE ROUGE 3
+		if(StatsManager.levelUnlocked[5] == true){
+			GUI.skin = _SkinMenuSansBox;
+			GUI.skin.button.fontSize = 40;
+			if(GUI.Button(new Rect(600, 50, 400, 50), "NIV 5 - ROUGE/BLEU 3")){
+				_MenuWindows = _MenuWindowsEnum.LoadingScreen;
+				LoadALevel(6);
+			}
 		}
+		else{
+			GUI.skin = _VoidSkin;
+			GUI.skin.button.fontSize = 40;
+			if(GUI.Button(new Rect(600, 50, 400, 50), "NIV 5 - ROUGE/BLEU 3")){}
+		}
+		
+			//BOUTON SELECTION NIVEAU 7 -- MODULE BLANC 4
+		if(StatsManager.levelUnlocked[6] == true){
+			GUI.skin = _SkinMenuSansBox;
+			GUI.skin.button.fontSize = 40;
+			if(GUI.Button(new Rect(600, 125, 300, 50), "NIV 6 - BLANC 4")){
+				_MenuWindows = _MenuWindowsEnum.LoadingScreen;
+				LoadALevel(7);
+			}
+		}
+		else{
+			GUI.skin = _VoidSkin;
+			GUI.skin.button.fontSize = 40;
+			if(GUI.Button(new Rect(600, 125, 300, 50), "NIV 6 - BLANC 4")){}
+		}
+		
+			//BOUTON SELECTION NIVEAU 8 -- MODULE ROUGE 4
+		if(StatsManager.levelUnlocked[7] == true){
+			GUI.skin = _SkinMenuSansBox;
+			GUI.skin.button.fontSize = 40;
+			if(GUI.Button(new Rect(600, 200, 300, 50), "NIV 7 - BLEU 4")){
+				_MenuWindows = _MenuWindowsEnum.LoadingScreen;
+				LoadALevel(8);
+			}
+		}
+		else{
+			GUI.skin = _VoidSkin;
+			GUI.skin.button.fontSize = 40;
+			if(GUI.Button(new Rect(600, 200, 300, 50), "NIV 7 - BLEU 4")){}
+		}
+		
+			//BOUTON SELECTION NIVEAU 9 -- MODULE ROUGE 5
+		if(StatsManager.levelUnlocked[8] == true){
+			GUI.skin = _SkinMenuSansBox;
+			GUI.skin.button.fontSize = 40;
+			if(GUI.Button(new Rect(600, 275, 400, 50), "NIV 8 - ROUGE/BLEU 5")){
+				_MenuWindows = _MenuWindowsEnum.LoadingScreen;
+				LoadALevel(9);
+			}
+		}
+		else{
+			GUI.skin = _VoidSkin;
+			GUI.skin.button.fontSize = 40;
+			if(GUI.Button(new Rect(600, 275, 400, 50), "NIV 8 - ROUGE/BLEU 5")){}
+		}
+		
+			//BOUTON SELECTION NIVEAU 10 -- MODULE ROUGE 6
+		if(StatsManager.levelUnlocked[9] == true){
+			GUI.skin = _SkinMenuSansBox;
+			GUI.skin.button.fontSize = 40;
+			if(GUI.Button(new Rect(600, 350, 300, 50), "NIV 9 - ROUGE 6")){
+				_MenuWindows = _MenuWindowsEnum.LoadingScreen;
+				LoadALevel(10);
+			}
+		}
+		else{
+			GUI.skin = _VoidSkin;
+			GUI.skin.button.fontSize = 40;
+			if(GUI.Button(new Rect(600, 350, 300, 50), "NIV 9 - ROUGE 6")){}
+		}
+		
+			//BOUTON SELECTION NIVEAU 11 -- BOSS FINAL
+		if(StatsManager.levelUnlocked[10] == true){
+			GUI.skin = _SkinMenuSansBox;
+			GUI.skin.button.fontSize = 40;
+			if(GUI.Button(new Rect(250, 425, 650, 50), "BOSS FINAL")){
+				_MenuWindows = _MenuWindowsEnum.LoadingScreen;
+				LoadALevel(11);
+			}
+		}
+		else{
+			GUI.skin = _VoidSkin;
+			GUI.skin.button.fontSize = 40;
+			if(GUI.Button(new Rect(250, 425, 650, 50), "BOSS FINAL")){}
+		}
+		
+			//BOUTON SELECTION NIVEAU GYM -- GYM DU CHU
+		if(StatsManager.levelUnlocked[11] == true){
+			GUI.skin = _SkinMenuSansBox;
+			GUI.skin.button.fontSize = 40;
+			if(GUI.Button(new Rect(800, 600, 350, 50), "GYM DU CHU")){
+				_MenuWindows = _MenuWindowsEnum.LoadingScreen;
+				LoadALevel(12);
+			}
+		}
+		else{
+			GUI.skin = _VoidSkin;
+			GUI.skin.button.fontSize = 40;
+			if(GUI.Button(new Rect(800, 600, 350, 50), "GYM DU CHU")){}
+		}
+
 			//BACK BUTTON
+		GUI.skin = _SkinMenuSansBox;
 		GUI.skin.button.fontSize = 48;
 		if(GUI.Button(new Rect(125, 605, 300, 80), "- BACK -")){
 			_MenuWindows = _MenuWindowsEnum.MainMenu;
@@ -775,6 +906,9 @@ public class HUDManager : MainManager {
 		GUI.DrawTexture(new Rect(0, 0, 1280, 720), loadingBG);
 		GUI.BeginGroup(inLoadRect);
 		/*
+		 * 
+		 * A REMPLACER PAR UN ICONE LOADING
+		 * 
 			//PROGRESS BAR
 		if(async != null){
 			GUI.DrawTexture(new Rect(150, 278, 6 * async.progress * 100f, inLoadRect.height*0.10f), progressLine);
