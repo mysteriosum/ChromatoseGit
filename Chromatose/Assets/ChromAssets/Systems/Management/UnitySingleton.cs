@@ -83,7 +83,8 @@ namespace ChromaStats{
 					hudMan.firstStart = false;
 					//StatsManager.newManager = false;
 				}
-			}			
+			}
+			//Application.LoadLevel(0);
 		}
 	}
 }

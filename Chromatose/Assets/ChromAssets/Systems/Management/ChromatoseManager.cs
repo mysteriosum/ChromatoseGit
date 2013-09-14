@@ -286,7 +286,7 @@ public class ChromatoseManager : MainManager {
 	
 	public void CreateFirstCheckpoint(){
 		GameObject fChkp = Instantiate(Resources.Load("pre_checkpoint"), avatar.transform.position, Quaternion.identity)as GameObject;
-		fChkp.renderer.enabled = false;
+		//fChkp.renderer.enabled = false;
 		StartCoroutine(NewFirstCheckPoint(fChkp.transform));
 	}
 	

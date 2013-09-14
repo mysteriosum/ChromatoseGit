@@ -8,7 +8,7 @@ public class Robot : MonoBehaviour {
 	public bool rotates = false;
 	public float turnRate = 1f;
 	public bool alternate = false;
-	int angle = 180;
+	public int angle = 180;
 	/*[System.SerializableAttribute]
 	public class DirectionClass{
 		public bool up = true;
@@ -34,11 +34,11 @@ public class Robot : MonoBehaviour {
 		t = GetComponent<Transform>();
 		spriteInfo = t.parent.GetComponent<tk2dSprite>();
 		
-		
+		/*
 		if (t.rotation.eulerAngles.z < -85 && t.rotation.eulerAngles.z > -95){
 			curSprite = 1;
+		}*/
 		
-		}
 		myLaser = GetComponentInChildren<Transform>();
 		if (alternate){
 			delay = turnRate;
@@ -62,7 +62,7 @@ public class Robot : MonoBehaviour {
 		timer += Time.deltaTime;
 		if (timer >= turnRate){
 			curSprite = 1 - curSprite;
-			spriteInfo.SetSprite(sprites[curSprite]);
+			//spriteInfo.SetSprite(sprites[curSprite]);
 			if (curSprite == 0){
 				transform.position = new Vector3(transform.position.x, transform.position.y, -2);
 			}
