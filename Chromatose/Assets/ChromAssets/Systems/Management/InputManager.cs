@@ -23,8 +23,7 @@ public class InputManager : MainManager {
 				//PAUSE -- NE DOIT PAS ETRE ACTIF DANS LES MENU
 			if(Input.GetKeyDown(KeyCode.Escape)){
 				//Pause();
-				HUDManager.mainBoxCanUp = true;
-				HUDManager.hudBoxCanDisappear = true;
+				HUDManager.hudManager.StartHudCloseSequence();
 			}	
 		
 				//MOUVEMENT DE L'AVATAR

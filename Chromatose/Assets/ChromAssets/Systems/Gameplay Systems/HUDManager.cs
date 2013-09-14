@@ -80,20 +80,20 @@ public class HUDManager : MainManager {
 	private float mainBoxPosY = -230f;
 	private float mainBoxMaxY = -120f;
 	
-	private float mainBoxMovingRate = 4f;
+	private float mainBoxMovingRate = 2.8f;
 	
 	private Rect[] hudRect = new Rect[4];
 	
 	private int counterBox = 0;
 	
-	public static bool hudBoxCanAppear = false;
-	public static bool hudBoxCanDisappear = false;
+	public static bool[] hudBoxCanAppear = new bool[4];
+	
+	public static bool[] hudBoxCanDisappear = new bool[4];
 	
 	private float hudBoxStartX = 1280;
-	private float hudBoxPosX = 1280;
 	private float hudBoxMinX = 1150;
 	
-	private float hudBoxMovingRate = 5f;
+	private float hudBoxMovingRate = 8f;
 	
 	//GETSET ACCESSOR
 	public bool afterComic { get { return _AfterComic; } set { _AfterComic = value; } }
@@ -124,10 +124,20 @@ public class HUDManager : MainManager {
 		actionTexture = absorbAction;
 		shownActionTexture = actionTexture;
 		
-		hudRect[0] = new Rect(hudBoxPosX, 115, comicCounter.width + 10, comicCounter.height);
-		hudRect[1] = new Rect(hudBoxPosX, 165, whiteCollectible.width+ 10, whiteCollectible.height);
-		hudRect[2] = new Rect(hudBoxPosX, 215, redCollectible.width + 10, redCollectible.height);
-		hudRect[3] = new Rect(hudBoxPosX, 265, blueCollectible.width + 10, blueCollectible.height);
+		hudRect[0] = new Rect(1280, 115, comicCounter.width + 10, comicCounter.height);
+		hudRect[1] = new Rect(1280, 165, whiteCollectible.width+ 10, whiteCollectible.height);
+		hudRect[2] = new Rect(1280, 215, redCollectible.width + 10, redCollectible.height);
+		hudRect[3] = new Rect(1280, 265, blueCollectible.width + 10, blueCollectible.height);
+		
+		hudBoxCanAppear[0] = false;
+		hudBoxCanAppear[1] = false;
+		hudBoxCanAppear[2] = false;
+		hudBoxCanAppear[3] = false;
+		
+		hudBoxCanDisappear[0] = false;
+		hudBoxCanDisappear[1] = false;
+		hudBoxCanDisappear[2] = false;
+		hudBoxCanDisappear[3] = false;
 		
 			//SETUP LE TOUT, ON LE FAIT A L'EXTERNE CAR J'AIME BIEN POUVOIR LE RAPPELLER, EN CAS DE PROBLEME
 		StartCoroutine(Setup(0.1f));
@@ -145,11 +155,33 @@ public class HUDManager : MainManager {
 		if(mainBoxCanUp){
 			CloseMainBox();
 		}
-		if(hudBoxCanAppear){
-			OpenHudBox();
+		
+		
+		if(hudBoxCanAppear[0]){
+			OpenHudBox0();
 		}
-		if(hudBoxCanDisappear){
-			CloseHudBox();
+		if(hudBoxCanAppear[1]){
+			OpenHudBox1();
+		}
+		if(hudBoxCanAppear[2]){
+			OpenHudBox2();
+		}
+		if(hudBoxCanAppear[3]){
+			OpenHudBox3();
+		}
+		
+		
+		if(hudBoxCanDisappear[0]){
+			CloseHudBox0();
+		}
+		if(hudBoxCanDisappear[1]){
+			CloseHudBox1();
+		}
+		if(hudBoxCanDisappear[2]){
+			CloseHudBox2();
+		}
+		if(hudBoxCanDisappear[3]){
+			CloseHudBox3();
 		}
 	}
 	void LateUpdate () {
@@ -270,28 +302,90 @@ public class HUDManager : MainManager {
 	}	
 	
 		//Open CollBoxx
-	void OpenHudBox(){
+	void OpenHudBox0(){
 		
-		for(int i = 0; i < hudRect.Length; i++){
-			if(hudRect[i].x > hudBoxMinX){
-				hudRect[i].x-=hudBoxMovingRate;
+		if(hudRect[0].x >= hudBoxMinX){
+			hudRect[0].x-=hudBoxMovingRate;
+		}
+		else{
+			hudBoxCanAppear[0] = false;
+			if(hudRect[0].x < hudBoxMinX){
+				hudRect[0].x = hudBoxMinX;
 			}
-			else{
-				hudBoxCanAppear = false;
+		}
+	}
+	void OpenHudBox1(){
+		
+		if(hudRect[1].x >= hudBoxMinX){
+			hudRect[1].x-=hudBoxMovingRate;
+		}
+		else{
+			hudBoxCanAppear[1] = false;
+			if(hudRect[1].x < hudBoxMinX){
+				hudRect[1].x = hudBoxMinX;
+			}
+		}
+	}
+	void OpenHudBox2(){
+		
+		if(hudRect[2].x >= hudBoxMinX){
+			hudRect[2].x-=hudBoxMovingRate;
+		}
+		else{
+			hudBoxCanAppear[2] = false;
+			if(hudRect[2].x < hudBoxMinX){
+				hudRect[2].x = hudBoxMinX;
+			}
+		}
+	}
+	void OpenHudBox3(){
+		
+		if(hudRect[3].x >= hudBoxMinX){
+			hudRect[3].x-=hudBoxMovingRate;
+		}
+		else{
+			hudBoxCanAppear[3] = false;
+			if(hudRect[3].x < hudBoxMinX){
+				hudRect[3].x = hudBoxMinX;
 			}
 		}
 	}
 	
 		//Close CollBoxx
-	void CloseHudBox(){
+	void CloseHudBox0(){
 		
-		for(int i = 0; i < hudRect.Length; i++){
-			if(hudRect[i].x < hudBoxStartX){
-				hudRect[i].x+=hudBoxMovingRate;
-			}
-			else{
-				hudBoxCanDisappear = false;
-			}
+		if(hudRect[0].x < hudBoxStartX){
+			hudRect[0].x+=hudBoxMovingRate;
+		}
+		else{
+			hudBoxCanDisappear[0] = false;
+		}		
+	}
+	void CloseHudBox1(){
+		
+		if(hudRect[1].x < hudBoxStartX){
+			hudRect[1].x+=hudBoxMovingRate;
+		}
+		else{
+			hudBoxCanDisappear[1] = false;
+		}		
+	}
+	void CloseHudBox2(){
+		
+		if(hudRect[2].x < hudBoxStartX){
+			hudRect[2].x+=hudBoxMovingRate;
+		}
+		else{
+			hudBoxCanDisappear[2] = false;
+		}		
+	}
+	void CloseHudBox3(){
+		
+		if(hudRect[3].x < hudBoxStartX){
+			hudRect[3].x+=hudBoxMovingRate;
+		}
+		else{
+			hudBoxCanDisappear[3] = false;
 		}		
 	}
 	
@@ -301,7 +395,23 @@ public class HUDManager : MainManager {
 		StatsManager.comicThumbCollected = 0;
 	}
 	
+		//Start Hud Open Sequence
+	public void StartHudOpenSequence(){
+		StartCoroutine(ActiveMainBox(0.25f, true));
+		hudBoxCanAppear[3] = true;
+		StartCoroutine(ActiveHudBox(0.2f, 2, true));
+		StartCoroutine(ActiveHudBox(0.4f, 1, true));
+		StartCoroutine(ActiveHudBox(0.6f, 0, true));
+	}
 	
+		//Start Hud Close Sequence
+	public void StartHudCloseSequence(){
+		StartCoroutine(ActiveMainBox(0.25f, false));
+		hudBoxCanDisappear[0] = true;
+		StartCoroutine(ActiveHudBox(0.2f, 1, false));
+		StartCoroutine(ActiveHudBox(0.4f, 2, false));
+		StartCoroutine(ActiveHudBox(0.6f, 3, false));
+	}
 	
 
 	//////////////////////////////////////
@@ -675,8 +785,7 @@ public class HUDManager : MainManager {
 			GUI.skin = pauseBackButton;
 			if(GUI.Button(new Rect(300, 225, 130, 75), "")){
 				Pause();
-				mainBoxCanDown = true;
-				hudBoxCanAppear = true;
+				StartHudOpenSequence();
 			}	
 		
 		GUI.EndGroup();
@@ -691,8 +800,7 @@ public class HUDManager : MainManager {
 		GUI.skin.button.fontSize = 78;
 		if(GUI.Button(new Rect(350, 70, 512, 512), "")){
 			_GUIState = GUIStateEnum.Interface;
-			mainBoxCanDown = true;
-			hudBoxCanAppear = true;
+			StartHudOpenSequence();
 			GameObject.FindGameObjectWithTag("avatar").GetComponent<Avatar>().CanControl();
 			MusicManager.soundManager.PlaySFX(19);
 			MusicManager.soundManager.CheckLevel();
@@ -1019,5 +1127,24 @@ public class HUDManager : MainManager {
 			_AvatarScript = GameObject.FindGameObjectWithTag("avatar").GetComponent<Avatar>();
 			_AvatarScript.CannotControlFor(false, 0);
 		}		
+	}
+	
+	IEnumerator ActiveHudBox(float delai, int boxToActive, bool open){
+		yield return new WaitForSeconds(delai);
+		if(open){
+			hudBoxCanAppear[boxToActive] = true;
+		}
+		else{
+			hudBoxCanDisappear[boxToActive] = true;
+		}
+	}
+	IEnumerator ActiveMainBox(float delai, bool open){
+		yield return new WaitForSeconds(delai);
+		if(open){
+			mainBoxCanDown = true;
+		}
+		else{
+			mainBoxCanUp = true;
+		}
 	}
 }
