@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEditor;
 using System.Collections;
 using System.IO;
 
@@ -18,12 +19,7 @@ public class DevManager : MainManager {
 			devMenuActive = !devMenuActive;
 		}
 	}
-	/*
-	void UnlockNextLevel(){
-		foreach(bool unlckBool in StatsManager.levelUnlocked){
-			if()
-		}
-	}*/
+	
 	
 	
 	void OnGUI(){	
@@ -35,21 +31,24 @@ public class DevManager : MainManager {
 				//BOUTON RESTART GAME & RESET SAVE
 			GUI.skin = devButtonSkin;
 			GUI.skin.button.fontSize = 30;
-			if(GUI.Button(new Rect(750f, 190f, 300f, 50f), "RESET GAME & SAVE")){
-				
+			if(GUI.Button(new Rect(750f, 190f, 300f, 50f), "RESET ALL SAVE")){
+				File.Delete(Application.persistentDataPath + "/" + "Chromasave");
+				LevelSerializer.SavedGames.Clear ();
+				LevelSerializer.SaveDataToPlayerPrefs (); 
+				EditorApplication.isPlaying = false;
 			}
 			
 				//BOUTON SAVE
 			GUI.skin = devSmallButtonSkin;
-			GUI.skin.button.fontSize = 30;
-			if(GUI.Button(new Rect(750f, 250f, 140f, 50f), "SAVE")){
-				LevelSerializer.SaveObjectTreeToFile("Chromasave", GameObject.FindGameObjectWithTag("StatsManager"));
+			GUI.skin.button.fontSize = 20;
+			if(GUI.Button(new Rect(750f, 250f, 140f, 50f), "SAVE STATS")){
+				LevelSerializer.SaveObjectTreeToFile("Chromasave", GameObject.FindGameObjectWithTag("StatsManager").gameObject);
 			}
 			
 				//BOUTON LOAD
 			GUI.skin = devSmallButtonSkin;
-			GUI.skin.button.fontSize = 30;
-			if(GUI.Button(new Rect(910f, 250f, 140f, 50f), "LOAD")){
+			GUI.skin.button.fontSize = 20;
+			if(GUI.Button(new Rect(910f, 250f, 140f, 50f), "LOAD STATS")){
 				LevelSerializer.LoadObjectTreeFromFile("Chromasave");
 			}
 			
@@ -60,12 +59,49 @@ public class DevManager : MainManager {
 				Destroy(this.transform);
 			}
 		
-				//BOUTON DELETE SAVE
-			GUI.skin = devButtonSkin;
-			GUI.skin.button.fontSize = 30;
-			if(GUI.Button(new Rect(750, 410, 300f, 50f), "DELETE SAVE")){
-				File.Delete(Application.persistentDataPath + "/" + "Chromasave");
-				Application.LoadLevel(Application.loadedLevel);
+				//BOUTON SAVE ROOM
+			GUI.skin = devSmallButtonSkin;
+			GUI.skin.button.fontSize = 20;
+			if(GUI.Button(new Rect(750, 410, 140f, 50f), "SAVE ROOM")){
+				StatsManager.savedRoomInt = StatsManager.currentRoomInt;
+				SaveRoom();
+				LevelSerializer.SaveObjectTreeToFile("Chromasave", GameObject.FindGameObjectWithTag("StatsManager").gameObject);
+				StatsManager.saveExist = true;
+			}
+			
+				//BOUTON LOAD ROOM
+			GUI.skin = devSmallButtonSkin;
+			GUI.skin.button.fontSize = 20;
+			
+			if(LevelSerializer.CanResume){
+				if(GUI.Button(new Rect(910f, 410f, 140f, 50f), "LOAD ROOM")){
+					OptiManager.manager.OptimizeZone(StatsManager.savedRoomInt);
+		         	LoadRoom();
+		         	Time.timeScale = 1;
+	        	} 
+			}
+			
+			/*
+			foreach(var sg in LevelSerializer.SavedGames[LevelSerializer.PlayerName]) { 
+	       		if(GUI.Button(new Rect(910f, 410f, 140f, 50f), "LOAD ROOM")){
+					OptiManager.manager.OptimizeZone(StatsManager.savedRoomInt);
+		         	LevelSerializer.LoadNow(sg.Data);
+		         	Time.timeScale = 1;
+	        	} 
+    		} */
+						
+				//BOUTON UNLOCK NEXT LEVEL
+			GUI.skin = devSmallButtonSkin;
+			GUI.skin.button.fontSize = 16;
+			if(GUI.Button(new Rect(750f, 570f, 140f, 50f), "UNLOCK NEXT LEVEL")){
+				UnlockNextLevel();
+			}
+			
+				//BOUTON LOCK LAST LEVEL
+			GUI.skin = devSmallButtonSkin;
+			GUI.skin.button.fontSize = 16;
+			if(GUI.Button(new Rect(910f, 570f, 140f, 50f), "LOCK LAST LEVEL")){
+				LockLastLevel();
 			}
 		}
 	}

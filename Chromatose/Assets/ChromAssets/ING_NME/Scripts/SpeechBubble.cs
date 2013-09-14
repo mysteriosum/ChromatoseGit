@@ -64,7 +64,10 @@ public class SpeechBubble : MonoBehaviour{				//THE BUBBLE AND ITS DECLARATION!
 	public SpeechBubble(Transform toFollow): this(toFollow, ChromatoseManager.manager.bubbleCollection){
 		
 	}
-
+	
+	void Awake(){
+		if(LevelSerializer.IsDeserializing) return;
+	}
 	
 	public void Main(){
 		if (timer > 0){

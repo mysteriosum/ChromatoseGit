@@ -72,11 +72,28 @@ public class HUDManager : MainManager {
 	
 	private int _TotalComicThumb = 0;
 	
+		//VARIABLE ELEMENTS DYNAMICS
+	public static bool mainBoxCanDown = false;
+	public static bool mainBoxCanUp = false;
 	
-	//MANAGER & VIP OBJECT
-	//private Avatar _AvatarScript;	
+	private float mainBoxStartY = -230f;
+	private float mainBoxPosY = -230f;
+	private float mainBoxMaxY = -120f;
 	
+	private float mainBoxMovingRate = 4f;
 	
+	private Rect[] hudRect = new Rect[4];
+	
+	private int counterBox = 0;
+	
+	public static bool hudBoxCanAppear = false;
+	public static bool hudBoxCanDisappear = false;
+	
+	private float hudBoxStartX = 1280;
+	private float hudBoxPosX = 1280;
+	private float hudBoxMinX = 1150;
+	
+	private float hudBoxMovingRate = 5f;
 	
 	//GETSET ACCESSOR
 	public bool afterComic { get { return _AfterComic; } set { _AfterComic = value; } }
@@ -106,16 +123,34 @@ public class HUDManager : MainManager {
 		aX = absorbAction.width * 1.5f;		
 		actionTexture = absorbAction;
 		shownActionTexture = actionTexture;
-		//SETUP LE TOUT, ON LE FAIT A L'EXTERNE CAR J'AIME BIEN POUVOIR LE RAPPELLER, EN CAS DE PROBLEME
+		
+		hudRect[0] = new Rect(hudBoxPosX, 115, comicCounter.width + 10, comicCounter.height);
+		hudRect[1] = new Rect(hudBoxPosX, 165, whiteCollectible.width+ 10, whiteCollectible.height);
+		hudRect[2] = new Rect(hudBoxPosX, 215, redCollectible.width + 10, redCollectible.height);
+		hudRect[3] = new Rect(hudBoxPosX, 265, blueCollectible.width + 10, blueCollectible.height);
+		
+			//SETUP LE TOUT, ON LE FAIT A L'EXTERNE CAR J'AIME BIEN POUVOIR LE RAPPELLER, EN CAS DE PROBLEME
 		StartCoroutine(Setup(0.1f));
 		
 	}
 	
 	
 	
-	//FIXED & LATE UPDATE
+		//FIXED & LATE UPDATE
 	void FixedUpdate () {
-	
+		
+		if(mainBoxCanDown){
+			OpenMainBox();
+		}
+		if(mainBoxCanUp){
+			CloseMainBox();
+		}
+		if(hudBoxCanAppear){
+			OpenHudBox();
+		}
+		if(hudBoxCanDisappear){
+			CloseHudBox();
+		}
 	}
 	void LateUpdate () {
 		
@@ -182,7 +217,7 @@ public class HUDManager : MainManager {
 	
 	
 	
-	//ACTIONBOX FUNCTIONS
+		//ACTIONBOX FUNCTIONS
 	public void UpdateAction(Actions action, ActionDelegate method){
 		if (action <= currentAction || action == Actions.Nothing){
 			currentAction = action;
@@ -213,9 +248,54 @@ public class HUDManager : MainManager {
 	}
 	
 	
+		//Open HUD MainBox
+	void OpenMainBox(){
+		if(mainBoxPosY < mainBoxMaxY){
+			mainBoxPosY+=mainBoxMovingRate;
+		}
+		else{
+			mainBoxCanDown = false;
+		}
+	}
+		
+		//Close HUD MainBox
+	void CloseMainBox(){
+		if(mainBoxPosY > mainBoxStartY){
+			mainBoxPosY-=mainBoxMovingRate;
+		}
+		else{
+			mainBoxCanUp = false;
+			Pause();
+		}
+	}	
 	
+		//Open CollBoxx
+	void OpenHudBox(){
+		
+		for(int i = 0; i < hudRect.Length; i++){
+			if(hudRect[i].x > hudBoxMinX){
+				hudRect[i].x-=hudBoxMovingRate;
+			}
+			else{
+				hudBoxCanAppear = false;
+			}
+		}
+	}
 	
-	//RESET FUNCTION
+		//Close CollBoxx
+	void CloseHudBox(){
+		
+		for(int i = 0; i < hudRect.Length; i++){
+			if(hudRect[i].x < hudBoxStartX){
+				hudRect[i].x+=hudBoxMovingRate;
+			}
+			else{
+				hudBoxCanDisappear = false;
+			}
+		}		
+	}
+	
+		//RESET FUNCTION
 	public void ResetComicCounter(){
 		_TotalComicThumb = _RoomManager.UpdateTotalComic();
 		StatsManager.comicThumbCollected = 0;
@@ -290,6 +370,7 @@ public class HUDManager : MainManager {
 			
 			//DRAW LE MENU PAUSE INGAME
 		case GUIStateEnum.Pause:
+			DrawInterfaceHUD();
 			DrawInGamePause();
 			break;
 			
@@ -503,11 +584,8 @@ public class HUDManager : MainManager {
 		
 			//INITIALISATION DES RECTANGLEBOX
 		Rect bgRect = new Rect(0, 0, 1280, 720);
-		Rect mainRect = new Rect(1150, -120, mainBox.width, mainBox.height);
-		Rect comicRect = new Rect(1150, 115, comicCounter.width + 10, comicCounter.height);
-		Rect wColRect = new Rect(1150, 165, whiteCollectible.width+ 10, whiteCollectible.height);
-		Rect rColRect = new Rect(1150, 215, redCollectible.width + 10, redCollectible.height);
-		Rect bColRect = new Rect(1150, 265, blueCollectible.width + 10, blueCollectible.height);
+		Rect mainRect = new Rect(1150, mainBoxPosY, mainBox.width, mainBox.height);  //Default Value PosY = -120
+		
 		Rect actionRect = new Rect(1183, 22, 60, 52);
 		//Rect timeTrialRect = new Rect(25, 20, _TimeTrialBox.width + 100f, _TimeTrialBox.height + 10f);
 		Rect endResultRect = new Rect (0, 0, Screen.width, Screen.height);
@@ -524,7 +602,7 @@ public class HUDManager : MainManager {
 			GUI.EndGroup();
 		}*/
 		
-		GUI.BeginGroup(comicRect);										//comic counter		
+		GUI.BeginGroup(hudRect[0]);										//comic counter		
 			GUI.skin.textArea.normal.textColor = Color.black;
 			if(StatsManager.comicThumbCollected >=  _TotalComicThumb && _TotalComicThumb != 0 && !_AfterComic){
 				_CanFlash = true;
@@ -549,14 +627,14 @@ public class HUDManager : MainManager {
 			
 		GUI.EndGroup();
 		
-		GUI.BeginGroup(wColRect);										//white collectible
+		GUI.BeginGroup(hudRect[1]);										//white collectible
 			GUI.skin.textArea.normal.textColor = Color.white;
 			GUI.DrawTexture(new Rect(0, 0, whiteCollectible.width, whiteCollectible.height), whiteCollectible);
 			GUI.TextArea(new Rect(textOffset.x + 10, textOffset.y, 100, 50), StatsManager.whiteCollDisplayed.ToString());// + " / " + _TotalWhiteColl.ToString());
 			
 		GUI.EndGroup();
 		
-		GUI.BeginGroup(rColRect);										//red collectible
+		GUI.BeginGroup(hudRect[2]);										//red collectible
 			GUI.skin.textArea.normal.textColor = Color.red;
 			GUI.DrawTexture(new Rect(0, 0, redCollectible.width, redCollectible.height), redCollectible);
 			GUI.TextArea(new Rect(textOffset.x + 10, textOffset.y, 100, 50), StatsManager.redCollCollected.ToString());// + " / " + _TotalRedColl.ToString());
@@ -564,7 +642,7 @@ public class HUDManager : MainManager {
 		GUI.EndGroup();
 
 		
-		GUI.BeginGroup(bColRect);										//blue collectible
+		GUI.BeginGroup(hudRect[3]);										//blue collectible
 			GUI.skin.textArea.normal.textColor = Color.blue;
 			GUI.DrawTexture(new Rect(0, 0, blueCollectible.width, blueCollectible.height), blueCollectible);
 			GUI.TextArea(new Rect(textOffset.x + 10, textOffset.y, 100, 50), StatsManager.blueCollCollected.ToString());// + " / " + _TotalBlueColl.ToString());
@@ -597,6 +675,8 @@ public class HUDManager : MainManager {
 			GUI.skin = pauseBackButton;
 			if(GUI.Button(new Rect(300, 225, 130, 75), "")){
 				Pause();
+				mainBoxCanDown = true;
+				hudBoxCanAppear = true;
 			}	
 		
 		GUI.EndGroup();
@@ -611,6 +691,8 @@ public class HUDManager : MainManager {
 		GUI.skin.button.fontSize = 78;
 		if(GUI.Button(new Rect(350, 70, 512, 512), "")){
 			_GUIState = GUIStateEnum.Interface;
+			mainBoxCanDown = true;
+			hudBoxCanAppear = true;
 			GameObject.FindGameObjectWithTag("avatar").GetComponent<Avatar>().CanControl();
 			MusicManager.soundManager.PlaySFX(19);
 			MusicManager.soundManager.CheckLevel();

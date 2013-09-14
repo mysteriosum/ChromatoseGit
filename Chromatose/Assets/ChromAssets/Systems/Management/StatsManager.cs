@@ -6,13 +6,12 @@ public class StatsManager : MainManager {
 	
 	public static StatsManager manager;
 	
+	public static int currentRoomInt;
+	public static int savedRoomInt;
 	public static int currentLevelUnlocked = 0;
-	public static Vector3 lastSpawnPos;
+	public static bool saveExist;
 	
-	public static bool[] levelUnlocked = new bool[12]{true, false, false, false, false,
-														false, false, false, false, false,
-														false, true};
-	
+	public static bool[] levelUnlocked;
 	public static int redCollCollected = 0;
 	public static int blueCollCollected = 0;
 	public static int whiteCollCollected;
@@ -26,16 +25,20 @@ public class StatsManager : MainManager {
 	public static int totalComicViewed = 0;
 	public static float playedTime = 0;
 	
-	public static bool doneOneTime = false;
-	public static bool versionPirate = false;
+	public static bool doneOneTime;
+	public static bool versionPirate;
 	public static bool newManager;
 	public static bool newLevel;
 	
 	void Awake(){
+		if(LevelSerializer.IsDeserializing) return;
 		manager = this;		
+		DontDestroyOnLoad(this.gameObject);
 	}
 	
 	void Start () {
-		this.transform.parent = GameObject.FindGameObjectWithTag("MainManager").transform;
+		levelUnlocked = new bool[12]{true, false, false, false, false,
+										false, false, false, false, false,
+										false, true};
 	}
 }

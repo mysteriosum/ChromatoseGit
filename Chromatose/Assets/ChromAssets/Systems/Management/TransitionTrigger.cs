@@ -161,6 +161,7 @@ public class TransitionTrigger : MonoBehaviour {
 		if(_AvatarScript.HasOutline){
 			_AvatarScript.CancelOutline();
 		}
+		MainManager._MainManager.UnlockNextLevel();
 		Application.LoadLevel(Application.loadedLevel + 1);
 	}
 	
@@ -168,7 +169,8 @@ public class TransitionTrigger : MonoBehaviour {
 		avatarT.position = localTarget.position;
 		avatarT.rotation = localTarget.rotation;
 		avatarT.SendMessage ("SetVelocity", Vector2.zero);
-		StatsManager.lastSpawnPos = localTarget.position;
+		//Vector3 dataPos = localTarget.position;
+		//StatsManager.lastSpawnPos = dataPos;
 		Debug.Log("Last target Changed");
 		
 		if(_RoomManager.roomType == ChromaRoomManager._RoomTypeEnum.WhiteRoom){

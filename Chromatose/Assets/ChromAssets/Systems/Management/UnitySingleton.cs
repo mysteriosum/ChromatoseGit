@@ -72,8 +72,7 @@ namespace ChromaStats{
 				mainManager = Instantiate(Resources.Load("pre_MainManager"))as GameObject;
 								
 				if(!File.Exists(Application.persistentDataPath + "/" + "Chromasave")){
-					statsManager = Instantiate(Resources.Load("pre_StatsManager"))as GameObject;
-					statsManager.transform.parent = mainManager.transform;
+					statsManager = Instantiate(Resources.Load("pre_StatsManager"), Vector3.zero, Quaternion.identity)as GameObject;
 					StatsManager.newManager = true;
 					HUDManager hudMan = mainManager.GetComponent<HUDManager>();
 					hudMan.firstStart = true;
@@ -82,7 +81,7 @@ namespace ChromaStats{
 					LevelSerializer.LoadObjectTreeFromFile("Chromasave");
 					HUDManager hudMan = mainManager.GetComponent<HUDManager>();
 					hudMan.firstStart = false;
-					StatsManager.newManager = false;
+					//StatsManager.newManager = false;
 				}
 			}			
 		}

@@ -22,6 +22,8 @@ public class Destructible : MonoBehaviour {		//move sprite @ 15 frames or 0.5f s
 	
 	private AudioSource sfxPlayer;
 	
+	private bool setuped = false;
+	
 	[System.SerializableAttribute]
 	public class TargetMessageReceivers{
 		public GameObject target;
@@ -58,7 +60,14 @@ public class Destructible : MonoBehaviour {		//move sprite @ 15 frames or 0.5f s
 	
 	// Use this for initialization
 	void Start () {
-		Setup();
+		spriteInfo = GetComponent<tk2dSprite>();
+		poof = Instantiate(poof) as GameObject;
+		poof.SetActive(false);
+		anim = poof.GetComponent<tk2dAnimatedSprite>();
+		anim.animationEventDelegate = NextImage;
+		anim.animationCompleteDelegate = Done;	
+		
+		//Setup();
 		
 	}
 	
@@ -67,30 +76,26 @@ public class Destructible : MonoBehaviour {		//move sprite @ 15 frames or 0.5f s
 		Checks();
 	}
 	
-	protected virtual void Setup(){
-		avatar = GameObject.Find("Avatar").transform;
+	void Setup(){
+		//yield return new WaitForSeconds(0.1f);
+		avatar = GameObject.FindGameObjectWithTag("avatar").transform;
 		avatarScript = avatar.GetComponent<Avatar>();
-		sfxPlayer = GetComponent<AudioSource>();
-		spriteInfo = GetComponent<tk2dSprite>();
-		poof = Instantiate(poof) as GameObject;
-		poof.SetActive(false);
-		anim = poof.GetComponent<tk2dAnimatedSprite>();
-		anim.animationEventDelegate = NextImage;
-		anim.animationCompleteDelegate = Done;	
+		setuped = true;
 	}
 	
 	protected virtual void Checks(){
-		
-		if(Vector3.Distance(avatar.position, myNode.position) > 100){return;}
-			
-		//float dist = Vector3.Distance(avatar.position, myNode.position);
-//		Debug.Log("Ma Couleur est Rouge = " + avatarScript.colour.Red);
-										//<----C'est ici que le check se fait mal
-		if (collider.bounds.Contains(avatar.position)){
-			HUDManager.hudManager.UpdateAction(Actions.Destroy, Action);	//<----Peut que si on a pas fait d'autre action, le trigger se ne se reinitialise pas
-			avatarScript.AtDestructible = true;									//<----sert que pour la Bubble
+		if(setuped){
+			if(Vector3.Distance(avatar.position, myNode.position) > 100){return;}
+				
+											//<----C'est ici que le check se fait mal
+			if (collider.bounds.Contains(avatar.position)){
+				HUDManager.hudManager.UpdateAction(Actions.Destroy, Action);	//<----Peut que si on a pas fait d'autre action, le trigger se ne se reinitialise pas
+				avatarScript.AtDestructible = true;									//<----sert que pour la Bubble
+			}
 		}
-		
+		else{
+			Setup();
+		}
 	}
 	
 	protected virtual void Destruct(){
@@ -115,6 +120,8 @@ public class Destructible : MonoBehaviour {		//move sprite @ 15 frames or 0.5f s
 //		Debug.Log("Wanna Destroy Me?");
 		avatarScript.HasDestroyed = true;
 		avatarScript.GiveColourTo(transform, avatar);
+		avatarScript.EmptyingBucket();
+		MusicManager.soundManager.PlaySFX(15);
 		StartCoroutine(DelaiSFX());
 		Invoke("Destruct", 0.5f);
 	}
@@ -163,6 +170,6 @@ public class Destructible : MonoBehaviour {		//move sprite @ 15 frames or 0.5f s
 	
 	IEnumerator DelaiSFX(){
 		yield return new WaitForSeconds(0.5f);
-		sfxPlayer.Play();
+		MusicManager.soundManager.PlaySFX(9);
 	}
 }

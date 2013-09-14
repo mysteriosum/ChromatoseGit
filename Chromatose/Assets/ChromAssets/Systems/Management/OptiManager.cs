@@ -12,6 +12,7 @@ public class OptiManager : MainManager {
 	public GameObject[] roomList;
 
 	void Awake(){
+		manager = this;
 		DontDestroyOnLoad(this);
 	}
 	void OnLevelWasLoaded(){
@@ -19,7 +20,6 @@ public class OptiManager : MainManager {
 		FindAllRoom();
 	}
 	void Start () {
-		manager = this;
 		StartCoroutine(DelaiBeforeStartOpti());
 		FindAllRoom();
 	}
@@ -42,7 +42,7 @@ public class OptiManager : MainManager {
 					go.SetActive(false);
 				}
 			}
-			roomList[currentRoomInt].SetActive(true);
+			roomList[StatsManager.currentRoomInt].SetActive(true);
 			Invoke("SaveRoom", 0.5f);
 		}		
 	}
