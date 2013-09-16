@@ -72,11 +72,28 @@ public class HUDManager : MainManager {
 	
 	private int _TotalComicThumb = 0;
 	
+		//VARIABLE ELEMENTS DYNAMICS
+	public static bool mainBoxCanDown = false;
+	public static bool mainBoxCanUp = false;
 	
-	//MANAGER & VIP OBJECT
-	//private Avatar _AvatarScript;	
+	private float mainBoxStartY = -230f;
+	private float mainBoxPosY = -230f;
+	private float mainBoxMaxY = -120f;
 	
+	private float mainBoxMovingRate = 2.8f;
 	
+	private Rect[] hudRect = new Rect[4];
+	
+	private int counterBox = 0;
+	
+	public static bool[] hudBoxCanAppear = new bool[4];
+	
+	public static bool[] hudBoxCanDisappear = new bool[4];
+	
+	private float hudBoxStartX = 1280;
+	private float hudBoxMinX = 1150;
+	
+	private float hudBoxMovingRate = 8f;
 	
 	//GETSET ACCESSOR
 	public bool afterComic { get { return _AfterComic; } set { _AfterComic = value; } }
@@ -106,16 +123,66 @@ public class HUDManager : MainManager {
 		aX = absorbAction.width * 1.5f;		
 		actionTexture = absorbAction;
 		shownActionTexture = actionTexture;
-		//SETUP LE TOUT, ON LE FAIT A L'EXTERNE CAR J'AIME BIEN POUVOIR LE RAPPELLER, EN CAS DE PROBLEME
+		
+		hudRect[0] = new Rect(1280, 115, comicCounter.width + 10, comicCounter.height);
+		hudRect[1] = new Rect(1280, 165, whiteCollectible.width+ 10, whiteCollectible.height);
+		hudRect[2] = new Rect(1280, 215, redCollectible.width + 10, redCollectible.height);
+		hudRect[3] = new Rect(1280, 265, blueCollectible.width + 10, blueCollectible.height);
+		
+		hudBoxCanAppear[0] = false;
+		hudBoxCanAppear[1] = false;
+		hudBoxCanAppear[2] = false;
+		hudBoxCanAppear[3] = false;
+		
+		hudBoxCanDisappear[0] = false;
+		hudBoxCanDisappear[1] = false;
+		hudBoxCanDisappear[2] = false;
+		hudBoxCanDisappear[3] = false;
+		
+			//SETUP LE TOUT, ON LE FAIT A L'EXTERNE CAR J'AIME BIEN POUVOIR LE RAPPELLER, EN CAS DE PROBLEME
 		StartCoroutine(Setup(0.1f));
 		
 	}
 	
 	
 	
-	//FIXED & LATE UPDATE
+		//FIXED & LATE UPDATE
 	void FixedUpdate () {
-	
+		
+		if(mainBoxCanDown){
+			OpenMainBox();
+		}
+		if(mainBoxCanUp){
+			CloseMainBox();
+		}
+		
+		
+		if(hudBoxCanAppear[0]){
+			OpenHudBox0();
+		}
+		if(hudBoxCanAppear[1]){
+			OpenHudBox1();
+		}
+		if(hudBoxCanAppear[2]){
+			OpenHudBox2();
+		}
+		if(hudBoxCanAppear[3]){
+			OpenHudBox3();
+		}
+		
+		
+		if(hudBoxCanDisappear[0]){
+			CloseHudBox0();
+		}
+		if(hudBoxCanDisappear[1]){
+			CloseHudBox1();
+		}
+		if(hudBoxCanDisappear[2]){
+			CloseHudBox2();
+		}
+		if(hudBoxCanDisappear[3]){
+			CloseHudBox3();
+		}
 	}
 	void LateUpdate () {
 		
@@ -182,7 +249,7 @@ public class HUDManager : MainManager {
 	
 	
 	
-	//ACTIONBOX FUNCTIONS
+		//ACTIONBOX FUNCTIONS
 	public void UpdateAction(Actions action, ActionDelegate method){
 		if (action <= currentAction || action == Actions.Nothing){
 			currentAction = action;
@@ -213,15 +280,138 @@ public class HUDManager : MainManager {
 	}
 	
 	
+		//Open HUD MainBox
+	void OpenMainBox(){
+		if(mainBoxPosY < mainBoxMaxY){
+			mainBoxPosY+=mainBoxMovingRate;
+		}
+		else{
+			mainBoxCanDown = false;
+		}
+	}
+		
+		//Close HUD MainBox
+	void CloseMainBox(){
+		if(mainBoxPosY > mainBoxStartY){
+			mainBoxPosY-=mainBoxMovingRate;
+		}
+		else{
+			mainBoxCanUp = false;
+			Pause();
+		}
+	}	
 	
+		//Open CollBoxx
+	void OpenHudBox0(){
+		
+		if(hudRect[0].x >= hudBoxMinX){
+			hudRect[0].x-=hudBoxMovingRate;
+		}
+		else{
+			hudBoxCanAppear[0] = false;
+			if(hudRect[0].x < hudBoxMinX){
+				hudRect[0].x = hudBoxMinX;
+			}
+		}
+	}
+	void OpenHudBox1(){
+		
+		if(hudRect[1].x >= hudBoxMinX){
+			hudRect[1].x-=hudBoxMovingRate;
+		}
+		else{
+			hudBoxCanAppear[1] = false;
+			if(hudRect[1].x < hudBoxMinX){
+				hudRect[1].x = hudBoxMinX;
+			}
+		}
+	}
+	void OpenHudBox2(){
+		
+		if(hudRect[2].x >= hudBoxMinX){
+			hudRect[2].x-=hudBoxMovingRate;
+		}
+		else{
+			hudBoxCanAppear[2] = false;
+			if(hudRect[2].x < hudBoxMinX){
+				hudRect[2].x = hudBoxMinX;
+			}
+		}
+	}
+	void OpenHudBox3(){
+		
+		if(hudRect[3].x >= hudBoxMinX){
+			hudRect[3].x-=hudBoxMovingRate;
+		}
+		else{
+			hudBoxCanAppear[3] = false;
+			if(hudRect[3].x < hudBoxMinX){
+				hudRect[3].x = hudBoxMinX;
+			}
+		}
+	}
 	
-	//RESET FUNCTION
+		//Close CollBoxx
+	void CloseHudBox0(){
+		
+		if(hudRect[0].x < hudBoxStartX){
+			hudRect[0].x+=hudBoxMovingRate;
+		}
+		else{
+			hudBoxCanDisappear[0] = false;
+		}		
+	}
+	void CloseHudBox1(){
+		
+		if(hudRect[1].x < hudBoxStartX){
+			hudRect[1].x+=hudBoxMovingRate;
+		}
+		else{
+			hudBoxCanDisappear[1] = false;
+		}		
+	}
+	void CloseHudBox2(){
+		
+		if(hudRect[2].x < hudBoxStartX){
+			hudRect[2].x+=hudBoxMovingRate;
+		}
+		else{
+			hudBoxCanDisappear[2] = false;
+		}		
+	}
+	void CloseHudBox3(){
+		
+		if(hudRect[3].x < hudBoxStartX){
+			hudRect[3].x+=hudBoxMovingRate;
+		}
+		else{
+			hudBoxCanDisappear[3] = false;
+		}		
+	}
+	
+		//RESET FUNCTION
 	public void ResetComicCounter(){
 		_TotalComicThumb = _RoomManager.UpdateTotalComic();
 		StatsManager.comicThumbCollected = 0;
 	}
 	
+		//Start Hud Open Sequence
+	public void StartHudOpenSequence(){
+		StartCoroutine(ActiveMainBox(0.25f, true));
+		hudBoxCanAppear[3] = true;
+		StartCoroutine(ActiveHudBox(0.2f, 2, true));
+		StartCoroutine(ActiveHudBox(0.4f, 1, true));
+		StartCoroutine(ActiveHudBox(0.6f, 0, true));
+	}
 	
+		//Start Hud Close Sequence
+	public void StartHudCloseSequence(){
+		StartCoroutine(ActiveMainBox(0.25f, false));
+		hudBoxCanDisappear[0] = true;
+		StartCoroutine(ActiveHudBox(0.2f, 1, false));
+		StartCoroutine(ActiveHudBox(0.4f, 2, false));
+		StartCoroutine(ActiveHudBox(0.6f, 3, false));
+	}
 	
 
 	//////////////////////////////////////
@@ -290,6 +480,7 @@ public class HUDManager : MainManager {
 			
 			//DRAW LE MENU PAUSE INGAME
 		case GUIStateEnum.Pause:
+			DrawInterfaceHUD();
 			DrawInGamePause();
 			break;
 			
@@ -503,11 +694,8 @@ public class HUDManager : MainManager {
 		
 			//INITIALISATION DES RECTANGLEBOX
 		Rect bgRect = new Rect(0, 0, 1280, 720);
-		Rect mainRect = new Rect(1150, -120, mainBox.width, mainBox.height);
-		Rect comicRect = new Rect(1150, 115, comicCounter.width + 10, comicCounter.height);
-		Rect wColRect = new Rect(1150, 165, whiteCollectible.width+ 10, whiteCollectible.height);
-		Rect rColRect = new Rect(1150, 215, redCollectible.width + 10, redCollectible.height);
-		Rect bColRect = new Rect(1150, 265, blueCollectible.width + 10, blueCollectible.height);
+		Rect mainRect = new Rect(1150, mainBoxPosY, mainBox.width, mainBox.height);  //Default Value PosY = -120
+		
 		Rect actionRect = new Rect(1183, 22, 60, 52);
 		//Rect timeTrialRect = new Rect(25, 20, _TimeTrialBox.width + 100f, _TimeTrialBox.height + 10f);
 		Rect endResultRect = new Rect (0, 0, Screen.width, Screen.height);
@@ -524,7 +712,7 @@ public class HUDManager : MainManager {
 			GUI.EndGroup();
 		}*/
 		
-		GUI.BeginGroup(comicRect);										//comic counter		
+		GUI.BeginGroup(hudRect[0]);										//comic counter		
 			GUI.skin.textArea.normal.textColor = Color.black;
 			if(StatsManager.comicThumbCollected >=  _TotalComicThumb && _TotalComicThumb != 0 && !_AfterComic){
 				_CanFlash = true;
@@ -549,14 +737,14 @@ public class HUDManager : MainManager {
 			
 		GUI.EndGroup();
 		
-		GUI.BeginGroup(wColRect);										//white collectible
+		GUI.BeginGroup(hudRect[1]);										//white collectible
 			GUI.skin.textArea.normal.textColor = Color.white;
 			GUI.DrawTexture(new Rect(0, 0, whiteCollectible.width, whiteCollectible.height), whiteCollectible);
 			GUI.TextArea(new Rect(textOffset.x + 10, textOffset.y, 100, 50), StatsManager.whiteCollDisplayed.ToString());// + " / " + _TotalWhiteColl.ToString());
 			
 		GUI.EndGroup();
 		
-		GUI.BeginGroup(rColRect);										//red collectible
+		GUI.BeginGroup(hudRect[2]);										//red collectible
 			GUI.skin.textArea.normal.textColor = Color.red;
 			GUI.DrawTexture(new Rect(0, 0, redCollectible.width, redCollectible.height), redCollectible);
 			GUI.TextArea(new Rect(textOffset.x + 10, textOffset.y, 100, 50), StatsManager.redCollCollected.ToString());// + " / " + _TotalRedColl.ToString());
@@ -564,7 +752,7 @@ public class HUDManager : MainManager {
 		GUI.EndGroup();
 
 		
-		GUI.BeginGroup(bColRect);										//blue collectible
+		GUI.BeginGroup(hudRect[3]);										//blue collectible
 			GUI.skin.textArea.normal.textColor = Color.blue;
 			GUI.DrawTexture(new Rect(0, 0, blueCollectible.width, blueCollectible.height), blueCollectible);
 			GUI.TextArea(new Rect(textOffset.x + 10, textOffset.y, 100, 50), StatsManager.blueCollCollected.ToString());// + " / " + _TotalBlueColl.ToString());
@@ -597,6 +785,7 @@ public class HUDManager : MainManager {
 			GUI.skin = pauseBackButton;
 			if(GUI.Button(new Rect(300, 225, 130, 75), "")){
 				Pause();
+				StartHudOpenSequence();
 			}	
 		
 		GUI.EndGroup();
@@ -611,6 +800,7 @@ public class HUDManager : MainManager {
 		GUI.skin.button.fontSize = 78;
 		if(GUI.Button(new Rect(350, 70, 512, 512), "")){
 			_GUIState = GUIStateEnum.Interface;
+			StartHudOpenSequence();
 			GameObject.FindGameObjectWithTag("avatar").GetComponent<Avatar>().CanControl();
 			MusicManager.soundManager.PlaySFX(19);
 			MusicManager.soundManager.CheckLevel();
@@ -937,5 +1127,24 @@ public class HUDManager : MainManager {
 			_AvatarScript = GameObject.FindGameObjectWithTag("avatar").GetComponent<Avatar>();
 			_AvatarScript.CannotControlFor(false, 0);
 		}		
+	}
+	
+	IEnumerator ActiveHudBox(float delai, int boxToActive, bool open){
+		yield return new WaitForSeconds(delai);
+		if(open){
+			hudBoxCanAppear[boxToActive] = true;
+		}
+		else{
+			hudBoxCanDisappear[boxToActive] = true;
+		}
+	}
+	IEnumerator ActiveMainBox(float delai, bool open){
+		yield return new WaitForSeconds(delai);
+		if(open){
+			mainBoxCanDown = true;
+		}
+		else{
+			mainBoxCanUp = true;
+		}
 	}
 }

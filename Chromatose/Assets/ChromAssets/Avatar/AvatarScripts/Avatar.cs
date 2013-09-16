@@ -235,7 +235,6 @@ public class Avatar : MainManager{
 		Transform t;
 		Avatar avatar;
 		public DeathAnim (){
-			Debug.Log ("Passe par Ici");
 			go = new GameObject("Death Animation!");
 			t = go.transform;
 			avatar = GameObject.FindWithTag("avatar").GetComponent<Avatar>();
@@ -731,6 +730,7 @@ public class Avatar : MainManager{
 		//MAKE ME AN EYE BABY
 		travisMcGee = new Eye(t, particleCollection);
 		bubble = new SpeechBubble (t, particleCollection);
+		//bubble.transform.parent = this.transform;
 		spriteInfo.Collection = normalCollection;
 		StartCoroutine(LateCPCreation(1.0f));
 		

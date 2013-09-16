@@ -123,20 +123,24 @@ public class ChromatoseManager : MainManager {
 
 	
 #region Initialisation et Setup	(Start)
-	void OnLevelWasLoaded(){
-		Setup ();
-	}
+
 	void Awake () {
+		Setup();
 		manager = this;
 	}
 	
 	void Start(){
 		Setup ();
 	}
-	void Setup(){
-		
+	public void Setup(){
 			//Initialise pour la premiere la security pour le FirstCP
 		_FirstLevelCPDone = false;
+		
+		if(Application.loadedLevel != 0){
+			
+			avatar = GameObject.FindGameObjectWithTag("avatar").GetComponent<Avatar>();
+			CreateFirstCheckpoint();
+		}
 	}
 
 
@@ -144,16 +148,7 @@ public class ChromatoseManager : MainManager {
 	
 #region Update & LateUpdate
 	void Update () {
-		/*
-		switch(_GUIState){
-		case GUIStateEnum.OnStart:
-			if(Input.GetKeyDown(KeyCode.Space)){
-				_GUIState = GUIStateEnum.Interface;
-				avatar.CanControl();
-				MusicManager.soundManager.PlaySFX(19);
-			}
-			break;
-		}*/
+
 	}
 
 #endregion
@@ -236,13 +231,13 @@ public class ChromatoseManager : MainManager {
 #region Fonctions Diverses
 	Avatar.DeathAnim danim;		//avatar's death animation
 	public void Death(){
-		
+		avatar = GameObject.FindGameObjectWithTag("avatar").GetComponent<Avatar>();
 		if(!_NoDeathModeActivated){
 			MusicManager.soundManager.PlaySFX(6);
 			danim = new Avatar.DeathAnim();
 			danim.PlayDeath(Reset);
 			//avatar.SendMessage("FadeAlpha", 0f);
-			avatar.movement.SetVelocity(Vector2.zero);
+			GameObject.FindGameObjectWithTag("avatar").GetComponent<Avatar>().movement.SetVelocity(Vector2.zero);
 			StartCoroutine(OnDeath(0.15f));
 			StartCoroutine(RestartRoom());
 			ResetColl();
@@ -270,13 +265,13 @@ public class ChromatoseManager : MainManager {
 	}
 	
 	public void Reset(tk2dAnimatedSprite anim, int index){
+		avatar = GameObject.FindGameObjectWithTag("avatar").GetComponent<Avatar>();
 		Destroy(danim.go);
-		//avatar.renderer.enabled = true;
 		avatar.Gone = false;
 		avatar.transform.position = curCheckpoint.transform.position;
 		avatar.transform.rotation = Quaternion.identity;
 		avatar.movement.SetVelocity(Vector2.zero);
-		//avatar.SetColour(0, 0, 0);
+
 	}
 	
 	void TriggerQuestionMark(){
@@ -289,9 +284,16 @@ public class ChromatoseManager : MainManager {
 	
 #region Fonctions CheckPoint
 	
-	public IEnumerator NewFirstCheckPoint(Transform cp){
-		yield return new WaitForSeconds(0.5f);
+	public void CreateFirstCheckpoint(){
+		GameObject fChkp = Instantiate(Resources.Load("pre_checkpoint"), avatar.transform.position, Quaternion.identity)as GameObject;
+		//fChkp.renderer.enabled = false;
+		StartCoroutine(NewFirstCheckPoint(fChkp.transform));
+	}
+	
+	IEnumerator NewFirstCheckPoint(Transform cp){
+		yield return new WaitForSeconds(0.1f);
 		curCheckpoint = cp;
+		Debug.Log("CheckSaved");
 		foreach(SpriteFader _SFader in _FaderList){
 			_SFader.SaveState();
 		}
@@ -401,8 +403,8 @@ public class ChromatoseManager : MainManager {
 	}
 	
 	public void ResetComicCounter(){
-		_TotalComicThumb = _RoomManager.UpdateTotalComic();
-		_ComicThumbCollected = 0;
+		//_TotalComicThumb = _RoomManager.UpdateTotalComic();
+		//_ComicThumbCollected = 0;
 	}
 	public void ResetColl(){
 		_RedCollected = 0;

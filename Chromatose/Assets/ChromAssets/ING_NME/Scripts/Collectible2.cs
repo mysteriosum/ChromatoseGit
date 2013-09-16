@@ -119,6 +119,9 @@ public class Collectible2 : MonoBehaviour {
 	
 	void OnTriggerEnter(Collider other){
 		if(other.tag != "avatar" || _Effect)return;
+		if(_AvatarScript!=other.GetComponent<Avatar>()){
+			_AvatarScript = other.GetComponent<Avatar>();
+		}
 		
 		if(!ChromatoseManager.manager.CollAlreadyAdded){
 			switch(colorCollectible){
@@ -127,6 +130,7 @@ public class Collectible2 : MonoBehaviour {
 				break;
 			case _ColorCollectible.Red:
 				_AvatarScript.OnRedCol = true;
+				
 				if(_AvatarScript.curColor == Color.red){
 					TakeCollectible();
 				}

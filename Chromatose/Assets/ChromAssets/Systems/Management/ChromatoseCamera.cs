@@ -22,15 +22,9 @@ public class ChromatoseCamera : MainManager {
 	
 	// Use this for initialization
 	void Start () {
-		if (Application.loadedLevelName == "Menu") return;
-		manager = ChromatoseManager.manager;
-		if (!avatar){
-			avatar = GameObject.FindGameObjectWithTag("avatar").transform;
-		}
-		t = GetComponent<Transform>();
-		cam2d = GetComponent<tk2dCamera>();
-		width = (int) cam2d.camera.GetScreenWidth();
-		height = (int) cam2d.camera.GetScreenHeight();
+		if(LevelSerializer.IsDeserializing) return;
+		
+		Setup();
 		
 		
 		if(Screen.width == 800){
@@ -50,8 +44,8 @@ public class ChromatoseCamera : MainManager {
 	}
 	
 	void Update () {
-		if (Application.loadedLevelName == "Menu") return;
-		if (avatar == null)return;
+		if (Application.loadedLevelName == "MainMenu") return;
+		if (avatar == null){Setup ();}
 		
 		if (ChromatoseManager.manager.InComic){
 			t.position = new Vector3(0, 0 + _BdOffset, t.position.z);
@@ -60,6 +54,18 @@ public class ChromatoseCamera : MainManager {
 		else{
 			t.position = new Vector3(avatar.position.x - width/2, avatar.position.y - height/2 + _BdOffset, t.position.z);
 		}
+	}
+	
+	void Setup(){
+		if (Application.loadedLevelName == "Menu") return;
+		manager = ChromatoseManager.manager;
+		if (!avatar){
+			avatar = GameObject.FindGameObjectWithTag("avatar").transform;
+		}
+		t = GetComponent<Transform>();
+		cam2d = GetComponent<tk2dCamera>();
+		width = (int) cam2d.camera.GetScreenWidth();
+		height = (int) cam2d.camera.GetScreenHeight();
 	}
 	
 	public void SwitchCamType(){

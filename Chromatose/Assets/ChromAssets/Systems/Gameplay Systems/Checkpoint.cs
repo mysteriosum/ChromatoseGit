@@ -47,6 +47,6 @@ public class Checkpoint : MonoBehaviour {
 		//ChromatoseManager.manager.SaveRoom();
 	}
 	public void CallOnStart(GameObject newCP){
-		ChromatoseManager.manager.NewFirstCheckPoint(newCP.transform);
+		//ChromatoseManager.manager.NewFirstCheckPoint();
 	}
 }

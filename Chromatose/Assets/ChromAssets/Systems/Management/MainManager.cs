@@ -27,7 +27,6 @@ public class MainManager : MonoBehaviour {
 	
 	//PUBLIC VARIABLES -- INGAME USED
 	public static int currentLevel = 0;
-	public static int currentRoomInt = 0;
 	public static string currentRoomString = "room00";
 	public static GameObject startPoint;
 	
@@ -49,6 +48,7 @@ public class MainManager : MonoBehaviour {
 									 : new Vector3(_Avatar.transform.position.x, _Avatar.transform.position.y, 0);
 		}
 	}
+	private string gameName = "ChromaSavedRoom";
 		
 	//VARIABLE STATIC STATS		
 	/*
@@ -147,8 +147,8 @@ public class MainManager : MonoBehaviour {
 		
 		Debug.LogWarning("MainManager-Start_log - Started in Lvl " + Application.loadedLevel + ". Also, the keyboard is a " +
 							_KeyboardType + " type. Already own " + StatsManager.whiteCollCollected + " whiteCollectibles but only " +
-							StatsManager.whiteCollDisplayed + " will be displayed. Already own " + StatsManager.redCollCollected + " whiteCollectibles but only " +
-							StatsManager.redCollDisplayed + " will be displayed. Already own " + StatsManager.blueCollCollected + " whiteCollectibles but only " +
+							StatsManager.whiteCollDisplayed + " will be displayed. Already own " + StatsManager.redCollCollected + " redCollectibles but only " +
+							StatsManager.redCollDisplayed + " will be displayed. Already own " + StatsManager.blueCollCollected + " blueCollectibles but only " +
 							StatsManager.blueCollDisplayed + " will be displayed. " );
 			
 						
@@ -167,21 +167,22 @@ public class MainManager : MonoBehaviour {
 	
 	void SetupAvatarAndCam(){
 			//DETERMINE LA POSITION DU SPAWN DE DEPART SELON SI C'EST UNE NEW GAME OU UNE GAME LOADER
-		if(StatsManager.lastSpawnPos==null){
+		//if(StatsManager.lastSpawnPos==Vector3.zero){
 			if(GameObject.FindGameObjectWithTag("StartPoint")){
 				startPoint = GameObject.FindGameObjectWithTag("StartPoint");	
 			}			
-		}
-		else{
-			startPoint.transform.position = StatsManager.lastSpawnPos;
-		}
+		//}
+		//else{
+			//startPoint.transform.position = StatsManager.lastSpawnPos;
+		//}
 		
 			//S'ASSURE QU'IL N'Y A PAS D'AVATAR, PUIS EN CREE UN
 		if(!GameObject.FindGameObjectWithTag("avatar") && Application.loadedLevel != 0){
 			_Avatar = Instantiate(Resources.Load("Avatar"), startPoint.transform.position, Quaternion.identity)as GameObject;
 			_Avatar.name = "Avatar";
 			_AvatarScript = _Avatar.GetComponent<Avatar>();
-			StatsManager.lastSpawnPos = startPoint.transform.position;
+			ChromatoseManager.manager.Setup();
+			//StatsManager.lastSpawnPos = startPoint.transform.position;
 		}
 
 			//S'ASSURE QU'IL N'Y AI PAS DE CAMERA, PUIS EN CREE UNE
@@ -214,6 +215,38 @@ public class MainManager : MonoBehaviour {
 	
 	public void LoadALevel(int levelInt){
 		Application.LoadLevel(levelInt);
+	}
+	
+	public void SaveRoom(){
+		LevelSerializer.Checkpoint();
+		
+		//LevelSerializer.SaveGame(gameName);
+	}
+	
+	public void LoadRoom(){
+		LevelSerializer.Resume();
+		
+		//LevelSerializer.LoadSavedLevel(gameName);
+	}
+	
+	public void UnlockNextLevel(){
+		
+		for(int i = 0; i < StatsManager.levelUnlocked.Length; i++){
+			if(!StatsManager.levelUnlocked[i]){
+				StatsManager.levelUnlocked[i] = true;
+				return;
+			}
+		}
+	}
+	
+	public void LockLastLevel(){
+		
+		for(int i = 0; i < StatsManager.levelUnlocked.Length; i++){
+			if(!StatsManager.levelUnlocked[i]){
+				StatsManager.levelUnlocked[i - 1] = false;
+				return;
+			}
+		}
 	}
 	
 	

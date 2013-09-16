@@ -15,14 +15,14 @@ public class ChromaRoomManager : MainManager {
 	
 	void OnLevelWasLoaded(){
 		currentRoomString = "room00";
-		currentRoomInt = 0;
+		StatsManager.currentRoomInt = 0;
 	}
 	void Start () {
 		roomManager = this;
 		
 		_CanAddRoom = true;
 		currentRoomString = "room00";
-		currentRoomInt = 0;
+		StatsManager.currentRoomInt = 0;
 		
 	}
 	
@@ -31,8 +31,8 @@ public class ChromaRoomManager : MainManager {
 	
 	public void NextLilRoom(){
 		if(_CanAddRoom){
-			currentRoomInt++;
-			currentRoomString = OptiManager.manager.roomList[currentRoomInt].name;
+			StatsManager.currentRoomInt++;
+			currentRoomString = OptiManager.manager.roomList[StatsManager.currentRoomInt].name;
 			_CanAddRoom = false;
 			StartCoroutine(DelaiToAddRoom(5.0f));
 			OptiManager.manager.OptimizeZone();
@@ -58,16 +58,16 @@ public class ChromaRoomManager : MainManager {
 		else{
 			switch(curLevel){
 			case 1:
-				retTotalComic = comicInModBlanc1[currentRoomInt];
+				retTotalComic = comicInModBlanc1[StatsManager.currentRoomInt];
 				break;
 			case 3:
-				retTotalComic = comicInModBlanc2[currentRoomInt];
+				retTotalComic = comicInModBlanc2[StatsManager.currentRoomInt];
 				break;
 			case 5:
-				retTotalComic = comicInModBlanc3[currentRoomInt];
+				retTotalComic = comicInModBlanc3[StatsManager.currentRoomInt];
 				break;
 			case 7:
-				retTotalComic = comicInModBlanc4[currentRoomInt];
+				retTotalComic = comicInModBlanc4[StatsManager.currentRoomInt];
 				break;
 			}
 		}

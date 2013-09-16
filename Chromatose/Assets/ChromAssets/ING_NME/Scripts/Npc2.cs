@@ -18,12 +18,27 @@ public class Npc2 : MonoBehaviour {
 	
 	private Color myColor = Color.red;
 	private bool _ColorGone = false;
+	private bool setuped = false;
 
 	private string _redBounceString = "rNPC_bounce";
 	private string _greyBounceString = "rNPC_bounceGrey";
 	private string _blueBounceString = "bNPC_bounce";
 	
 	void Start () {
+		_MainAnim = GetComponent<tk2dAnimatedSprite>();
+		_Player = GetComponent<AudioSource>();
+		
+		switch(typeNpc){
+		case _TypeNPCEnum.Red:
+			_MainAnim.Play(_redBounceString);			
+			myColor = Color.red;
+			break;
+		case _TypeNPCEnum.Blue:
+			_MainAnim.Play(_blueBounceString);
+			myColor = Color.blue;
+			break;			
+		}
+		
 		Setup();
 	}
 	
@@ -38,11 +53,11 @@ public class Npc2 : MonoBehaviour {
 		
 		if(!_ColorGone){
 			HUDManager.hudManager.UpdateAction(Actions.Absorb, Trigger);		//this tells the hud that I want to do something. But I'll have to wait in line!
-			
 		}
 	}
 	
 	void Trigger(){
+		if(setuped){
 		_AvatarScript.FillBucket(myColor);
 		_Player.clip = _FillBucketSound;
 		_Player.Play();
@@ -51,26 +66,15 @@ public class Npc2 : MonoBehaviour {
 		_ColorGone = true;
 		losePart = new Avatar.LoseAllColourParticle(_AvatarScript.particleCollection, _AvatarScript.partAnimations, this.transform, myColor);
 		//StartCoroutine(DelaiBeforeFade(1.0f));
-		
+		}
+		else{
+			Setup();
+		}
 	}
 		
-	IEnumerator Setup(){
-		yield return new WaitForSeconds(0.5f);
-		_MainAnim = GetComponent<tk2dAnimatedSprite>();
-		_Manager = ChromatoseManager.manager;
+	void Setup(){
 		_AvatarScript = GameObject.FindGameObjectWithTag("avatar").GetComponent<Avatar>();
-		_Player = GetComponent<AudioSource>();
-		
-		switch(typeNpc){
-		case _TypeNPCEnum.Red:
-			_MainAnim.Play(_redBounceString);			
-			myColor = Color.red;
-			break;
-		case _TypeNPCEnum.Blue:
-			_MainAnim.Play(_blueBounceString);
-			myColor = Color.blue;
-			break;			
-		}
+		setuped = true;
 	}
 	
 	public void GreyBounce(tk2dAnimatedSprite clip, int index){
