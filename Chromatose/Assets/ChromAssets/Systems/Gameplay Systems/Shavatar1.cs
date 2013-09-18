@@ -62,9 +62,23 @@ public class Shavatar1 : MainManager {
 	
 	void Start () {
 		
+		t = gameObject.transform;
+		_MainAnim = GetComponentInChildren<tk2dAnimatedSprite>();
+		_Movement = GetComponent<Movement>();
 		
-
-		Setup ();
+		_DetectionScript = _DetectionCollider.GetComponent<ShavatarDetectionScript>();
+		_DetectionScript.DetectionZone = zoneDetectionFollow;
+		
+		//Setup des Pos/RotatorScript Init.
+		_InitTransform = t;
+		_InitPosition = t.position;
+		_InitRotation = t.rotation;
+		_InitSpeed = shavatarSpeed;
+		
+		_ColLayerMask = 1 << LayerMask.NameToLayer("collision");		//for teh linecasts
+		_MainAnim.Play("Shavatar");
+	
+		StartCoroutine(Setup());
 		
 		#region Switch Init
 		switch(behaviours){
@@ -104,14 +118,12 @@ public class Shavatar1 : MainManager {
 		}
 		#endregion
 	}
-	void Update () {
+	void FixedUpdate () {
 		if(!_Avatar){
 			_Avatar = GameObject.FindGameObjectWithTag("avatar");
 		}
 		
-		
 		if(!GameObject.FindGameObjectWithTag("avatar"))return;
-		
 		
 		#region Idle
 		switch(behaviours){
@@ -235,25 +247,9 @@ public class Shavatar1 : MainManager {
 		}
 	}
 	
-	
 	IEnumerator Setup(){
 		yield return new WaitForSeconds(0.1f);
-		t = gameObject.transform;
-		_ColourTarget = _Avatar.GetComponent<Avatar>().curColor;
-		_MainAnim = GetComponentInChildren<tk2dAnimatedSprite>();
-		_Movement = GetComponent<Movement>();
-		
-		_DetectionScript = _DetectionCollider.GetComponent<ShavatarDetectionScript>();
-		_DetectionScript.DetectionZone = zoneDetectionFollow;
-		
-		//Setup des Pos/RotatorScript Init.
-		_InitTransform = t;
-		_InitPosition = t.position;
-		_InitRotation = t.rotation;
-		_InitSpeed = shavatarSpeed;
-		
-		_ColLayerMask = 1 << LayerMask.NameToLayer("collision");		//for teh linecasts
-		_MainAnim.Play("Shavatar");
+		_ColourTarget = GameObject.FindGameObjectWithTag("avatar").GetComponent<Avatar>().curColor;
 		setuped = true;
 	}
 	
