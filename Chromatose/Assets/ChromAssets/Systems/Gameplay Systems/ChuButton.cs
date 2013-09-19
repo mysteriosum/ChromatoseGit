@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class ChuButton : MainManager {
+public class ChuButton : MonoBehaviour {
 	
 	public int levelIndex;
 	
@@ -29,7 +29,7 @@ public class ChuButton : MainManager {
             if (collider.Raycast(ray, out hitInfo, 1.0e8f))
             {
 				if (!Physics.Raycast(ray, hitInfo.distance - 0.01f)){
-					LoadALevel(levelIndex);
+					MainManager._MainManager.LoadALevel(levelIndex);
 				}
             }
         }
@@ -38,8 +38,6 @@ public class ChuButton : MainManager {
 	
 	IEnumerator CheckUnlockable(){
 		yield return new WaitForSeconds(0.2f);
-		Debug.Log("Check");
-		Debug.Log(StatsManager.levelUnlocked[levelIndex - 1]);
 		if(StatsManager.levelUnlocked[levelIndex - 1] == true){
 			mainSprite.SetSprite(1);
 		}
@@ -49,6 +47,5 @@ public class ChuButton : MainManager {
 		else{
 			mainSprite.SetSprite(0);
 		}
-	}
-	
+	}	
 }

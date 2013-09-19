@@ -74,8 +74,9 @@ public class MainManager : MonoBehaviour {
 	//VARIABLE SOUND
 	public static bool _MusicMute = false;
 	public static bool _SFXMute = false;
-	public static float _MusicVolume = Mathf.Clamp(80, 0, 100);
-	public static float _SFXVolume = Mathf.Clamp(80, 0, 100);
+	public static float _MusicVolume = 0.80f; public float musicVolume { get { return _MusicVolume; } set { _MusicVolume = value; } } 
+	public static float _SFXVolume = 0.80f; public float sfxVolume { get { return _SFXVolume ; } set { _SFXVolume = value; } }
+	
 	
 	//VARIABLE D'INTERFACE DYNAMIC
 	public static float _RotStartButton = 0;
@@ -144,7 +145,6 @@ public class MainManager : MonoBehaviour {
 	void Start () {
 		
 		
-		
 		Debug.LogWarning("MainManager-Start_log - Started in Lvl " + Application.loadedLevel + ". Also, the keyboard is a " +
 							_KeyboardType + " type. Already own " + StatsManager.whiteCollCollected + " whiteCollectibles but only " +
 							StatsManager.whiteCollDisplayed + " will be displayed. Already own " + StatsManager.redCollCollected + " redCollectibles but only " +
@@ -193,6 +193,9 @@ public class MainManager : MonoBehaviour {
 		}	
 	}
 	
+	void Update(){
+		Debug.Log(_MusicVolume);
+	}
 	
 	//PUBLIC FUNCTION
 	public int CheckWhereIAm(){
@@ -215,7 +218,8 @@ public class MainManager : MonoBehaviour {
 	
 	public void LoadALevel(int levelInt){
 		_HudManager.menuWindows = _MenuWindowsEnum.LoadingScreen;
-		Application.LoadLevel(levelInt);
+		_HudManager.movieLoad2.Play();
+		StartCoroutine(DelayinLoadLevel(levelInt));
 	}
 	
 	public void SaveRoom(){
@@ -358,5 +362,9 @@ public class MainManager : MonoBehaviour {
 			currentLevel = 12;
 			break;
 		}
+	}
+	IEnumerator DelayinLoadLevel(int levelInt){
+		yield return new WaitForSeconds(1.0f);
+		Application.LoadLevel(levelInt);
 	}
 }

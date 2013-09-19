@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class ChuKeyboardButton : MainManager {
+public class ChuKeyboardButton : MonoBehaviour {
 
 	public enum keyboardImageEnum{
 		qwerty, azerty
@@ -43,10 +43,10 @@ public class ChuKeyboardButton : MainManager {
 				if (!Physics.Raycast(ray, hitInfo.distance - 0.01f)){
 					switch(keyboardImage){
 					case keyboardImageEnum.qwerty:
-						keyboardType = MainManager._KeyboardTypeEnum.QWERTY;
+						MainManager._MainManager.keyboardType = MainManager._KeyboardTypeEnum.QWERTY;
 						break;
 					case keyboardImageEnum.azerty:
-						keyboardType = MainManager._KeyboardTypeEnum.AZERTY;
+						MainManager._MainManager.keyboardType = MainManager._KeyboardTypeEnum.AZERTY;
 						break;
 					}
 					HUDManager.hudManager.DesactiveKeyboardButton();

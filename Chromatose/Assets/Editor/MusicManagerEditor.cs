@@ -4,7 +4,7 @@ using System.Collections;
 
 [CustomEditor(typeof(MusicManager)), CanEditMultipleObjects]
 public class MusicManagerEditor : Editor {
-	
+
 	private MusicManager _MusicManager;
 	
 	private bool _SetupDone = false;
@@ -58,7 +58,7 @@ public class MusicManagerEditor : Editor {
 		 */
 		
 		
-		
+	
 		GUILayout.Space(15);
 			
 			EditorGUILayout.BeginVertical();
@@ -74,7 +74,7 @@ public class MusicManagerEditor : Editor {
 						_MusicManager.musicSources.Add(temp);
 						temp.loop = false;
 						temp.playOnAwake = false;
-						temp.volume = 80;
+						//temp.volume = 80;
 						_MusicManager.trackAddToPlaylist = null;
 						EditorUtility.SetDirty(_MusicManager);
 					}
@@ -190,7 +190,7 @@ public class MusicManagerEditor : Editor {
 			
 			EditorGUILayout.BeginHorizontal();
 				GUILayout.Space(80);
-				_MusicManager.musicSources[i].volume = GUILayout.VerticalSlider(_MusicManager.musicSources[i].volume, 1, 0);
+				//_MusicManager.musicSources[i].volume = GUILayout.VerticalSlider(_MusicManager.musicSources[i].volume, 1, 0);
 				GUILayout.Space(40);
 				EditorGUILayout.BeginVertical();
 					_MusicManager.musicSources[i].mute = EditorGUILayout.Toggle("MUTE", _MusicManager.musicSources[i].mute);
@@ -202,3 +202,4 @@ public class MusicManagerEditor : Editor {
 		}		
 	}	
 }
+	 

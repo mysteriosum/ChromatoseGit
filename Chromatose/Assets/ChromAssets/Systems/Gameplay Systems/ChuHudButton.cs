@@ -40,6 +40,7 @@ public class ChuHudButton : MonoBehaviour {
 						}
 						else if(HUDManager.hudManager.menuWindows == _MenuWindowsEnum.OptionWindows){
 							HUDManager.hudManager.menuWindows = _MenuWindowsEnum.LevelSelectionWindows;
+							HUDManager.hudManager.DesactiveOptBG();
 						}
 						else if(HUDManager.hudManager.menuWindows == _MenuWindowsEnum.Stats){
 							HUDManager.hudManager.menuWindows = _MenuWindowsEnum.LevelSelectionWindows;
@@ -50,12 +51,14 @@ public class ChuHudButton : MonoBehaviour {
 						break;
 					case buttonTypeEnum.Options:
 						HUDManager.hudManager.menuWindows = _MenuWindowsEnum.OptionWindows;
+						HUDManager.hudManager.ActiveOptBG();
 						break;
 					case buttonTypeEnum.Statistics:
 						HUDManager.hudManager.menuWindows = _MenuWindowsEnum.Stats;
 						break;
 					}
 					HUDManager.hudManager.DesactiveButton();
+					mainSprite.SetSprite(0);
 				}
             }
         }
