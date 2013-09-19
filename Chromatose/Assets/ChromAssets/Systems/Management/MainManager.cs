@@ -214,6 +214,7 @@ public class MainManager : MonoBehaviour {
 	
 	
 	public void LoadALevel(int levelInt){
+		_HudManager.menuWindows = _MenuWindowsEnum.LoadingScreen;
 		Application.LoadLevel(levelInt);
 	}
 	

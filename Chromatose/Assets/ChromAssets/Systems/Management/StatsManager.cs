@@ -12,6 +12,7 @@ public class StatsManager : MainManager {
 	public static bool saveExist;
 	
 	public static bool[] levelUnlocked;
+	public static bool[] levelDoned;
 	public static int redCollCollected = 0;
 	public static int blueCollCollected = 0;
 	public static int whiteCollCollected;
@@ -39,6 +40,9 @@ public class StatsManager : MainManager {
 	void Start () {
 		levelUnlocked = new bool[12]{true, false, false, false, false,
 										false, false, false, false, false,
-										false, true};
+										false, false};
+		levelDoned = new bool[12]{false, false, false, false, false,
+										false, false, false, false, false,
+										false, false};
 	}
 }

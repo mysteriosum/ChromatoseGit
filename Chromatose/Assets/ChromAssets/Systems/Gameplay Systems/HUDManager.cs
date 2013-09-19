@@ -9,10 +9,10 @@ public enum GUIStateEnum{
 	MainMenu, OnStart, EndResult, EndLevel, Interface, Pause, InComic, Nothing
 }
 public enum _MenuWindowsEnum{
-	MainMenu, LevelSelectionWindows, CreditWindows, OptionWindows, LoadingScreen, KeyboardSelectionScreen, None
+	FakeSplashScreen, MainMenu, LevelSelectionWindows, CreditWindows, OptionWindows, LoadingScreen, KeyboardSelectionScreen, Stats, None
 }
 public enum _OptionWindowsEnum{
-	MainOption, Sound, GameMode, Stats, DeleteSavegame, None
+	MainOption, Sound, GameMode, DeleteSavegame, None
 }
 
 [System.Serializable]
@@ -44,7 +44,7 @@ public class HUDManager : MainManager {
 	
 	public static Rect _MainMenuBGRect;
 	
-	public Texture pauseWindows, mainMenuBG, whiteBG, optionBG, loadingBG, greyFilterBG, endResultWindows, emptyProgressBar, progressLine, credits;
+	public Texture pauseWindows, mainMenuBG, whiteBG, optionBG, loadingBG, greyFilterBG, endResultWindows, emptyProgressBar, progressLine, credits, splashScreenBG;
 	public Texture _AvatarLoadingLoop1, _AvatarLoadingLoop2, _BulleLoadingLoop1, _BulleLoadingLoop2;
 	
 	public GUISkin _PlayButtonSkin, _GreenlightSkin, skinSansBox, pauseBackButton, _SkinMenuSansBox, _VoidSkin;
@@ -52,6 +52,14 @@ public class HUDManager : MainManager {
 	
 	public Texture qwertyKeyboard, azertyKeyboard, leftArrow, rightArrow;	
 	public Texture actionTexture, shownActionTexture;
+	
+	public Texture loadingIcon1, loadingIcon2, loadingIcon3;
+	
+	public MovieTexture movieLoad, movieLogo, movieTitle, movieStart, movieCredit, moviePressStart, movieExit;
+	
+	
+	
+	
 	
 	private Actions currentAction = Actions.Nothing;
 	
@@ -62,7 +70,9 @@ public class HUDManager : MainManager {
 					_OnFlash = false, 
 					_AfterComic = false, 
 					showingAction = false,
-					_FirstStart = false;
+					_FirstStart = false,
+					_CanShowPressStartAnim = false,
+					_CanShowLogo = false;
 
 	private float flashTimer = 0.0f, aX, actionSlideSpeed = 10.0f;
 	private Vector2 textOffset = new Vector2 (55f, 8);
@@ -83,6 +93,9 @@ public class HUDManager : MainManager {
 	private float mainBoxMovingRate = 2.8f;
 	
 	private Rect[] hudRect = new Rect[4];
+	private GameObject[] levelSelectionBut;
+	private GameObject backButtton;
+	private GameObject[] keyboardButton;
 	
 	private int counterBox = 0;
 	
@@ -94,6 +107,11 @@ public class HUDManager : MainManager {
 	private float hudBoxMinX = 1150;
 	
 	private float hudBoxMovingRate = 8f;
+	
+	
+		//VARIABLE LOADING
+	private Texture curLoadIcon;
+
 	
 	//GETSET ACCESSOR
 	public bool afterComic { get { return _AfterComic; } set { _AfterComic = value; } }
@@ -139,9 +157,25 @@ public class HUDManager : MainManager {
 		hudBoxCanDisappear[2] = false;
 		hudBoxCanDisappear[3] = false;
 		
+		if(Application.loadedLevel == 0){
+			levelSelectionBut = GameObject.FindGameObjectsWithTag("levelButton");
+			
+			foreach(GameObject gos in levelSelectionBut){
+				gos.gameObject.SetActive(false);
+			}
+			
+			backButtton = GameObject.FindGameObjectWithTag("backButton");
+			backButtton.SetActive(false);
+			
+			keyboardButton = GameObject.FindGameObjectsWithTag("keyboardButton");
+			foreach(GameObject gos2 in keyboardButton){
+				gos2.SetActive(false);
+			}
+			
+		}
+		
 			//SETUP LE TOUT, ON LE FAIT A L'EXTERNE CAR J'AIME BIEN POUVOIR LE RAPPELLER, EN CAS DE PROBLEME
 		StartCoroutine(Setup(0.1f));
-		
 	}
 	
 	
@@ -273,7 +307,7 @@ public class HUDManager : MainManager {
 		else{
 				//SET LE HUD POUR LE MAIN MENU
 			_GUIState = GUIStateEnum.MainMenu;
-			_MenuWindows = _MenuWindowsEnum.MainMenu;
+			_MenuWindows = _MenuWindowsEnum.FakeSplashScreen;
 			_OptionWindows = _OptionWindowsEnum.None;
 			ResetComicCounter();
 		}
@@ -413,7 +447,42 @@ public class HUDManager : MainManager {
 		StartCoroutine(ActiveHudBox(0.6f, 3, false));
 	}
 	
-
+	void ResetTitleBool(){
+		movieTitle.Stop();
+		movieStart.Stop();
+		movieCredit.Stop();
+		movieExit.Stop();
+		moviePressStart.Stop();
+		_CanShowPressStartAnim = false;
+	}
+	
+	public void ActiveButton(){
+		foreach(GameObject gos in levelSelectionBut){
+			gos.SetActive(true);
+		}
+	}
+	public void DesactiveButton(){
+		foreach(GameObject gos in levelSelectionBut){
+			gos.SetActive(false);
+		}
+	}
+	public void ActiveBackButton(){
+		backButtton.SetActive(true);
+	}
+	public void DesactiveBackButton(){
+		backButtton.SetActive(false);
+	}
+	public void ActiveKeyboardButton(){
+		foreach(GameObject gos in keyboardButton){
+			gos.SetActive(true);
+		}
+	}
+	public void DesactiveKeyboardButton(){
+		foreach(GameObject gos in keyboardButton){
+			gos.SetActive(false);
+		}
+	}
+	
 	//////////////////////////////////////
 	//		    SECTION OnGUI		    //
 	//////////////////////////////////////
@@ -440,6 +509,11 @@ public class HUDManager : MainManager {
 			
 			switch (_MenuWindows){
 				
+				//DRAW LE FALE SPLASH SCREEN
+			case _MenuWindowsEnum.FakeSplashScreen:
+				DrawFakeSplashScreen();
+				break;
+				
 				//DRAW LE TITLE SCREEN
 			case _MenuWindowsEnum.MainMenu:
 				DrawTitleScreen();
@@ -447,7 +521,9 @@ public class HUDManager : MainManager {
 				
 				//DRAW LE LEVELSELECTION SCREEN
 			case _MenuWindowsEnum.LevelSelectionWindows:
-				DrawLevelSelectionScreen();
+				ActiveButton();
+				ActiveBackButton();
+				//DrawLevelSelectionScreen();
 				break;
 				
 				//DRAW LES OPTIONS DU MENUS
@@ -468,6 +544,11 @@ public class HUDManager : MainManager {
 				//DRAW LA FENETRE DE SELECTION DE KEYBOARD
 			case _MenuWindowsEnum.KeyboardSelectionScreen:
 				DrawKeyboardSelectionScreen();
+				break;
+				
+				//DRAW LA FENETRE DE STATS
+			case _MenuWindowsEnum.Stats:
+				
 				break;
 			}
 			return;
@@ -557,9 +638,6 @@ public class HUDManager : MainManager {
 				if(GUI.Button(new Rect(optionRect.width*-0.03f, optionRect.height*0.34f, optionRect.width*0.66f, optionRect.height*0.20f), "- GAME MODE -")){
 					_OptionWindows = _OptionWindowsEnum.GameMode;
 				}
-				if(GUI.Button(new Rect(125, optionRect.height*0.58f, optionRect.width*0.66f, optionRect.height*0.20f), "- STATS -")){
-					_OptionWindows = _OptionWindowsEnum.Stats;
-				}
 				if(GUI.Button(new Rect(optionRect.width*0.05f, optionRect.height*0.80f, optionRect.width*0.92f, optionRect.height*0.20f), "- DELETE SAVEGAME -")){
 					_OptionWindows = _OptionWindowsEnum.DeleteSavegame;
 				}
@@ -617,42 +695,6 @@ public class HUDManager : MainManager {
 					
 				}
 			GUI.EndGroup();
-				//BACK BUTTON
-			GUI.skin.button.fontSize = 48;
-			if(GUI.Button(new Rect(125, 605, 300, 80), "- BACK -")){
-				_OptionWindows = _OptionWindowsEnum.MainOption;
-			}
-			break;
-
-		case _OptionWindowsEnum.Stats:
-			GUI.BeginGroup(inMenuRect);
-				GUI.skin.textArea.fontSize = 60;
-					//STATIC STRING
-				GUI.TextArea(new Rect(inMenuRect.width*0.24f, inMenuRect.height*0.01f, inMenuRect.width*0.6f, inMenuRect.height*0.21f), "- STATS -");
-				GUI.skin.textArea.fontSize = 30;
-				GUI.TextArea(new Rect(inMenuRect.width*0.15f, inMenuRect.height*0.2f, inMenuRect.width*0.3f, inMenuRect.height*0.21f), "DEAD NPC");
-				GUI.TextArea(new Rect(inMenuRect.width*0.15f, inMenuRect.height*0.3f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), "WHITE COLLECTIBLES");
-				GUI.TextArea(new Rect(inMenuRect.width*0.15f, inMenuRect.height*0.4f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), "RED COLLECTIBLES");
-				GUI.TextArea(new Rect(inMenuRect.width*0.15f, inMenuRect.height*0.5f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), "BLUE COLLECTIBLES");
-				GUI.TextArea(new Rect(inMenuRect.width*0.15f, inMenuRect.height*0.6f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), "COMICS VIEWED");
-				GUI.TextArea(new Rect(inMenuRect.width*0.15f, inMenuRect.height*0.7f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), "ACHIEVEMENT UNLOCKED");
-				GUI.TextArea(new Rect(inMenuRect.width*0.15f, inMenuRect.height*0.8f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), "TOTAL DEATH");
-				GUI.TextArea(new Rect(inMenuRect.width*0.15f, inMenuRect.height*0.9f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), "TOTAL PLAYTIME");
-					//STATISTIC STRING
-				GUI.TextArea(new Rect(inMenuRect.width*0.675f, inMenuRect.height*0.2f, inMenuRect.width*0.3f, inMenuRect.height*0.21f), ""); 	//AJOUTER LE NB DE NPC TUER
-				GUI.TextArea(new Rect(inMenuRect.width*0.65f, inMenuRect.height*0.3f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), StatsManager.whiteCollCollected.ToString());
-				GUI.TextArea(new Rect(inMenuRect.width*0.65f, inMenuRect.height*0.4f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), StatsManager.redCollCollected.ToString());
-				GUI.TextArea(new Rect(inMenuRect.width*0.65f, inMenuRect.height*0.5f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), StatsManager.blueCollCollected.ToString());
-				GUI.TextArea(new Rect(inMenuRect.width*0.65f, inMenuRect.height*0.6f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), StatsManager.comicThumbCollected.ToString());
-				GUI.TextArea(new Rect(inMenuRect.width*0.65f, inMenuRect.height*0.7f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), "");	//AJOUTER LE NB D'ACHIEVEMENTS DEBLOQUER
-				GUI.TextArea(new Rect(inMenuRect.width*0.675f, inMenuRect.height*0.8f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), "");	//AJOUTER LE NB DE FOIS QUE LE PLAYER EST MORT
-				GUI.TextArea(new Rect(inMenuRect.width*0.65f, inMenuRect.height*0.9f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), "");	//AJOUTER LE TEMPS TOTAL JOUER
-			GUI.EndGroup();
-				//HIGHSCORE BUTTON
-			GUI.skin.button.fontSize = 48;
-			if(GUI.Button(new Rect(470, 605, 385, 80), "- HIGHSCORES -")){
-				
-			}
 				//BACK BUTTON
 			GUI.skin.button.fontSize = 48;
 			if(GUI.Button(new Rect(125, 605, 300, 80), "- BACK -")){
@@ -809,53 +851,43 @@ public class HUDManager : MainManager {
 	
 		//DRAW LA FENETRE DU MAIN MENU
 	void DrawTitleScreen(){
+		
+			//START DES ANIM DU TITLESCREEN
+		movieTitle.Play();
+		movieStart.Play();
+		movieCredit.Play();
+		movieExit.Play();
+		
 			//BACKGROUND
 		GUI.DrawTexture(new Rect(0, 0, 1280, 720), mainMenuBG);
-		if(!_FirstStart){
-				//RESUME BUTTON
-			GUI.skin.button.fontSize = 76;
-			if(GUI.Button(new Rect(195, 455, 400, 150), "RESUME")){
-				_MenuWindows = _MenuWindowsEnum.LevelSelectionWindows;
-			}
+		
+		if(!_CanShowPressStartAnim){
+			GUI.DrawTexture(new Rect(310, 200, 690, 306), movieTitle);
 		}
-		else{
-				//START BUTTON
-			GUI.skin = _StartButtonSkin;
-			if(GUI.Button(new Rect(195, 307, 400, 300), "")){
-				_MenuWindows = _MenuWindowsEnum.KeyboardSelectionScreen;
-			}
-		}	
-		GUI.skin = _SkinMenuSansBox;
-		GUI.skin.button.fontSize = 70;
-		if(GUI.Button(new Rect(220, 10, 250, 110), "OPTIONS")){
-			_MenuWindows = _MenuWindowsEnum.OptionWindows;
-		}
-		GUI.skin = _CreditButtonSkin;
-		GUI.skin.button.fontSize = 76;
-		if(GUI.Button(new Rect(664, 307, 400, 300), "")){
-			_MenuWindows = _MenuWindowsEnum.CreditWindows;
-		}
-			//FBOOK & TWITTER
-		GUI.skin = _TwitterButtonSkin;			
-		if(GUI.Button (new Rect(10, 15, 97, 75), "")){
-			Application.OpenURL("https://twitter.com/Chromatosegame");
-		}
-		GUI.skin = _FbookButtonSkin;
-		if(GUI.Button (new Rect(88, 15, 97, 75), "")){
-			Application.OpenURL("https://www.facebook.com/FabulamGames?fref=ts");
-		}
-			//BUY IT ON STEAM
-		if(_ADADAD){
-			GUI.skin = _GreenlightButton;
-			if(GUI.Button(new Rect(920, 20f, 335, 137), "")){
-				Application.OpenURL("http://steamcommunity.com/sharedfiles/filedetails/?id=174349688");
-			}
-		}
+		
 			//QUITBUTTON
-		GUI.skin = _SkinMenuSansBox;
-		GUI.skin.button.fontSize = 45;
-		if(GUI.Button(new Rect(900, 160, 400, 60), "EXIT GAME")){
+		GUI.skin = null;// _SkinMenuSansBox;
+		Rect exitBox = new Rect(550, 600, 150, 100);
+		if(GUI.Button(exitBox, "")){
 			Application.Quit();
+		}
+		GUI.DrawTexture(exitBox, movieExit);
+		
+			//START BUTTON
+		GUI.skin = _SkinMenuSansBox;
+		Rect startBox = new Rect(500, 450, 250, 126);
+		if(GUI.Button(startBox, "")){
+			_CanShowPressStartAnim = true;
+		}
+		GUI.DrawTexture(startBox, movieStart);
+		
+		if(_CanShowPressStartAnim){
+			Debug.Log("PressStartAnim");
+			GUI.DrawTexture(new Rect(375, 220, 500, 480), moviePressStart);
+			if(!moviePressStart.isPlaying){
+				moviePressStart.Play();
+				StartCoroutine(GoToLvlSelection());
+			}
 		}
 	}
 	
@@ -1030,21 +1062,6 @@ public class HUDManager : MainManager {
 			GUI.skin.button.fontSize = 40;
 			if(GUI.Button(new Rect(250, 425, 650, 50), "BOSS FINAL")){}
 		}
-		
-			//BOUTON SELECTION NIVEAU GYM -- GYM DU CHU
-		if(StatsManager.levelUnlocked[11] == true){
-			GUI.skin = _SkinMenuSansBox;
-			GUI.skin.button.fontSize = 40;
-			if(GUI.Button(new Rect(800, 600, 350, 50), "GYM DU CHU")){
-				_MenuWindows = _MenuWindowsEnum.LoadingScreen;
-				LoadALevel(12);
-			}
-		}
-		else{
-			GUI.skin = _VoidSkin;
-			GUI.skin.button.fontSize = 40;
-			if(GUI.Button(new Rect(800, 600, 350, 50), "GYM DU CHU")){}
-		}
 
 			//BACK BUTTON
 		GUI.skin = _SkinMenuSansBox;
@@ -1056,45 +1073,22 @@ public class HUDManager : MainManager {
 	
 		//DRAW LA FENETRE DE SELECTION DU CLAVIER
 	void DrawKeyboardSelectionScreen(){
-		GUI.DrawTexture(new Rect(0, 0, 1280, 720), mainMenuBG);
-		GUI.DrawTexture(new Rect(0, 0, 1280, 720), greyFilterBG);
 		
 		GUI.skin = _SkinMenuSansBox;
-		GUI.skin.textArea.fontSize = 60;
-		GUI.skin.textArea.fontStyle = FontStyle.Bold;
-		GUI.skin.textArea.normal.textColor = Color.black;
-
-		GUI.TextArea(new Rect(300, 90, 750, 70), "CHOOSE YOUR KEYBOARD !");
-		
-		if(keyboardType == MainManager._KeyboardTypeEnum.QWERTY){
-			GUI.DrawTexture(new Rect(198, 150, 884, 361), qwertyKeyboard);
-			if(GUI.Button(new Rect(50, 250, 128, 128), leftArrow)){
-				keyboardType = MainManager._KeyboardTypeEnum.AZERTY;
-			}
-			if(GUI.Button(new Rect(1102, 250, 128, 128), rightArrow)){
-				keyboardType = MainManager._KeyboardTypeEnum.AZERTY;
-			}
-		}
-		else if(keyboardType == MainManager._KeyboardTypeEnum.AZERTY){
-			GUI.DrawTexture(new Rect(198, 150, 884, 361), azertyKeyboard);
-			if(GUI.Button(new Rect(50, 250, 128, 128), leftArrow)){
-				keyboardType = MainManager._KeyboardTypeEnum.QWERTY;
-			}
-			if(GUI.Button(new Rect(1102, 250, 128, 128), rightArrow)){
-				keyboardType = MainManager._KeyboardTypeEnum.QWERTY;
-			}
-		}
-		if(GUI.Button(new Rect(340, 500, 500, 75), "SELECT THIS ONE")){
-			_MenuWindows = _MenuWindowsEnum.LevelSelectionWindows;
-		}
+		GUI.skin.textArea.fontSize = 70;
+		GUI.TextArea(new Rect(190, 400, 900, 110), "? WHAT IS YOUR KEYBOARD ?");
 	}
 	
 		//DRAW LE LOADING SCREEN
 	void DrawLoadingScreen(){
 		Rect inLoadRect = new Rect(217.5f, 165, 740, 380);
 			//BACKGROUND
-		GUI.DrawTexture(new Rect(0, 0, 1280, 720), loadingBG);
-		GUI.BeginGroup(inLoadRect);
+		GUI.DrawTexture(new Rect(0, 0, 1280, 720), whiteBG);
+				
+		//PlayLoadAnim();
+		//STAND BY SUR L"ANIM POUR LINSTANT
+		GUI.DrawTexture(new Rect(350, 100, 550, 512), loadingIcon1);
+		
 		/*
 		 * 
 		 * A REMPLACER PAR UN ICONE LOADING
@@ -1104,20 +1098,73 @@ public class HUDManager : MainManager {
 			GUI.DrawTexture(new Rect(150, 278, 6 * async.progress * 100f, inLoadRect.height*0.10f), progressLine);
 			GUI.DrawTexture(new Rect(130, 262, 590, inLoadRect.height*0.2f), emptyProgressBar);
 		}*/
-		GUI.EndGroup();
 	}
 	
 		//DRAW LE CREDITS SCREEN
 	void DrawCreditsScreen(){
 		GUI.DrawTexture(new Rect(0, 0, 1280, 720), credits);
-		GUI.skin = _SkinMenuSansBox;
-			//BACK BUTTON
-		GUI.skin.button.fontSize = 48;
-		if(GUI.Button(new Rect(125, 605, 300, 80), "- BACK -")){
-			_MenuWindows = _MenuWindowsEnum.MainMenu;
+		
+	}
+		
+		//DRAW LE FAKE SPLASH SCREEN
+	void DrawFakeSplashScreen(){
+		
+		GUI.DrawTexture(new Rect(0, 0, 1280, 720), splashScreenBG);
+		
+		movieLoad.Play();
+		GUI.DrawTexture(new Rect(400, 90, 550, 520), movieLoad);
+		StartCoroutine(CanShowLogo());
+		
+		if(_CanShowLogo){
+			
+			movieLogo.Play();
+			GUI.DrawTexture(new Rect(400, 90, 550, 520), movieLogo);
+			
+			StartCoroutine(GoToMainMenu(5.1f));
 		}
 	}
 	
+		//DRAW LE STATS SCREEN
+	void DrawStatsScreen(){
+		Rect inMenuRect = new Rect(190, 165, 740, 395);
+				//BACKGROUND
+		GUI.DrawTexture(new Rect(0, 0, 1280, 720), optionBG);
+		
+		GUI.BeginGroup(inMenuRect);
+			GUI.skin.textArea.fontSize = 60;
+				//STATIC STRING
+			GUI.TextArea(new Rect(inMenuRect.width*0.24f, inMenuRect.height*0.01f, inMenuRect.width*0.6f, inMenuRect.height*0.21f), "- STATS -");
+			GUI.skin.textArea.fontSize = 30;
+			GUI.TextArea(new Rect(inMenuRect.width*0.15f, inMenuRect.height*0.2f, inMenuRect.width*0.3f, inMenuRect.height*0.21f), "DEAD NPC");
+			GUI.TextArea(new Rect(inMenuRect.width*0.15f, inMenuRect.height*0.3f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), "WHITE COLLECTIBLES");
+			GUI.TextArea(new Rect(inMenuRect.width*0.15f, inMenuRect.height*0.4f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), "RED COLLECTIBLES");
+			GUI.TextArea(new Rect(inMenuRect.width*0.15f, inMenuRect.height*0.5f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), "BLUE COLLECTIBLES");
+			GUI.TextArea(new Rect(inMenuRect.width*0.15f, inMenuRect.height*0.6f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), "COMICS VIEWED");
+			GUI.TextArea(new Rect(inMenuRect.width*0.15f, inMenuRect.height*0.7f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), "ACHIEVEMENT UNLOCKED");
+			GUI.TextArea(new Rect(inMenuRect.width*0.15f, inMenuRect.height*0.8f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), "TOTAL DEATH");
+			GUI.TextArea(new Rect(inMenuRect.width*0.15f, inMenuRect.height*0.9f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), "TOTAL PLAYTIME");
+				//STATISTIC STRING
+			GUI.TextArea(new Rect(inMenuRect.width*0.675f, inMenuRect.height*0.2f, inMenuRect.width*0.3f, inMenuRect.height*0.21f), ""); 	//AJOUTER LE NB DE NPC TUER
+			GUI.TextArea(new Rect(inMenuRect.width*0.65f, inMenuRect.height*0.3f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), StatsManager.whiteCollCollected.ToString());
+			GUI.TextArea(new Rect(inMenuRect.width*0.65f, inMenuRect.height*0.4f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), StatsManager.redCollCollected.ToString());
+			GUI.TextArea(new Rect(inMenuRect.width*0.65f, inMenuRect.height*0.5f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), StatsManager.blueCollCollected.ToString());
+			GUI.TextArea(new Rect(inMenuRect.width*0.65f, inMenuRect.height*0.6f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), StatsManager.comicThumbCollected.ToString());
+			GUI.TextArea(new Rect(inMenuRect.width*0.65f, inMenuRect.height*0.7f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), "");	//AJOUTER LE NB D'ACHIEVEMENTS DEBLOQUER
+			GUI.TextArea(new Rect(inMenuRect.width*0.675f, inMenuRect.height*0.8f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), "");	//AJOUTER LE NB DE FOIS QUE LE PLAYER EST MORT
+			GUI.TextArea(new Rect(inMenuRect.width*0.65f, inMenuRect.height*0.9f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), "");	//AJOUTER LE TEMPS TOTAL JOUER
+		GUI.EndGroup();
+			//HIGHSCORE BUTTON
+		GUI.skin.button.fontSize = 48;
+		if(GUI.Button(new Rect(470, 605, 385, 80), "- HIGHSCORES -")){
+			
+		}
+			//BACK BUTTON
+		GUI.skin.button.fontSize = 48;
+		if(GUI.Button(new Rect(125, 605, 300, 80), "- BACK -")){
+			_OptionWindows = _OptionWindowsEnum.MainOption;
+		}
+	}
+		
 	IEnumerator Setup(float delai){
 		yield return new WaitForSeconds(delai);
 		
@@ -1146,5 +1193,19 @@ public class HUDManager : MainManager {
 		else{
 			mainBoxCanUp = true;
 		}
+	}
+	IEnumerator GoToLvlSelection(){
+		yield return new WaitForSeconds(0.65f);
+		_MenuWindows = _MenuWindowsEnum.KeyboardSelectionScreen;
+		ActiveKeyboardButton();
+		ResetTitleBool();
+	}
+	IEnumerator GoToMainMenu(float delai){
+		yield return new WaitForSeconds(delai);
+		_MenuWindows = _MenuWindowsEnum.MainMenu;
+	}
+	IEnumerator CanShowLogo(){
+		yield return new WaitForSeconds(1.9f);
+		_CanShowLogo = true;
 	}
 }

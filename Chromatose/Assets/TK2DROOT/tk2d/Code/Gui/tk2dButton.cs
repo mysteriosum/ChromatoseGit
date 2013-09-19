@@ -5,7 +5,7 @@ using System.Collections;
 /// <summary>
 /// Simple gui button
 /// </summary>
-public class tk2dButton : MonoBehaviour 
+public class tk2dButton : MainManager 
 {
 	/// <summary>
 	/// The camera this button is meant to be viewed from.
@@ -45,7 +45,7 @@ public class tk2dButton : MonoBehaviour
 	public AudioClip buttonUpSound = null;
 	/// <summary>
 	/// Audio clip to play when the button is pressed. Requires an AudioSource component to be attached to work.
-	/// </summary>
+	/// </summary>7
 	public AudioClip buttonPressedSound = null;
 
 	

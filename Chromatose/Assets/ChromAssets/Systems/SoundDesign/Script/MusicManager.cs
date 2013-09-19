@@ -161,7 +161,7 @@ public class MusicManager : MonoBehaviour{
 		switch(curLevel){
 			//MAIN MENU
 		case 0:
-			_MusicSources[0].Play();
+			StartCoroutine(DelayingTrack(0, 7.0f));
 			break;
 			
 			//TUTO
@@ -259,6 +259,10 @@ public class MusicManager : MonoBehaviour{
 	
 	IEnumerator ResetCrossfade(){
 		yield return new WaitForSeconds(0.5f);
+	}
+	IEnumerator DelayingTrack(int trackIndex, float delai){
+		yield return new WaitForSeconds(delai);
+		_MusicSources[trackIndex].Play();
 	}
 }
 

@@ -30,17 +30,20 @@ public class MiniBoss : MonoBehaviour {
 	private bool alreadyShooten = false;
 	
 
-	// Use this for initialization
 	void Start () {
-		Setup();
+		_MainAnim = GetComponent<tk2dAnimatedSprite>();
+		_PayZoneScript = GetComponentInChildren<MiniBoss_PayZone>();
+		_ShootingZone = GetComponentInChildren<MiniBossShootingZone>();
+		
+		StartCoroutine(SetAnim());
+		
+		StartCoroutine(Setup());
 	}
 	
-	// Update is called once per frame
 	void Update () {
 	
 		if(_ShootingZone != null){
 			if(_PayZoneScript.inPayZone){
-				
 				HUDManager.hudManager.UpdateAction(Actions.Release, DelegateActionTest);
 				_AvatarScript.requieredPayment = requiredPayment.ToString();
 				_AvatarScript.wantFightBoss = true;
@@ -49,29 +52,18 @@ public class MiniBoss : MonoBehaviour {
 			if(_CanDie){
 				_FadingCounter -= _FadeRate;
 				_MainAnim.color = new Color(0, 0, 0 ,_FadingCounter);
-				/*
-				if(myFlames != null){
-					foreach(tk2dAnimatedSprite sprite in myFlames){
-						sprite.color = new Color(0, 0, 0, _FadingCounter);
-					}
-				}*/
 				if(_FadingCounter <= 0 ){
 					Die ();
 				}
 			}
 			
 			if (shootFlame && _ShootingZone.inShootingZone){
-				
 				_ShooterCounter += Time.deltaTime;
-				
 				if (_ShooterCounter >= fireRate){
 					GameObject bullet = Instantiate(flameBullet, transform.position, Quaternion.identity)as GameObject;
 					_ShooterCounter = 0;
 				}
 			}
-		}
-		else{
-			Setup();
 		}
 	}
 	
@@ -82,7 +74,7 @@ public class MiniBoss : MonoBehaviour {
 	}
 	
 	void DelegateActionTest(){
-		if(_Manager.rCollected >= requiredPayment){
+		if(StatsManager.redCollDisplayed >= requiredPayment){
 			if(!alreadyShooten){
 				_Manager.RemoveCollectibles(Color.red, requiredPayment, this.transform.position);
 				alreadyShooten = true;
@@ -93,22 +85,13 @@ public class MiniBoss : MonoBehaviour {
 	
 	IEnumerator Setup(){
 		yield return new WaitForSeconds(0.1f);
-		_MainAnim = GetComponent<tk2dAnimatedSprite>();
 		_AvatarT = GameObject.FindGameObjectWithTag("avatar").transform;
 		_AvatarScript = GameObject.FindGameObjectWithTag("avatar").GetComponent<Avatar>();
 		_Manager = ChromatoseManager.manager;
-		_PayZoneScript = GetComponentInChildren<MiniBoss_PayZone>();
-		_ShootingZone = GetComponentInChildren<MiniBossShootingZone>();
-		/*
-		if(GetComponentsInChildren<tk2dAnimatedSprite>() != null){
-			myFlames = GetComponentsInChildren<tk2dAnimatedSprite>();
-		}*/
-		StartCoroutine(SetAnim());
 	}
 	
 	void Die(){
 		_AvatarScript.WantsToRelease = false;
-		//_MainAnim.SetSprite("miniBossDie");
 		_MainAnim.Play("miniBossDie");
 		_MainAnim.animationCompleteDelegate = DestroyThis;
 	}
@@ -124,8 +107,6 @@ public class MiniBoss : MonoBehaviour {
 	}
 	IEnumerator StartDie(float delai){
 		yield return new WaitForSeconds(delai);
-		//_MainAnim.SetSprite("flameDie");
-		//_CanDie = true;
 		Die ();
 	}
 	IEnumerator DelaiToDestroy(){

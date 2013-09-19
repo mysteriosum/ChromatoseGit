@@ -103,6 +103,23 @@ public class DevManager : MainManager {
 			if(GUI.Button(new Rect(910f, 570f, 140f, 50f), "LOCK LAST LEVEL")){
 				LockLastLevel();
 			}
+			
+			
+			/*
+			 * 	//BOUTON SELECTION NIVEAU GYM -- GYM DU CHU
+			if(StatsManager.levelUnlocked[11] == true){
+				GUI.skin = _SkinMenuSansBox;
+				GUI.skin.button.fontSize = 40;
+				if(GUI.Button(new Rect(800, 600, 350, 50), "GYM DU CHU")){
+					_MenuWindows = _MenuWindowsEnum.LoadingScreen;
+					LoadALevel(12);
+				}
+			}
+			else{
+				GUI.skin = _VoidSkin;
+				GUI.skin.button.fontSize = 40;
+				if(GUI.Button(new Rect(800, 600, 350, 50), "GYM DU CHU")){}
+			}*/
 		}
 	}
 }
