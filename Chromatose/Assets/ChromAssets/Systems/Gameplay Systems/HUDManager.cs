@@ -9,11 +9,11 @@ public enum GUIStateEnum{
 	MainMenu, OnStart, EndResult, EndLevel, Interface, Pause, InComic, Nothing
 }
 public enum _MenuWindowsEnum{
-	FakeSplashScreen, MainMenu, LevelSelectionWindows, CreditWindows, OptionWindows, LoadingScreen, KeyboardSelectionScreen, Stats, None
+	FakeSplashScreen, MainMenu, LevelSelectionWindows, CreditWindows, OptionWindows, LoadingScreen, KeyboardSelectionScreen, Stats, TimeTrialScreen, None
 }
-public enum _OptionWindowsEnum{
+/*public enum _OptionWindowsEnum{
 	MainOption, Sound, GameMode, DeleteSavegame, None
-}
+}*/
 
 [System.Serializable]
 public class HUDManager : MainManager {
@@ -22,7 +22,7 @@ public class HUDManager : MainManager {
 	
 	public static GUIStateEnum _GUIState;
 	private _MenuWindowsEnum _MenuWindows;
-	private _OptionWindowsEnum _OptionWindows;
+	//private _OptionWindowsEnum _OptionWindows;
 	
 	public Font chromFont;
 
@@ -44,18 +44,19 @@ public class HUDManager : MainManager {
 	
 	public static Rect _MainMenuBGRect;
 	
-	public Texture pauseWindows, mainMenuBG, whiteBG, optionBG, loadingBG, greyFilterBG, endResultWindows, emptyProgressBar, progressLine, credits, splashScreenBG;
+	public Texture pauseWindows, mainMenuBG, whiteBG, optionBG, loadingBG, greyFilterBG, endResultWindows, emptyProgressBar, progressLine, credits, splashScreenBG, ttBg;
 	public Texture _AvatarLoadingLoop1, _AvatarLoadingLoop2, _BulleLoadingLoop1, _BulleLoadingLoop2;
+	public Texture whiteColTex, redColTex, blueColText, comicTex, deathCountTex;
 	
-	public GUISkin _PlayButtonSkin, _GreenlightSkin, skinSansBox, pauseBackButton, _SkinMenuSansBox, _VoidSkin;
+	public GUISkin _PlayButtonSkin, _GreenlightSkin, skinSansBox, pauseBackButton, _SkinMenuSansBox, _VoidSkin, _TimeTrialButtonSkin;
 	public GUISkin _StartButtonSkin, _CreditButtonSkin, _FbookButtonSkin, _TwitterButtonSkin, _BackButtonSkin, _GreenlightButton;
+	public GUISkin _QwertySkin1, _QwertySkin2, _AzertySkin1, _AzertySkin2, _EraseSkin, _DoItSkin, _OkButtonSkin;
 	
 	public Texture qwertyKeyboard, azertyKeyboard, leftArrow, rightArrow;	
 	public Texture actionTexture, shownActionTexture;
 	
-	public Texture loadingIcon1, loadingIcon2, loadingIcon3;
 	
-	public MovieTexture movieLoad, movieLogo, movieTitle, movieStart, movieCredit, moviePressStart, movieExit;
+	public MovieTexture movieLoad, movieLoad2, movieLogo, movieTitle, movieStart, movieCredit, moviePressStart, movieExit;
 	
 	
 	
@@ -72,7 +73,8 @@ public class HUDManager : MainManager {
 					showingAction = false,
 					_FirstStart = false,
 					_CanShowPressStartAnim = false,
-					_CanShowLogo = false;
+					_CanShowLogo = false,
+					_OnErase = false;
 
 	private float flashTimer = 0.0f, aX, actionSlideSpeed = 10.0f;
 	private Vector2 textOffset = new Vector2 (55f, 8);
@@ -96,6 +98,7 @@ public class HUDManager : MainManager {
 	private GameObject[] levelSelectionBut;
 	private GameObject backButtton;
 	private GameObject[] keyboardButton;
+	private GameObject optionBGgo;
 	
 	private int counterBox = 0;
 	
@@ -121,7 +124,9 @@ public class HUDManager : MainManager {
 	
 	public GUIStateEnum guiState { get { return _GUIState; } set { _GUIState = value; } }
 	public _MenuWindowsEnum menuWindows { get { return _MenuWindows; } set { _MenuWindows = value; } }
-	public _OptionWindowsEnum optionWindows { get { return _OptionWindows; } set { _OptionWindows = value; } }
+	//public _OptionWindowsEnum optionWindows { get { return _OptionWindows; } set { _OptionWindows = value; } }
+	
+	
 	
 	
 	//START, SETUP AND INIT
@@ -172,6 +177,8 @@ public class HUDManager : MainManager {
 				gos2.SetActive(false);
 			}
 			
+			optionBGgo = GameObject.FindGameObjectWithTag("optionBG")as GameObject;
+			optionBGgo.SetActive(false);
 		}
 		
 			//SETUP LE TOUT, ON LE FAIT A L'EXTERNE CAR J'AIME BIEN POUVOIR LE RAPPELLER, EN CAS DE PROBLEME
@@ -302,13 +309,11 @@ public class HUDManager : MainManager {
 				//SET LE HUD POUR LE DEBUT D'UN NIVEAU
 			_GUIState = GUIStateEnum.OnStart;
 			_MenuWindows = _MenuWindowsEnum.None;
-			_OptionWindows = _OptionWindowsEnum.None;
 		}
 		else{
 				//SET LE HUD POUR LE MAIN MENU
 			_GUIState = GUIStateEnum.MainMenu;
 			_MenuWindows = _MenuWindowsEnum.FakeSplashScreen;
-			_OptionWindows = _OptionWindowsEnum.None;
 			ResetComicCounter();
 		}
 	}
@@ -482,6 +487,12 @@ public class HUDManager : MainManager {
 			gos.SetActive(false);
 		}
 	}
+	public void ActiveOptBG(){
+		optionBGgo.SetActive(true);
+	}
+	public void DesactiveOptBG(){
+		optionBGgo.SetActive(false);
+	}
 	
 	//////////////////////////////////////
 	//		    SECTION OnGUI		    //
@@ -538,7 +549,7 @@ public class HUDManager : MainManager {
 
 				//DRAW LA FENETRE DES CREDITS
 			case _MenuWindowsEnum.CreditWindows:
-				DrawCreditsScreen();
+				//DrawCreditsScreen();
 				break;
 	
 				//DRAW LA FENETRE DE SELECTION DE KEYBOARD
@@ -548,7 +559,12 @@ public class HUDManager : MainManager {
 				
 				//DRAW LA FENETRE DE STATS
 			case _MenuWindowsEnum.Stats:
+				DrawStatsScreen();
+				break;
 				
+				//DRAW LA FENETRE TIMETRIAL
+			case _MenuWindowsEnum.TimeTrialScreen:
+				DrawTimeTrialScreen();
 				break;
 			}
 			return;
@@ -622,112 +638,66 @@ public class HUDManager : MainManager {
 	
 		//FUNCTION QUI DRAW LES DIFFERENTES FENETRES D'OPTION
 	void DrawMainMenuOption(){
-		Rect inMenuRect = new Rect(190, 165, 740, 395);
-				//BACKGROUND
-		GUI.DrawTexture(new Rect(0, 0, 1280, 720), optionBG);
-
-		switch(_OptionWindows){
+			//BACKGROUND
+		//GUI.DrawTexture(new Rect(0, 0, 1280, 720), optionBG);
 		
-		case _OptionWindowsEnum.MainOption:
-			Rect optionRect = new Rect(190, 165, 740, 395);
-			GUI.skin = _SkinMenuSansBox;
-			GUI.BeginGroup(optionRect);
-				if(GUI.Button(new Rect(optionRect.width*0.26f, optionRect.height*0.1f, optionRect.width*0.66f, optionRect.height*0.20f), "- SOUND -")){
-					_OptionWindows = _OptionWindowsEnum.Sound;
-				}
-				if(GUI.Button(new Rect(optionRect.width*-0.03f, optionRect.height*0.34f, optionRect.width*0.66f, optionRect.height*0.20f), "- GAME MODE -")){
-					_OptionWindows = _OptionWindowsEnum.GameMode;
-				}
-				if(GUI.Button(new Rect(optionRect.width*0.05f, optionRect.height*0.80f, optionRect.width*0.92f, optionRect.height*0.20f), "- DELETE SAVEGAME -")){
-					_OptionWindows = _OptionWindowsEnum.DeleteSavegame;
-				}
-			GUI.EndGroup();
 			
-				//BACK BUTTON
-			GUI.skin.button.fontSize = 48;
-			if(GUI.Button(new Rect(125, 605, 300, 80), "- BACK -")){
-				_MenuWindows = _MenuWindowsEnum.MainMenu;
-			}
-			
+			//VOLUME MUSIQUE SLIDER
+		GUI.skin = _SkinMenuSansBox;
+		musicVolume = GUI.HorizontalSlider(new Rect(450, 150, 350, 70), musicVolume, 0f, 1f);
+		
+			//MUSIC OK BUTTON
+		GUI.skin = _OkButtonSkin;
+		if(GUI.Button(new Rect(815, 130, 78, 78), "")){
+			MusicManager.soundManager.ReplayCurTrack();
+			Debug.Log("music = " + musicVolume);
+		}
+		
+			//VOLUME SFX SLIDER
+		GUI.skin = _SkinMenuSansBox;
+		sfxVolume = GUI.HorizontalSlider(new Rect(450, 250, 350, 70), sfxVolume, 0f, 1f);
+		
+			//SFX OK BUTTON
+		GUI.skin = _OkButtonSkin;
+		if(GUI.Button(new Rect(815, 230, 78, 78), "")){
+			MusicManager.soundManager.PlaySFX(19);
+		}
+		
+			//Keyboard Selection Button
+		switch(keyboardType){
+				//QWERTY
+		case _KeyboardTypeEnum.QWERTY:
+			GUI.skin = _QwertySkin1;
+			if(GUI.Button(new Rect(470, 351, 171, 111), "")){}
+			GUI.skin = _AzertySkin2;
+			if(GUI.Button(new Rect(645, 340, 195, 125), "")){
+				keyboardType = MainManager._KeyboardTypeEnum.AZERTY;
+			}			
 			break;
-
-		case _OptionWindowsEnum.Sound:
-			Rect soundRect = new Rect(190, 110, 740, 400);
-			
-			GUI.BeginGroup(soundRect);
-				GUI.skin.button.fontSize = 32;
-				GUI.TextArea(new Rect(soundRect.width*0.25f, soundRect.height*0.21f, soundRect.width*0.5f, soundRect.height*0.2f), "- SOUND -");
 				
-					//Text & Slider
-				GUI.skin.textArea.fontSize = 42;
-				GUI.TextArea(new Rect(soundRect.width*0.025f, soundRect.height*0.51f, soundRect.width*0.15f, soundRect.height*0.15f), "MUSIC");
-				_MusicVolume = GUI.HorizontalSlider(new Rect(soundRect.width*0.23f, soundRect.height*0.51f, soundRect.width*0.55f, soundRect.height*0.18f), _MusicVolume, 100, 0);
-			
-				GUI.TextArea(new Rect(soundRect.width*0.05f, soundRect.height*0.76f, soundRect.width*0.15f, soundRect.height*0.15f), "SFX");
-				_SFXVolume = GUI.HorizontalSlider(new Rect(soundRect.width*0.23f, soundRect.height*0.76f, soundRect.width*0.55f, soundRect.height*0.18f), _SFXVolume, 100, 0);
-			
-					//Mute Button
-				_MusicMute = GUI.Toggle(new Rect(soundRect.width*0.8f, soundRect.height*0.51f, soundRect.width*0.2f, soundRect.height*0.15f), _MusicMute, "MUTE");
-				_SFXMute = GUI.Toggle(new Rect(soundRect.width*0.8f, soundRect.height*0.76f, soundRect.width*0.2f, soundRect.height*0.15f), _SFXMute, "MUTE");
-			GUI.EndGroup();
-				//BACK BUTTON
-			GUI.skin.button.fontSize = 48;
-			if(GUI.Button(new Rect(125, 605, 300, 80), "- BACK -")){
-				_OptionWindows = _OptionWindowsEnum.MainOption;
+				//AZERTY
+		case _KeyboardTypeEnum.AZERTY:
+			GUI.skin = _QwertySkin2;
+			if(GUI.Button(new Rect(470, 351, 171, 111), "")){
+				keyboardType = MainManager._KeyboardTypeEnum.QWERTY;
 			}
+			GUI.skin = _AzertySkin1;
+			if(GUI.Button(new Rect(645, 340, 195, 125), "")){}	
 			break;
-
-		case _OptionWindowsEnum.GameMode:
-			GUI.BeginGroup(inMenuRect);
-				GUI.skin.textArea.fontSize = 60;
-				GUI.TextArea(new Rect(inMenuRect.width*0.15f, inMenuRect.height*0.15f, inMenuRect.width*0.6f, inMenuRect.height*0.21f), "- GAMEMODE -");
-					//TIME TRIAL MODE & NO DEATH ACTIVATION
-				if(!_ExtraModeUnlocked){
-					GUI.TextArea(new Rect(inMenuRect.width*0.02f, inMenuRect.height*0.52f, inMenuRect.width*0.9f, inMenuRect.height*0.4f), " Finish the Game to Unlock More Chromatose Extra Mode");
-				}
-				else{
-					GUI.skin.textArea.fontSize = 40;
-				
-					GUI.TextArea(new Rect(inMenuRect.width*0.1f, inMenuRect.height*0.52f, inMenuRect.width*0.6f, inMenuRect.height*0.25f), "TIME TRIAL CHALLENGE");
-					GUI.TextArea(new Rect(inMenuRect.width*0.1f, inMenuRect.height*0.74f, inMenuRect.width*0.6f, inMenuRect.height*0.25f), "NO DEATH CHALLENGE");
-					_TimeTrialActive = GUI.Toggle(new Rect(inMenuRect.width*0.7f, inMenuRect.height*0.52f, inMenuRect.width*0.15f, inMenuRect.height*0.2f),_TimeTrialActive ,"Active");
-					_NoDeathModeActive = GUI.Toggle(new Rect(inMenuRect.width*0.7f, inMenuRect.height*0.74f, inMenuRect.width*0.15f, inMenuRect.height*0.2f), _NoDeathModeActive, "Active");
-					
-				}
-			GUI.EndGroup();
-				//BACK BUTTON
-			GUI.skin.button.fontSize = 48;
-			if(GUI.Button(new Rect(125, 605, 300, 80), "- BACK -")){
-				_OptionWindows = _OptionWindowsEnum.MainOption;
+		}
+		
+			//DATA ERASE BUTTON
+		if(!_OnErase){
+			GUI.skin = _EraseSkin;
+			if(GUI.Button(new Rect(540, 500, 197, 142), "")){
+				_OnErase = true;
 			}
-			break;
-
-		case _OptionWindowsEnum.DeleteSavegame:
-			GUI.BeginGroup(inMenuRect);
-				GUI.skin.textArea.fontSize = 52;
-				GUI.TextArea(new Rect(inMenuRect.width*0.05f, inMenuRect.height*0.14f, inMenuRect.width*0.9f, inMenuRect.height*0.2f), "- DELETE THE ACTUAL -");
-				GUI.skin.textArea.fontSize = 46;
-				GUI.TextArea(new Rect(inMenuRect.width*0.3f, inMenuRect.height*0.3f, inMenuRect.width*0.55f, inMenuRect.height*0.2f), "- SAVED GAME -");
-				GUI.skin.textArea.fontSize = 55;
-				GUI.TextArea(new Rect(inMenuRect.width*0.1f, inMenuRect.height*0.51f, inMenuRect.width*0.7f, inMenuRect.height*0.28f), "? ARE YOU SURE ?");
-				GUI.skin.button.fontSize = 60;
-				if(GUI.Button(new Rect(inMenuRect.width*0.12f, inMenuRect.height*0.73f, 250, 80), "YES")){
-					File.Delete(Application.persistentDataPath + "/" + "Chromasave");
-					_FirstStart = true;
-					_MenuWindows = _MenuWindowsEnum.MainMenu;
-					_OptionWindows = _OptionWindowsEnum.MainOption;
-					Debug.Log("GAME DELETER");
-				}
-				if(GUI.Button(new Rect(inMenuRect.width*0.4f, inMenuRect.height*0.73f, 250, 80), "NO")){
-					_OptionWindows = _OptionWindowsEnum.MainOption;
-				}
-			GUI.EndGroup();	
-				//BACK BUTTON
-			GUI.skin.button.fontSize = 48;
-			if(GUI.Button(new Rect(125, 605, 300, 80), "- BACK -")){
-				_OptionWindows = _OptionWindowsEnum.MainOption;
+		}
+		else{
+			GUI.skin = _DoItSkin;
+			if(GUI.Button(new Rect(540, 525, 193, 120), "")){
+				Debug.Log("Save Game Deleted");
 			}
-			break;
 		}
 	}	
 	
@@ -835,17 +805,23 @@ public class HUDManager : MainManager {
 	
 		//DRAW LE INGAME START
 	void DrawInGameStart(){
-		GUI.skin = skinSansBox;
-			//Black BackGround
 		GUI.DrawTexture(new Rect(0, 0, 1280, 720), whiteBG);
-		GUI.skin = _PlayButtonSkin;
-		GUI.skin.button.fontSize = 78;
-		if(GUI.Button(new Rect(350, 70, 512, 512), "")){
-			_GUIState = GUIStateEnum.Interface;
-			StartHudOpenSequence();
-			GameObject.FindGameObjectWithTag("avatar").GetComponent<Avatar>().CanControl();
+			//START BUTTON
+		GUI.skin = _SkinMenuSansBox;
+		Rect startBox = new Rect(500, 350, 250, 126);
+		if(GUI.Button(startBox, "")){
+			_CanShowPressStartAnim = true;
 			MusicManager.soundManager.PlaySFX(19);
 			MusicManager.soundManager.CheckLevel();
+		}
+		GUI.DrawTexture(startBox, movieStart);
+		
+		if(_CanShowPressStartAnim){
+			GUI.DrawTexture(new Rect(375, 120, 500, 480), moviePressStart);
+			if(!moviePressStart.isPlaying){
+				moviePressStart.Play();
+				StartCoroutine(GoToGame());
+			}
 		}
 	}
 	
@@ -882,7 +858,6 @@ public class HUDManager : MainManager {
 		GUI.DrawTexture(startBox, movieStart);
 		
 		if(_CanShowPressStartAnim){
-			Debug.Log("PressStartAnim");
 			GUI.DrawTexture(new Rect(375, 220, 500, 480), moviePressStart);
 			if(!moviePressStart.isPlaying){
 				moviePressStart.Play();
@@ -891,191 +866,12 @@ public class HUDManager : MainManager {
 		}
 	}
 	
-		//DRAW LA FENETRE DE SELECTION DE NIVEAU
-	void DrawLevelSelectionScreen(){
-		GUI.DrawTexture(new Rect(0, 0, 1280, 720), whiteBG);
-		GUI.skin = _SkinMenuSansBox;
-		GUI.skin.button.fontSize = 40;
-		
-			//BOUTON SELECTION NIVEAU 1 -- TUTO
-		if(StatsManager.levelUnlocked[0] == true){
-			GUI.skin = _SkinMenuSansBox;
-			GUI.skin.button.fontSize = 40;
-			if(GUI.Button(new Rect(250, 50, 300, 50), "TUTO - BLANC 1")){
-				_MenuWindows = _MenuWindowsEnum.LoadingScreen;
-				LoadALevel(1);
-				StatsManager.newLevel = true;
-			}
-		}
-		else{
-			GUI.skin = _VoidSkin;
-			GUI.skin.button.fontSize = 40;
-			if(GUI.Button(new Rect(250, 50, 300, 50), "TUTO - BLANC 1")){}
-		}
-		
-			//BOUTON SELECTION NIVEAU 2 -- MODULE ROUGE 1
-		if(StatsManager.levelUnlocked[1] == true){
-			GUI.skin = _SkinMenuSansBox;
-			GUI.skin.button.fontSize = 40;		
-			if(GUI.Button(new Rect(250, 125, 300, 50), "NIV 1 - ROUGE 1")){
-				_MenuWindows = _MenuWindowsEnum.LoadingScreen;
-				LoadALevel(2);
-			}
-		}
-		else{
-			GUI.skin = _VoidSkin;
-			GUI.skin.button.fontSize = 40; 
-			if(GUI.Button(new Rect(250, 125, 300, 50), "NIV 1 - ROUGE 1")){}
-		}
-		
-			//BOUTON SELECTION NIVEAU 3 -- MODULE BLANC 2
-		if(StatsManager.levelUnlocked[2] == true){
-			GUI.skin = _SkinMenuSansBox;
-			GUI.skin.button.fontSize = 40;
-			if(GUI.Button(new Rect(250, 200, 300, 50), "NIV 2 - BLANC 2")){
-				_MenuWindows = _MenuWindowsEnum.LoadingScreen;
-				LoadALevel(3);
-			}
-		}
-		else{
-			GUI.skin = _VoidSkin;
-			GUI.skin.button.fontSize = 40;
-			if(GUI.Button(new Rect(250, 200, 300, 50), "NIV 2 - BLANC 2")){}
-		}
-		
-			//BOUTON SLECTION NIVEAU 4 -- MODULE ROUGE 2
-		if(StatsManager.levelUnlocked[3] == true){
-			GUI.skin = _SkinMenuSansBox;
-			GUI.skin.button.fontSize = 40;
-			if(GUI.Button(new Rect(250, 275, 300, 50), "NIV 3 - ROUGE 2")){
-				_MenuWindows = _MenuWindowsEnum.LoadingScreen;
-				LoadALevel(4);
-			}
-		}
-		else{
-			GUI.skin = _VoidSkin;
-			GUI.skin.button.fontSize = 40;
-			if(GUI.Button(new Rect(250, 275, 300, 50), "NIV 3 - ROUGE 2")){}
-		}
-		
-			//BOUTON SELECTION NIVEAU 5 -- MODULE BLANC 3
-		if(StatsManager.levelUnlocked[4] == true){
-			GUI.skin = _SkinMenuSansBox;
-			GUI.skin.button.fontSize = 40;
-			if(GUI.Button(new Rect(250, 350, 300, 50), "NIV 4 - BLANC 3")){
-				_MenuWindows = _MenuWindowsEnum.LoadingScreen;
-				LoadALevel(5);
-			}
-		}
-		else{
-			GUI.skin = _VoidSkin;
-			GUI.skin.button.fontSize = 40;
-			if(GUI.Button(new Rect(250, 350, 300, 50), "NIV 4 - BLANC 3")){}
-		}
-		
-			//BOUTON SELECTION NIVEAU 6 -- MODULE ROUGE 3
-		if(StatsManager.levelUnlocked[5] == true){
-			GUI.skin = _SkinMenuSansBox;
-			GUI.skin.button.fontSize = 40;
-			if(GUI.Button(new Rect(600, 50, 400, 50), "NIV 5 - ROUGE/BLEU 3")){
-				_MenuWindows = _MenuWindowsEnum.LoadingScreen;
-				LoadALevel(6);
-			}
-		}
-		else{
-			GUI.skin = _VoidSkin;
-			GUI.skin.button.fontSize = 40;
-			if(GUI.Button(new Rect(600, 50, 400, 50), "NIV 5 - ROUGE/BLEU 3")){}
-		}
-		
-			//BOUTON SELECTION NIVEAU 7 -- MODULE BLANC 4
-		if(StatsManager.levelUnlocked[6] == true){
-			GUI.skin = _SkinMenuSansBox;
-			GUI.skin.button.fontSize = 40;
-			if(GUI.Button(new Rect(600, 125, 300, 50), "NIV 6 - BLANC 4")){
-				_MenuWindows = _MenuWindowsEnum.LoadingScreen;
-				LoadALevel(7);
-			}
-		}
-		else{
-			GUI.skin = _VoidSkin;
-			GUI.skin.button.fontSize = 40;
-			if(GUI.Button(new Rect(600, 125, 300, 50), "NIV 6 - BLANC 4")){}
-		}
-		
-			//BOUTON SELECTION NIVEAU 8 -- MODULE ROUGE 4
-		if(StatsManager.levelUnlocked[7] == true){
-			GUI.skin = _SkinMenuSansBox;
-			GUI.skin.button.fontSize = 40;
-			if(GUI.Button(new Rect(600, 200, 300, 50), "NIV 7 - BLEU 4")){
-				_MenuWindows = _MenuWindowsEnum.LoadingScreen;
-				LoadALevel(8);
-			}
-		}
-		else{
-			GUI.skin = _VoidSkin;
-			GUI.skin.button.fontSize = 40;
-			if(GUI.Button(new Rect(600, 200, 300, 50), "NIV 7 - BLEU 4")){}
-		}
-		
-			//BOUTON SELECTION NIVEAU 9 -- MODULE ROUGE 5
-		if(StatsManager.levelUnlocked[8] == true){
-			GUI.skin = _SkinMenuSansBox;
-			GUI.skin.button.fontSize = 40;
-			if(GUI.Button(new Rect(600, 275, 400, 50), "NIV 8 - ROUGE/BLEU 5")){
-				_MenuWindows = _MenuWindowsEnum.LoadingScreen;
-				LoadALevel(9);
-			}
-		}
-		else{
-			GUI.skin = _VoidSkin;
-			GUI.skin.button.fontSize = 40;
-			if(GUI.Button(new Rect(600, 275, 400, 50), "NIV 8 - ROUGE/BLEU 5")){}
-		}
-		
-			//BOUTON SELECTION NIVEAU 10 -- MODULE ROUGE 6
-		if(StatsManager.levelUnlocked[9] == true){
-			GUI.skin = _SkinMenuSansBox;
-			GUI.skin.button.fontSize = 40;
-			if(GUI.Button(new Rect(600, 350, 300, 50), "NIV 9 - ROUGE 6")){
-				_MenuWindows = _MenuWindowsEnum.LoadingScreen;
-				LoadALevel(10);
-			}
-		}
-		else{
-			GUI.skin = _VoidSkin;
-			GUI.skin.button.fontSize = 40;
-			if(GUI.Button(new Rect(600, 350, 300, 50), "NIV 9 - ROUGE 6")){}
-		}
-		
-			//BOUTON SELECTION NIVEAU 11 -- BOSS FINAL
-		if(StatsManager.levelUnlocked[10] == true){
-			GUI.skin = _SkinMenuSansBox;
-			GUI.skin.button.fontSize = 40;
-			if(GUI.Button(new Rect(250, 425, 650, 50), "BOSS FINAL")){
-				_MenuWindows = _MenuWindowsEnum.LoadingScreen;
-				LoadALevel(11);
-			}
-		}
-		else{
-			GUI.skin = _VoidSkin;
-			GUI.skin.button.fontSize = 40;
-			if(GUI.Button(new Rect(250, 425, 650, 50), "BOSS FINAL")){}
-		}
-
-			//BACK BUTTON
-		GUI.skin = _SkinMenuSansBox;
-		GUI.skin.button.fontSize = 48;
-		if(GUI.Button(new Rect(125, 605, 300, 80), "- BACK -")){
-			_MenuWindows = _MenuWindowsEnum.MainMenu;
-		}
-	}
-	
 		//DRAW LA FENETRE DE SELECTION DU CLAVIER
 	void DrawKeyboardSelectionScreen(){
 		
 		GUI.skin = _SkinMenuSansBox;
 		GUI.skin.textArea.fontSize = 70;
+		GUI.skin.textArea.normal.textColor = Color.white;
 		GUI.TextArea(new Rect(190, 400, 900, 110), "? WHAT IS YOUR KEYBOARD ?");
 	}
 	
@@ -1084,25 +880,17 @@ public class HUDManager : MainManager {
 		Rect inLoadRect = new Rect(217.5f, 165, 740, 380);
 			//BACKGROUND
 		GUI.DrawTexture(new Rect(0, 0, 1280, 720), whiteBG);
+		GUI.DrawTexture(new Rect(400, 90, 550, 520), movieLoad2);
 				
 		//PlayLoadAnim();
 		//STAND BY SUR L"ANIM POUR LINSTANT
-		GUI.DrawTexture(new Rect(350, 100, 550, 512), loadingIcon1);
+		//GUI.DrawTexture(new Rect(350, 100, 550, 512), loadingIcon1);
 		
-		/*
-		 * 
-		 * A REMPLACER PAR UN ICONE LOADING
-		 * 
-			//PROGRESS BAR
-		if(async != null){
-			GUI.DrawTexture(new Rect(150, 278, 6 * async.progress * 100f, inLoadRect.height*0.10f), progressLine);
-			GUI.DrawTexture(new Rect(130, 262, 590, inLoadRect.height*0.2f), emptyProgressBar);
-		}*/
 	}
 	
 		//DRAW LE CREDITS SCREEN
 	void DrawCreditsScreen(){
-		GUI.DrawTexture(new Rect(0, 0, 1280, 720), credits);
+		
 		
 	}
 		
@@ -1126,45 +914,33 @@ public class HUDManager : MainManager {
 	
 		//DRAW LE STATS SCREEN
 	void DrawStatsScreen(){
-		Rect inMenuRect = new Rect(190, 165, 740, 395);
-				//BACKGROUND
-		GUI.DrawTexture(new Rect(0, 0, 1280, 720), optionBG);
+		GUI.skin = _SkinMenuSansBox;
+		GUI.skin.textArea.fontSize = 34;
+		GUI.skin.textArea.normal.textColor = Color.black;
 		
-		GUI.BeginGroup(inMenuRect);
-			GUI.skin.textArea.fontSize = 60;
-				//STATIC STRING
-			GUI.TextArea(new Rect(inMenuRect.width*0.24f, inMenuRect.height*0.01f, inMenuRect.width*0.6f, inMenuRect.height*0.21f), "- STATS -");
-			GUI.skin.textArea.fontSize = 30;
-			GUI.TextArea(new Rect(inMenuRect.width*0.15f, inMenuRect.height*0.2f, inMenuRect.width*0.3f, inMenuRect.height*0.21f), "DEAD NPC");
-			GUI.TextArea(new Rect(inMenuRect.width*0.15f, inMenuRect.height*0.3f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), "WHITE COLLECTIBLES");
-			GUI.TextArea(new Rect(inMenuRect.width*0.15f, inMenuRect.height*0.4f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), "RED COLLECTIBLES");
-			GUI.TextArea(new Rect(inMenuRect.width*0.15f, inMenuRect.height*0.5f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), "BLUE COLLECTIBLES");
-			GUI.TextArea(new Rect(inMenuRect.width*0.15f, inMenuRect.height*0.6f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), "COMICS VIEWED");
-			GUI.TextArea(new Rect(inMenuRect.width*0.15f, inMenuRect.height*0.7f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), "ACHIEVEMENT UNLOCKED");
-			GUI.TextArea(new Rect(inMenuRect.width*0.15f, inMenuRect.height*0.8f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), "TOTAL DEATH");
-			GUI.TextArea(new Rect(inMenuRect.width*0.15f, inMenuRect.height*0.9f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), "TOTAL PLAYTIME");
-				//STATISTIC STRING
-			GUI.TextArea(new Rect(inMenuRect.width*0.675f, inMenuRect.height*0.2f, inMenuRect.width*0.3f, inMenuRect.height*0.21f), ""); 	//AJOUTER LE NB DE NPC TUER
-			GUI.TextArea(new Rect(inMenuRect.width*0.65f, inMenuRect.height*0.3f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), StatsManager.whiteCollCollected.ToString());
-			GUI.TextArea(new Rect(inMenuRect.width*0.65f, inMenuRect.height*0.4f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), StatsManager.redCollCollected.ToString());
-			GUI.TextArea(new Rect(inMenuRect.width*0.65f, inMenuRect.height*0.5f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), StatsManager.blueCollCollected.ToString());
-			GUI.TextArea(new Rect(inMenuRect.width*0.65f, inMenuRect.height*0.6f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), StatsManager.comicThumbCollected.ToString());
-			GUI.TextArea(new Rect(inMenuRect.width*0.65f, inMenuRect.height*0.7f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), "");	//AJOUTER LE NB D'ACHIEVEMENTS DEBLOQUER
-			GUI.TextArea(new Rect(inMenuRect.width*0.675f, inMenuRect.height*0.8f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), "");	//AJOUTER LE NB DE FOIS QUE LE PLAYER EST MORT
-			GUI.TextArea(new Rect(inMenuRect.width*0.65f, inMenuRect.height*0.9f, inMenuRect.width*0.55f, inMenuRect.height*0.21f), "");	//AJOUTER LE TEMPS TOTAL JOUER
-		GUI.EndGroup();
-			//HIGHSCORE BUTTON
-		GUI.skin.button.fontSize = 48;
-		if(GUI.Button(new Rect(470, 605, 385, 80), "- HIGHSCORES -")){
-			
-		}
-			//BACK BUTTON
-		GUI.skin.button.fontSize = 48;
-		if(GUI.Button(new Rect(125, 605, 300, 80), "- BACK -")){
-			_OptionWindows = _OptionWindowsEnum.MainOption;
+		GUI.DrawTexture(new Rect(536f, 75f, 237f, 115f), whiteColTex);
+		GUI.TextArea(new Rect(635f, 130f, 170f, 50f), StatsManager.whiteCollCollected.ToString() + " / " + "100");
+		GUI.DrawTexture(new Rect(528f, 169f, 240f, 99f), redColTex);
+		GUI.TextArea(new Rect(635f, 209f, 170f, 50f), StatsManager.redCollCollected.ToString() + " / " + "100");
+		GUI.DrawTexture(new Rect(530f, 245f, 224f, 102f), blueColText);
+		GUI.TextArea(new Rect(635f, 288, 170f, 50f), StatsManager.blueCollCollected.ToString() + " / " + "100");
+		GUI.DrawTexture(new Rect(530f, 330f, 236f, 96f), comicTex);
+		GUI.TextArea(new Rect(635f, 370f, 170f, 50f), StatsManager.comicThumbCollected.ToString() + " / " + "100");
+		GUI.DrawTexture(new Rect(528f, 410f, 232f, 105f), deathCountTex);
+		GUI.skin.textArea.fontSize = 30;
+		GUI.TextArea(new Rect(620f, 465f, 50f, 50f), "000");
+		
+		GUI.skin = _TimeTrialButtonSkin;
+		if(GUI.Button(new Rect(528f, 520f, 240f, 100f), "")){
+			menuWindows = _MenuWindowsEnum.TimeTrialScreen;
 		}
 	}
+	
+	void DrawTimeTrialScreen(){
+		GUI.DrawTexture(new Rect(0, 0, 1280, 720), ttBg);
 		
+	}
+	
 	IEnumerator Setup(float delai){
 		yield return new WaitForSeconds(delai);
 		
@@ -1207,5 +983,10 @@ public class HUDManager : MainManager {
 	IEnumerator CanShowLogo(){
 		yield return new WaitForSeconds(1.9f);
 		_CanShowLogo = true;
+	}
+	IEnumerator GoToGame(){
+		yield return new WaitForSeconds(0.65f);
+		_GUIState = GUIStateEnum.Interface;
+		StartHudOpenSequence();		
 	}
 }

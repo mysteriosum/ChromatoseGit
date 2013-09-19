@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 [System.Serializable]
-public class MusicManager : MonoBehaviour{
+public class MusicManager : MainManager{
 	public enum _DevStateEnum{
 		EditorDevelopment, StandAlone, WebPlayer
 	}
@@ -28,12 +28,12 @@ public class MusicManager : MonoBehaviour{
 		public bool muteSFX{
 			get{return _MuteSFX;}
 			set{_MuteSFX = value;}
-		}
+		}/*
 	private int _Volume = 80;
 		public int volume{
 			get{return _Volume;}
 			set{_Volume = Mathf.Clamp(value, 0, 100);;}
-		}
+		}*/
 	private bool _PlayOption = false;
 		public bool playOption{
 			get{return _PlayOption;}
@@ -210,17 +210,17 @@ public class MusicManager : MonoBehaviour{
 		if(!setuped)Setup();
 	}
 	
-	public void PlaySFX(int sfxIndex, float volume){
+	public void PlaySFX(int sfxIndex, float vol){
 		
 		foreach(AudioSource sfxP in _SFXPlayer){
 			if(!sfxP.isPlaying){
-				sfxP.PlayOneShot(_SFXList[sfxIndex], volume);
+				sfxP.PlayOneShot(_SFXList[sfxIndex], vol);
 				return;
 			}
 		}
 	}	
 	public void PlaySFX(int sfxIndex){
-		PlaySFX(sfxIndex, 1.0f);
+		PlaySFX(sfxIndex, sfxVolume);
 	}
 	
 	
@@ -241,12 +241,25 @@ public class MusicManager : MonoBehaviour{
 		
 		for(float f = 1f; f >= fadeRate; f = f - fadeRate){
 			_MusicSources[curPlayer].volume = f;
-			_MusicSources[musicIndex].volume += fadeRate * 2f;
+			_MusicSources[musicIndex].volume += Mathf.Clamp(fadeRate * 2f, 0, musicVolume);
 			//Debug.Log("f = " + f);
 			if(f <= 0){
 				_MusicSources[curPlayer].Stop ();
 			}
 		}		
+	}
+	
+	public void ReplayCurTrack(){
+		int curPlayer = 0;
+			
+		for(int i = 0; i < _MusicSources.Count; i++){
+			if (_MusicSources[i].isPlaying){
+				curPlayer = i;
+			}
+		}
+		_MusicSources[curPlayer].Stop();
+		_MusicSources[curPlayer].volume = GetComponent<MainManager>().musicVolume;
+		_MusicSources[curPlayer].Play();
 	}
 	
 	void SkipToNextTrack(){
@@ -262,6 +275,7 @@ public class MusicManager : MonoBehaviour{
 	}
 	IEnumerator DelayingTrack(int trackIndex, float delai){
 		yield return new WaitForSeconds(delai);
+		_MusicSources[trackIndex].volume = musicVolume;
 		_MusicSources[trackIndex].Play();
 	}
 }
