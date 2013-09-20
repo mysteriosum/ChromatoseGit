@@ -4,6 +4,8 @@ using System.Collections;
 [SerializeAll]
 public class MainManager : MonoBehaviour {
 	
+	//comm inutile
+	
 	//ENUM
 	public enum _WhiteRoomEnum{
 		Tuto, ModuleBlanc_2, ModuleBlanc_3, ModuleBlanc_4, None
