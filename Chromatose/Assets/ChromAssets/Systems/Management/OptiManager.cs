@@ -16,12 +16,16 @@ public class OptiManager : MainManager {
 		DontDestroyOnLoad(this);
 	}
 	void OnLevelWasLoaded(){
-		StartCoroutine(DelaiBeforeStartOpti());
-		FindAllRoom();
+		if(Application.loadedLevel != 0){
+			StartCoroutine(DelaiBeforeStartOpti());
+			FindAllRoom();
+		}
 	}
 	void Start () {
-		StartCoroutine(DelaiBeforeStartOpti());
-		FindAllRoom();
+		if(Application.loadedLevel != 0){
+			StartCoroutine(DelaiBeforeStartOpti());
+			FindAllRoom();
+		}
 	}
 	
 	// Update is called once per frame
@@ -35,7 +39,7 @@ public class OptiManager : MainManager {
 	}
 
 	public void OptimizeZone(){
-
+		if(currentLevel == 0)return;
 		if(currentLevel == 1 || currentLevel == 3 || currentLevel == 5 || currentLevel == 7){
 			foreach(GameObject go in roomList){
 				if(go != null){

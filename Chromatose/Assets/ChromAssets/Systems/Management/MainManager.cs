@@ -115,7 +115,8 @@ public class MainManager : MonoBehaviour {
 	public static GameObject _Chromera;
 	public static ChromatoseCamera _ChromeraScript;
 	public static StatsManager _StatsManager;
-		
+	public static GameObject _SpeechBubble;
+	public static Camera menuCam;
 	
 	//GET/SET ACCESSOR
 		
@@ -138,12 +139,13 @@ public class MainManager : MonoBehaviour {
 		_StatsManager = GetComponentInChildren<StatsManager>();
 	}
 	void OnLevelWasLoaded(){
-		if(Application.loadedLevel!=0){
-			SetupAvatarAndCam();
-		}
+		SetupAvatarAndCam();		
 	}	
 	void Start () {
 		
+		if(menuCam == null){
+			menuCam = Camera.mainCamera;
+		}
 		
 		Debug.LogWarning("MainManager-Start_log - Started in Lvl " + Application.loadedLevel + ". Also, the keyboard is a " +
 							_KeyboardType + " type. Already own " + StatsManager.whiteCollCollected + " whiteCollectibles but only " +
@@ -162,6 +164,7 @@ public class MainManager : MonoBehaviour {
 		CheckWhereIAm();
 		StartCoroutine(SetupRoom());
 		ChromatoseManager.manager.CheckNewfaderList();
+		SetupAvatarAndCam();
 	}
 	
 	
@@ -182,20 +185,18 @@ public class MainManager : MonoBehaviour {
 			_Avatar.name = "Avatar";
 			_AvatarScript = _Avatar.GetComponent<Avatar>();
 			ChromatoseManager.manager.Setup();
+			_SpeechBubble = GameObject.FindGameObjectWithTag("speechBubble");
 			//StatsManager.lastSpawnPos = startPoint.transform.position;
 		}
 
-			//S'ASSURE QU'IL N'Y AI PAS DE CAMERA, PUIS EN CREE UNE
+			//S'ASSURE QU'IL N'Y AI PAS DE CAMERA, PUIS EN CREE UNE	
 		if(!GameObject.FindGameObjectWithTag("MainCamera")){
 			Vector3 camPos = new Vector3(0, 0, -25);
 			_Chromera = Instantiate(Resources.Load("Chromera"), camPos, Quaternion.identity)as GameObject;
 			_ChromeraScript = _Chromera.GetComponent<ChromatoseCamera>();
-		}	
+		}
 	}
-	
-	void Update(){
-		Debug.Log(_MusicVolume);
-	}
+
 	
 	//PUBLIC FUNCTION
 	public int CheckWhereIAm(){
@@ -217,8 +218,26 @@ public class MainManager : MonoBehaviour {
 	
 	
 	public void LoadALevel(int levelInt){
-		_HudManager.menuWindows = _MenuWindowsEnum.LoadingScreen;
-		_HudManager.movieLoad2.Play();
+		HUDManager.hudManager.guiState = GUIStateEnum.MainMenu;
+		HUDManager.hudManager.menuWindows = _MenuWindowsEnum.LoadingScreen;
+		HUDManager.hudManager.movieLoad2.Play();
+		
+		if(levelInt == 0){			
+			if(_Avatar){
+				_Avatar.SetActive(false);
+				if(_SpeechBubble == null){
+					_SpeechBubble = GameObject.FindGameObjectWithTag("speechBubble");
+				}
+				_SpeechBubble.SetActive(false);
+			}
+		}
+		else{
+			if(_Avatar){
+				_Avatar.SetActive(true);
+				_SpeechBubble.SetActive(true);
+			}
+			HUDManager.hudManager.ResetAllMovie();
+		}
 		StartCoroutine(DelayinLoadLevel(levelInt));
 	}
 	

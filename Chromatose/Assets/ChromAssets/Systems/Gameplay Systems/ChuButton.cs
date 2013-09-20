@@ -9,6 +9,7 @@ public class ChuButton : MonoBehaviour {
 	private Camera menuCam;
 	
 	private bool started = false;
+
 	
 	void Start () {
 		mainSprite = GetComponent<tk2dSprite>();
@@ -17,6 +18,10 @@ public class ChuButton : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		
+		if(menuCam == null){
+			menuCam = Camera.mainCamera;
+		}
 		
 		if(!started){
 			StartCoroutine(CheckUnlockable());
@@ -30,6 +35,9 @@ public class ChuButton : MonoBehaviour {
             {
 				if (!Physics.Raycast(ray, hitInfo.distance - 0.01f)){
 					MainManager._MainManager.LoadALevel(levelIndex);
+					HUDManager.hudManager.DesactiveKeyboardButton();
+					HUDManager.hudManager.DesactiveButton();
+					HUDManager.hudManager.DesactiveBackButton();
 				}
             }
         }
