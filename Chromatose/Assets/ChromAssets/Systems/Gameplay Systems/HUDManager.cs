@@ -9,7 +9,7 @@ public enum GUIStateEnum{
 	MainMenu, OnStart, EndResult, EndLevel, Interface, Pause, InComic, Nothing
 }
 public enum _MenuWindowsEnum{
-	FakeSplashScreen, MainMenu, LevelSelectionWindows, CreditWindows, OptionWindows, LoadingScreen, KeyboardSelectionScreen, Stats, TimeTrialScreen, None
+	MainMenu, FakeSplashScreen, LevelSelectionWindows, CreditWindows, OptionWindows, LoadingScreen, KeyboardSelectionScreen, Stats, TimeTrialScreen, GameModeScreen,None
 }
 /*public enum _OptionWindowsEnum{
 	MainOption, Sound, GameMode, DeleteSavegame, None
@@ -48,7 +48,7 @@ public class HUDManager : MainManager {
 	public Texture _AvatarLoadingLoop1, _AvatarLoadingLoop2, _BulleLoadingLoop1, _BulleLoadingLoop2;
 	public Texture whiteColTex, redColTex, blueColText, comicTex, deathCountTex;
 	
-	public GUISkin _PlayButtonSkin, _GreenlightSkin, skinSansBox, pauseBackButton, _SkinMenuSansBox, _VoidSkin, _TimeTrialButtonSkin;
+	public GUISkin _PlayButtonSkin, _GreenlightSkin, skinSansBox, pauseBackButton, mainMenuButtonSkin, _SkinMenuSansBox, _VoidSkin, _TimeTrialButtonSkin;
 	public GUISkin _StartButtonSkin, _CreditButtonSkin, _FbookButtonSkin, _TwitterButtonSkin, _BackButtonSkin, _GreenlightButton;
 	public GUISkin _QwertySkin1, _QwertySkin2, _AzertySkin1, _AzertySkin2, _EraseSkin, _DoItSkin, _OkButtonSkin;
 	
@@ -87,6 +87,7 @@ public class HUDManager : MainManager {
 		//VARIABLE ELEMENTS DYNAMICS
 	public static bool mainBoxCanDown = false;
 	public static bool mainBoxCanUp = false;
+	public static bool keyboardAlreadyChoose = false;
 	
 	private float mainBoxStartY = -230f;
 	private float mainBoxPosY = -230f;
@@ -135,14 +136,6 @@ public class HUDManager : MainManager {
 		//DontDestroyOnLoad(this);
 		hudManager = this;
 		
-	}
-	
-	void OnLevelWasLoaded(){
-		SetupHud();
-		StartCoroutine(Setup(0f));
-	}
-	
-	void Start () {
 		aX = absorbAction.width * 1.5f;		
 		actionTexture = absorbAction;
 		shownActionTexture = actionTexture;
@@ -183,6 +176,34 @@ public class HUDManager : MainManager {
 		
 			//SETUP LE TOUT, ON LE FAIT A L'EXTERNE CAR J'AIME BIEN POUVOIR LE RAPPELLER, EN CAS DE PROBLEME
 		StartCoroutine(Setup(0.1f));
+	}
+	
+	void OnLevelWasLoaded(){
+		SetupHud();
+		StartCoroutine(Setup(0f));
+		if(Application.loadedLevel == 0){
+			levelSelectionBut = GameObject.FindGameObjectsWithTag("levelButton");
+			
+			foreach(GameObject gos in levelSelectionBut){
+				gos.gameObject.SetActive(false);
+			}
+			
+			backButtton = GameObject.FindGameObjectWithTag("backButton");
+			backButtton.SetActive(false);
+			
+			keyboardButton = GameObject.FindGameObjectsWithTag("keyboardButton");
+			foreach(GameObject gos2 in keyboardButton){
+				gos2.SetActive(false);
+			}
+			
+			optionBGgo = GameObject.FindGameObjectWithTag("optionBG")as GameObject;
+			optionBGgo.SetActive(false);
+		}
+	}
+	
+	void Start () {
+		_FirstStart = true;
+		_MenuWindows = _MenuWindowsEnum.FakeSplashScreen;
 	}
 	
 	
@@ -312,9 +333,17 @@ public class HUDManager : MainManager {
 		}
 		else{
 				//SET LE HUD POUR LE MAIN MENU
-			_GUIState = GUIStateEnum.MainMenu;
-			_MenuWindows = _MenuWindowsEnum.FakeSplashScreen;
-			ResetComicCounter();
+			if(_FirstStart){
+				_GUIState = GUIStateEnum.MainMenu;
+				_MenuWindows = _MenuWindowsEnum.FakeSplashScreen;
+				ResetComicCounter();
+			}
+			else{
+				_GUIState = GUIStateEnum.MainMenu;
+				_CanShowPressStartAnim = false;
+				_MenuWindows = _MenuWindowsEnum.MainMenu;
+				Debug.Log("Retour au mainMenu Screen");
+			}
 		}
 	}
 	
@@ -494,6 +523,13 @@ public class HUDManager : MainManager {
 		optionBGgo.SetActive(false);
 	}
 	
+	public void ResetAllMovie(){
+		movieTitle.Stop();
+		movieStart.Stop();
+		movieCredit.Stop();
+		movieExit.Stop();
+	}
+	
 	//////////////////////////////////////
 	//		    SECTION OnGUI		    //
 	//////////////////////////////////////
@@ -528,6 +564,7 @@ public class HUDManager : MainManager {
 				//DRAW LE TITLE SCREEN
 			case _MenuWindowsEnum.MainMenu:
 				DrawTitleScreen();
+				Debug.Log("OnMainMenu");
 				break;
 				
 				//DRAW LE LEVELSELECTION SCREEN
@@ -560,6 +597,11 @@ public class HUDManager : MainManager {
 				//DRAW LA FENETRE DE STATS
 			case _MenuWindowsEnum.Stats:
 				DrawStatsScreen();
+				break;
+				
+				//DRAW LA FENETRE GAMEMODE
+			case _MenuWindowsEnum.GameModeScreen:
+				DrawGameModeScreen();
 				break;
 				
 				//DRAW LA FENETRE TIMETRIAL
@@ -781,26 +823,31 @@ public class HUDManager : MainManager {
 	
 		//DRAW LE MENU PAUSE
 	void DrawInGamePause(){
-		Rect pauseWindowsRect = new Rect (128, 100, 700, 360);
+		
 		GUI.DrawTexture(new Rect(0, 0, 1280, 720), greyFilterBG);
 		GUI.skin = skinSansBox;
 		
-		GUIUtility.RotateAroundPivot(-12f, new Vector2(320, 215));
-		GUI.BeginGroup(pauseWindowsRect);
+		//GUIUtility.RotateAroundPivot(-12f, new Vector2(320, 215));
+		
 			//PAUSE WINDOWS
-			GUI.DrawTexture(new Rect(pauseWindowsRect.width*0.05f, pauseWindowsRect.height*0.05f, pauseWindowsRect.width*0.9f, pauseWindowsRect.height*0.9f), pauseWindows);
-			
+		GUI.DrawTexture(new Rect(265, 100, 745, 495), pauseWindows);
+		
 			//TEXTE PAUSE
-			GUI.skin.textArea.fontSize = 76;
-			GUI.TextArea(new Rect(pauseWindowsRect.width*0.3f, pauseWindowsRect.height*0.23f, pauseWindowsRect.width*0.8f, pauseWindowsRect.height*0.23f), "ON PAUSE");
+		GUI.skin.textArea.fontSize = 76;
+		//GUI.TextArea(new Rect(pauseWindowsRect.width*0.3f, pauseWindowsRect.height*0.23f, pauseWindowsRect.width*0.8f, pauseWindowsRect.height*0.23f), "ON PAUSE");
+	
 		
-			GUI.skin = pauseBackButton;
-			if(GUI.Button(new Rect(300, 225, 130, 75), "")){
-				Pause();
-				StartHudOpenSequence();
-			}	
+		GUI.skin = mainMenuButtonSkin;
+		if(GUI.Button(new Rect(400, 175, 501, 149), "")){
+			Pause();
+			LoadALevel(0);
+		}
 		
-		GUI.EndGroup();
+		GUI.skin = pauseBackButton;
+		if(GUI.Button(new Rect(450, 325, 372, 159), "")){
+			Pause();
+			StartHudOpenSequence();
+		}					
 	}
 	
 		//DRAW LE INGAME START
@@ -827,6 +874,8 @@ public class HUDManager : MainManager {
 	
 		//DRAW LA FENETRE DU MAIN MENU
 	void DrawTitleScreen(){
+		
+		Debug.Log("DrawMainMenu");
 		
 			//START DES ANIM DU TITLESCREEN
 		movieTitle.Play();
@@ -860,6 +909,8 @@ public class HUDManager : MainManager {
 		if(_CanShowPressStartAnim){
 			GUI.DrawTexture(new Rect(375, 220, 500, 480), moviePressStart);
 			if(!moviePressStart.isPlaying){
+				_FirstStart = false;
+				moviePressStart.Stop();
 				moviePressStart.Play();
 				StartCoroutine(GoToLvlSelection());
 			}
@@ -941,14 +992,20 @@ public class HUDManager : MainManager {
 		
 	}
 	
+	void DrawGameModeScreen(){
+		
+	}
+	
 	IEnumerator Setup(float delai){
 		yield return new WaitForSeconds(delai);
 		
 		if(currentLevel != 0){
 			_RoomManager = GetComponent<ChromaRoomManager>();
 			_TotalComicThumb = _RoomManager.UpdateTotalComic();
-			_AvatarScript = GameObject.FindGameObjectWithTag("avatar").GetComponent<Avatar>();
-			_AvatarScript.CannotControlFor(false, 0);
+			if(GameObject.FindGameObjectWithTag("avatar")){
+				_AvatarScript = GameObject.FindGameObjectWithTag("avatar").GetComponent<Avatar>();
+				_AvatarScript.CannotControlFor(false, 0);
+			}
 		}		
 	}
 	
@@ -972,8 +1029,14 @@ public class HUDManager : MainManager {
 	}
 	IEnumerator GoToLvlSelection(){
 		yield return new WaitForSeconds(0.65f);
-		_MenuWindows = _MenuWindowsEnum.KeyboardSelectionScreen;
-		ActiveKeyboardButton();
+		
+		if(!keyboardAlreadyChoose){
+			_MenuWindows = _MenuWindowsEnum.KeyboardSelectionScreen;
+			ActiveKeyboardButton();
+		}
+		else{
+			_MenuWindows = _MenuWindowsEnum.LevelSelectionWindows;
+		}
 		ResetTitleBool();
 	}
 	IEnumerator GoToMainMenu(float delai){

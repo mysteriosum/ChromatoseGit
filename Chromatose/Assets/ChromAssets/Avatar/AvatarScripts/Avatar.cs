@@ -730,7 +730,6 @@ public class Avatar : MainManager{
 		//MAKE ME AN EYE BABY
 		travisMcGee = new Eye(t, particleCollection);
 		bubble = new SpeechBubble (t, particleCollection);
-		//bubble.transform.parent = this.transform;
 		spriteInfo.Collection = normalCollection;
 		StartCoroutine(LateCPCreation(1.0f));
 		

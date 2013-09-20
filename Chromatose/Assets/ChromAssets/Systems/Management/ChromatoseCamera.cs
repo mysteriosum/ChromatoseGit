@@ -44,8 +44,13 @@ public class ChromatoseCamera : MainManager {
 	}
 	
 	void Update () {
-		if (Application.loadedLevelName == "MainMenu") return;
-		if (avatar == null){Setup ();}
+		if (Application.loadedLevelName == "MainMenu" || currentLevel == 0) {
+			GetComponent<AudioListener>().enabled = true;
+			transform.position = new Vector3(0, 0, -25);
+			return;
+		}
+		else{GetComponent<AudioListener>().enabled = false;}
+		if (avatar == null && currentLevel != 0){Setup ();}
 		
 		if (ChromatoseManager.manager.InComic){
 			t.position = new Vector3(0, 0 + _BdOffset, t.position.z);
@@ -57,9 +62,9 @@ public class ChromatoseCamera : MainManager {
 	}
 	
 	void Setup(){
-		if (Application.loadedLevelName == "Menu") return;
+		if (Application.loadedLevelName == "MainMenu") return;
 		manager = ChromatoseManager.manager;
-		if (!avatar){
+		if (!avatar && currentLevel != 0){
 			avatar = GameObject.FindGameObjectWithTag("avatar").transform;
 		}
 		t = GetComponent<Transform>();

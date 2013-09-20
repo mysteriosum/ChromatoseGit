@@ -4,7 +4,7 @@ using System.Collections;
 public class ChuHudButton : MonoBehaviour {
 
 	public enum buttonTypeEnum{
-		Back, Credit, Options, Statistics
+		Back, Credit, Options, Statistics, GameMode
 	}
 	
 	public buttonTypeEnum buttonType;
@@ -12,6 +12,7 @@ public class ChuHudButton : MonoBehaviour {
 	private Camera menuCam;
 	private tk2dSprite mainSprite;
 	
+
 	void Start () {
 		menuCam = Camera.mainCamera;
 		mainSprite = GetComponent<tk2dSprite>();
@@ -21,6 +22,9 @@ public class ChuHudButton : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 		
+		if(menuCam == null){
+			menuCam = Camera.mainCamera;
+		}
 		
 		if (Input.GetMouseButtonDown(0)){
             Ray ray = menuCam.ScreenPointToRay(Input.mousePosition);
@@ -55,6 +59,9 @@ public class ChuHudButton : MonoBehaviour {
 						break;
 					case buttonTypeEnum.Statistics:
 						HUDManager.hudManager.menuWindows = _MenuWindowsEnum.Stats;
+						break;
+					case buttonTypeEnum.GameMode:
+						
 						break;
 					}
 					HUDManager.hudManager.DesactiveButton();

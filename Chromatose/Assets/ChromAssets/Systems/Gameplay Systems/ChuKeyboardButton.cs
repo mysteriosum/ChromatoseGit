@@ -14,7 +14,7 @@ public class ChuKeyboardButton : MonoBehaviour {
 	
 	private Vector3 scaledVec;
 	private Vector3 defaultVec;
-	
+
 	void Start () {
 		
 		mainSprite = GetComponent<tk2dSprite>();
@@ -35,6 +35,10 @@ public class ChuKeyboardButton : MonoBehaviour {
 
 	void Update () {
 		
+		if(menuCam == null){
+			menuCam = Camera.mainCamera;
+		}
+		
 		if (Input.GetMouseButtonDown(0)){
             Ray ray = menuCam.ScreenPointToRay(Input.mousePosition);
             RaycastHit hitInfo;
@@ -51,6 +55,7 @@ public class ChuKeyboardButton : MonoBehaviour {
 					}
 					HUDManager.hudManager.DesactiveKeyboardButton();
 					HUDManager.hudManager.menuWindows = _MenuWindowsEnum.LevelSelectionWindows;
+					HUDManager.keyboardAlreadyChoose = true;
 				}
             }
         }

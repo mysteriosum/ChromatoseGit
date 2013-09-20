@@ -55,21 +55,26 @@ public class SpeechBubble : MonoBehaviour{				//THE BUBBLE AND ITS DECLARATION!
 		go = new GameObject(toFollow.name + "Bubble");
 		parent = toFollow;
 		tk2dSprite.AddComponent(go, sprcol, 0);
+		go.AddComponent("DontDestroyScript");
 		spriteInfo = go.GetComponent<tk2dSprite>();
 		
 		r = go.renderer;
 		t = go.transform;
+		
+		go.tag = "speechBubble";
 	}
 	
 	public SpeechBubble(Transform toFollow): this(toFollow, ChromatoseManager.manager.bubbleCollection){
 		
 	}
 	
+	
 	void Awake(){
 		if(LevelSerializer.IsDeserializing) return;
 	}
 	
 	public void Main(){
+		
 		if (timer > 0){
 			timer -= Time.deltaTime;
 		}
