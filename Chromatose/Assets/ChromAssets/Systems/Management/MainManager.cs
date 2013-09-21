@@ -4,7 +4,7 @@ using System.Collections;
 [SerializeAll]
 public class MainManager : MonoBehaviour {
 	
-	//comm inutile...
+	//Commentaire de Test Perforce
 	
 	//ENUM
 	public enum _WhiteRoomEnum{
