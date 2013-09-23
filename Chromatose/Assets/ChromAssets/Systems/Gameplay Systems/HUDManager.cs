@@ -140,10 +140,10 @@ public class HUDManager : MainManager {
 		actionTexture = absorbAction;
 		shownActionTexture = actionTexture;
 		
-		hudRect[0] = new Rect(1280, 115, comicCounter.width + 10, comicCounter.height);
-		hudRect[1] = new Rect(1280, 165, whiteCollectible.width+ 10, whiteCollectible.height);
-		hudRect[2] = new Rect(1280, 215, redCollectible.width + 10, redCollectible.height);
-		hudRect[3] = new Rect(1280, 265, blueCollectible.width + 10, blueCollectible.height);
+		hudRect[0] = new Rect(1286, 115, comicCounter.width + 10, comicCounter.height);
+		hudRect[1] = new Rect(1286, 165, whiteCollectible.width+ 10, whiteCollectible.height);
+		hudRect[2] = new Rect(1286, 215, redCollectible.width + 10, redCollectible.height);
+		hudRect[3] = new Rect(1286, 265, blueCollectible.width + 10, blueCollectible.height);
 		
 		hudBoxCanAppear[0] = false;
 		hudBoxCanAppear[1] = false;
@@ -372,7 +372,7 @@ public class HUDManager : MainManager {
 		//Open CollBoxx
 	void OpenHudBox0(){
 		
-		if(hudRect[0].x >= hudBoxMinX){
+		if(hudRect[0].x > hudBoxMinX){
 			hudRect[0].x-=hudBoxMovingRate;
 		}
 		else{
@@ -384,7 +384,7 @@ public class HUDManager : MainManager {
 	}
 	void OpenHudBox1(){
 		
-		if(hudRect[1].x >= hudBoxMinX){
+		if(hudRect[1].x > hudBoxMinX){
 			hudRect[1].x-=hudBoxMovingRate;
 		}
 		else{
@@ -396,7 +396,7 @@ public class HUDManager : MainManager {
 	}
 	void OpenHudBox2(){
 		
-		if(hudRect[2].x >= hudBoxMinX){
+		if(hudRect[2].x > hudBoxMinX){
 			hudRect[2].x-=hudBoxMovingRate;
 		}
 		else{
@@ -408,7 +408,7 @@ public class HUDManager : MainManager {
 	}
 	void OpenHudBox3(){
 		
-		if(hudRect[3].x >= hudBoxMinX){
+		if(hudRect[3].x > hudBoxMinX){
 			hudRect[3].x-=hudBoxMovingRate;
 		}
 		else{
@@ -795,7 +795,7 @@ public class HUDManager : MainManager {
 			GUI.skin.textArea.normal.textColor = Color.white;
 			GUI.DrawTexture(new Rect(0, 0, whiteCollectible.width, whiteCollectible.height), whiteCollectible);
 			GUI.TextArea(new Rect(textOffset.x + 10, textOffset.y, 100, 50), StatsManager.whiteCollDisplayed.ToString());// + " / " + _TotalWhiteColl.ToString());
-			
+			Debug.Log("whiteCollBox.X = " + hudRect[1].x);
 		GUI.EndGroup();
 		
 		GUI.BeginGroup(hudRect[2]);										//red collectible

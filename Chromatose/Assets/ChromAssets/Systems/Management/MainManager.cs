@@ -174,7 +174,10 @@ public class MainManager : MonoBehaviour {
 			//DETERMINE LA POSITION DU SPAWN DE DEPART SELON SI C'EST UNE NEW GAME OU UNE GAME LOADER
 		//if(StatsManager.lastSpawnPos==Vector3.zero){
 			if(GameObject.FindGameObjectWithTag("StartPoint")){
-				startPoint = GameObject.FindGameObjectWithTag("StartPoint");	
+				startPoint = GameObject.FindGameObjectWithTag("StartPoint");
+				if(_Avatar){
+					_Avatar.transform.position = startPoint.transform.position;
+				}
 			}			
 		//}
 		//else{
