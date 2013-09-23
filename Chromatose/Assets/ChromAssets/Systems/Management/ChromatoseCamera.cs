@@ -44,6 +44,7 @@ public class ChromatoseCamera : MainManager {
 	}
 	
 	void Update () {
+	
 		if (Application.loadedLevelName == "MainMenu" || currentLevel == 0) {
 			GetComponent<AudioListener>().enabled = true;
 			transform.position = new Vector3(0, 0, -25);
