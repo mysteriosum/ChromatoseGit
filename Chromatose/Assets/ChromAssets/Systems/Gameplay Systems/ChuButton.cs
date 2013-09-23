@@ -43,11 +43,17 @@ public class ChuButton : MonoBehaviour {
         }
 	}
 	
+	void OnMouseOver(){
+		mainSprite.SetSprite(1);
+	}
+	void OnMouseExit(){
+		mainSprite.SetSprite(0);
+	}
 	
 	IEnumerator CheckUnlockable(){
 		yield return new WaitForSeconds(0.2f);
 		if(StatsManager.levelUnlocked[levelIndex - 1] == true){
-			mainSprite.SetSprite(1);
+			mainSprite.SetSprite(0);
 		}
 		else if(StatsManager.levelDoned[levelIndex - 1] == true){
 			mainSprite.SetSprite(2);

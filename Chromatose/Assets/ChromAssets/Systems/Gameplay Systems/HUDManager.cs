@@ -795,7 +795,6 @@ public class HUDManager : MainManager {
 			GUI.skin.textArea.normal.textColor = Color.white;
 			GUI.DrawTexture(new Rect(0, 0, whiteCollectible.width, whiteCollectible.height), whiteCollectible);
 			GUI.TextArea(new Rect(textOffset.x + 10, textOffset.y, 100, 50), StatsManager.whiteCollDisplayed.ToString());// + " / " + _TotalWhiteColl.ToString());
-			Debug.Log("whiteCollBox.X = " + hudRect[1].x);
 		GUI.EndGroup();
 		
 		GUI.BeginGroup(hudRect[2]);										//red collectible
