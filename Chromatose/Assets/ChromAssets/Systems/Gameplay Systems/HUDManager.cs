@@ -838,6 +838,7 @@ public class HUDManager : MainManager {
 		GUI.skin = mainMenuButtonSkin;
 		if(GUI.Button(new Rect(400, 175, 501, 149), "")){
 			Pause();
+			GameObject.FindGameObjectWithTag("avatar").GetComponent<Avatar>().movement.SetVelocity(Vector2.zero);
 			LoadALevel(0);
 		}
 		

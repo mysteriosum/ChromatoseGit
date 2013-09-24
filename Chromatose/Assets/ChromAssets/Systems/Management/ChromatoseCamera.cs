@@ -46,11 +46,12 @@ public class ChromatoseCamera : MainManager {
 	void Update () {
 	
 		if (Application.loadedLevelName == "MainMenu" || currentLevel == 0) {
-			GetComponent<AudioListener>().enabled = true;
+			//GetComponent<AudioListener>().enabled = true;
 			transform.position = new Vector3(0, 0, -25);
 			return;
 		}
-		else{GetComponent<AudioListener>().enabled = false;}
+		//else{GetComponent<AudioListener>().enabled = false;}
+		
 		if (avatar == null && currentLevel != 0){Setup ();}
 		
 		if (ChromatoseManager.manager.InComic){

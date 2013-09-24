@@ -141,26 +141,18 @@ public class MainManager : MonoBehaviour {
 		_StatsManager = GetComponentInChildren<StatsManager>();
 	}
 	void OnLevelWasLoaded(){
-		print("Level Loaded");
+		StartingDebug();
 		CheckWhereIAm();
 		StartCoroutine(SetupRoom());
 		ChromatoseManager.manager.CheckNewfaderList();
 		SetupAvatarAndCam();		
 	}	
 	void Start () {
-		
+		StartingDebug();
 		if(menuCam == null){
 			menuCam = Camera.mainCamera;
 		}
-		
-		Debug.LogWarning("MainManager-Start_log - Started in Lvl " + Application.loadedLevel + ". Also, the keyboard is a " +
-							_KeyboardType + " type. Already own " + StatsManager.whiteCollCollected + " whiteCollectibles but only " +
-							StatsManager.whiteCollDisplayed + " will be displayed. Already own " + StatsManager.redCollCollected + " redCollectibles but only " +
-							StatsManager.redCollDisplayed + " will be displayed. Already own " + StatsManager.blueCollCollected + " blueCollectibles but only " +
-							StatsManager.blueCollDisplayed + " will be displayed. " );
-			
-						
-		
+				
 		//A EFFACER
 		_CanControl = true;
 		
@@ -173,6 +165,13 @@ public class MainManager : MonoBehaviour {
 		SetupAvatarAndCam();
 	}
 	
+	void StartingDebug(){
+		Debug.LogWarning("MainManager-Start_log - Started in Lvl " + Application.loadedLevel + ". Also, the keyboard is a " +
+							_KeyboardType + " type. Already own " + StatsManager.whiteCollCollected + " whiteCollectibles but only " +
+							StatsManager.whiteCollDisplayed + " will be displayed. Already own " + StatsManager.redCollCollected + " redCollectibles but only " +
+							StatsManager.redCollDisplayed + " will be displayed. Already own " + StatsManager.blueCollCollected + " blueCollectibles but only " +
+							StatsManager.blueCollDisplayed + " will be displayed. " );
+	}
 	
 	void SetupAvatarAndCam(){
 			//DETERMINE LA POSITION DU SPAWN DE DEPART SELON SI C'EST UNE NEW GAME OU UNE GAME LOADER
@@ -190,6 +189,8 @@ public class MainManager : MonoBehaviour {
 		
 			//S'ASSURE QU'IL N'Y A PAS D'AVATAR, PUIS EN CREE UN
 		if(!GameObject.FindGameObjectWithTag("avatar") && Application.loadedLevel != 0){
+			Camera.mainCamera.GetComponent<AudioListener>().enabled = false;
+			print("Camera-AudioListener Off");
 			_Avatar = Instantiate(Resources.Load("Avatar"), startPoint.transform.position, Quaternion.identity)as GameObject;
 			_Avatar.name = "Avatar";
 			_AvatarScript = _Avatar.GetComponent<Avatar>();
@@ -234,6 +235,8 @@ public class MainManager : MonoBehaviour {
 		if(levelInt == 0){			
 			if(_Avatar){
 				_Avatar.SetActive(false);
+				Camera.mainCamera.GetComponent<AudioListener>().enabled = true;
+				print("Camera-AudioListener On");
 				if(_SpeechBubble == null){
 					_SpeechBubble = GameObject.FindGameObjectWithTag("speechBubble");
 				}
@@ -243,6 +246,8 @@ public class MainManager : MonoBehaviour {
 		else{
 			if(_Avatar){
 				_Avatar.SetActive(true);
+				Camera.mainCamera.GetComponent<AudioListener>().enabled = false;
+				print("Camera-AudioListener Off");
 				_SpeechBubble.SetActive(true);
 			}
 			HUDManager.hudManager.ResetAllMovie();
