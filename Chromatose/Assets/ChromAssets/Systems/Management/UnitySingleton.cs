@@ -29,6 +29,7 @@ namespace ChromaStats{
 		public bool FULLRELEASE = false;
 		
 		//PRIVATE VARIABLES
+		public GameObject refManager;
 		private GameObject mainManager;
 		private GameObject statsManager;
 		
@@ -69,8 +70,8 @@ namespace ChromaStats{
 				//Check Si une Sauvegarde existe
 						//Debug.Log(File.Exists(Application.persistentDataPath + "/" + "Chromasave"));
 			if(!GameObject.FindGameObjectWithTag("MainManager")){
-				mainManager = Instantiate(Resources.Load("pre_MainManager"))as GameObject;
-								
+				//mainManager = Instantiate(Resources.Load("pre_MainManager"))as GameObject;
+				mainManager = Instantiate(refManager)as GameObject;				
 				if(!File.Exists(Application.persistentDataPath + "/" + "Chromasave")){
 					statsManager = Instantiate(Resources.Load("pre_StatsManager"), Vector3.zero, Quaternion.identity)as GameObject;
 					StatsManager.newManager = true;

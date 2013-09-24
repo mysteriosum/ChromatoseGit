@@ -564,7 +564,6 @@ public class HUDManager : MainManager {
 				//DRAW LE TITLE SCREEN
 			case _MenuWindowsEnum.MainMenu:
 				DrawTitleScreen();
-				Debug.Log("OnMainMenu");
 				break;
 				
 				//DRAW LE LEVELSELECTION SCREEN
@@ -873,9 +872,7 @@ public class HUDManager : MainManager {
 	
 		//DRAW LA FENETRE DU MAIN MENU
 	void DrawTitleScreen(){
-		
-		Debug.Log("DrawMainMenu");
-		
+				
 			//START DES ANIM DU TITLESCREEN
 		movieTitle.Play();
 		movieStart.Play();

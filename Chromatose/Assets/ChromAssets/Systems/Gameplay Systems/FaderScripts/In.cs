@@ -14,7 +14,7 @@ public class In : MonoBehaviour {
 	}
 	
 	void OnTriggerStay(Collider other){
-		if (other.name == "Avatar"){
+		if (other.tag == "avatar"){
 			//Debug.Log("Trigger:");
 			transform.parent.SendMessage("In");
 		}

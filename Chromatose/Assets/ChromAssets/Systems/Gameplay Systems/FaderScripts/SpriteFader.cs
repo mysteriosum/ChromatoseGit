@@ -74,7 +74,7 @@ public class SpriteFader : MonoBehaviour {
 	}
 	
 	void OnTriggerStay(Collider other){
-		if (other.name == "Avatar"){
+		if (other.tag == "avatar"){
 			//Debug.Log("Trigger:");
 			
 		}
