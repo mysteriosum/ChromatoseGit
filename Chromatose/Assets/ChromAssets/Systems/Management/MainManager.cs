@@ -141,6 +141,10 @@ public class MainManager : MonoBehaviour {
 		_StatsManager = GetComponentInChildren<StatsManager>();
 	}
 	void OnLevelWasLoaded(){
+		print("Level Loaded");
+		CheckWhereIAm();
+		StartCoroutine(SetupRoom());
+		ChromatoseManager.manager.CheckNewfaderList();
 		SetupAvatarAndCam();		
 	}	
 	void Start () {
