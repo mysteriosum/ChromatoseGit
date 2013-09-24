@@ -38,11 +38,11 @@ public class StatsManager : MainManager {
 	}
 	
 	void Start () {
-		levelUnlocked = new bool[12]{true, false, false, false, false,
+		levelUnlocked = new bool[13]{true, false, false, false, false,
 										false, false, false, false, false,
-										false, false};
-		levelDoned = new bool[12]{false, false, false, false, false,
+										false, false, true};
+		levelDoned = new bool[13]{false, false, false, false, false,
 										false, false, false, false, false,
-										false, false};
+										false, false, false};
 	}
 }

@@ -360,45 +360,38 @@ public class MainManager : MonoBehaviour {
 			currentLevel = 8;
 			break;
 			
-			//LEVEL 9 - MODULE_1_SCENE_5
+			//LEVEL 9 - MODULE_1_SCENE_6
 		case 9:
 			_RoomType = _RoomTypeEnum.RedRoom;
 			_WhiteRoom = _WhiteRoomEnum.None;
 			currentLevel = 9;
 			break;
 			
-			//LEVEL 10 - MODULE_1_SCENE_6
+			//LEVEL 10 - MODULE_1_SCENE_7
 		case 10:
 			_RoomType = _RoomTypeEnum.RedRoom;
 			_WhiteRoom = _WhiteRoomEnum.None;
 			currentLevel = 10;
 			break;
 			
-			//LEVEL 11 - MODULE_1_SCENE_7
+			//LEVEL 11 - MODULE_1_SCENE_8
 		case 11:
 			_RoomType = _RoomTypeEnum.RedRoom;
 			_WhiteRoom = _WhiteRoomEnum.None;
 			currentLevel = 11;
 			break;
 			
-			//LEVEL 12 - MODULE_1_SCENE_8
+			//LEVEL 12 - FINAL BOSS
 		case 12:
-			_RoomType = _RoomTypeEnum.RedRoom;
+			_RoomType = _RoomTypeEnum.FinalBoss;
 			_WhiteRoom = _WhiteRoomEnum.None;
 			currentLevel = 12;
 			break;
-			
-			//FINAL BOSS
-		case 13:
-			_RoomType = _RoomTypeEnum.FinalBoss;
-			_WhiteRoom = _WhiteRoomEnum.None;
-			currentLevel = 13;
-			break;
 			//GYM DU CHU
-		case 14:
+		case 13:
 			_RoomType = _RoomTypeEnum.GYM;
 			_WhiteRoom = _WhiteRoomEnum.None;
-			currentLevel = 14;
+			currentLevel = 13;
 			break;
 		}
 	}

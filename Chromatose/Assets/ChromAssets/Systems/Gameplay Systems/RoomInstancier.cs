@@ -137,21 +137,14 @@ public class RoomInstancier : MainManager {
 				SaveRoom(newRoom);
 				Debug.Log(currentRoomString + " was Loaded");
 				break;
-			case 12:					
-				Destroy(GameObject.Find(currentRoomString));
-				newRoom = Instantiate(RoomPrefab_LVL_12[StatsManager.currentRoomInt], roomPos, roomRot)as GameObject;
-				newRoom.name = currentRoomString;
-				SaveRoom(newRoom);
-				Debug.Log(currentRoomString + " was Loaded");
-				break;
-			case 13:
+			case 12:
 				Destroy(GameObject.Find(currentRoomString));
 				newRoom = Instantiate(RoomPrefab_BossFinal[StatsManager.currentRoomInt], roomPos, roomRot)as GameObject;
 				newRoom.name = currentRoomString;
 				SaveRoom(newRoom);
 				Debug.Log(currentRoomString + " was Loaded");
 				break;
-			case 14:
+			case 13:
 				Destroy(GameObject.Find(currentRoomString));
 				newRoom = Instantiate(RoomPrefab_Gym[StatsManager.currentRoomInt], roomPos, roomRot)as GameObject;
 				newRoom.name = currentRoomString;
