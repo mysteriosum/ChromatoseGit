@@ -369,21 +369,36 @@ public class MainManager : MonoBehaviour {
 			
 			//LEVEL 10 - MODULE_1_SCENE_6
 		case 10:
-			_RoomType = _RoomTypeEnum.FinalBoss;
+			_RoomType = _RoomTypeEnum.RedRoom;
 			_WhiteRoom = _WhiteRoomEnum.None;
 			currentLevel = 10;
 			break;
-			//FINAL BOSS
+			
+			//LEVEL 11 - MODULE_1_SCENE_7
 		case 11:
-			_RoomType = _RoomTypeEnum.FinalBoss;
+			_RoomType = _RoomTypeEnum.RedRoom;
 			_WhiteRoom = _WhiteRoomEnum.None;
 			currentLevel = 11;
 			break;
-			//GYM DU CHU
+			
+			//LEVEL 12 - MODULE_1_SCENE_8
 		case 12:
-			_RoomType = _RoomTypeEnum.GYM;
+			_RoomType = _RoomTypeEnum.RedRoom;
 			_WhiteRoom = _WhiteRoomEnum.None;
 			currentLevel = 12;
+			break;
+			
+			//FINAL BOSS
+		case 13:
+			_RoomType = _RoomTypeEnum.FinalBoss;
+			_WhiteRoom = _WhiteRoomEnum.None;
+			currentLevel = 13;
+			break;
+			//GYM DU CHU
+		case 14:
+			_RoomType = _RoomTypeEnum.GYM;
+			_WhiteRoom = _WhiteRoomEnum.None;
+			currentLevel = 14;
 			break;
 		}
 	}

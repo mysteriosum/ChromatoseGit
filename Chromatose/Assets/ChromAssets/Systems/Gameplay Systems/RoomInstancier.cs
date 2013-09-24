@@ -10,6 +10,7 @@ public class RoomInstancier : MainManager {
 						RoomPrefab_LVL_5, RoomPrefab_LVL_6,
 						RoomPrefab_LVL_7, RoomPrefab_LVL_8,
 						RoomPrefab_LVL_9, RoomPrefab_LVL_10,
+						RoomPrefab_LVL_11, RoomPrefab_LVL_12,
 						RoomPrefab_BossFinal, RoomPrefab_Gym;
 	
 	

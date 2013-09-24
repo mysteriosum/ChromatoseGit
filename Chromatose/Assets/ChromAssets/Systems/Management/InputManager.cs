@@ -19,7 +19,7 @@ public class InputManager : MainManager {
 		}
 		
 			//ON S'ASSURE QU"ON EST PAS DANS LE MAINMENU
-		if(Application.loadedLevel!=0){
+		if(currentLevel!=0){
 				//PAUSE -- NE DOIT PAS ETRE ACTIF DANS LES MENU
 			if(Input.GetKeyDown(KeyCode.Escape)){
 				//Pause();
