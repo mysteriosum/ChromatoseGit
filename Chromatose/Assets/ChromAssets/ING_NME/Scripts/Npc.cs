@@ -1,11 +1,11 @@
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-/*
+
 #pragma warning disable 0414
 [RequireComponent(typeof(Movement))]
 public class Npc : MonoBehaviour {
-	
+	/*
 	private Movement movement;
 	private Transform t;
 	private Transform target;
@@ -223,5 +223,5 @@ public class Npc : MonoBehaviour {
 	
 	public void GreyBounce(tk2dAnimatedSprite clip, int index){
 		anim.Play("rNPC_bounceGrey");
-	}
-}*/
+	}*/
+}

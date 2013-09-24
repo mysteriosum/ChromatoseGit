@@ -13,7 +13,7 @@ public class Out : MonoBehaviour {
 	
 	
 	void OnTriggerStay(Collider other){
-		if (other.name == "Avatar"){
+		if (other.tag == "avatar"){
 			//Debug.Log("Trigger:");
 			transform.parent.SendMessage("Out");
 		}

@@ -127,7 +127,7 @@ public class MainManager : MonoBehaviour {
 	//START, SETUP & INIT
 	void Awake(){
 		if(Application.isEditor){
-			Debug.Log("LEVEL : " + Application.loadedLevel);
+			//Debug.Log("LEVEL : " + Application.loadedLevel);
 		}
 		
 		DontDestroyOnLoad(transform.gameObject);
