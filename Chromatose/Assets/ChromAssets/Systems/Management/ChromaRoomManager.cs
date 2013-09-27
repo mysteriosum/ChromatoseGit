@@ -34,7 +34,7 @@ public class ChromaRoomManager : MainManager {
 			StatsManager.currentRoomInt++;
 			currentRoomString = OptiManager.manager.roomList[StatsManager.currentRoomInt].name;
 			_CanAddRoom = false;
-			StartCoroutine(DelaiToAddRoom(5.0f));
+			StartCoroutine(DelaiToAddRoom(2.0f));
 			OptiManager.manager.OptimizeZone();
 		}
 	}

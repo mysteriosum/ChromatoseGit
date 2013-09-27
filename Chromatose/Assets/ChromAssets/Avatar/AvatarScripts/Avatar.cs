@@ -108,7 +108,8 @@ public class Avatar : MainManager{
 	private bool getLeft;		public bool getleft { get { return getLeft; } set { getLeft = value; } }
 	private bool getRight;		public bool getright { get { return getRight; } set { getRight = value; } }
 	
-	private bool getSpace;
+	protected bool getSpace;
+
 	private bool _SpaceBarActive;
 		public bool spaceBarActive{
 			get{return _SpaceBarActive;}
@@ -706,7 +707,7 @@ public class Avatar : MainManager{
 		}
 		
 		_SpaceBarActive = true;
-		
+		/*
 		switch(Application.loadedLevelName){
 		case ("Tutorial"):
 			_SpaceBarActive = false;
@@ -714,7 +715,7 @@ public class Avatar : MainManager{
 		case ("GYM_CHU"):
 			_SpaceBarActive = false;
 			break;
-		}
+		}*/
 												//initializing my particle objects, as necessary
 		spriteInfo = GetComponent<tk2dSprite>();
 		turboPart = new TurboParticle(particleCollection, partAnimations, t);
@@ -763,6 +764,8 @@ public class Avatar : MainManager{
 	void FixedUpdate ()
 	{
 		Debug.Log(avatarType);
+		
+		
 		
 		travisMcGee.EyeFollow();
 								//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
@@ -978,6 +981,7 @@ public class Avatar : MainManager{
 		}
 		
 												//Self-made checkpoints! Or whatever you want to call it
+		getSpace = Input.GetKeyDown(KeyCode.Space);
 		
 		if (getSpace){
 			
@@ -1008,7 +1012,7 @@ public class Avatar : MainManager{
 				hasOutline = true;
 				
 				foreach (GameObject go in allTheFaders){
-					go.SendMessage("SaveStateForTP");
+					go.SendMessage("SaveStateForTP", SendMessageOptions.DontRequireReceiver);
 				}
 				//spriteInfo.SwitchCollectionAndSprite()
 			}
@@ -1024,7 +1028,7 @@ public class Avatar : MainManager{
 				//movement.SetVelocity(velocity);		// But should we have you facing  the same direction?
 				
 				foreach (GameObject go in allTheFaders){
-					go.SendMessage("LoadStateForTP");
+					go.SendMessage("LoadStateForTP", SendMessageOptions.DontRequireReceiver);
 				}
 			}
 		}
