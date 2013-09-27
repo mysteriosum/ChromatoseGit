@@ -64,7 +64,7 @@ public class InputManager : MainManager {
 				MusicManager.soundManager.PlaySFX(19);
 				MusicManager.soundManager.CheckLevel();
 			}
-		}		
+		}
 	}
 	
 	void SetController(){
