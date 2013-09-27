@@ -37,6 +37,11 @@ public class SpriteFader : MonoBehaviour {
 	void Start () {
 		StartCoroutine(Setup ());		
 	}
+	
+	public void DistantSetup(){
+		StartCoroutine(Setup());
+	}
+	
 	IEnumerator Setup(){
 		yield return new WaitForSeconds(0.1f);
 		_Chromera = GameObject.FindGameObjectWithTag("MainCamera").camera;

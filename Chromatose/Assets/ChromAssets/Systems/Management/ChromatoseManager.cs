@@ -245,6 +245,18 @@ public class ChromatoseManager : MainManager {
 			avatar.EmptyingBucket();
 			avatar.CancelOutline();
 			avatar.Gone = true;
+			foreach(SpriteFader sprF in _FaderList){
+				sprF.DistantSetup();
+			}
+			
+			switch(_AvatarScript.avaTypeAccess){
+			case _AvatarTypeEnum.avatar:
+				_AvatarScript.avaTypeAccess = _AvatarTypeEnum.shavatar;
+				break;
+			case _AvatarTypeEnum.shavatar:
+				_AvatarScript.avaTypeAccess = _AvatarTypeEnum.avatar;
+				break;
+			}
 		}
 		else{
 			MusicManager.soundManager.PlaySFX(6);
@@ -258,7 +270,15 @@ public class ChromatoseManager : MainManager {
 			ResetColl();
 			ResetComicCounter();
 			avatar.EmptyingBucket();
-			Application.LoadLevel(2);
+			switch(_AvatarScript.avaTypeAccess){
+			case _AvatarTypeEnum.avatar:
+				_AvatarScript.avaTypeAccess = _AvatarTypeEnum.shavatar;
+				break;
+			case _AvatarTypeEnum.shavatar:
+				_AvatarScript.avaTypeAccess = _AvatarTypeEnum.avatar;
+				break;
+			}
+			//Application.LoadLevel(2);
 		}
 		
 		//avatar.renderer.enabled = false;

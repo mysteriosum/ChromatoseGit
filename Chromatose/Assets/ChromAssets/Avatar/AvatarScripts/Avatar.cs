@@ -2,8 +2,15 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
+public enum _AvatarTypeEnum{
+	avatar, shavatar
+}
+
 [System.Serializable]
 public class Avatar : MainManager{
+	
+	private _AvatarTypeEnum avatarType = _AvatarTypeEnum.avatar;
+	public _AvatarTypeEnum avaTypeAccess { get { return avatarType; } set { avatarType = value; } }
 
 	private MainManager _MainManager;
 	private tk2dSprite spriteInfo;
@@ -47,11 +54,20 @@ public class Avatar : MainManager{
 	protected float basicMaxSpeed;
 	protected float basicAccel;
 	
+		//AVATAR COLLECTION
 	public tk2dSpriteCollectionData normalCollection;
 	public tk2dSpriteCollectionData paleCollection;
 	public tk2dSpriteCollectionData afterImageCollection;
 	public tk2dSpriteCollectionData particleCollection;
 	public tk2dSpriteCollectionData coloredCollection;
+	
+		//SHAVATAR COLLECTION
+	public tk2dSpriteCollectionData shavaNormalCollection;
+	public tk2dSpriteCollectionData shavaPaleCollection;
+	public tk2dSpriteCollectionData shavaAfterImageCollection;
+	public tk2dSpriteCollectionData shavaParticleCollection;
+	public tk2dSpriteCollectionData shavaColoredCollection;
+	
 	public tk2dAnimatedSprite givePart;
 	
 	public tk2dSpriteAnimation partAnimations;
@@ -268,15 +284,23 @@ public class Avatar : MainManager{
 		private float timeRate = 10;
 		private float moveRate = 1;
 		
-		public Eye (Transform avatarT, tk2dSpriteCollectionData spriteData){
+		private tk2dSpriteCollectionData avaEye;
+		private tk2dSpriteCollectionData shavaEye;
+		
+		public Eye (Transform avatarT, tk2dSpriteCollectionData spriteDataAva, tk2dSpriteCollectionData spriteDataShava){
 			go = new GameObject("AvatarEye");
 			t = go.transform;
-			tk2dSprite.AddComponent<tk2dSprite>(go, spriteData, "eye");
+			tk2dSprite.AddComponent<tk2dSprite>(go, spriteDataAva, "eye");
 			spriteInfo = go.GetComponent<tk2dSprite>();
 			this.avatarT = avatarT;
 			t.parent = avatarT;
 			t.localPosition = offset;
 			t.localRotation = Quaternion.identity;
+			
+			go.AddComponent<eyeColorChange>();
+			go.GetComponent<eyeColorChange>().avaScript = avatarT.GetComponent<Avatar>();
+			go.GetComponent<eyeColorChange>().avaEye = spriteDataAva;
+			go.GetComponent<eyeColorChange>().shavaEye = spriteDataShava;
 		}
 		
 		
@@ -728,7 +752,7 @@ public class Avatar : MainManager{
 		allTheFaders = GameObject.FindGameObjectsWithTag("spriteFader");
 		
 		//MAKE ME AN EYE BABY
-		travisMcGee = new Eye(t, particleCollection);
+		travisMcGee = new Eye(t, particleCollection, shavaParticleCollection);
 		bubble = new SpeechBubble (t, particleCollection);
 		spriteInfo.Collection = normalCollection;
 		StartCoroutine(LateCPCreation(1.0f));
@@ -738,6 +762,7 @@ public class Avatar : MainManager{
 
 	void FixedUpdate ()
 	{
+		Debug.Log(avatarType);
 		
 		travisMcGee.EyeFollow();
 								//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
@@ -776,7 +801,16 @@ public class Avatar : MainManager{
 			}
 			if(_SpriteIndex >= 20){
 				_Colored = false;
-				spriteInfo.Collection = normalCollection;
+				
+				switch(avatarType){
+				case _AvatarTypeEnum.avatar:
+					spriteInfo.Collection = normalCollection;
+					break;
+				case _AvatarTypeEnum.shavatar:
+					spriteInfo.Collection = shavaNormalCollection;
+					break;
+				}
+				
 				_SpriteIndex = 1;
 				_CurColor = Color.white;
 			}
@@ -825,16 +859,38 @@ public class Avatar : MainManager{
 		}
 		
 		else if(!_Colored && HasOutline){
-			spriteInfo.Collection = paleCollection;
+			
+			switch(avatarType){
+			case _AvatarTypeEnum.avatar:
+				spriteInfo.Collection = paleCollection;
+				break;
+			case _AvatarTypeEnum.shavatar:
+				spriteInfo.Collection = shavaPaleCollection;
+				break;
+			}
+			
 			//spriteInfo.SetSprite(spriteInfo.CurrentSprite.name);
 			Debug.Log("Change Collection Here");
 		}
 		else{
-			if(spriteInfo.Collection != normalCollection){
-				_CurColor = Color.white;
-				spriteInfo.Collection = normalCollection;
-				currentSubimg = noRotSubimg;
-				spriteInfo.SetSprite(spritePrefix + currentSubimg.ToString());
+			
+			switch(avatarType){
+				case _AvatarTypeEnum.avatar:
+				if(spriteInfo.Collection != normalCollection){
+					_CurColor = Color.white;
+					spriteInfo.Collection = normalCollection;
+					currentSubimg = noRotSubimg;
+					spriteInfo.SetSprite(spritePrefix + currentSubimg.ToString());
+				}
+				break;
+				case _AvatarTypeEnum.shavatar:
+				if(spriteInfo.Collection != shavaNormalCollection){
+					_CurColor = Color.white;
+					spriteInfo.Collection = shavaNormalCollection;
+					currentSubimg = noRotSubimg;
+					spriteInfo.SetSprite(spritePrefix + currentSubimg.ToString());
+				}
+				break;
 			}
 		}
 		
@@ -887,43 +943,6 @@ public class Avatar : MainManager{
 			turboPart.Stop();
 		}
 		
-								//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
-								//<-------------Getting Inputs!-------------->
-								//<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>
-		
-		/*
-		if (canControl){
-			getW = Input.GetKey(KeyCode.O);
-			if (Input.GetKey (KeyCode.UpArrow)){
-				getW = true;
-			}
-			
-			if(Input.GetKeyDown(KeyCode.O)){
-				MusicManager.soundManager.PlaySFX(0, 0.6f);
-			}
-					
-			
-			getA = Input.GetKey(KeyCode.Q);
-			if (Input.GetKey (KeyCode.LeftArrow)){
-				getA = true;
-			}
-			
-			getD = Input.GetKey(KeyCode.W);
-			if (Input.GetKey (KeyCode.RightArrow)){
-				getD = true;
-			}
-			
-			if(manager){
-				if (!manager.InComic){
-					if(_SpaceBarActive){
-						getS = Input.GetKeyDown(KeyCode.Space);
-						if (Input.GetKeyDown(KeyCode.DownArrow)){
-							getS = true;
-						}
-					}
-				}
-			}				
-		}*/
 			
 								//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
 								//<------------Handling Movement!------------>
@@ -966,13 +985,26 @@ public class Avatar : MainManager{
 				outline = new GameObject("Outline");
 				outline.transform.rotation = t.rotation;
 				outline.transform.position = t.position;
-				if(!_Colored){
-					tk2dSprite.AddComponent<tk2dSprite>(outline, afterImageCollection, spriteInfo.CurrentSprite.name);
+				
+				switch(avatarType){
+				case _AvatarTypeEnum.avatar:
+					if(!_Colored){
+						tk2dSprite.AddComponent<tk2dSprite>(outline, afterImageCollection, spriteInfo.CurrentSprite.name);
+					}
+					else{
+						tk2dSprite.AddComponent<tk2dSprite>(outline, afterImageCollection, _PlayerFadeString);
+					}
+					break;
+				case _AvatarTypeEnum.shavatar:
+					if(!_Colored){
+						tk2dSprite.AddComponent<tk2dSprite>(outline, shavaAfterImageCollection, spriteInfo.CurrentSprite.name);
+					}
+					else{
+						tk2dSprite.AddComponent<tk2dSprite>(outline, shavaAfterImageCollection, _PlayerFadeString);
+					}
+					break;
 				}
-				else{
-					tk2dSprite.AddComponent<tk2dSprite>(outline, afterImageCollection, _PlayerFadeString);
-				}
-
+				
 				hasOutline = true;
 				
 				foreach (GameObject go in allTheFaders){
@@ -996,29 +1028,7 @@ public class Avatar : MainManager{
 				}
 			}
 		}
-		
-					//Do I refill my colour? =O
-		
-		
-					//Update my little pointer man!
-		/*
-		if (!hasOutline && outlinePointer.renderer.enabled){
-			outlinePointer.renderer.enabled = false;
-		}
-		else if (hasOutline && outline){
-			Vector3 direction = outline.transform.position - t.position;
-			if (direction.magnitude > 30){
-				outlinePointer.renderer.enabled = true;
-				outlinePointer.transform.position = t.position + direction.normalized * 30;
-				Vector3 lookDirection = VectorFunctions.ConvertLookDirection(direction);
-				outlinePointer.transform.rotation = Quaternion.LookRotation(new Vector3(0, 0, 1), direction);
-				
-			}
-		}
-		*/
-		
-		
-		
+
 															//drop particles where necessary
 		if (getForward && ((!getLeft && !getRight) || (getLeft && getRight))){
 			accelPartTimer += Time.deltaTime;
@@ -1387,7 +1397,14 @@ public class Avatar : MainManager{
 		_SpriteIndex = 1;
 		
 		if(color == Color.red){
-			spriteInfo.Collection = coloredCollection;
+			switch(avatarType){
+			case _AvatarTypeEnum.avatar:
+				spriteInfo.Collection = coloredCollection;
+				break;
+			case _AvatarTypeEnum.shavatar:
+				spriteInfo.Collection = shavaColoredCollection;
+				break;
+			}
 			spriteInfo.SetSprite("Player1_rouge1");
 			_ColorFadeString = "rouge";
 			_Colored = true;

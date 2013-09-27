@@ -22,6 +22,7 @@ public class ChromatoseCamera : MainManager {
 	
 	// Use this for initialization
 	void Start () {
+		this.camera.transparencySortMode = TransparencySortMode.Orthographic;
 		if(LevelSerializer.IsDeserializing) return;
 		
 		Setup();
