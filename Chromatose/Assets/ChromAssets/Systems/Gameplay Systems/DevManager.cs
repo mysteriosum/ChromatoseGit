@@ -89,7 +89,18 @@ public class DevManager : MainManager {
 		         	Time.timeScale = 1;
 	        	} 
     		} */
-						
+					
+			
+				//GYM DU CHU			
+			GUI.skin = devButtonSkin;
+			GUI.skin.button.fontSize = 30;
+			if(GUI.Button (new Rect(750f, 500f, 300f, 50f), "GYM DU CHU")){
+				LoadALevel(13);
+				HUDManager.hudManager.DesactiveKeyboardButton();
+				HUDManager.hudManager.DesactiveButton();
+				HUDManager.hudManager.DesactiveBackButton();
+			}
+			
 				//BOUTON UNLOCK NEXT LEVEL
 			GUI.skin = devSmallButtonSkin;
 			GUI.skin.button.fontSize = 16;
