@@ -108,7 +108,7 @@ public class Avatar : MainManager{
 	private bool getLeft;		public bool getleft { get { return getLeft; } set { getLeft = value; } }
 	private bool getRight;		public bool getright { get { return getRight; } set { getRight = value; } }
 	
-	protected bool getSpace;
+	private bool getSpace;	public bool getspace { get { return getSpace; } set { getSpace = value; } }
 
 	private bool _SpaceBarActive;
 		public bool spaceBarActive{
@@ -760,13 +760,64 @@ public class Avatar : MainManager{
 		
 	}
 	
+	void Update(){
+												//Self-made checkpoints! Or whatever you want to call it
+		getSpace = Input.GetKeyDown(KeyCode.Space);
+		
+		if (getSpace){
+			
+			if (!hasOutline){
+				outline = new GameObject("Outline");
+				outline.transform.rotation = t.rotation;
+				outline.transform.position = t.position;
+				
+				switch(avatarType){
+				case _AvatarTypeEnum.avatar:
+					if(!_Colored){
+						tk2dSprite.AddComponent<tk2dSprite>(outline, afterImageCollection, spriteInfo.CurrentSprite.name);
+					}
+					else{
+						tk2dSprite.AddComponent<tk2dSprite>(outline, afterImageCollection, _PlayerFadeString);
+					}
+					break;
+				case _AvatarTypeEnum.shavatar:
+					if(!_Colored){
+						tk2dSprite.AddComponent<tk2dSprite>(outline, shavaAfterImageCollection, spriteInfo.CurrentSprite.name);
+					}
+					else{
+						tk2dSprite.AddComponent<tk2dSprite>(outline, shavaAfterImageCollection, _PlayerFadeString);
+					}
+					break;
+				}
+				
+				hasOutline = true;
+				
+				foreach (GameObject go in allTheFaders){
+					go.SendMessage("SaveStateForTP", SendMessageOptions.DontRequireReceiver);
+				}
+				//spriteInfo.SwitchCollectionAndSprite()
+			}
+			else{
+				
+				t.position = outline.transform.position;
+				t.rotation = outline.transform.rotation;
+				MusicManager.soundManager.PlaySFX(17);
+				
+				Destroy(outline);
+				hasOutline = false;
+				//velocity = Vector2.zero;				//TEST For now I like the idea of keeping your current movement for when you go back. 
+				//movement.SetVelocity(velocity);		// But should we have you facing  the same direction?
+				
+				foreach (GameObject go in allTheFaders){
+					go.SendMessage("LoadStateForTP", SendMessageOptions.DontRequireReceiver);
+				}
+			}
+		}
+	}
 
 	void FixedUpdate ()
 	{
-		Debug.Log(avatarType);
-		
-		
-		
+
 		travisMcGee.EyeFollow();
 								//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
 								//<--------------Color Fading!--------------->
@@ -980,58 +1031,6 @@ public class Avatar : MainManager{
 			}
 		}
 		
-												//Self-made checkpoints! Or whatever you want to call it
-		getSpace = Input.GetKeyDown(KeyCode.Space);
-		
-		if (getSpace){
-			
-			if (!hasOutline){
-				outline = new GameObject("Outline");
-				outline.transform.rotation = t.rotation;
-				outline.transform.position = t.position;
-				
-				switch(avatarType){
-				case _AvatarTypeEnum.avatar:
-					if(!_Colored){
-						tk2dSprite.AddComponent<tk2dSprite>(outline, afterImageCollection, spriteInfo.CurrentSprite.name);
-					}
-					else{
-						tk2dSprite.AddComponent<tk2dSprite>(outline, afterImageCollection, _PlayerFadeString);
-					}
-					break;
-				case _AvatarTypeEnum.shavatar:
-					if(!_Colored){
-						tk2dSprite.AddComponent<tk2dSprite>(outline, shavaAfterImageCollection, spriteInfo.CurrentSprite.name);
-					}
-					else{
-						tk2dSprite.AddComponent<tk2dSprite>(outline, shavaAfterImageCollection, _PlayerFadeString);
-					}
-					break;
-				}
-				
-				hasOutline = true;
-				
-				foreach (GameObject go in allTheFaders){
-					go.SendMessage("SaveStateForTP", SendMessageOptions.DontRequireReceiver);
-				}
-				//spriteInfo.SwitchCollectionAndSprite()
-			}
-			else{
-				
-				t.position = outline.transform.position;
-				t.rotation = outline.transform.rotation;
-				MusicManager.soundManager.PlaySFX(17);
-				
-				Destroy(outline);
-				hasOutline = false;
-				//velocity = Vector2.zero;				//TEST For now I like the idea of keeping your current movement for when you go back. 
-				//movement.SetVelocity(velocity);		// But should we have you facing  the same direction?
-				
-				foreach (GameObject go in allTheFaders){
-					go.SendMessage("LoadStateForTP", SendMessageOptions.DontRequireReceiver);
-				}
-			}
-		}
 
 															//drop particles where necessary
 		if (getForward && ((!getLeft && !getRight) || (getLeft && getRight))){

@@ -148,7 +148,6 @@ public class ChromatoseManager : MainManager {
 	
 #region Update & LateUpdate
 	void Update () {
-
 	}
 
 #endregion
@@ -245,9 +244,6 @@ public class ChromatoseManager : MainManager {
 			avatar.EmptyingBucket();
 			avatar.CancelOutline();
 			avatar.Gone = true;
-			foreach(SpriteFader sprF in _FaderList){
-				sprF.DistantSetup();
-			}
 			
 			switch(_AvatarScript.avaTypeAccess){
 			case _AvatarTypeEnum.avatar:
@@ -337,6 +333,10 @@ public class ChromatoseManager : MainManager {
 			_SFader.SaveState();
 			//Debug.Log("SaveState in CP");
 		}
+	}
+	
+	public void CheckPointHere(Transform cp){
+		curCheckpoint = cp;
 	}
 	
 	public void SaveRoom(){

@@ -32,20 +32,10 @@ public class SpriteFader : MonoBehaviour {
 	private bool _ImBlacky = false;
 
 	
-	
-	
-	void Start () {
-		StartCoroutine(Setup ());		
-	}
-	
-	public void DistantSetup(){
-		StartCoroutine(Setup());
-	}
-	
-	IEnumerator Setup(){
-		yield return new WaitForSeconds(0.1f);
+	void OnLevelWasLoaded(){
 		_Chromera = GameObject.FindGameObjectWithTag("MainCamera").camera;
 		_InitialBGColor = _Chromera.backgroundColor;
+		
 		inAlpha = -fadeRate;
 		outAlpha = 1 + fadeRate;
 		foreach (GameObject sprite in spritesIn){
@@ -58,7 +48,37 @@ public class SpriteFader : MonoBehaviour {
 			if(sprite != null){
 				_spritesOut.Add(sprite);
 			}
+		}	
+	}
+	
+	
+	void Start () {
+		
+		_Chromera = GameObject.FindGameObjectWithTag("MainCamera").camera;
+		_InitialBGColor = _Chromera.backgroundColor;
+		
+		inAlpha = -fadeRate;
+		outAlpha = 1 + fadeRate;
+		foreach (GameObject sprite in spritesIn){
+			if(sprite != null){
+				sprite.BroadcastMessage("FadeAlpha", inAlpha, SendMessageOptions.DontRequireReceiver);
+				_spritesIn.Add(sprite);
+			}
 		}
+		foreach (GameObject sprite in spritesOut){
+			if(sprite != null){
+				_spritesOut.Add(sprite);
+			}
+		}	
+	}
+	
+	public void DistantSetup(){
+		//StartCoroutine(Setup());
+	}
+	
+	IEnumerator Setup(){
+		yield return new WaitForSeconds(0.05f);
+				
 	}
 	
 	// Update is called once per frame

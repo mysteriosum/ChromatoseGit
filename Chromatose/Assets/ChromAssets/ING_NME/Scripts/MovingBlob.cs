@@ -23,13 +23,19 @@ public class MovingBlob : MonoBehaviour {
 	private int maxIndex;
 	
 	void Start () {
+		_DetectionZone = transform.parent.gameObject.GetComponentInChildren<MovingBlob_DetectionZone>();
 		SetupBlob();
 		SetupPatrol();
 	}
 	
 	// Update is called once per frame
 	void Update () {
-		if(_DetectionZone && _DetectionZone.inZone){
+		if(waitingAvatarInZone){
+			if(_DetectionZone && _DetectionZone.inZone){
+				Move();
+			}	
+		}
+		else{
 			Move();
 		}
 	}
@@ -44,7 +50,6 @@ public class MovingBlob : MonoBehaviour {
 		_AvatarT = GameObject.FindGameObjectWithTag("avatar").transform;
 		_AvatarScript = GameObject.FindGameObjectWithTag("avatar").GetComponent<Avatar>();
 		_Manager = ChromatoseManager.manager;
-		_DetectionZone = transform.parent.gameObject.GetComponentInChildren<MovingBlob_DetectionZone>();
 	}
 	
 	void Move(){
