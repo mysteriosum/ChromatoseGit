@@ -175,6 +175,7 @@ public class TransitionTrigger : MonoBehaviour {
 		
 		if(_RoomManager.roomType == ChromaRoomManager._RoomTypeEnum.WhiteRoom){
 			_RoomManager.NextLilRoom();
+			ChromatoseManager.manager.CheckPointHere(localTarget);
 			//Debug.Log("NextLilRoom");
 		}
 		

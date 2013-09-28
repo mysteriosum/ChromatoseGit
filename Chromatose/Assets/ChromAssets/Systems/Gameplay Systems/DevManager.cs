@@ -76,7 +76,7 @@ public class DevManager : MainManager {
 			if(LevelSerializer.CanResume){
 				if(GUI.Button(new Rect(910f, 410f, 140f, 50f), "LOAD ROOM")){
 					OptiManager.manager.OptimizeZone(StatsManager.savedRoomInt);
-		         	LoadRoom();
+		         	//LoadRoom();
 		         	Time.timeScale = 1;
 	        	} 
 			}

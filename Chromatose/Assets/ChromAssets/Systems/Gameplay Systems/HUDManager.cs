@@ -206,7 +206,12 @@ public class HUDManager : MainManager {
 		_MenuWindows = _MenuWindowsEnum.FakeSplashScreen;
 	}
 	
-	
+	void Update(){
+			//Effectue l'action si une action peut etre effectuer et si la touche P est presser
+		if (Input.GetKeyDown(KeyCode.P) && currentAction > 0 && actionMethod != null && !ChromatoseManager.manager.InComic){
+			actionMethod();
+		}
+	}
 	
 		//FIXED & LATE UPDATE
 	void FixedUpdate () {
@@ -302,10 +307,7 @@ public class HUDManager : MainManager {
 				aX -= actionSlideSpeed;
 			}
 		}
-			//Effectue l'action si une action peut etre effectuer et si la touche P est presser
-		if (Input.GetKeyDown(KeyCode.P) && currentAction > 0 && actionMethod != null && !ChromatoseManager.manager.InComic){
-			actionMethod();
-		}
+		
 		showingAction = false;
 	}
 	

@@ -13,7 +13,7 @@ public class InputManager : MainManager {
 	
 	
 
-	void FixedUpdate () {
+	void Update () {
 		if(avatarScript==null){
 			SetController();
 		}
@@ -21,7 +21,7 @@ public class InputManager : MainManager {
 			//ON S'ASSURE QU"ON EST PAS DANS LE MAINMENU
 		if(currentLevel!=0){
 				//PAUSE -- NE DOIT PAS ETRE ACTIF DANS LES MENU
-			if(Input.GetKeyDown(KeyCode.Escape)){
+			if(Input.GetKey(KeyCode.Escape)){
 				//Pause();
 				HUDManager.hudManager.StartHudCloseSequence();
 			}	
@@ -58,13 +58,15 @@ public class InputManager : MainManager {
 		
 			//SPACE BAR
 		if(Input.GetKeyDown(KeyCode.Space)){
+			Debug.Log("SpaceBar Pressed");
+			
 			if(HUDManager._GUIState == GUIStateEnum.OnStart){
 				HUDManager._GUIState = GUIStateEnum.Interface;
 				GameObject.FindGameObjectWithTag("avatar").GetComponent<Avatar>().CanControl();
 				MusicManager.soundManager.PlaySFX(19);
 				MusicManager.soundManager.CheckLevel();
 			}
-		}
+		}		
 	}
 	
 	void SetController(){

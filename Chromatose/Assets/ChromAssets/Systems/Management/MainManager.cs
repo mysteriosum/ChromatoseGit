@@ -260,12 +260,12 @@ public class MainManager : MonoBehaviour {
 		
 		//LevelSerializer.SaveGame(gameName);
 	}
-	
+	/*
 	public void LoadRoom(){
 		LevelSerializer.Resume();
 		
 		//LevelSerializer.LoadSavedLevel(gameName);
-	}
+	}*/
 	
 	public void UnlockNextLevel(){
 		

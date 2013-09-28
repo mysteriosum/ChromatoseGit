@@ -81,5 +81,9 @@ public class ChromaRoomManager : MainManager {
 		yield return new WaitForSeconds(delai);
 		_CanAddRoom = true;
 	}
-	
+	IEnumerator CheckPlace(){
+		yield return new WaitForSeconds(0.01f);
+		ChromatoseManager.manager.NewCheckpoint(_Avatar.transform);
+		Debug.Log("PlaceTaken");
+	}
 }
