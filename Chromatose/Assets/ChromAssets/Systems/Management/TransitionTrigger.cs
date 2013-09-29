@@ -88,7 +88,13 @@ public class TransitionTrigger : MonoBehaviour {
 				
 			if (_LightCounter < 1 && _FadeIn){_LightCounter += 0.05f;}
 			if (_LightCounter > 0 && _FadeOut){_LightCounter -= 0.015f;}
-			if (_LightCounter > 1){_FadeIn = false; _FadeOut = true; _Manager.ResetComicCounter(); _Manager.ResetColl(); myTrigger();}
+			if (_LightCounter > 1){
+				_FadeIn = false; 
+				_FadeOut = true; 
+				ChromatoseManager.manager.ResetComicCounter(); 
+				ChromatoseManager.manager.ResetColl(); 
+				myTrigger();
+			}
 				
 			break;
 		case transitionVers.TimeTrial:
@@ -179,7 +185,9 @@ public class TransitionTrigger : MonoBehaviour {
 			//Debug.Log("NextLilRoom");
 		}
 		
-		StartCoroutine(DelaiBeforeOpti());
+		ChromatoseManager.manager.ResetComicCounter();
+		ChromatoseManager.manager.ResetColl();
+
 		//ResetBool();
 		
 		if(GameObject.FindGameObjectWithTag("OptiManager") != null){
@@ -229,22 +237,19 @@ public class TransitionTrigger : MonoBehaviour {
 		yield return new WaitForSeconds(1f);
 		_FadeOut = true;
 	}
-	IEnumerator DelaiBeforeOpti(){
-		yield return new WaitForSeconds(0.5f);
-		_Manager.ResetComicCounter();
-		_Manager.ResetColl();
-	}
+
 	IEnumerator Setup(){
-		yield return new WaitForSeconds(0.5f);
-		_Manager = ChromatoseManager.manager;
+		yield return new WaitForSeconds(0.1f);
 		_RoomManager = ChromaRoomManager.roomManager;
 		_AvatarScript = GameObject.FindGameObjectWithTag("avatar").GetComponent<Avatar>();
 		avatarT = GameObject.FindWithTag("avatar").transform;
 		_Cam = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<ChromatoseCamera>();
 		
+		Debug.Log("Setuped");
+		/*	
 		if(_Manager.TimeTrialMode) {
 			_TransitEnum = transitionVers.TimeTrial;
-		}
+		}*/
 	}
 }
 #endregion

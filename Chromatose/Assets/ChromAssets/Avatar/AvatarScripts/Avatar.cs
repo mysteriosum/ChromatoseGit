@@ -1355,7 +1355,7 @@ public class Avatar : MainManager{
 	
 	public void LoseAllColourHidden(){
 		if(_CurColor == Color.white)return;
-		
+		EmptyingBucket();
 		_Colored = false;
 		_CurColor = Color.white;
 	}
@@ -1413,7 +1413,14 @@ public class Avatar : MainManager{
 			_Colored = true;
 		}
 		else if(color == Color.blue){
-			spriteInfo.Collection = coloredCollection;
+			switch(avatarType){
+			case _AvatarTypeEnum.avatar:
+				spriteInfo.Collection = coloredCollection;
+				break;
+			case _AvatarTypeEnum.shavatar:
+				spriteInfo.Collection = shavaColoredCollection;
+				break;
+			}
 			spriteInfo.SetSprite("Player1_bleu1");
 			_ColorFadeString = "bleu";
 			_Colored = true;
