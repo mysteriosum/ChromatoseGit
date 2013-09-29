@@ -58,14 +58,22 @@ public class Npc2 : MonoBehaviour {
 	
 	void Trigger(){
 		if(setuped){
-		_AvatarScript.FillBucket(myColor);
-		_Player.clip = _FillBucketSound;
-		_Player.Play();
-		_MainAnim.Play("rNPC_redToGrey");
-		_MainAnim.animationCompleteDelegate = GreyBounce;	
-		_ColorGone = true;
-		losePart = new Avatar.LoseAllColourParticle(_AvatarScript.particleCollection, _AvatarScript.partAnimations, this.transform, myColor);
-		//StartCoroutine(DelaiBeforeFade(1.0f));
+			_AvatarScript.FillBucket(myColor);
+			_Player.clip = _FillBucketSound;
+			_Player.Play();
+			switch(typeNpc){
+			case _TypeNPCEnum.Red:
+				_MainAnim.Play("rNPC_redToGrey");
+				break;
+			case _TypeNPCEnum.Blue:
+				_MainAnim.Play("bNPC_blueToGrey");
+				break;
+			}
+			
+			_MainAnim.animationCompleteDelegate = GreyBounce;	
+			_ColorGone = true;
+			losePart = new Avatar.LoseAllColourParticle(_AvatarScript.particleCollection, _AvatarScript.partAnimations, this.transform, myColor);
+			//StartCoroutine(DelaiBeforeFade(1.0f));
 		}
 		else{
 			Setup();

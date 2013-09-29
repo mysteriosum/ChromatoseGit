@@ -174,31 +174,31 @@ public class MusicManager : MainManager{
 			CrossFadeMusic(2, 0.0025f);
 			break;
 		case 3:
-			_MusicSources[3].Play();
+			//_MusicSources[3].Play();
 			break;
 		case 4:
-			_MusicSources[4].Play();
+			//_MusicSources[4].Play();
 			break;
 		case 5:
-			_MusicSources[5].Play();
+			//_MusicSources[5].Play();
 			break;
 		case 6:
-			_MusicSources[6].Play();
+			//_MusicSources[6].Play();
 			break;
 		case 7:
-			_MusicSources[7].Play();
+			//_MusicSources[7].Play();
 			break;
 		case 8:
-			_MusicSources[8].Play();
+			//_MusicSources[8].Play();
 			break;
 		case 9:
-			_MusicSources[9].Play();
+			//_MusicSources[9].Play();
 			break;
 		case 10:
-			_MusicSources[10].Play();
+			//_MusicSources[10].Play();
 			break;
 		case 11:
-			_MusicSources[11].Play();
+			//_MusicSources[11].Play();
 			break;
 		case 12:
 			CrossFadeMusic(2, 0.0025f);
