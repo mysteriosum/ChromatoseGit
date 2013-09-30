@@ -244,8 +244,6 @@ public class TransitionTrigger : MonoBehaviour {
 		_AvatarScript = GameObject.FindGameObjectWithTag("avatar").GetComponent<Avatar>();
 		avatarT = GameObject.FindWithTag("avatar").transform;
 		_Cam = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<ChromatoseCamera>();
-		
-		Debug.Log("Setuped");
 		/*	
 		if(_Manager.TimeTrialMode) {
 			_TransitEnum = transitionVers.TimeTrial;
