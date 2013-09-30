@@ -190,7 +190,7 @@ public class MainManager : MonoBehaviour {
 			//S'ASSURE QU'IL N'Y A PAS D'AVATAR, PUIS EN CREE UN
 		if(!GameObject.FindGameObjectWithTag("avatar") && Application.loadedLevel != 0){
 			Camera.mainCamera.GetComponent<AudioListener>().enabled = false;
-			print("Camera-AudioListener Off");
+			// print("Camera-AudioListener Off");
 			_Avatar = Instantiate(Resources.Load("Avatar"), startPoint.transform.position, Quaternion.identity)as GameObject;
 			_Avatar.name = "Avatar";
 			_AvatarScript = _Avatar.GetComponent<Avatar>();
