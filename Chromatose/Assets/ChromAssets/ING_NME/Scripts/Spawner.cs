@@ -4,6 +4,7 @@ using System.Collections;
 public class Spawner : MonoBehaviour {
 	
 	public GameObject original;
+	public GameObject target;
 	float timer = 0;
 	int currentState = 0;
 	int stateAmount;
@@ -37,6 +38,7 @@ public class Spawner : MonoBehaviour {
 			GameObject newGuy = Instantiate(original as Object, transform.position, transform.rotation) as GameObject;
 			newGuy.SendMessage("Activate");
 			newGuy.transform.parent = transform;
+			newGuy.GetComponent<CannonTemplate>().target = target;
 			timer = 0;
 		}
 	}

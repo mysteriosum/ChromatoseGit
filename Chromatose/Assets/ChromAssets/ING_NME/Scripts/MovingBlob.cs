@@ -4,7 +4,7 @@ using System.Collections;
 public class MovingBlob : MonoBehaviour {
 	
 	
-	public bool waitingAvatarInZone = false;
+public bool waitingAvatarInZone = false;
 	public bool addExtraCollisionBox = false;
 	
 	public bool patrol = false;
