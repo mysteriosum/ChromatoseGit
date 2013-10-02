@@ -4,6 +4,8 @@ using System.Collections.Generic;
 
 public class SpriteFader : MonoBehaviour {
 	
+	
+	//commm
 	public GameObject[] spritesIn;
 	public GameObject[] spritesOut;
 	
