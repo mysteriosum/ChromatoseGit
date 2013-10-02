@@ -7,6 +7,7 @@ public class TransitionTrigger : MonoBehaviour {
 		 NextLevel, LocalTarget, DynamicComic, TimeTrial, ReturnMainMenu
 	}
 	public transitionVers _TransitEnum;
+	public bool _DontAddRoom = false;
 	
 	//public bool 
 	
@@ -179,7 +180,7 @@ public class TransitionTrigger : MonoBehaviour {
 		//StatsManager.lastSpawnPos = dataPos;
 		Debug.Log("Last target Changed");
 		
-		if(_RoomManager.roomType == ChromaRoomManager._RoomTypeEnum.WhiteRoom){
+		if(_RoomManager.roomType == ChromaRoomManager._RoomTypeEnum.WhiteRoom && !_DontAddRoom){
 			_RoomManager.NextLilRoom();
 			ChromatoseManager.manager.CheckPointHere(localTarget);
 			//Debug.Log("NextLilRoom");
