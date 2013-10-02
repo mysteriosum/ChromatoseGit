@@ -9,8 +9,6 @@ public bool waitingAvatarInZone = false;
 	
 	public bool patrol = false;
 	public int patrolSpeed = 75;
-	public bool rotate = false;
-	public float rotateSpeed = 0.01f;
 	
 	public Transform[] patrolNodes;
 	
@@ -35,16 +33,10 @@ public bool waitingAvatarInZone = false;
 		if(waitingAvatarInZone){
 			if(_DetectionZone && _DetectionZone.inZone){
 				Move();
-				if(rotate){
-					Rotate();
-				}
 			}	
 		}
 		else{
 			Move();
-			if(rotate){
-				Rotate();
-			}
 		}
 	}
 	
@@ -75,10 +67,6 @@ public bool waitingAvatarInZone = false;
 		else{
 			transform.Translate(traj, Space.World);
 		}
-	}
-	
-	void Rotate(){
-		this.transform.RotateAroundLocal(Vector3.back, rotateSpeed);
 	}
 	
 	void OnCollisionEnter(Collision other){

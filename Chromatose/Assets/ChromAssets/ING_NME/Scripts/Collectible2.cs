@@ -223,7 +223,6 @@ public class Collectible2 : MonoBehaviour {
 	
 	IEnumerator DelaiToDie(){
 		yield return new WaitForSeconds(0.7f);
-		//Destroy(this.gameObject);
-		this.gameObject.transform.position = new Vector3(transform.position.x, transform.position.y, -3000);
+		Destroy(this.gameObject);
 	}			
 }

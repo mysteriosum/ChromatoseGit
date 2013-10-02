@@ -4,7 +4,8 @@ using System.Text;
 using UnityEngine;
  
 [RequireComponent(typeof(Rigidbody))]
-public class EndBoss_FSM : MonoBehaviour{
+public class EndBoss_FSM : MonoBehaviour
+{
 	
 #region Variables
 	//Variables Generales de l'Ennemi
@@ -36,8 +37,7 @@ public class EndBoss_FSM : MonoBehaviour{
     private void MakeFSM()
     {
 		Boss_IdleState boss_Idle = new Boss_IdleState();
-			boss_Idle.AddTransition(Transition.tBoss_ToDeath, StateID.Boss_Death);
-			boss_Idle.AddTransition(Transition.tBoss_PlayerAimed, StateID.Boss_AttackPlayer);
+		
 		Boss_AttackPlayerState boss_AttackPlayer = new Boss_AttackPlayerState();
 		
 		Boss_BlowState boss_Blow = new Boss_BlowState();
@@ -70,15 +70,7 @@ public class Boss_IdleState : FSMState
     }
     public override void Reason(GameObject player, GameObject npc, ChromatoseManager chromanager, EndBoss_DataBase data)
     {
-			//Verifie si on a depasser le nb de round allouer
-		if(data.CheckRoundNb()){
-			npc.GetComponent<EndBoss_FSM>().SetTransition(Transition.tBoss_ToDeath);
-				Debug.Log("BOSS - Transition - Idle->Death");
-		}
-		if(data.canStart){
-			npc.GetComponent<EndBoss_FSM>().SetTransition(Transition.tBoss_PlayerAimed);
-				Debug.Log("BOSS - Transition - Idle->Attack");
-		}
+
     }
      public override void Act(GameObject player, GameObject npc, ChromatoseManager chromanager, EndBoss_DataBase data)
     {
@@ -96,11 +88,7 @@ public class Boss_AttackPlayerState : FSMState
     }
     public override void Reason(GameObject player, GameObject npc, ChromatoseManager chromanager, EndBoss_DataBase data)
     {
-			//Verifie si on a depasser le nb de round allouer
-		if(data.CheckRoundNb()){
-			npc.GetComponent<EndBoss_FSM>().SetTransition(Transition.tBoss_ToDeath);
-				Debug.Log("BOSS - Transition - Idle->Death");
-		}
+
     }
      public override void Act(GameObject player, GameObject npc, ChromatoseManager chromanager, EndBoss_DataBase data)
     {

@@ -19,7 +19,8 @@ public class Checkpoint : MonoBehaviour {
 	}
 	
 	private tk2dSprite spriteInfo;
-		
+	// Use this for initialization
+	
 	
 	void Start () {
 		transform.position = new Vector3(transform.position.x, transform.position.y, 2);
@@ -34,6 +35,7 @@ public class Checkpoint : MonoBehaviour {
 		spriteInfo.SetSprite(offSpriteName);
 	}
 	
+	// Update is called once per frame
 	void Update () {
 		
 	}

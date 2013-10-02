@@ -4,6 +4,8 @@ using System.Collections.Generic;
 
 public class SpriteFader : MonoBehaviour {
 	
+	
+	//commm
 	public GameObject[] spritesIn;
 	public GameObject[] spritesOut;
 	
@@ -29,37 +31,18 @@ public class SpriteFader : MonoBehaviour {
 	private Color _InitialBGColor;
 	
 	private bool change;
-	private bool setup = false;
 	private bool _ImBlacky = false;
 
 	
 	void OnLevelWasLoaded(){
-		StartCoroutine(Setup());
-	}
-	
-	
-	void Start () {
-		StartCoroutine(Setup());
-	}
-	
-	public void DistantSetup(){
-		//StartCoroutine(Setup());
-	}
-	
-	IEnumerator Setup(){
-		yield return new WaitForSeconds(0.2f);
-		/*
 		_Chromera = GameObject.FindGameObjectWithTag("MainCamera").camera;
 		_InitialBGColor = _Chromera.backgroundColor;
-		*/
+		
 		inAlpha = -fadeRate;
 		outAlpha = 1 + fadeRate;
 		foreach (GameObject sprite in spritesIn){
 			if(sprite != null){
-				//if(sprite.renderer){
-				//	sprite.renderer.enabled = false;
-					sprite.BroadcastMessage("FadeAlpha", inAlpha, SendMessageOptions.DontRequireReceiver);
-				//}
+				sprite.BroadcastMessage("FadeAlpha", inAlpha, SendMessageOptions.DontRequireReceiver);
 				_spritesIn.Add(sprite);
 			}
 		}
@@ -68,49 +51,52 @@ public class SpriteFader : MonoBehaviour {
 				_spritesOut.Add(sprite);
 			}
 		}	
-		setup = true;
+	}
+	
+	
+	void Start () {
+		
+		_Chromera = GameObject.FindGameObjectWithTag("MainCamera").camera;
+		_InitialBGColor = _Chromera.backgroundColor;
+		
+		inAlpha = -fadeRate;
+		outAlpha = 1 + fadeRate;
+		foreach (GameObject sprite in spritesIn){
+			if(sprite != null){
+				sprite.BroadcastMessage("FadeAlpha", inAlpha, SendMessageOptions.DontRequireReceiver);
+				_spritesIn.Add(sprite);
+			}
+		}
+		foreach (GameObject sprite in spritesOut){
+			if(sprite != null){
+				_spritesOut.Add(sprite);
+			}
+		}	
+	}
+	
+	public void DistantSetup(){
+		//StartCoroutine(Setup());
+	}
+	
+	IEnumerator Setup(){
+		yield return new WaitForSeconds(0.05f);
+				
 	}
 	
 	// Update is called once per frame
 	void LateUpdate () {
-		if(!setup)return;
 		if (!change) return;
-		if(_ImBlacky){
-			foreach (GameObject go in _spritesIn){
-				if(go != null){
-					//if(go.renderer){
-					//	go.renderer.enabled = true;
-						go.BroadcastMessage("FadeAlpha", inAlpha, SendMessageOptions.DontRequireReceiver);
-					//}					
-				}
-			}
-			foreach (GameObject go in _spritesOut){
-				if(go != null){
-					//if(go.renderer){
-					//	go.renderer.enabled = false;
-						go.BroadcastMessage("FadeAlpha", outAlpha, SendMessageOptions.DontRequireReceiver);
-					//}
-				}
+		foreach (GameObject go in _spritesIn){
+			if(go != null){
+				go.BroadcastMessage("FadeAlpha", inAlpha, SendMessageOptions.DontRequireReceiver);
 			}
 		}
-		else{
-			foreach (GameObject go in _spritesIn){
-				if(go != null){
-					//if(go.renderer){
-					//	go.renderer.enabled = false;
-						go.BroadcastMessage("FadeAlpha", inAlpha, SendMessageOptions.DontRequireReceiver);
-					//}
-				}
-			}
-			foreach (GameObject go in _spritesOut){
-				if(go != null){
-					//if(go.renderer){
-					//	go.renderer.enabled = true;
-						go.BroadcastMessage("FadeAlpha", outAlpha, SendMessageOptions.DontRequireReceiver);
-					//}
-				}
+		foreach (GameObject go in _spritesOut){
+			if(go != null){
+				go.BroadcastMessage("FadeAlpha", outAlpha, SendMessageOptions.DontRequireReceiver);
 			}
 		}
+		
 		change = false;
 	}
 	
@@ -235,14 +221,10 @@ public class SpriteFader : MonoBehaviour {
 	}
 	IEnumerator GoBlack(){
 		yield return new WaitForSeconds(0.05f);
-		_Chromera = GameObject.FindGameObjectWithTag("MainCamera").camera;
-		_InitialBGColor = _Chromera.backgroundColor;
 		_Chromera.backgroundColor = Color.black;
 	}
 	IEnumerator ReturnWhite(){
 		yield return new WaitForSeconds(0.05f);
-		_Chromera = GameObject.FindGameObjectWithTag("MainCamera").camera;
-		_InitialBGColor = _Chromera.backgroundColor;
 		_Chromera.backgroundColor = _InitialBGColor;
 	}
 }
