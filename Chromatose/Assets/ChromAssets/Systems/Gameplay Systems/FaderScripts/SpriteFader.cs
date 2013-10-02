@@ -31,34 +31,23 @@ public class SpriteFader : MonoBehaviour {
 	private Color _InitialBGColor;
 	
 	private bool change;
+	private bool setup = false;
 	private bool _ImBlacky = false;
 
 	
 	void OnLevelWasLoaded(){
-		_Chromera = GameObject.FindGameObjectWithTag("MainCamera").camera;
-		_InitialBGColor = _Chromera.backgroundColor;
-		
-		inAlpha = -fadeRate;
-		outAlpha = 1 + fadeRate;
-		foreach (GameObject sprite in spritesIn){
-			if(sprite != null){
-				sprite.BroadcastMessage("FadeAlpha", inAlpha, SendMessageOptions.DontRequireReceiver);
-				_spritesIn.Add(sprite);
-			}
-		}
-		foreach (GameObject sprite in spritesOut){
-			if(sprite != null){
-				_spritesOut.Add(sprite);
-			}
-		}	
+		StartCoroutine(Setup ());	
 	}
 	
 	
 	void Start () {
 		
-		_Chromera = GameObject.FindGameObjectWithTag("MainCamera").camera;
-		_InitialBGColor = _Chromera.backgroundColor;
+		StartCoroutine(Setup ());
+	}
 		
+	IEnumerator Setup(){
+		yield return new WaitForSeconds(0.2f);
+				
 		inAlpha = -fadeRate;
 		outAlpha = 1 + fadeRate;
 		foreach (GameObject sprite in spritesIn){
@@ -71,20 +60,17 @@ public class SpriteFader : MonoBehaviour {
 			if(sprite != null){
 				_spritesOut.Add(sprite);
 			}
-		}	
-	}
-	
-	public void DistantSetup(){
-		//StartCoroutine(Setup());
-	}
-	
-	IEnumerator Setup(){
-		yield return new WaitForSeconds(0.05f);
-				
+		}
+		
+		_Chromera = GameObject.FindGameObjectWithTag("MainCamera").camera;
+		_InitialBGColor = _Chromera.backgroundColor;
+		
+		setup = true;
 	}
 	
 	// Update is called once per frame
 	void LateUpdate () {
+		if(!setup)return;
 		if (!change) return;
 		foreach (GameObject go in _spritesIn){
 			if(go != null){
@@ -107,13 +93,7 @@ public class SpriteFader : MonoBehaviour {
 		}
 	}
 	
-	void Out(){/*
-		if (inAlpha >= 1){
-			foreach (GameObject go in spritesIn){
-				go.BroadcastMessage("StopAndResetFrame", SendMessageOptions.DontRequireReceiver);
-			}
-			Debug.Log("Stopping in");
-		}*/
+	void Out(){
 		outAlpha = Mathf.Min(outAlpha + fadeRate, 1 + fadeRate);
 		inAlpha = Mathf.Max(inAlpha - fadeRate, -fadeRate);
 		
@@ -123,30 +103,9 @@ public class SpriteFader : MonoBehaviour {
 			_ImBlacky = false;
 			StartCoroutine(ReturnWhite());
 		}
-		
-		
-		
-		/*
-		if (outAlpha >= 1 && willPlayOut){
-			willPlayOut = false;
-			foreach (GameObject go in spritesOut){
-				go.BroadcastMessage("Play", SendMessageOptions.DontRequireReceiver);
-			}
-			Debug.Log("Playing out");
-		}
-		else if (outAlpha < 1){
-			willPlayOut = true;
-		}*/
 	}
 	
 	void In(){
-		/*if (outAlpha >= 1){
-			foreach (GameObject go in spritesOut){
-				go.BroadcastMessage("StopAndResetFrame", SendMessageOptions.DontRequireReceiver);
-			}
-			Debug.Log("Stopping out");
-		}*/
-		
 		
 		outAlpha = Mathf.Max(outAlpha - fadeRate, -fadeRate);
 		inAlpha = Mathf.Min(inAlpha + fadeRate, 1 + fadeRate);
@@ -156,17 +115,6 @@ public class SpriteFader : MonoBehaviour {
 			StartCoroutine(GoBlack());
 		}
 		
-		/*
-		if (inAlpha >= 1 && willPlayIn){
-			willPlayIn = false;
-			foreach (GameObject go in spritesIn){
-				go.BroadcastMessage("Play", SendMessageOptions.DontRequireReceiver);
-			}
-			Debug.Log("Playing In");
-		}
-		else if (inAlpha < 1){
-			willPlayIn = true;
-		}*/
 		change = true;
 	}
 	
@@ -180,17 +128,6 @@ public class SpriteFader : MonoBehaviour {
 		if (unchanging) return;
 		_spritesOut.Add(go);
 		_spritesIn.Remove(go);
-	}
-	
-	public void SaveState(){
-		heldInAlpha = inAlpha;
-		heldOutAlpha = outAlpha;
-		//Debug.Log("Saving The Alpha");
-	}
-	public void SaveStateForTP(){
-		_TpheldInAlpha = inAlpha;
-		_TpheldOutAlpha = outAlpha;
-		//Debug.Log("Saving The AlphaForTP");
 	}
 	
 	void LoadState(){
@@ -213,12 +150,31 @@ public class SpriteFader : MonoBehaviour {
 		change = true;
 		//Debug.Log("Yepp, I Load It For TP");
 	}
+	
+	
+	
+	
+	public void SaveState(){
+		heldInAlpha = inAlpha;
+		heldOutAlpha = outAlpha;
+		//Debug.Log("Saving The Alpha");
+	}
+	public void SaveStateForTP(){
+		_TpheldInAlpha = inAlpha;
+		_TpheldOutAlpha = outAlpha;
+		//Debug.Log("Saving The AlphaForTP");
+	}
 	public void ResetState(){
 		LoadState();
 	}
 	public void ResetStateForTP(){
 		LoadStateForTP();
 	}
+	
+	
+	
+	
+	
 	IEnumerator GoBlack(){
 		yield return new WaitForSeconds(0.05f);
 		_Chromera.backgroundColor = Color.black;
