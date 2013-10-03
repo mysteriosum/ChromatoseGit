@@ -324,27 +324,22 @@ public class Shavatar1 : MainManager {
 				PlayTurnAnim();
 				alreadyTurn = true;
 				StartCoroutine(DelaiResetTurn());
-				Debug.Log("Play");
 			}
 		}
 	}
 	
 	void PlayTurnAnim(){
-		Debug.Log("OnAnimChange");
 		if(!_MainAnim.IsPlaying("ShavaRotation")){
 			_MainAnim.SetFrame(0);
 			_MainAnim.Play("ShavaRotation");
 			_MainAnim.animationCompleteDelegate = ReturnToIdleAnim;
-			Debug.Log("AnimChanged");
 		}
 	}
 	
 	void ReturnToIdleAnim(tk2dAnimatedSprite sprite, int clipId){
-		Debug.Log("ReturnToIdle");
 		//_MainAnim.SetSprite("Shavatar");
 		_MainAnim.SetFrame(0);
 		_MainAnim.Play("Shavatar");
-		Debug.Log("OnIdle");
 	}
 	
 	IEnumerator ResetSpeedAfterCharge(float delay, float initSpeed){

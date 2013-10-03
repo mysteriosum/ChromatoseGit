@@ -147,6 +147,10 @@ public class Collectible2 : MonoBehaviour {
 	void OnTriggerExit(Collider other){
 		if(other.tag != "avatar" || _Effect)return;
 		
+		if(_AvatarScript == null){
+			_AvatarScript = GameObject.FindGameObjectWithTag("avatar").GetComponent<Avatar>();
+		}
+		
 		switch(colorCollectible){
 		case _ColorCollectible.Red:
 			_AvatarScript.OnRedCol = false;
