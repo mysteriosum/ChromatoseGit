@@ -15,7 +15,7 @@ public class EndBoss_DataBase : MonoBehaviour {
 	public int nbRoundMax = 3;
 	
 	public static float bulletSpeed = 100;
-	public static float lifeDistance = 500;
+	public static float lifeDistance = 1500;
 	
 	
 	//Setup Position
