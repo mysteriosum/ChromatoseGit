@@ -10,6 +10,10 @@ public bool waitingAvatarInZone = false;
 	public bool patrol = false;
 	public int patrolSpeed = 75;
 	
+	public bool rotate = false;
+	public float rotateRate = 0.1f;
+	public bool inverseRotation = false;
+	
 	public Transform[] patrolNodes;
 	
 	
@@ -33,10 +37,12 @@ public bool waitingAvatarInZone = false;
 		if(waitingAvatarInZone){
 			if(_DetectionZone && _DetectionZone.inZone){
 				Move();
+				Rotate();
 			}	
 		}
 		else{
 			Move();
+			Rotate();
 		}
 	}
 	
@@ -66,6 +72,16 @@ public bool waitingAvatarInZone = false;
 		}
 		else{
 			transform.Translate(traj, Space.World);
+		}
+	}
+	void Rotate(){
+		if(!rotate)return;
+		
+		if(!inverseRotation){
+			transform.RotateAround(Vector3.back, rotateRate/100);
+		}
+		else{
+			transform.RotateAround(Vector3.back, -rotateRate/100);
 		}
 	}
 	

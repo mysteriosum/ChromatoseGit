@@ -16,7 +16,7 @@ public class BossBullet : MonoBehaviour {
 	
 	private Vector3 _TargetPos = Vector3.zero; public Vector3 targetPos { get { return _TargetPos; } set { _TargetPos = value; } }
 	private float _BulletSpeed = 100; public float bulletSpeed { get { return _BulletSpeed; } set { _BulletSpeed = value; } }
-	private float _LifeDistance = 500; public float lifeDistance { get { return _LifeDistance; } set { _LifeDistance = value; } }
+	private float _LifeDistance = 1600; public float lifeDistance { get { return _LifeDistance; } set { _LifeDistance = value; } }
 	private float _LifeTime = 10.0f; public float lifeTime { get { return _LifeTime; } set { _LifeTime = value; } }
 	
 		//Variable Pour Slerp
@@ -42,7 +42,7 @@ public class BossBullet : MonoBehaviour {
 			animSpr.Play("flame1", randomDelai);
 			
 				//Randomize the position of the flames
-			Vector2 randomVelocity = Random.insideUnitCircle.normalized * Random.Range(10, 35);
+			Vector2 randomVelocity = Random.insideUnitCircle.normalized * Random.Range(5, 25);
 			Vector3 randomPos = this.gameObject.transform.position + (Vector3)randomVelocity;
 			animSpr.transform.position = randomPos;
 		}
@@ -104,4 +104,25 @@ public class BossBullet : MonoBehaviour {
 	void MakeItTintBullet(){
 		bulletType = bulletTypeEnum.tint;
 	}
+	
+	void OnTriggerEnter(Collider other){
+		switch(bulletType){
+		case bulletTypeEnum.flame:
+			if(other.tag != "avatar")return;
+			other.GetComponent<Avatar>().EmptyingBucket();
+			return;
+			break;
+		case bulletTypeEnum.tint:
+			if(other.tag == "avatar"){
+				ChromatoseManager.manager.Death();
+			}
+			else if(other.tag == "bossWall"){
+				Destroy(this.gameObject);		//A Modifier pour lui faire un fadeOut
+			}
+			break;
+		case bulletTypeEnum.none:
+			print("You Need Set this bullet");
+			break;
+		}
+	}	
 }
