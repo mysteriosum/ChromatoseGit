@@ -49,14 +49,12 @@ public enum Transition
     NullTransition = 0, // La StateMachine utilise cette transition pour representer une transition non-existante dans votre systeme.
 	
 	tBoss_PlayerAimed = 1,
-	//tBoss_GoToWaiting = 2,  <-- TO BE DELETED
-	tBoss_GoToBlow = 3,
-	tBoss_ReadyToForward = 4,
-	tBoss_GoToReturn = 5,
-	tBoss_ToDeath = 6,
-	tBoss_ReturnIdle = 7,
+	tBoss_GoToBlow = 2,
+	tBoss_ReadyToForward = 3,
+	tBoss_GoToReturn = 4,
+	tBoss_ToDeath = 5,
+	tBoss_ReturnIdle = 6,
 	
-	tShavatar_PathFinded = 11,
 	
 	//Pour Exemple; 301 a 302
 	Exemple_SawPlayer = 301,
@@ -77,15 +75,11 @@ public enum StateID
 	
 	Boss_Idle = 1,
 	Boss_AttackPlayer = 2,
-	//Boss_WaitToAttack = 3,  <-- TO BE DELETED
-	Boss_Blow = 4,
-	Boss_Forward = 5,
-	Boss_ReturnBossPlace = 6,
-	Boss_Death = 7,
-	
-	Shavatar_Idle = 11,
-	Shavatar_FollowPath = 12,
-	
+	Boss_Blow = 3,
+	Boss_Forward = 4,
+	Boss_ReturnBossPlace = 5,
+	Boss_Death = 6,
+
 	
 	//Pour Exemple; 301 a 302
 	Exemple_FollowingPath = 301,

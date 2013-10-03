@@ -176,7 +176,30 @@ public class ChromatoseManager : MainManager {
 			}
 		}
 	}
-
+	public void AddCollectible(Color col, int amount){
+		
+		if(!_CollAlreadyAdded){
+			_CollAlreadyAdded = true;
+			StartCoroutine(ResetCanGrabCollectibles(0.05f));
+			
+			if(col == Color.white){
+				StatsManager.whiteCollCollected += amount;
+				StatsManager.whiteCollDisplayed += amount;
+			}
+			else if(col == Color.red){
+				StatsManager.redCollCollected += amount;
+				StatsManager.redCollDisplayed += amount;
+			}
+			else if(col == Color.blue){
+				StatsManager.blueCollCollected += amount;
+				StatsManager.blueCollDisplayed += amount;
+			}
+			else{
+				Debug.LogWarning("Not a real collectible.");
+			}
+		}
+	}
+	
 	public int GetCollectibles(Color color){
 		
 		if(color == Color.white){
@@ -209,6 +232,18 @@ public class ChromatoseManager : MainManager {
 		else if(color == Color.blue){
 			StatsManager.blueCollDisplayed -= amount;
 			BlowBlueColl(amount, pos);
+		}
+		else{
+			Debug.Log("Cant delete this collectable, check color");
+		}
+	}
+	public void RemoveCollectibles(Color color, int amount, Vector3 pos, EndBoss_DataBase bossData){
+		
+		if(color == Color.red){
+			StatsManager.redCollDisplayed -= amount;
+			bossData.nbWhiteColRecu += amount;
+			ShootRedCollOnMini(amount, pos);
+			Debug.Log("Remove " + amount + ", le boss est rendu a " + bossData.nbWhiteColRecu + " de redColl Recu");
 		}
 		else{
 			Debug.Log("Cant delete this collectable, check color");
