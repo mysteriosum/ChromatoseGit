@@ -198,8 +198,7 @@ public class EndBoss_DataBase : MonoBehaviour {
 		if(other.tag != "avatar")return;
 		_PlayerInPayZone = true;
 		
-		//POUR TEST - A EFFACER
-		_PlayerInCombatZone = true;
+		
 	}
 	void OnTriggerStay(Collider other){
 		if(other.tag != "avatar")return;
@@ -214,7 +213,7 @@ public class EndBoss_DataBase : MonoBehaviour {
 	}
 	void OnTriggerExit(Collider other){
 		if(other.tag != "avatar")return;
-		_PlayerInPayZone = false;
+
 	}
 	
 	

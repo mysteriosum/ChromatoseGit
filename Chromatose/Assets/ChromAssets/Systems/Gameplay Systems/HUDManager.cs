@@ -76,7 +76,7 @@ public class HUDManager : MainManager {
 					_CanShowLogo = false,
 					_OnErase = false;
 
-	private float flashTimer = 0.0f, aX, actionSlideSpeed = 10.0f;
+	private float flashTimer = 0.0f, aX, actionSlideSpeed = 2.0f;
 	private Vector2 textOffset = new Vector2 (55f, 8);
 	
 	
@@ -323,6 +323,10 @@ public class HUDManager : MainManager {
 			actionMethod();
 		}
 		
+		//showingAction = false;
+	}
+	
+	public void OffAction(){
 		showingAction = false;
 	}
 		
