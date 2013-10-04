@@ -315,6 +315,75 @@ public class ChromatoseManager : MainManager {
 		//avatar.renderer.enabled = false;
 	}
 	
+	public void DeathByBoss(){
+		Debug.Log("Mort par le Boss");
+			//Play le SFX de la Mort
+		MusicManager.soundManager.PlaySFX(6);
+		
+			//Play l'animd e la Mort et Reset le BossLevel a la fin
+		danim = new Avatar.DeathAnim();
+		danim.PlayDeath(ResetBossLevel);
+		avatar.Gone = true;
+	}
+	
+	public void ResetBossLevel(tk2dAnimatedSprite anim, int index){
+		Debug.Log("Reset le BossLevel");
+		
+			//Find the Boss
+		GameObject boss = GameObject.FindGameObjectWithTag("Boss");
+		
+			//Destruction de l'anim de la Mort et Reset des variable en rapport
+		Destroy(danim.go);
+		avatar.Gone = false;		
+	
+			//Destruction des Collectibles inScene
+		GameObject[] redColInBossLvl = GameObject.FindGameObjectsWithTag("collectible");
+		foreach (GameObject redC in redColInBossLvl){
+			Destroy(redC.gameObject);
+		}
+		
+			//Destruction des bossBullet inScene
+		GameObject[] bossBulletInBossLvl = GameObject.FindGameObjectsWithTag("bossBullet");
+		foreach (GameObject bossBullet in bossBulletInBossLvl){
+			Destroy(bossBullet.gameObject);
+		}
+		
+			//Reset de la StateMachine du Boss, Reset de la position du boss et Reset du Round
+		EndBoss_FSM.fsm.PerformTransition(Transition.tBoss_ReturnIdle);
+		if(boss.transform.position != boss.GetComponent<EndBoss_DataBase>().placeForBoss[0].position){
+			boss.transform.position = boss.GetComponent<EndBoss_DataBase>().placeForBoss[0].position;
+				//Securite d'Angle et Rotation
+			boss.transform.rotation = Quaternion.identity;
+		}
+		boss.GetComponent<EndBoss_DataBase>().round = 0;
+		
+			//Remise des redColl a l'Avatar
+		StatsManager.redCollDisplayed = boss.GetComponent<EndBoss_DataBase>().redCollAtStart;
+		
+			//Repositionment de l'avatar, Reset de Velocity, Reset de AfterImage, Reset de couleur & Set le CannotControl
+		avatar.movement.SetVelocity(Vector2.zero);
+		avatar.transform.position = boss.GetComponent<EndBoss_DataBase>().restartSpot.position;
+		avatar.transform.rotation = Quaternion.identity;
+		avatar.CancelOutline();
+		avatar.EmptyingBucket();
+		avatar.CannotControlFor(false, 0f);
+		
+			//Change l'apparence de l'avatar en Shavatar ou Vice-Versa
+		switch(_AvatarScript.avaTypeAccess){
+		case _AvatarTypeEnum.avatar:
+			_AvatarScript.avaTypeAccess = _AvatarTypeEnum.shavatar;
+			break;
+		case _AvatarTypeEnum.shavatar:
+			_AvatarScript.avaTypeAccess = _AvatarTypeEnum.avatar;
+			break;
+		}
+		/*
+			//Mise-en Place de la fenetre "Start" et attente pour l'Input du Joueur
+		HUDManager.hudManager.ResetTitleBool();
+		HUDManager.hudManager.guiState = GUIStateEnum.OnStart;
+		*/
+	}
+	
 	public void Reset(tk2dAnimatedSprite anim, int index){
 		avatar = GameObject.FindGameObjectWithTag("avatar").GetComponent<Avatar>();
 		Destroy(danim.go);

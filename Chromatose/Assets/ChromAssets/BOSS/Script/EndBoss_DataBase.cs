@@ -21,6 +21,7 @@ public class EndBoss_DataBase : MonoBehaviour {
 	//Setup Position
 	public Transform[] shooters;
 	public Transform[] placeForBoss;
+	public Transform restartSpot;
 	
 	//GameObject Container
 	public GameObject bossBullet;
@@ -65,6 +66,9 @@ public class EndBoss_DataBase : MonoBehaviour {
 	private float _BossJourneyLength;
 	private float _JourneyStartTime;
 	
+	
+	//DATA Variables
+	private int _RedCollAtStart = 0; public int redCollAtStart { get { return _RedCollAtStart; } set { _RedCollAtStart = value; } }
 	
 	
 	//Security Variables
@@ -151,7 +155,15 @@ public class EndBoss_DataBase : MonoBehaviour {
 		StartCoroutine(DelayedSingleShoot(0, 1.5f));
 		StartCoroutine(DelayedSingleShoot(4, 1.5f));
 	}
+	public void WShapeShoot(){
+		StartCoroutine(DelayedSingleShoot(0, 0.75f));
+		SingleShoot(1);
+		StartCoroutine(DelayedSingleShoot(2, 0.75f));
+		SingleShoot(3);
+		StartCoroutine(DelayedSingleShoot(4, 0.75f));
+	}
 	public void ThreeWaveShoot(){
+		
 		
 	}
 	public void RandomShoot(bool doubleShot){
@@ -248,6 +260,8 @@ public class EndBoss_DataBase : MonoBehaviour {
 		print("BossTransition - NEXT ROUND - ReturnToIdle");
 	}
 	
+	
+	
 #endregion
 
 #region COROUTINE
@@ -290,6 +304,8 @@ public class EndBoss_DataBase : MonoBehaviour {
 		yield return new WaitForSeconds(2.0f);
 		Destroy(this.gameObject);
 	}
+	
+	
 #endregion
 
 	

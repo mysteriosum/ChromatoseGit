@@ -87,7 +87,7 @@ public class BossBullet : MonoBehaviour {
 				Destroy(this.gameObject);
 			}
 			return;
-			print ("Down to the Down");
+			
 			break;
 		case shootTypeEnum.atAvaPos:
 			
@@ -105,11 +105,11 @@ public class BossBullet : MonoBehaviour {
 			}
 			
 			return;
-			print("Shoot On Avatar !!");
+			
 			break;
 		case shootTypeEnum.random:
 			return;
-			print("Not already Setuped");
+			
 			break;
 		}
 	}
@@ -128,20 +128,21 @@ public class BossBullet : MonoBehaviour {
 		case bulletTypeEnum.flame:
 			if(other.tag != "avatar")return;
 			if(other.GetComponent<Avatar>().curColor != Color.red){
-				ChromatoseManager.manager.Death();
+				ChromatoseManager.manager.DeathByBoss();
 			}
 			return;
 			break;
 		case bulletTypeEnum.tint:
 			if(other.tag == "avatar"){
-				ChromatoseManager.manager.Death();
+				ChromatoseManager.manager.DeathByBoss();
 			}
-			else if(other.tag == "bossWall"){
+			if(other.tag == "collision"){
+				Debug.Log("HitWall");
 				Destroy(this.gameObject);		//A Modifier pour lui faire un fadeOut
 			}
 			break;
 		case bulletTypeEnum.none:
-			print("You Need Set this bullet");
+			
 			break;
 		}
 	}	

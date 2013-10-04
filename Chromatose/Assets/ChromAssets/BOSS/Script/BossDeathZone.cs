@@ -6,6 +6,6 @@ public class BossDeathZone : MonoBehaviour {
 	void OnTriggerEnter(Collider other){
 		if(other.tag != "avatar")return;
 		
-		ChromatoseManager.manager.Death();
+		ChromatoseManager.manager.DeathByBoss();
 	}
 }

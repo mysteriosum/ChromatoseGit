@@ -14,5 +14,9 @@ public class BossActivator : MonoBehaviour {
 		if(StatsManager.redCollCollected == 0){
 			ChromatoseManager.manager.AddCollectible(Color.red, 10);
 		}
+		
+		
+			//Save les redColl que le joueur detient dans une variable du Boss pour le Reset
+		_Boss.GetComponent<EndBoss_DataBase>().redCollAtStart = StatsManager.redCollDisplayed;
 	}
 }
