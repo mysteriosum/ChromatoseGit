@@ -36,14 +36,17 @@ public class EndBoss_FSM : MonoBehaviour
     private void MakeFSM()
     {
 		Boss_IdleState boss_Idle = new Boss_IdleState();
+			boss_Idle.AddTransition(Transition.tBoss_ReturnIdle, StateID.Boss_Idle);
 			boss_Idle.AddTransition(Transition.tBoss_ToDeath, StateID.Boss_Death);
 			boss_Idle.AddTransition(Transition.tBoss_PlayerAimed, StateID.Boss_AttackPlayer);
 		
 		Boss_AttackPlayerState boss_AttackPlayer = new Boss_AttackPlayerState();
+			boss_AttackPlayer.AddTransition(Transition.tBoss_ReturnIdle, StateID.Boss_Idle);
 			boss_AttackPlayer.AddTransition(Transition.tBoss_ToDeath, StateID.Boss_Death);
 			boss_AttackPlayer.AddTransition(Transition.tBoss_GoToBlow, StateID.Boss_Blow);
 		
 		Boss_BlowState boss_Blow = new Boss_BlowState();
+			boss_Blow.AddTransition(Transition.tBoss_ReturnIdle, StateID.Boss_Idle);
 			boss_Blow.AddTransition(Transition.tBoss_ToDeath, StateID.Boss_Death);
 			boss_Blow.AddTransition(Transition.tBoss_ReadyToForward, StateID.Boss_Forward);
 		
@@ -124,10 +127,11 @@ public class Boss_AttackPlayerState : FSMState
 		if(_ShooterCounter >= data.fireRate){
 			switch(data.round){
 			case 0:
-				data.FullLineShoot();
+				data.WShapeShoot();
 				break;
 			case 1:
-				data.VShapeShoot();
+				data.FullLineShoot();
+				//data.VShapeShoot();
 				break;
 			case 2:
 				data.RandomShoot(true);

@@ -79,7 +79,7 @@ public class HUDManager : MainManager {
 	private float flashTimer = 0.0f, aX, actionSlideSpeed = 2.0f;
 	private Vector2 textOffset = new Vector2 (55f, 8);
 	
-	
+	public bool canShowPressStartAnim { get { return _CanShowPressStartAnim; } set { _CanShowPressStartAnim = value; } }
 		//ACTIONBOX FUNCTIONS
 	public void UpdateAction(Actions action, ActionDelegate method){
 		if (action <= currentAction || action == Actions.Nothing){
@@ -493,7 +493,7 @@ public class HUDManager : MainManager {
 		StartCoroutine(ActiveHudBox(0.6f, 3, false));
 	}
 	
-	void ResetTitleBool(){
+	public void ResetTitleBool(){
 		movieTitle.Stop();
 		movieStart.Stop();
 		movieCredit.Stop();
@@ -811,7 +811,7 @@ public class HUDManager : MainManager {
 		GUI.BeginGroup(hudRect[2]);										//red collectible
 			GUI.skin.textArea.normal.textColor = Color.red;
 			GUI.DrawTexture(new Rect(0, 0, redCollectible.width, redCollectible.height), redCollectible);
-			GUI.TextArea(new Rect(textOffset.x + 10, textOffset.y, 100, 50), StatsManager.redCollCollected.ToString());// + " / " + _TotalRedColl.ToString());
+			GUI.TextArea(new Rect(textOffset.x + 10, textOffset.y, 100, 50), StatsManager.redCollDisplayed.ToString());// + " / " + _TotalRedColl.ToString());
 			
 		GUI.EndGroup();
 
@@ -819,7 +819,7 @@ public class HUDManager : MainManager {
 		GUI.BeginGroup(hudRect[3]);										//blue collectible
 			GUI.skin.textArea.normal.textColor = Color.blue;
 			GUI.DrawTexture(new Rect(0, 0, blueCollectible.width, blueCollectible.height), blueCollectible);
-			GUI.TextArea(new Rect(textOffset.x + 10, textOffset.y, 100, 50), StatsManager.blueCollCollected.ToString());// + " / " + _TotalBlueColl.ToString());
+			GUI.TextArea(new Rect(textOffset.x + 10, textOffset.y, 100, 50), StatsManager.blueCollDisplayed.ToString());// + " / " + _TotalBlueColl.ToString());
 			
 		GUI.EndGroup();
 		
