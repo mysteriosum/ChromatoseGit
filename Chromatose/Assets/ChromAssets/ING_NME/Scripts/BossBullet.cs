@@ -35,11 +35,21 @@ public class BossBullet : MonoBehaviour {
 	private Vector3 _AvaPosAtStart;
 	
 	void Start () {
-		
+		if(RandomNumber() <= 66){
+			bulletType = bulletTypeEnum.tint;
+		}
 		_BulletAnim = GetComponentsInChildren<tk2dAnimatedSprite>();
 		foreach(tk2dAnimatedSprite animSpr in _BulletAnim){
 			float randomDelai = Random.Range(0f, 0.8f);
-			animSpr.Play("flame1", randomDelai);
+			switch(bulletType){
+			case bulletTypeEnum.flame:
+				animSpr.Play("flame1", randomDelai);
+				break;
+			case bulletTypeEnum.tint:
+				animSpr.Play("flame5", randomDelai);
+				break;
+			}
+			
 			
 				//Randomize the position of the flames
 			Vector2 randomVelocity = Random.insideUnitCircle.normalized * Random.Range(5, 25);
@@ -60,6 +70,9 @@ public class BossBullet : MonoBehaviour {
 		
 		_RandomVelocity = Random.insideUnitCircle.normalized * Random.Range(40, 65);
 		_RandomPos = _AvaPosAtStart + (Vector3)_RandomVelocity;
+		
+		
+		
 	}
 	
 	void Update () {
@@ -105,11 +118,18 @@ public class BossBullet : MonoBehaviour {
 		bulletType = bulletTypeEnum.tint;
 	}
 	
+	int RandomNumber(){
+		int rNb = Random.Range(0, 100);
+		return rNb;
+	}
+	
 	void OnTriggerEnter(Collider other){
 		switch(bulletType){
 		case bulletTypeEnum.flame:
 			if(other.tag != "avatar")return;
-			other.GetComponent<Avatar>().EmptyingBucket();
+			if(other.GetComponent<Avatar>().curColor != Color.red){
+				ChromatoseManager.manager.Death();
+			}
 			return;
 			break;
 		case bulletTypeEnum.tint:

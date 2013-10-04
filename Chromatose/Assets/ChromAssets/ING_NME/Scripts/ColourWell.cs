@@ -80,6 +80,7 @@ public class ColourWell : MonoBehaviour {
 		if(myColor == Color.red){
 			GameObject.FindGameObjectWithTag("avatar").GetComponent<Avatar>().OnRedWell = false;
 		}
+		HUDManager.hudManager.OffAction();
 	}
 	
 	
