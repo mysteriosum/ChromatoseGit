@@ -1094,8 +1094,8 @@ public class Avatar : MainManager{
 								//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
 								//<------------Update my bubble!------------->
 								//<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>
-		switch(Application.loadedLevelName){
-		case ("Tutorial"):
+		//switch(Application.loadedLevelName){
+		//case ("Tutorial"):
 			if (onRedCol){
 				if(!bubbleGrowed){
 					bubble.ShowBubbleFor("bubbleAvatar_grow", 0.3f);
@@ -1130,7 +1130,7 @@ public class Avatar : MainManager{
 				bubble.ShowBubbleFor("avatarBubble_" + intForBoss + "redcol", 0.3f);
 				_WantFightBoss = false;
 			}
-			
+			/*
 			break;
 		case ("Module1_Scene1"):
 			if (onRedCol){					// && manager.GetCollectibles(Couleur.red) == 0){
@@ -1208,7 +1208,7 @@ public class Avatar : MainManager{
 			}
 			
 			break;
-		}
+		}*/
 		bubble.Main();
 #endregion
 		

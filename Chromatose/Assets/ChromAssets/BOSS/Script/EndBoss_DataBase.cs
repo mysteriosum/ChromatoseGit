@@ -26,6 +26,8 @@ public class EndBoss_DataBase : MonoBehaviour {
 	public GameObject bossBullet;
 	
 	
+	public bool activeTint = false;
+	
 	//Data Variables
 	private Avatar _AvatarScript;
 	private GameObject _Boss;
@@ -204,10 +206,11 @@ public class EndBoss_DataBase : MonoBehaviour {
 		if(!_PlayerInPayZone){
 			_PlayerInPayZone = true;
 		}
-		HUDManager.hudManager.UpdateAction(Actions.Release, Payment);
-		
-		_AvatarScript.requieredPayment = requiredPayment.ToString();
-		_AvatarScript.wantFightBoss = true;
+		if(!_AvatarScript.wantFightBoss){
+			HUDManager.hudManager.UpdateAction(Actions.Release, Payment);
+			_AvatarScript.requieredPayment = requiredPayment.ToString();
+			_AvatarScript.wantFightBoss = true;
+		}
 	}
 	void OnTriggerExit(Collider other){
 		if(other.tag != "avatar")return;
@@ -265,12 +268,12 @@ public class EndBoss_DataBase : MonoBehaviour {
 		_AlreadyShooten = false;
 	}
 	IEnumerator DelaiBeforeBlow (){
-		yield return new WaitForSeconds(5.0f);
+		yield return new WaitForSeconds(2.5f);
 		_ReadyToBlow = true;
 		StartCoroutine(CanResetBlow());
 	}
 	IEnumerator CanResetBlow(){
-		yield return new WaitForSeconds(3.0f);
+		yield return new WaitForSeconds(5.5f);
 		_CanForward = true;
 		_JourneyStartTime = Time.time;
 		_ReadyToBlow = false;

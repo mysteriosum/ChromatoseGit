@@ -79,6 +79,19 @@ public class HUDManager : MainManager {
 	private float flashTimer = 0.0f, aX, actionSlideSpeed = 10.0f;
 	private Vector2 textOffset = new Vector2 (55f, 8);
 	
+	
+		//ACTIONBOX FUNCTIONS
+	public void UpdateAction(Actions action, ActionDelegate method){
+		if (action <= currentAction || action == Actions.Nothing){
+			currentAction = action;
+			actionMethod = method;
+			showingAction = true;
+		}
+	}
+	public void UpdateActionTexture(){
+		shownActionTexture = actionTexture;
+	}
+	
 	public  delegate void ActionDelegate();
 	public ActionDelegate actionMethod;
 	
@@ -203,14 +216,12 @@ public class HUDManager : MainManager {
 	
 	void Start () {
 		_FirstStart = true;
+				
 		_MenuWindows = _MenuWindowsEnum.FakeSplashScreen;
 	}
 	
 	void Update(){
-			//Effectue l'action si une action peut etre effectuer et si la touche P est presser
-		if (Input.GetKeyDown(KeyCode.P) && currentAction > 0 && actionMethod != null && !ChromatoseManager.manager.InComic){
-			actionMethod();
-		}
+		
 	}
 	
 		//FIXED & LATE UPDATE
@@ -307,25 +318,19 @@ public class HUDManager : MainManager {
 				aX -= actionSlideSpeed;
 			}
 		}
+			//Effectue l'action si une action peut etre effectuer et si la touche P est presser
+		if (Input.GetKeyDown(KeyCode.P) && currentAction > 0 && actionMethod != null && !ChromatoseManager.manager.InComic){
+			actionMethod();
+		}
 		
 		showingAction = false;
 	}
-	
-	
-	
-		//ACTIONBOX FUNCTIONS
-	public void UpdateAction(Actions action, ActionDelegate method){
-		if (action <= currentAction || action == Actions.Nothing){
-			currentAction = action;
-			actionMethod = method;
-			showingAction = true;
-		}
-	}
-	public void UpdateActionTexture(){
+		
+	public void SetupActionBox(){
+		aX = absorbAction.width;
+		actionTexture = absorbAction;
 		shownActionTexture = actionTexture;
 	}
-	
-	
 	
 	public void SetupHud(){
 		if(Application.loadedLevel!=0){
@@ -356,6 +361,7 @@ public class HUDManager : MainManager {
 			mainBoxPosY+=mainBoxMovingRate;
 		}
 		else{
+			SetupActionBox();
 			mainBoxCanDown = false;
 		}
 	}
