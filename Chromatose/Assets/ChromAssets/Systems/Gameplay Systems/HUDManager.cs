@@ -50,7 +50,7 @@ public class HUDManager : MainManager {
 	
 	public GUISkin _PlayButtonSkin, _GreenlightSkin, skinSansBox, pauseBackButton, mainMenuButtonSkin, _SkinMenuSansBox, _VoidSkin, _TimeTrialButtonSkin;
 	public GUISkin _StartButtonSkin, _CreditButtonSkin, _FbookButtonSkin, _TwitterButtonSkin, _BackButtonSkin, _GreenlightButton;
-	public GUISkin _QwertySkin1, _QwertySkin2, _AzertySkin1, _AzertySkin2, _EraseSkin, _DoItSkin, _OkButtonSkin;
+	public GUISkin _QwertySkin1, _QwertySkin2, _AzertySkin1, _AzertySkin2, _EraseSkin, _DoItSkin, _OkButtonSkin, _OpenMenuSkin;
 	
 	public Texture qwertyKeyboard, azertyKeyboard, leftArrow, rightArrow;	
 	public Texture actionTexture, shownActionTexture;
@@ -828,7 +828,13 @@ public class HUDManager : MainManager {
 			
 			GUI.DrawTexture(new Rect(aX, 0, absorbAction.width, absorbAction.height), actionTexture);
 		
-		GUI.EndGroup();			
+		GUI.EndGroup();	
+		
+		GUI.skin = _OpenMenuSkin;
+		if(GUI.Button(new Rect(1160, 325, 70, 45), "")){
+			StartHudCloseSequence();
+		}
+		
 	}
 	
 		//DRAW LE MENU PAUSE

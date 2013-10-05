@@ -186,10 +186,10 @@ public class ComicThumb : MonoBehaviour {
 	void Idle(){
 		if(_IdleCounter < 5){
 			_IdleCounter += 0.2f;
-			transform.position = new Vector3(transform.position.x, transform.position.y - 0.2f, 0);
+			transform.position = new Vector3(transform.position.x, transform.position.y - 0.2f, 2);
 		}
 		else{
-			transform.position = new Vector3(transform.position.x, transform.position.y + 5f, 0);
+			transform.position = new Vector3(transform.position.x, transform.position.y + 5f, 2);
 			_IdleCounter = 0;
 		}
 	}

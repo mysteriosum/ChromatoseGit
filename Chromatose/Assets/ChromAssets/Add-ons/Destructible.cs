@@ -85,13 +85,18 @@ public class Destructible : MonoBehaviour {		//move sprite @ 15 frames or 0.5f s
 	
 	protected virtual void Checks(){
 		if(setuped){
-			if(Vector3.Distance(avatar.position, myNode.position) > 100){return;}
+			if(Vector3.Distance(avatar.position, myNode.position) > 300)return;
 				
 											//<----C'est ici que le check se fait mal
 			if (collider.bounds.Contains(avatar.position)){
 				HUDManager.hudManager.UpdateAction(Actions.Destroy, Action);	//<----Peut que si on a pas fait d'autre action, le trigger se ne se reinitialise pas
 				avatarScript.AtDestructible = true;									//<----sert que pour la Bubble
 			}
+			else if(!collider.bounds.Contains(avatar.position) && avatarScript.AtDestructible){
+				HUDManager.hudManager.OffAction();
+				avatarScript.AtDestructible = false;
+			}
+			
 		}
 		else{
 			Setup();

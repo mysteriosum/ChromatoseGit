@@ -48,12 +48,18 @@ public class Npc2 : MonoBehaviour {
 		}
 	}
 	
-	void OnTriggerStay(Collider other){
+	void OnTriggerEnter(Collider other){
 		if(other.tag != "avatar") return;
 		
 		if(!_ColorGone){
 			HUDManager.hudManager.UpdateAction(Actions.Absorb, Trigger);		//this tells the hud that I want to do something. But I'll have to wait in line!
 		}
+	}
+	
+	void OnTriggerExit(Collider other){
+		if(other.tag != "avatar")return;
+		
+		HUDManager.hudManager.OffAction();
 	}
 	
 	void Trigger(){

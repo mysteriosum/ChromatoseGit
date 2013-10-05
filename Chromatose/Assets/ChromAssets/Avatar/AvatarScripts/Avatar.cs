@@ -877,7 +877,7 @@ public class Avatar : MainManager{
 		//colour.b = Mathf.Clamp(colour.b, 0, 255);
 			
 			//DESCENDRE OU MONTER LA VITESSE DU FADE ICI
-			_ColorCounter += Time.deltaTime * velocity.magnitude * 0.4f;
+			_ColorCounter += Time.deltaTime * velocity.magnitude * 0.6f;
 			
 			
 			if(_ColorCounter > 1){
