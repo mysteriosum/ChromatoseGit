@@ -44,8 +44,8 @@ public class HUDManager : MainManager {
 	
 	public static Rect _MainMenuBGRect;
 	
-	public Texture pauseWindows, mainMenuBG, whiteBG, optionBG, loadingBG, greyFilterBG, endResultWindows, emptyProgressBar, progressLine, credits, splashScreenBG, ttBg;
-	public Texture _AvatarLoadingLoop1, _AvatarLoadingLoop2, _BulleLoadingLoop1, _BulleLoadingLoop2;
+	public Texture pauseWindows, mainMenuBG, blackBG, whiteBG, optionBG, loadingBG, greyFilterBG, endResultWindows, emptyProgressBar, progressLine, credits, splashScreenBG, ttBg;
+	public Texture _AvatarLoadingLoop1, _AvatarLoadingLoop2, _BulleLoadingLoop1, _BulleLoadingLoop2, _LevelReady;
 	public Texture whiteColTex, redColTex, blueColText, comicTex, deathCountTex;
 	
 	public GUISkin _PlayButtonSkin, _GreenlightSkin, skinSansBox, pauseBackButton, mainMenuButtonSkin, _SkinMenuSansBox, _VoidSkin, _TimeTrialButtonSkin;
@@ -56,7 +56,7 @@ public class HUDManager : MainManager {
 	public Texture actionTexture, shownActionTexture;
 	
 	
-	public MovieTexture movieLoad, movieLoad2, movieLogo, movieTitle, movieStart, movieCredit, moviePressStart, movieExit;
+	public MovieTexture movieLoad, movieLoad2, movieLogo, movieTitle, movieStart, movieCredit, moviePressStart, movieExit, movieSecondLoad;
 	
 	
 	
@@ -863,24 +863,12 @@ public class HUDManager : MainManager {
 	
 		//DRAW LE INGAME START
 	void DrawInGameStart(){
-		GUI.DrawTexture(new Rect(0, 0, 1280, 720), whiteBG);
+		GUI.DrawTexture(new Rect(0, 0, 1280, 720), blackBG);
 			//START BUTTON
 		GUI.skin = _SkinMenuSansBox;
 		Rect startBox = new Rect(500, 350, 250, 126);
-		if(GUI.Button(startBox, "")){
-			_CanShowPressStartAnim = true;
-			MusicManager.soundManager.PlaySFX(19);
-			MusicManager.soundManager.CheckLevel();
-		}
-		GUI.DrawTexture(startBox, movieStart);
 		
-		if(_CanShowPressStartAnim){
-			GUI.DrawTexture(new Rect(375, 120, 500, 480), moviePressStart);
-			if(!moviePressStart.isPlaying){
-				moviePressStart.Play();
-				StartCoroutine(GoToGame());
-			}
-		}
+		GUI.DrawTexture(new Rect(300, 175, 489, 374), _LevelReady);
 	}
 	
 		//DRAW LA FENETRE DU MAIN MENU
@@ -932,15 +920,14 @@ public class HUDManager : MainManager {
 		GUI.skin = _SkinMenuSansBox;
 		GUI.skin.textArea.fontSize = 70;
 		GUI.skin.textArea.normal.textColor = Color.white;
-		GUI.TextArea(new Rect(190, 400, 900, 110), "? WHAT IS YOUR KEYBOARD ?");
 	}
 	
 		//DRAW LE LOADING SCREEN
 	void DrawLoadingScreen(){
 		Rect inLoadRect = new Rect(217.5f, 165, 740, 380);
 			//BACKGROUND
-		GUI.DrawTexture(new Rect(0, 0, 1280, 720), whiteBG);
-		GUI.DrawTexture(new Rect(400, 90, 550, 520), movieLoad2);
+		GUI.DrawTexture(new Rect(0, 0, 1280, 720), blackBG);
+		GUI.DrawTexture(new Rect(300, 175, 489, 374), movieSecondLoad);
 				
 		//PlayLoadAnim();
 		//STAND BY SUR L"ANIM POUR LINSTANT

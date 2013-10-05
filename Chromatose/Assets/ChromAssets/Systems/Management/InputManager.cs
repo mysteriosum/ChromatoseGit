@@ -60,13 +60,18 @@ public class InputManager : MainManager {
 		if(Input.GetKeyDown(KeyCode.Space)){
 			Debug.Log("SpaceBar Pressed");
 			
+		}
+		
+			//P pour les menu et Start
+		if(Input.GetKeyDown(KeyCode.P)){
 			if(HUDManager._GUIState == GUIStateEnum.OnStart){
 				HUDManager._GUIState = GUIStateEnum.Interface;
 				GameObject.FindGameObjectWithTag("avatar").GetComponent<Avatar>().CanControl();
 				MusicManager.soundManager.PlaySFX(19);
 				MusicManager.soundManager.CheckLevel();
+				HUDManager.hudManager.StartHudOpenSequence();
 			}
-		}		
+		}
 	}
 	
 	void SetController(){
