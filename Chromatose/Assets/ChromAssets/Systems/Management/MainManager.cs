@@ -230,7 +230,7 @@ public class MainManager : MonoBehaviour {
 	public void LoadALevel(int levelInt){
 		HUDManager.hudManager.guiState = GUIStateEnum.MainMenu;
 		HUDManager.hudManager.menuWindows = _MenuWindowsEnum.LoadingScreen;
-		HUDManager.hudManager.movieLoad2.Play();
+		HUDManager.hudManager.movieSecondLoad.Play();
 		
 		if(levelInt == 0){			
 			if(_Avatar){

@@ -16,6 +16,7 @@ public class eyeColorChange : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		avaScript = GameObject.FindGameObjectWithTag("avatar").GetComponent<Avatar>();
 		
 		switch(avaScript.avaTypeAccess){
 		case _AvatarTypeEnum.avatar:

@@ -94,6 +94,7 @@ public class Avatar : MainManager{
 	public float accelPartTimingBase = 0.3f;
 	
 	private Eye travisMcGee;
+	private Eye petitChu;
 	private SpeechBubble bubble;
 
 	//inputs. Up, left and right will also work, but getW seems intuitive to me
@@ -278,6 +279,7 @@ public class Avatar : MainManager{
 		private Transform t;
 		private Transform avatarT;
 		private Vector3 offset = new Vector3(-5, 0, -1);
+		private MeshRenderer mRender;
 		
 		private float timer = 0;
 		private float leftCounter = 0;
@@ -288,22 +290,35 @@ public class Avatar : MainManager{
 		private tk2dSpriteCollectionData avaEye;
 		private tk2dSpriteCollectionData shavaEye;
 		
-		public Eye (Transform avatarT, tk2dSpriteCollectionData spriteDataAva, tk2dSpriteCollectionData spriteDataShava){
-			go = new GameObject("AvatarEye");
+		public Eye (Transform avatarT, tk2dSpriteCollectionData spriteDataAva, tk2dSpriteCollectionData spriteDataShava, bool shava){
+			
+			if(!shava){
+				go = new GameObject("AvatarEye");
+				tk2dSprite.AddComponent<tk2dSprite>(go, spriteDataAva, "eye");
+			}
+			else{
+				go = new GameObject("ShavatarEye");
+				tk2dSprite.AddComponent<tk2dSprite>(go, spriteDataShava, "eye");
+			}
+			
+			
+			mRender = go.GetComponent<MeshRenderer>();
 			t = go.transform;
-			tk2dSprite.AddComponent<tk2dSprite>(go, spriteDataAva, "eye");
 			spriteInfo = go.GetComponent<tk2dSprite>();
 			this.avatarT = avatarT;
 			t.parent = avatarT;
 			t.localPosition = offset;
 			t.localRotation = Quaternion.identity;
-			
+			/*
 			go.AddComponent<eyeColorChange>();
 			go.GetComponent<eyeColorChange>().avaScript = avatarT.GetComponent<Avatar>();
 			go.GetComponent<eyeColorChange>().avaEye = spriteDataAva;
-			go.GetComponent<eyeColorChange>().shavaEye = spriteDataShava;
+			go.GetComponent<eyeColorChange>().shavaEye = spriteDataShava;*/
 		}
 		
+		public void RenderEye(bool activeEye){
+				mRender.enabled = activeEye;
+		}
 		
 		public void EyeFollow() {
 			//Debug.Log("OO");
@@ -753,7 +768,8 @@ public class Avatar : MainManager{
 		allTheFaders = GameObject.FindGameObjectsWithTag("spriteFader");
 		
 		//MAKE ME AN EYE BABY
-		travisMcGee = new Eye(t, particleCollection, shavaParticleCollection);
+		travisMcGee = new Eye(t, particleCollection, shavaParticleCollection, false);
+		petitChu = new Eye(t, particleCollection, shavaParticleCollection, true);
 		bubble = new SpeechBubble (t, particleCollection);
 		spriteInfo.Collection = normalCollection;
 		StartCoroutine(LateCPCreation(1.0f));
@@ -818,7 +834,22 @@ public class Avatar : MainManager{
 	void FixedUpdate ()
 	{
 
-		travisMcGee.EyeFollow();
+		switch(avatarType){
+		case _AvatarTypeEnum.avatar:
+			travisMcGee.EyeFollow();
+			travisMcGee.RenderEye(true);
+			petitChu.RenderEye(false);
+			break;
+		case _AvatarTypeEnum.shavatar:
+			petitChu.EyeFollow();
+			petitChu.RenderEye(true);
+			travisMcGee.RenderEye(false);
+			break;
+		}
+		
+		
+		
+		
 								//<^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^>
 								//<--------------Color Fading!--------------->
 								//<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>
