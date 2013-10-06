@@ -32,7 +32,7 @@ public class MainManager : MonoBehaviour {
 	public static string currentRoomString = "room00";
 	public static GameObject startPoint;
 	
-	public static bool _CanControl = false;
+	public static bool _CanControl = false; public bool ccanControl { get { return _CanControl; } set { _CanControl = value; } }
 	
 	
 	//PRIVATE VARIABLES -- INMANAGER USED
@@ -99,7 +99,8 @@ public class MainManager : MonoBehaviour {
 	public static bool _loop2 = false;
 	public static float loopingCounter = 0;
 	
-	
+	//Variable Speed
+	public float _Decel = 1;
 	
 	//VARIABLE HIGHSCORE
 	

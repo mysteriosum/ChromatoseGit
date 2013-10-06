@@ -1259,6 +1259,8 @@ public class Avatar : MainManager{
 	
 	void TranslateInputs(float multiplier){
 		
+		
+		
 		if (Time.timeScale == 0) return;
 		bool gonnaRotate = false;
 		bool clockwise = false;
@@ -1324,7 +1326,7 @@ public class Avatar : MainManager{
 			//t.rotation.eulerAngles = movement.rotator.Rotate(t.rotation.eulerAngles, clockwise);
 		}
 		velocity = this.movement.Displace(gonnaThrust);
-		t.position += new Vector3(velocity.x, velocity.y, 0) * multiplier;
+		t.position += new Vector3(velocity.x * _Decel, velocity.y * _Decel, 0) * multiplier;
 		
 	}
 	void TranslateInputs(){
@@ -1349,6 +1351,7 @@ public class Avatar : MainManager{
 	
 	
 	public void CannotControlFor(float t){
+		_CanControl = false;
 		canControl = false;
 		getForward = false;
 		getLeft = false;
@@ -1357,6 +1360,7 @@ public class Avatar : MainManager{
 	}
 	//Overriding the methods
 	public void CannotControlFor(bool needTimes, float t){
+		_CanControl = false;
 		canControl = false;
 		getForward = false;
 		getLeft = false;
@@ -1368,10 +1372,18 @@ public class Avatar : MainManager{
 
 	
 	public void CanControl(){
+		_CanControl = true;
 		canControl = true;
+		getForward = true;
+		getLeft = true;
+		getRight = true;
 	}
 	public void InverseControlRight(){
 		canControl = !canControl;
+		_CanControl = !_CanControl;
+		getForward = !getForward;
+		getLeft = !getLeft;
+		getRight = !getRight;
 	}
 	
 	public void Trigger(){
