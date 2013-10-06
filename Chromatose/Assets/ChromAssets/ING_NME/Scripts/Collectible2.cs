@@ -156,6 +156,8 @@ public class Collectible2 : MonoBehaviour {
 			_AvatarScript.OnRedCol = false;
 			break;
 		}
+		
+		HUDManager.hudManager.OffAction();
 	}
 	
 	IEnumerator Setup(){

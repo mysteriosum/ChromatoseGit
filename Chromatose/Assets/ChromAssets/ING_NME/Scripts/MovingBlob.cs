@@ -88,6 +88,6 @@ public bool waitingAvatarInZone = false;
 	void OnCollisionEnter(Collision other){
 		if(other.gameObject.tag != "avatar")return;
 		
-		_Manager.Death();
+		ChromatoseManager.manager.Death();
 	}
 }

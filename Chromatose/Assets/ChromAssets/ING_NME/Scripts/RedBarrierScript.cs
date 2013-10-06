@@ -1,7 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
-public class RedBarrierScript : MainManager {
+public class RedBarrierScript : MonoBehaviour {
 	
 	public tk2dSpriteAnimation flameAnim;
 	

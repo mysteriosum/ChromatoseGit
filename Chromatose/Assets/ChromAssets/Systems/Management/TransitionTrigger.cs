@@ -186,9 +186,15 @@ public class TransitionTrigger : MonoBehaviour {
 			//Debug.Log("NextLilRoom");
 		}
 		
-		ChromatoseManager.manager.ResetComicCounter();
-		ChromatoseManager.manager.ResetColl();
-
+		if(!_DontAddRoom){
+			ChromatoseManager.manager.ResetComicCounter();
+			ChromatoseManager.manager.ResetColl();
+			_AvatarScript.CallFromFar();
+			_AvatarScript.LoseAllColourHidden();		
+			if(_AvatarScript.HasOutline){
+				_AvatarScript.CancelOutline();
+			}
+		}
 		//ResetBool();
 		
 		if(GameObject.FindGameObjectWithTag("OptiManager") != null){
@@ -196,11 +202,7 @@ public class TransitionTrigger : MonoBehaviour {
 			tempOptiManager.OptimizeZone();
 		}
 		
-		_AvatarScript.CallFromFar();
-		_AvatarScript.LoseAllColourHidden();		
-		if(_AvatarScript.HasOutline){
-			_AvatarScript.CancelOutline();
-		}
+		
 		HUDManager.hudManager.afterComic = false;
 	}
 	
