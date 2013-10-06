@@ -108,6 +108,7 @@ public class ChromatoseManager : MainManager {
 		}
 	private Transform curCheckpoint;
 	
+	private bool _LevelSaveExist = false; public bool levelSaveExist { get { return _LevelSaveExist; } set { _LevelSaveExist = value; } }
 	
 	//Variables Listes
 	private SpriteFader[] _FaderList;
@@ -127,6 +128,9 @@ public class ChromatoseManager : MainManager {
 	void Awake () {
 		Setup();
 		manager = this;
+	}
+	void OnLevelWasLoaded(){
+		_LevelSaveExist = false;
 	}
 	
 	void Start(){
@@ -265,55 +269,71 @@ public class ChromatoseManager : MainManager {
 #region Fonctions Diverses
 	Avatar.DeathAnim danim;		//avatar's death animation
 	public void Death(){
-		avatar = GameObject.FindGameObjectWithTag("avatar").GetComponent<Avatar>();
-		if(!_NoDeathModeActivated){
-			MusicManager.soundManager.PlaySFX(6);
-			danim = new Avatar.DeathAnim();
-			danim.PlayDeath(Reset);
-			//avatar.SendMessage("FadeAlpha", 0f);
-			GameObject.FindGameObjectWithTag("avatar").GetComponent<Avatar>().movement.SetVelocity(Vector2.zero);
-			StartCoroutine(OnDeath(0.15f));
-			StartCoroutine(RestartRoom());
-			ResetColl();
-			ResetComicCounter();
-			avatar.EmptyingBucket();
-			avatar.CancelOutline();
-			avatar.Gone = true;
+		
+		if(!_LevelSaveExist){
 			
-			switch(_AvatarScript.avaTypeAccess){
-			case _AvatarTypeEnum.avatar:
-				_AvatarScript.avaTypeAccess = _AvatarTypeEnum.shavatar;
-				break;
-			case _AvatarTypeEnum.shavatar:
-				_AvatarScript.avaTypeAccess = _AvatarTypeEnum.avatar;
-				break;
+			avatar = GameObject.FindGameObjectWithTag("avatar").GetComponent<Avatar>();
+			if(!_NoDeathModeActivated){
+				MusicManager.soundManager.PlaySFX(6);
+				danim = new Avatar.DeathAnim();
+				danim.PlayDeath(Reset);
+				//avatar.SendMessage("FadeAlpha", 0f);
+				GameObject.FindGameObjectWithTag("avatar").GetComponent<Avatar>().movement.SetVelocity(Vector2.zero);
+				StartCoroutine(OnDeath(0.15f));
+				StartCoroutine(RestartRoom());
+				ResetColl();
+				ResetComicCounter();
+				avatar.EmptyingBucket();
+				avatar.CancelOutline();
+				avatar.Gone = true;
+				
+				switch(_AvatarScript.avaTypeAccess){
+				case _AvatarTypeEnum.avatar:
+					_AvatarScript.avaTypeAccess = _AvatarTypeEnum.shavatar;
+					break;
+				case _AvatarTypeEnum.shavatar:
+					_AvatarScript.avaTypeAccess = _AvatarTypeEnum.avatar;
+					break;
+				}
 			}
+			else{
+				MusicManager.soundManager.PlaySFX(6);
+				danim = new Avatar.DeathAnim();
+				danim.PlayDeath(Reset);
+				//avatar.SendMessage("FadeAlpha", 0f);
+				avatar.movement.SetVelocity(Vector2.zero);
+				StartCoroutine(OnDeath(0.15f));
+				avatar.CancelOutline();
+				avatar.Gone = true;
+				ResetColl();
+				ResetComicCounter();
+				avatar.EmptyingBucket();
+				switch(_AvatarScript.avaTypeAccess){
+				case _AvatarTypeEnum.avatar:
+					_AvatarScript.avaTypeAccess = _AvatarTypeEnum.shavatar;
+					break;
+				case _AvatarTypeEnum.shavatar:
+					_AvatarScript.avaTypeAccess = _AvatarTypeEnum.avatar;
+					break;
+				}
+				//Application.LoadLevel(2);
+			}
+			
+			//avatar.renderer.enabled = false;
 		}
 		else{
 			MusicManager.soundManager.PlaySFX(6);
 			danim = new Avatar.DeathAnim();
-			danim.PlayDeath(Reset);
-			//avatar.SendMessage("FadeAlpha", 0f);
+			danim.PlayDeath(LoadCheckpoint);
 			avatar.movement.SetVelocity(Vector2.zero);
-			StartCoroutine(OnDeath(0.15f));
-			avatar.CancelOutline();
-			avatar.Gone = true;
-			ResetColl();
-			ResetComicCounter();
-			avatar.EmptyingBucket();
-			switch(_AvatarScript.avaTypeAccess){
-			case _AvatarTypeEnum.avatar:
-				_AvatarScript.avaTypeAccess = _AvatarTypeEnum.shavatar;
-				break;
-			case _AvatarTypeEnum.shavatar:
-				_AvatarScript.avaTypeAccess = _AvatarTypeEnum.avatar;
-				break;
-			}
-			//Application.LoadLevel(2);
 		}
-		
-		//avatar.renderer.enabled = false;
 	}
+	
+	public void LoadCheckpoint(tk2dAnimatedSprite anim, int index){
+		Destroy(danim.go);
+		LevelSerializer.Resume();
+	}
+	
 	
 	public void DeathByBoss(){
 		Debug.Log("Mort par le Boss");

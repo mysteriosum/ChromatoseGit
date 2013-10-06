@@ -24,33 +24,36 @@ public class InputManager : MainManager {
 			if(Input.GetKey(KeyCode.Escape)){
 				//Pause();
 				HUDManager.hudManager.StartHudCloseSequence();
-			}	
+			}
+			
+			if(_CanControl){
 		
-				//MOUVEMENT DE L'AVATAR
-			if (_CanControl){
-					//INPUT DU FORWARD){
-				avatarScript.getforward = Input.GetKey(KeyCode.O);
-				
-					//INPUT DU PREMIER FORWARD SEULEMENT -- JE L'UTILISE POUR LE SON DE L'ACCEL
-				if(Input.GetKeyDown(KeyCode.O)){
-					MusicManager.soundManager.PlaySFX(0, 0.6f);
-				}
-				
-					//SI LE KEYBOARD SETTING EST SUR QWERTY
-				if(keyboardType == MainManager._KeyboardTypeEnum.QWERTY){
-						//INPUT DU LEFT
-					avatarScript.getleft = Input.GetKey(KeyCode.Q);
-		
-						//INPUT DU RIGHT
-					avatarScript.getright = Input.GetKey(KeyCode.W);
-				}
-					//SI LE KEYBOARD SETTING EST SUR AZERTY
-				else{
-						//INPUT DU LEFT
-					avatarScript.getleft = Input.GetKey(KeyCode.A);
-		
-						//INPUT DU RIGHT
-					avatarScript.getright = Input.GetKey(KeyCode.Z);
+					//MOUVEMENT DE L'AVATAR
+				if (_CanControl){
+						//INPUT DU FORWARD){
+					avatarScript.getforward = Input.GetKey(KeyCode.O);
+					
+						//INPUT DU PREMIER FORWARD SEULEMENT -- JE L'UTILISE POUR LE SON DE L'ACCEL
+					if(Input.GetKeyDown(KeyCode.O)){
+						MusicManager.soundManager.PlaySFX(0, 0.6f);
+					}
+					
+						//SI LE KEYBOARD SETTING EST SUR QWERTY
+					if(keyboardType == MainManager._KeyboardTypeEnum.QWERTY){
+							//INPUT DU LEFT
+						avatarScript.getleft = Input.GetKey(KeyCode.Q);
+			
+							//INPUT DU RIGHT
+						avatarScript.getright = Input.GetKey(KeyCode.W);
+					}
+						//SI LE KEYBOARD SETTING EST SUR AZERTY
+					else{
+							//INPUT DU LEFT
+						avatarScript.getleft = Input.GetKey(KeyCode.A);
+			
+							//INPUT DU RIGHT
+						avatarScript.getright = Input.GetKey(KeyCode.Z);
+					}
 				}
 			}
 		}
