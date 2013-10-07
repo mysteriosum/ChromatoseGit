@@ -1032,8 +1032,9 @@ public class HUDManager : MainManager {
 	IEnumerator GoToLvlSelection(){
 		yield return new WaitForSeconds(0.65f);
 		
-		if(_FirstStart){
+		if(!keyboardAlreadyChoose){
 			_MenuWindows = _MenuWindowsEnum.KeyboardSelectionScreen;
+			ActiveKeyboardButton();
 		}
 		else{
 			_MenuWindows = _MenuWindowsEnum.LevelSelectionWindows;
