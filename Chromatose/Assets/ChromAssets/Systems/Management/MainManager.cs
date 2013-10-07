@@ -149,7 +149,7 @@ public class MainManager : MonoBehaviour {
 		SetupAvatarAndCam();		
 	}	
 	void Start () {
-		StartingDebug();
+		StartCoroutine( StartingDebug() );
 		if(menuCam == null){
 			menuCam = Camera.mainCamera;
 		}
@@ -166,11 +166,12 @@ public class MainManager : MonoBehaviour {
 		SetupAvatarAndCam();
 	}
 	
-	void StartingDebug(){
+	IEnumerator StartingDebug(){
+		yield return new WaitForSeconds(0.5f);
 		Debug.LogWarning("MainManager-Start_log - Started in Lvl " + Application.loadedLevel + ". Also, the keyboard is a " +
-							_KeyboardType + " type. Already own " + StatsManager.whiteCollCollected + " whiteCollectibles but only " +
-							StatsManager.whiteCollDisplayed + " will be displayed. Already own " + StatsManager.redCollCollected + " redCollectibles but only " +
-							StatsManager.redCollDisplayed + " will be displayed. Already own " + StatsManager.blueCollCollected + " blueCollectibles but only " +
+							_KeyboardType + " type. Already own " + StatsManager.whiteCollCollected[Application.loadedLevel] + " whiteCollectibles but only " +
+							StatsManager.whiteCollDisplayed + " will be displayed. Already own " + StatsManager.redCollCollected[Application.loadedLevel] + " redCollectibles but only " +
+							StatsManager.redCollDisplayed + " will be displayed. Already own " + StatsManager.blueCollCollected[Application.loadedLevel] + " blueCollectibles but only " +
 							StatsManager.blueCollDisplayed + " will be displayed. " );
 	}
 	
@@ -286,6 +287,10 @@ public class MainManager : MonoBehaviour {
 				return;
 			}
 		}
+	}
+	
+	public void SaveStats(){
+		LevelSerializer.SaveObjectTreeToFile("Chromasave", GameObject.FindGameObjectWithTag("StatsManager").gameObject);
 	}
 	
 	

@@ -5,6 +5,9 @@ using System.IO;
 namespace ChromaStats{
 	public class UnitySingleton : MonoBehaviour
 	{
+		
+		
+		
 		//SINGLETON ACCESS
 	    static UnitySingleton instance;
 	 
@@ -55,7 +58,7 @@ namespace ChromaStats{
 		
 		
 		void Start(){
-			CheckForLoad();	
+			CheckForLoad();				
 		}	
 		
 		void Update(){

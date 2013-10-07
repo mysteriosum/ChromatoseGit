@@ -164,20 +164,21 @@ public class ChromatoseManager : MainManager {
 			StartCoroutine(ResetCanGrabCollectibles(0.05f));
 			
 			if(col == Color.white){
-				StatsManager.whiteCollCollected++;
+				StatsManager.whiteCollCollected[Application.loadedLevel]++;
 				StatsManager.whiteCollDisplayed++;
 			}
 			else if(col == Color.red){
-				StatsManager.redCollCollected++;
+				StatsManager.redCollCollected[Application.loadedLevel]++;
 				StatsManager.redCollDisplayed++;
 			}
 			else if(col == Color.blue){
-				StatsManager.blueCollCollected++;
+				StatsManager.blueCollCollected[Application.loadedLevel]++;
 				StatsManager.blueCollDisplayed++;
 			}
 			else{
 				Debug.LogWarning("Not a real collectible.");
 			}
+			StatsManager.manager.ReCalculateStats();
 		}
 	}
 	public void AddCollectible(Color col, int amount){
@@ -187,20 +188,21 @@ public class ChromatoseManager : MainManager {
 			StartCoroutine(ResetCanGrabCollectibles(0.05f));
 			
 			if(col == Color.white){
-				StatsManager.whiteCollCollected += amount;
+				StatsManager.whiteCollCollected[Application.loadedLevel] += amount;
 				StatsManager.whiteCollDisplayed += amount;
 			}
 			else if(col == Color.red){
-				StatsManager.redCollCollected += amount;
+				StatsManager.redCollCollected[Application.loadedLevel] += amount;
 				StatsManager.redCollDisplayed += amount;
 			}
 			else if(col == Color.blue){
-				StatsManager.blueCollCollected += amount;
+				StatsManager.blueCollCollected[Application.loadedLevel] += amount;
 				StatsManager.blueCollDisplayed += amount;
 			}
 			else{
 				Debug.LogWarning("Not a real collectible.");
 			}
+			StatsManager.manager.ReCalculateStats();
 		}
 	}
 	

@@ -1326,7 +1326,7 @@ public class Avatar : MainManager{
 			//t.rotation.eulerAngles = movement.rotator.Rotate(t.rotation.eulerAngles, clockwise);
 		}
 		velocity = this.movement.Displace(gonnaThrust);
-		t.position += new Vector3(velocity.x * _Decel, velocity.y * _Decel, 0) * multiplier;
+		t.position += new Vector3(velocity.x, velocity.y, 0) * multiplier;
 		
 	}
 	void TranslateInputs(){
