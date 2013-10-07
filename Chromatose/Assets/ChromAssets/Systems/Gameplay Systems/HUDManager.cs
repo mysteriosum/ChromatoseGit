@@ -472,7 +472,8 @@ public class HUDManager : MainManager {
 		//RESET FUNCTION
 	public void ResetComicCounter(){
 		_TotalComicThumb = _RoomManager.UpdateTotalComic();
-		StatsManager.comicThumbCollected = 0;
+		StatsManager.comicThumbCollected[Application.loadedLevel] = 0;
+		StatsManager.manager.ReCalculateStats();
 	}
 	
 		//Start Hud Open Sequence
@@ -779,7 +780,7 @@ public class HUDManager : MainManager {
 		
 		GUI.BeginGroup(hudRect[0]);										//comic counter		
 			GUI.skin.textArea.normal.textColor = Color.black;
-			if(StatsManager.comicThumbCollected >=  _TotalComicThumb && _TotalComicThumb != 0 && !_AfterComic){
+			if(StatsManager.comicThumbDisplayed >=  _TotalComicThumb && _TotalComicThumb != 0 && !_AfterComic){
 				_CanFlash = true;
 			}
 			if(_CanFlash){
@@ -797,7 +798,7 @@ public class HUDManager : MainManager {
 			}
 			GUI.skin.textArea.fontSize = 22;
 			GUI.skin.textArea.normal.textColor = Color.black;
-			GUI.TextArea(new Rect(textOffset.x, textOffset.y, 100, 50), StatsManager.comicThumbCollected + " / " + _TotalComicThumb);
+			GUI.TextArea(new Rect(textOffset.x, textOffset.y, 100, 50), StatsManager.comicThumbDisplayed + " / " + _TotalComicThumb);
 			
 			
 		GUI.EndGroup();

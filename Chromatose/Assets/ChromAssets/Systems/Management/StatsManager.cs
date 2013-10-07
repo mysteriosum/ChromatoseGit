@@ -13,14 +13,14 @@ public class StatsManager : MainManager {
 	
 	public static bool[] levelUnlocked;
 	public static bool[] levelDoned;
-	public static int redCollCollected = 0;
-	public static int blueCollCollected = 0;
-	public static int whiteCollCollected;
-	public static int comicThumbCollected = 0;
+	public static int[] redCollCollected;
+	public static int[] blueCollCollected;
+	public static int[] whiteCollCollected;
+	public static int[] comicThumbCollected;
 	
 	public static int redCollDisplayed = 0;
 	public static int blueCollDisplayed = 0;
-	public static int whiteCollDisplayed;
+	public static int whiteCollDisplayed = 0;
 	public static int comicThumbDisplayed = 0;
 	
 	public static int totalComicViewed = 0;
@@ -37,12 +37,105 @@ public class StatsManager : MainManager {
 		DontDestroyOnLoad(this.gameObject);
 	}
 	
+	void OnLevelWasLoaded(){
+		ResetLevelColl();
+	}
+	
 	void Start () {
+		
+		bool needInit = CheckIfInitializeStats();
+		
+		if(needInit){
+			redCollCollected = new int[13]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+			blueCollCollected = new int[13]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+			whiteCollCollected = new int[13]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+			comicThumbCollected = new int[13]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+		}
+			
 		levelUnlocked = new bool[13]{true, false, false, false, false,
 										false, false, false, false, false,
 										false, false, true};
+		
 		levelDoned = new bool[13]{false, false, false, false, false,
 										false, false, false, false, false,
-										false, false, false};
+										false, false, false};		
+
+	}
+	
+	bool CheckIfInitializeStats(){
+		if(redCollCollected != null){
+			return false;
+		}
+		else if(blueCollCollected != null){
+			return false;
+		}
+		else if(whiteCollCollected != null){
+			return false;
+		}
+		else if(comicThumbCollected != null){
+			return false;
+		}
+		else{
+			return true;
+		}
+	}
+	
+	void ResetLevelColl(){
+		int lvl = Application.loadedLevel;
+		redCollCollected[lvl] = 0;
+		blueCollCollected[lvl] = 0;
+		whiteCollCollected[lvl] = 0;
+		comicThumbCollected[lvl] = 0;
+		ReCalculateStats();
+	}	
+	public void ReCalculateStats(){
+		redCollDisplayed = 0;
+		foreach(int rCol in redCollCollected){
+			redCollDisplayed += rCol;
+		}
+		blueCollDisplayed = 0;
+		foreach(int bCol in blueCollCollected){
+			blueCollDisplayed += bCol;
+		}
+		whiteCollDisplayed = 0;
+		foreach(int wCol in whiteCollCollected){
+			whiteCollDisplayed += wCol;
+		}
+		comicThumbDisplayed = 0;
+		foreach(int cThumb in comicThumbCollected){
+			comicThumbDisplayed += cThumb;
+		}
+	}
+	public void ReCalculateStats(Color colorColl, int amount, bool comicIs){
+		redCollDisplayed = 0;
+		foreach(int rCol in redCollCollected){
+			redCollDisplayed += rCol;
+		}
+		blueCollDisplayed = 0;
+		foreach(int bCol in blueCollCollected){
+			blueCollDisplayed += bCol;
+		}
+		whiteCollDisplayed = 0;
+		foreach(int wCol in whiteCollCollected){
+			whiteCollDisplayed += wCol;
+		}
+		comicThumbDisplayed = 0;
+		foreach(int cThumb in comicThumbCollected){
+			comicThumbDisplayed += cThumb;
+		}
+		if(!comicIs){
+			if(colorColl == Color.red){
+				redCollDisplayed -= amount;
+			}
+			if(colorColl == Color.blue){
+				blueCollDisplayed -= amount;
+			}
+			if(colorColl == Color.white){
+				whiteCollDisplayed -= amount;
+			}
+		}
+		else{
+			comicThumbDisplayed -= amount;
+		}
 	}
 }
