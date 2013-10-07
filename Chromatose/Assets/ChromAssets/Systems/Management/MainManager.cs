@@ -244,6 +244,7 @@ public class MainManager : MonoBehaviour {
 				}
 				_SpeechBubble.SetActive(false);
 			}
+			StartCoroutine(DelayinLoadLevel(levelInt, 1.0f));
 		}
 		else{
 			if(_Avatar){
@@ -253,8 +254,8 @@ public class MainManager : MonoBehaviour {
 				_SpeechBubble.SetActive(true);
 			}
 			HUDManager.hudManager.ResetAllMovie();
+			StartCoroutine(DelayinLoadLevel(levelInt, 2.0f));
 		}
-		StartCoroutine(DelayinLoadLevel(levelInt));
 	}
 	
 	public void SaveRoom(){
@@ -287,6 +288,9 @@ public class MainManager : MonoBehaviour {
 				return;
 			}
 		}
+	}
+	
+	public void ExtCallDelaiLoad(int desiredLvl){
 	}
 	
 	public void SaveStats(){
@@ -410,8 +414,8 @@ public class MainManager : MonoBehaviour {
 			break;
 		}
 	}
-	IEnumerator DelayinLoadLevel(int levelInt){
-		yield return new WaitForSeconds(1.0f);
+	IEnumerator DelayinLoadLevel(int levelInt, float delai){
+		yield return new WaitForSeconds(delai);
 		Application.LoadLevel(levelInt);
 	}
 }
