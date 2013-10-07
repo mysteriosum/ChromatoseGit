@@ -858,6 +858,7 @@ public class HUDManager : MainManager {
 		if(GUI.Button(new Rect(400, 175, 501, 149), "")){
 			Pause();
 			GameObject.FindGameObjectWithTag("avatar").GetComponent<Avatar>().movement.SetVelocity(Vector2.zero);
+			LevelSerializer.SaveObjectTreeToFile("Chromasave", GameObject.FindGameObjectWithTag("StatsManager").gameObject);
 			LoadALevel(0);
 		}
 		

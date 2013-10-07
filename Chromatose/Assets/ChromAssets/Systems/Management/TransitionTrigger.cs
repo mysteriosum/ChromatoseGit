@@ -169,7 +169,10 @@ public class TransitionTrigger : MonoBehaviour {
 			_AvatarScript.CancelOutline();
 		}
 		MainManager._MainManager.UnlockNextLevel();
-		Application.LoadLevel(Application.loadedLevel + 1);
+		LevelSerializer.SaveObjectTreeToFile("Chromasave", GameObject.FindGameObjectWithTag("StatsManager").gameObject);
+		
+		MainManager._MainManager.LoadALevel(Application.loadedLevel + 1);
+		
 	}
 	
 	void ToTarget(){
