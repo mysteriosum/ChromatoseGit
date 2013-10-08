@@ -16,6 +16,10 @@ public class ChuButton : MonoBehaviour {
 		menuCam = Camera.mainCamera;
 	}
 	
+	void OnLevelWasLoaded(){
+		StartCoroutine(CheckUnlockable());
+	}
+	
 	// Update is called once per frame
 	void Update () {
 		
@@ -33,7 +37,7 @@ public class ChuButton : MonoBehaviour {
             RaycastHit hitInfo;
             if (collider.Raycast(ray, out hitInfo, 1.0e8f))
             {
-				if (!Physics.Raycast(ray, hitInfo.distance - 0.01f)){
+				if (!Physics.Raycast(ray, hitInfo.distance - 0.01f) && StatsManager.levelUnlocked[levelIndex - 1]){
 					MainManager._MainManager.LoadALevel(levelIndex);
 					HUDManager.hudManager.DesactiveKeyboardButton();
 					HUDManager.hudManager.DesactiveButton();
@@ -44,10 +48,24 @@ public class ChuButton : MonoBehaviour {
 	}
 	
 	void OnMouseOver(){
-		mainSprite.SetSprite(1);
+		if(StatsManager.levelUnlocked[levelIndex - 1] == true){
+			mainSprite.SetSprite(1);
+		}
 	}
 	void OnMouseExit(){
-		mainSprite.SetSprite(0);
+		if(StatsManager.levelUnlocked[levelIndex - 1] == true){
+			mainSprite.SetSprite(0);
+		}
+		else if(StatsManager.levelDoned[levelIndex - 1] == true){
+			mainSprite.SetSprite(3);
+		}
+		else{
+			mainSprite.SetSprite(2);
+		}
+	}
+	
+	public void ExtCheckUnlockable(){
+		StartCoroutine(CheckUnlockable());
 	}
 	
 	IEnumerator CheckUnlockable(){
@@ -56,10 +74,10 @@ public class ChuButton : MonoBehaviour {
 			mainSprite.SetSprite(0);
 		}
 		else if(StatsManager.levelDoned[levelIndex - 1] == true){
-			mainSprite.SetSprite(2);
+			mainSprite.SetSprite(3);
 		}
 		else{
-			mainSprite.SetSprite(0);
+			mainSprite.SetSprite(2);
 		}
 	}	
 }

@@ -22,6 +22,7 @@ public class TransitionTrigger : MonoBehaviour {
 	private bool _OnStaticComic = false;
 	private bool _FadeIn = false;
 	private bool _FadeOut = false;
+	private bool nextLvlUnlocked = false;
 	
 	private float _LightCounter = 0f;
 	
@@ -168,7 +169,15 @@ public class TransitionTrigger : MonoBehaviour {
 		if(_AvatarScript.HasOutline){
 			_AvatarScript.CancelOutline();
 		}
-		MainManager._MainManager.UnlockNextLevel();
+		
+		_AvatarScript.CannotControlFor(false, 0);
+		_AvatarScript.movement.SetVelocity(Vector2.zero);
+		
+		if(!nextLvlUnlocked){
+			MainManager._MainManager.UnlockNextLevel();
+			nextLvlUnlocked = true;
+		}
+			
 		LevelSerializer.SaveObjectTreeToFile("Chromasave", GameObject.FindGameObjectWithTag("StatsManager").gameObject);
 		
 		MainManager._MainManager.LoadALevel(Application.loadedLevel + 1);

@@ -73,6 +73,10 @@ public class SpeechBubble : MonoBehaviour{				//THE BUBBLE AND ITS DECLARATION!
 		if(LevelSerializer.IsDeserializing) return;
 	}
 	
+	void Start(){
+		DontDestroyOnLoad(this);
+	}
+	
 	public void Main(){
 		
 		if (timer > 0){

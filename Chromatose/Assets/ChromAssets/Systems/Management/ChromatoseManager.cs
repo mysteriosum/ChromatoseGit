@@ -130,6 +130,7 @@ public class ChromatoseManager : MainManager {
 		manager = this;
 	}
 	void OnLevelWasLoaded(){
+		Setup();
 		_LevelSaveExist = false;
 	}
 	
