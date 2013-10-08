@@ -50,7 +50,7 @@ public class StatsManager : MainManager {
 			blueCollCollected = new int[13]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 			whiteCollCollected = new int[13]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 			comicThumbCollected = new int[13]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-		}
+		
 			
 		levelUnlocked = new bool[13]{true, false, false, false, false,
 										false, false, false, false, false,
@@ -59,7 +59,7 @@ public class StatsManager : MainManager {
 		levelDoned = new bool[13]{false, false, false, false, false,
 										false, false, false, false, false,
 										false, false, false};		
-
+		}
 	}
 	
 	bool CheckIfInitializeStats(){

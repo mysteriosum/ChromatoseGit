@@ -192,6 +192,8 @@ public class HUDManager : MainManager {
 	}
 	
 	void OnLevelWasLoaded(){
+		actionMethod = null;
+		movieSecondLoad.Play();
 		SetupHud();
 		StartCoroutine(Setup(0f));
 		if(Application.loadedLevel == 0){
@@ -319,7 +321,7 @@ public class HUDManager : MainManager {
 			}
 		}
 			//Effectue l'action si une action peut etre effectuer et si la touche P est presser
-		if (Input.GetKeyDown(KeyCode.P) && currentAction > 0 && actionMethod != null && !ChromatoseManager.manager.InComic){
+		if (Input.GetKeyDown(KeyCode.P) && currentAction > 0 && actionMethod != null && guiState != GUIStateEnum.OnStart){
 			actionMethod();
 		}
 		
@@ -876,7 +878,8 @@ public class HUDManager : MainManager {
 		GUI.skin = _SkinMenuSansBox;
 		Rect startBox = new Rect(500, 350, 250, 126);
 		
-		GUI.DrawTexture(new Rect(300, 175, 489, 374), _LevelReady);
+		GUI.DrawTexture(new Rect(300, 175, 489, 374), movieSecondLoad);
+		Debug.Log("InStart");
 	}
 	
 		//DRAW LA FENETRE DU MAIN MENU

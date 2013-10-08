@@ -10,8 +10,10 @@ public class DevManager : MainManager {
 
 	private bool devMenuActive = false;
 	
-	void Start () {
+	private GameObject[] levelButton;
 	
+	void Start () {
+		levelButton = GameObject.FindGameObjectsWithTag("levelButton");
 	}
 	
 	void Update () {
@@ -106,6 +108,9 @@ public class DevManager : MainManager {
 			GUI.skin.button.fontSize = 16;
 			if(GUI.Button(new Rect(750f, 570f, 140f, 50f), "UNLOCK NEXT LEVEL")){
 				UnlockNextLevel();
+				foreach(GameObject lvlButton in levelButton){
+					lvlButton.GetComponent<ChuButton>().ExtCheckUnlockable();
+				}
 			}
 			
 				//BOUTON LOCK LAST LEVEL
@@ -113,6 +118,9 @@ public class DevManager : MainManager {
 			GUI.skin.button.fontSize = 16;
 			if(GUI.Button(new Rect(910f, 570f, 140f, 50f), "LOCK LAST LEVEL")){
 				LockLastLevel();
+				foreach(GameObject lvlButton in levelButton){
+					lvlButton.GetComponent<ChuButton>().ExtCheckUnlockable();
+				}
 			}
 			
 			

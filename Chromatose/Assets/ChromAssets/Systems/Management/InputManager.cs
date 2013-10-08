@@ -73,6 +73,7 @@ public class InputManager : MainManager {
 				MusicManager.soundManager.PlaySFX(19);
 				MusicManager.soundManager.CheckLevel();
 				HUDManager.hudManager.StartHudOpenSequence();
+				Debug.Log("OutStart");
 			}
 		}
 	}

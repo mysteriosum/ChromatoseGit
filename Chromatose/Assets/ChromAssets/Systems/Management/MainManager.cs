@@ -231,7 +231,8 @@ public class MainManager : MonoBehaviour {
 	
 	public void LoadALevel(int levelInt){
 		HUDManager.hudManager.guiState = GUIStateEnum.MainMenu;
-		HUDManager.hudManager.menuWindows = _MenuWindowsEnum.LoadingScreen;
+		HUDManager.hudManager.movieSecondLoad.Stop();
+	//	HUDManager.hudManager.menuWindows = _MenuWindowsEnum.LoadingScreen;
 		HUDManager.hudManager.movieSecondLoad.Play();
 		
 		if(levelInt == 0){			
@@ -251,10 +252,15 @@ public class MainManager : MonoBehaviour {
 				_Avatar.SetActive(true);
 				Camera.mainCamera.GetComponent<AudioListener>().enabled = false;
 				print("Camera-AudioListener Off");
+				if(_SpeechBubble == null){
+					_SpeechBubble = GameObject.FindGameObjectWithTag("speechBubble");
+				}
 				_SpeechBubble.SetActive(true);
+				
 			}
-			HUDManager.hudManager.ResetAllMovie();
-			StartCoroutine(DelayinLoadLevel(levelInt, 2.0f));
+			//HUDManager.hudManager.ResetAllMovie();
+			StartCoroutine(DelayinLoadLevel(levelInt, 0.2f));
+			
 		}
 	}
 	
@@ -290,8 +296,6 @@ public class MainManager : MonoBehaviour {
 		}
 	}
 	
-	public void ExtCallDelaiLoad(int desiredLvl){
-	}
 	
 	public void SaveStats(){
 		LevelSerializer.SaveObjectTreeToFile("Chromasave", GameObject.FindGameObjectWithTag("StatsManager").gameObject);
@@ -417,5 +421,6 @@ public class MainManager : MonoBehaviour {
 	IEnumerator DelayinLoadLevel(int levelInt, float delai){
 		yield return new WaitForSeconds(delai);
 		Application.LoadLevel(levelInt);
+		Debug.Log("DelayingSuccess");
 	}
 }
