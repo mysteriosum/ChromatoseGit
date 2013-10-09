@@ -74,7 +74,8 @@ public class HUDManager : MainManager {
 					_FirstStart = false,
 					_CanShowPressStartAnim = false,
 					_CanShowLogo = false,
-					_OnErase = false;
+					_OnErase = false,
+					_OnLogo = false;
 
 	private float flashTimer = 0.0f, aX, actionSlideSpeed = 2.0f;
 	private Vector2 textOffset = new Vector2 (55f, 8);
@@ -911,6 +912,7 @@ public class HUDManager : MainManager {
 		Rect startBox = new Rect(500, 450, 250, 126);
 		if(GUI.Button(startBox, "")){
 			_CanShowPressStartAnim = true;
+			MusicManager.soundManager.PlaySFX(51);
 		}
 		GUI.DrawTexture(startBox, movieStart);
 		
@@ -961,11 +963,11 @@ public class HUDManager : MainManager {
 		GUI.DrawTexture(new Rect(400, 90, 550, 520), movieLoad);
 		StartCoroutine(CanShowLogo());
 		
-		if(_CanShowLogo){
+		if(_CanShowLogo && !_OnLogo){
 			
 			movieLogo.Play();
 			GUI.DrawTexture(new Rect(400, 90, 550, 520), movieLogo);
-			
+			_OnLogo = true;
 			StartCoroutine(GoToMainMenu(5.1f));
 		}
 	}
@@ -1049,6 +1051,8 @@ public class HUDManager : MainManager {
 	IEnumerator GoToMainMenu(float delai){
 		yield return new WaitForSeconds(delai);
 		_MenuWindows = _MenuWindowsEnum.MainMenu;
+		MusicManager.soundManager.PlaySFX(6);
+		StartCoroutine(PlayStartFX());
 	}
 	IEnumerator CanShowLogo(){
 		yield return new WaitForSeconds(1.9f);
@@ -1058,5 +1062,9 @@ public class HUDManager : MainManager {
 		yield return new WaitForSeconds(0.65f);
 		_GUIState = GUIStateEnum.Interface;
 		StartHudOpenSequence();		
+	}
+	IEnumerator PlayStartFX(){
+		yield return new WaitForSeconds(4.8f);
+		MusicManager.soundManager.PlaySFX(3);
 	}
 }

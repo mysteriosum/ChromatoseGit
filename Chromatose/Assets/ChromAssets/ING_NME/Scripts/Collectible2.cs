@@ -175,19 +175,22 @@ public class Collectible2 : MonoBehaviour {
 			switch(colorCollectible){
 			case _ColorCollectible.White:
 				_MainAnim.Play(takeAnimWhite);
+				if(!_Effect){
+					MusicManager.soundManager.PlaySFX(54);
+				}
 				break;
 			case _ColorCollectible.Red:
 				_MainAnim.Play(takeAnimRed);
 				break;
 			case _ColorCollectible.Blue:
+				if(!_Effect){
+					MusicManager.soundManager.PlaySFX(4);
+				}
 				_MainAnim.Play(takeAnimBlue);
 				break;
 			}
 			_MainAnim.CurrentClip.wrapMode = tk2dSpriteAnimationClip.WrapMode.Once;
 			_MainAnim.animationCompleteDelegate = Die;
-			if(!_Effect){
-				MusicManager.soundManager.PlaySFX(3);
-			}
 			popped = true;
 		}
 	}

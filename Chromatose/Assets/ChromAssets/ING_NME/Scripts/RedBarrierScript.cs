@@ -102,6 +102,7 @@ public class RedBarrierScript : MonoBehaviour {
 		if(spr){
 			spr.PlayFromFrame("flameDie", 0);
 			spr.animationCompleteDelegate = DestroyFlame;
+			MusicManager.soundManager.PlaySFX(18);
 		}
 	}
 	

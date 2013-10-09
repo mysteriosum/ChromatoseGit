@@ -135,10 +135,7 @@ public class MusicManager : MainManager{
 	
 	
 	
-	void Start () {
-		//DontDestroyOnLoad(this.gameObject);
-		//DontDestroyOnLoad(this);
-		
+	void Start () {		
 		Setup();
 	}
 	
@@ -215,6 +212,7 @@ public class MusicManager : MainManager{
 		foreach(AudioSource sfxP in _SFXPlayer){
 			if(!sfxP.isPlaying){
 				sfxP.PlayOneShot(_SFXList[sfxIndex], vol);
+				Debug.Log("Play FX #" + sfxIndex);
 				return;
 			}
 		}
