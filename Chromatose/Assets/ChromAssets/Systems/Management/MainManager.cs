@@ -99,8 +99,6 @@ public class MainManager : MonoBehaviour {
 	public static bool _loop2 = false;
 	public static float loopingCounter = 0;
 	
-	//Variable Speed
-	public float _Decel = 1;
 	
 	//VARIABLE HIGHSCORE
 	

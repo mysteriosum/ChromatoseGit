@@ -9,7 +9,6 @@ public class SpaceBarActivation : MainManager {
 	void OnTriggerEnter(Collider other){
 		if(other.tag != "avatar") return;
 		if(_AvatarScript != null){
-			Debug.Log("IN");
 			_AvatarScript.spaceBarActive = true;
 		}
 	}

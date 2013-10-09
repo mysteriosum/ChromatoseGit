@@ -158,7 +158,8 @@ public class MusicManager : MainManager{
 		switch(curLevel){
 			//MAIN MENU
 		case 0:
-			StartCoroutine(DelayingTrack(0, 7.0f));
+			StartCoroutine(DelayingTrack(0,0f));
+			
 			break;
 			
 			//TUTO
@@ -171,34 +172,34 @@ public class MusicManager : MainManager{
 			CrossFadeMusic(2, 0.0025f);
 			break;
 		case 3:
-			//_MusicSources[3].Play();
+			CrossFadeMusic(1, 0.0025f);
 			break;
 		case 4:
-			//_MusicSources[4].Play();
+			CrossFadeMusic(2, 0.0025f);
 			break;
 		case 5:
-			//_MusicSources[5].Play();
+			CrossFadeMusic(1, 0.0025f);
 			break;
 		case 6:
-			//_MusicSources[6].Play();
+			CrossFadeMusic(2, 0.0025f);
 			break;
 		case 7:
-			//_MusicSources[7].Play();
+			CrossFadeMusic(1, 0.0025f);
 			break;
 		case 8:
-			//_MusicSources[8].Play();
+			CrossFadeMusic(2, 0.0025f);
 			break;
 		case 9:
-			//_MusicSources[9].Play();
+			CrossFadeMusic(2, 0.0025f);
 			break;
 		case 10:
-			//_MusicSources[10].Play();
+			CrossFadeMusic(2, 0.0025f);
 			break;
 		case 11:
-			//_MusicSources[11].Play();
+			CrossFadeMusic(3, 0.0025f);
 			break;
 		case 12:
-			CrossFadeMusic(2, 0.0025f);
+			CrossFadeMusic(3, 0.0025f);
 			break;
 		}
 	}
@@ -207,6 +208,27 @@ public class MusicManager : MainManager{
 		if(!setuped)Setup();
 	}
 	
+	public void StopSFX(int sfxIndex){
+		foreach(AudioSource sfxP in _SFXPlayer){
+			if(sfxP.clip == _SFXList[sfxIndex]){
+				sfxP.loop = false;
+				sfxP.Stop();
+				return;
+			}
+		}
+	}
+	public void PlaySFX(int sfxIndex, bool loop){
+		
+		foreach(AudioSource sfxP in _SFXPlayer){
+			if(!sfxP.isPlaying){
+				sfxP.loop = loop;
+				sfxP.clip = _SFXList[sfxIndex];
+				sfxP.Play();
+				Debug.Log("Play FX #" + sfxIndex);
+				return;
+			}
+		}
+	}
 	public void PlaySFX(int sfxIndex, float vol){
 		
 		foreach(AudioSource sfxP in _SFXPlayer){

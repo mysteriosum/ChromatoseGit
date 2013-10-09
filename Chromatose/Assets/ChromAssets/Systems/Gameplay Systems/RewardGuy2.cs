@@ -7,7 +7,6 @@ public class RewardGuy2 : MonoBehaviour {
 	public GameObject partRewGuy;
 	
 	private BoxCollider _BoxCollider;
-	private AudioSource _SfxPlayer;
 	private Vector3 _RewGuyPos;
 	
 	private bool _CanBe = false;
@@ -33,7 +32,6 @@ public class RewardGuy2 : MonoBehaviour {
 	
 	void Setup(){
 		_BoxCollider = GetComponent<BoxCollider>();
-		_SfxPlayer = GetComponent<AudioSource>();
 		_RewGuyPos = this.transform.position;
 		_WhiteColl = GetComponentsInChildren<Collectible2>();
 		
@@ -87,7 +85,7 @@ public class RewardGuy2 : MonoBehaviour {
 	}
 	IEnumerator PlaySFX(){
 		yield return new WaitForSeconds(1.0f);
-		_SfxPlayer.Play ();
+		MusicManager.soundManager.PlaySFX(1);
 	}
 	IEnumerator DelaiToSpawnColl(){
 		yield return new WaitForSeconds(1.0f);

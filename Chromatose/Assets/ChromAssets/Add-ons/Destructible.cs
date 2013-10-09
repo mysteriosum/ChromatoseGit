@@ -20,7 +20,6 @@ public class Destructible : MonoBehaviour {		//move sprite @ 15 frames or 0.5f s
 	protected int avatarMinDist = 85;
 	protected Transform avatar;
 	
-	private AudioSource sfxPlayer;
 	
 	private bool setuped = false;
 	
@@ -126,7 +125,7 @@ public class Destructible : MonoBehaviour {		//move sprite @ 15 frames or 0.5f s
 		avatarScript.HasDestroyed = true;
 		avatarScript.GiveColourTo(transform, avatar);
 		avatarScript.EmptyingBucket();
-		MusicManager.soundManager.PlaySFX(15);
+		MusicManager.soundManager.PlaySFX(49);
 		StartCoroutine(DelaiSFX());
 		Invoke("Destruct", 0.5f);
 	}
@@ -175,6 +174,6 @@ public class Destructible : MonoBehaviour {		//move sprite @ 15 frames or 0.5f s
 	
 	IEnumerator DelaiSFX(){
 		yield return new WaitForSeconds(0.5f);
-		MusicManager.soundManager.PlaySFX(9);
+		MusicManager.soundManager.PlaySFX(22);
 	}
 }

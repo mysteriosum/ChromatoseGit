@@ -144,7 +144,7 @@ public class ComicThumb : MonoBehaviour {
 		myComicBG.GetComponent<ComicBG>().MakeActive(myIndex);
 		_OnIdle = false;
 		ThumbStartGoBig();
-		MusicManager.soundManager.PlaySFX(5);
+		MusicManager.soundManager.PlaySFX(15);
 	}
 	
 	void ThumbStartGoBig(){

@@ -73,20 +73,22 @@ public class RedBarrierScript : MonoBehaviour {
 		foreach(tk2dAnimatedSprite spr in myFlames){
 			StartCoroutine(RandomChange(spr));
 		}
-		//StartCoroutine(DelaiToDie());
+		StartCoroutine(DelaiToDie());
 	}
 
 	
 	void Die(){
 		//Debug.Log("Die");
 		_Gone = true;
-		transform.position = new Vector3(transform.position.x, transform.position.y, -1000);
+		//transform.position = new Vector3(transform.position.x, transform.position.y, -1000);
+		Destroy(this.gameObject);
 	}
 	
 	void Die(tk2dAnimatedSprite sprite, int index){
 		//Debug.Log("Die by Delegate");
 		_Gone = true;
-		transform.position = new Vector3(transform.position.x, transform.position.y, -1000);
+		//transform.position = new Vector3(transform.position.x, transform.position.y, -1000);
+		Destroy(this.gameObject);
 	}
 	
 	void DestroyFlame(tk2dAnimatedSprite sprite, int index){
