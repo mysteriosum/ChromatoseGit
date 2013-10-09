@@ -76,7 +76,8 @@ public class Shavatar1 : MainManager {
 		_InitSpeed = shavatarSpeed;
 		
 		_ColLayerMask = 1 << LayerMask.NameToLayer("collision");		//for teh linecasts
-		_MainAnim.Play("Shavatar");
+		
+		
 	
 		StartCoroutine(Setup());
 		
@@ -250,7 +251,28 @@ public class Shavatar1 : MainManager {
 	IEnumerator Setup(){
 		yield return new WaitForSeconds(0.1f);
 		_ColourTarget = GameObject.FindGameObjectWithTag("avatar").GetComponent<Avatar>().curColor;
+		
+		switch(_AvatarScript.avaTypeAccess){
+		case _AvatarTypeEnum.avatar:
+			_MainAnim.Play("Shavatar");
+			break;
+		case _AvatarTypeEnum.shavatar:
+			_MainAnim.Play("Avatar");
+			break;
+		}
+		
 		setuped = true;
+	}
+	
+	public void ReSetupAnim(){
+		switch(_AvatarScript.avaTypeAccess){
+		case _AvatarTypeEnum.avatar:
+			_MainAnim.Play("Shavatar");
+			break;
+		case _AvatarTypeEnum.shavatar:
+			_MainAnim.Play("Avatar");
+			break;
+		}
 	}
 	
 	/*
@@ -287,7 +309,6 @@ public class Shavatar1 : MainManager {
 				PlayTurnAnim();
 				alreadyTurn = true;
 				StartCoroutine(DelaiResetTurn());
-				Debug.Log("Play");
 			}
 		}
 		
@@ -329,17 +350,35 @@ public class Shavatar1 : MainManager {
 	}
 	
 	void PlayTurnAnim(){
-		if(!_MainAnim.IsPlaying("ShavaRotation")){
-			_MainAnim.SetFrame(0);
-			_MainAnim.Play("ShavaRotation");
-			_MainAnim.animationCompleteDelegate = ReturnToIdleAnim;
+		switch(_AvatarScript.avaTypeAccess){
+		case _AvatarTypeEnum.avatar:
+			if(!_MainAnim.IsPlaying("ShavaRotation")){
+				_MainAnim.SetFrame(0);
+				_MainAnim.Play("ShavaRotation");
+				_MainAnim.animationCompleteDelegate = ReturnToIdleAnim;
+			}
+			break;
+		case _AvatarTypeEnum.shavatar:
+			if(!_MainAnim.IsPlaying("AvataRotation")){
+				_MainAnim.SetFrame(0);
+				_MainAnim.Play("AvataRotation");
+				_MainAnim.animationCompleteDelegate = ReturnToIdleAnim;
+			}
+			break;
 		}
 	}
 	
 	void ReturnToIdleAnim(tk2dAnimatedSprite sprite, int clipId){
-		//_MainAnim.SetSprite("Shavatar");
-		_MainAnim.SetFrame(0);
-		_MainAnim.Play("Shavatar");
+		switch(_AvatarScript.avaTypeAccess){
+		case _AvatarTypeEnum.avatar:
+			_MainAnim.SetFrame(0);
+			_MainAnim.Play("Shavatar");
+			break;
+		case _AvatarTypeEnum.shavatar:
+			_MainAnim.SetFrame(0);
+			_MainAnim.Play("Avatar");
+			break;
+		}
 	}
 	
 	IEnumerator ResetSpeedAfterCharge(float delay, float initSpeed){

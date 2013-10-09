@@ -1010,7 +1010,7 @@ public class Avatar : MainManager{
 		
 		if (detectedSB){
 			if(!_CantPlaySpeedFX){
-				MusicManager.soundManager.PlaySFX(16);
+				MusicManager.soundManager.PlaySFX(50);
 				_CantPlaySpeedFX = true;
 				StartCoroutine(PlaySpeedFXBool());
 			}

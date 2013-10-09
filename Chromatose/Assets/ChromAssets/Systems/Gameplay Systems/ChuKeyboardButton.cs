@@ -53,6 +53,7 @@ public class ChuKeyboardButton : MonoBehaviour {
 						MainManager._MainManager.keyboardType = MainManager._KeyboardTypeEnum.AZERTY;
 						break;
 					}
+					MusicManager.soundManager.PlaySFX(38);
 					HUDManager.hudManager.DesactiveKeyboardButton();
 					HUDManager.hudManager.menuWindows = _MenuWindowsEnum.LevelSelectionWindows;
 					HUDManager.keyboardAlreadyChoose = true;
@@ -61,8 +62,24 @@ public class ChuKeyboardButton : MonoBehaviour {
         }
 	}
 	
+	void OnMouseEnter(){
+		int rndFXOver = Random.Range(0,3);
+		switch(rndFXOver){
+		case 0:
+			MusicManager.soundManager.PlaySFX(35);
+			break;
+		case 1:
+			MusicManager.soundManager.PlaySFX(36);
+			break;
+		case 2:
+			MusicManager.soundManager.PlaySFX(37);
+			break;
+		}
+	}
+	
 	void OnMouseOver(){
 		transform.localScale = scaledVec;
+
 	}
 	void OnMouseExit(){
 		transform.localScale = defaultVec;

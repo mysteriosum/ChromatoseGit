@@ -277,7 +277,7 @@ public class ChromatoseManager : MainManager {
 			
 			avatar = GameObject.FindGameObjectWithTag("avatar").GetComponent<Avatar>();
 			if(!_NoDeathModeActivated){
-				MusicManager.soundManager.PlaySFX(6);
+				MusicManager.soundManager.PlaySFX(16);
 				danim = new Avatar.DeathAnim();
 				danim.PlayDeath(Reset);
 				//avatar.SendMessage("FadeAlpha", 0f);
@@ -300,7 +300,7 @@ public class ChromatoseManager : MainManager {
 				}
 			}
 			else{
-				MusicManager.soundManager.PlaySFX(6);
+				MusicManager.soundManager.PlaySFX(16);
 				danim = new Avatar.DeathAnim();
 				danim.PlayDeath(Reset);
 				//avatar.SendMessage("FadeAlpha", 0f);
@@ -325,7 +325,7 @@ public class ChromatoseManager : MainManager {
 			//avatar.renderer.enabled = false;
 		}
 		else{
-			MusicManager.soundManager.PlaySFX(6);
+			MusicManager.soundManager.PlaySFX(16);
 			danim = new Avatar.DeathAnim();
 			danim.PlayDeath(LoadCheckpoint);
 			avatar.movement.SetVelocity(Vector2.zero);
@@ -341,7 +341,7 @@ public class ChromatoseManager : MainManager {
 	public void DeathByBoss(){
 		Debug.Log("Mort par le Boss");
 			//Play le SFX de la Mort
-		MusicManager.soundManager.PlaySFX(6);
+		MusicManager.soundManager.PlaySFX(16);
 		
 			//Play l'animd e la Mort et Reset le BossLevel a la fin
 		danim = new Avatar.DeathAnim();
@@ -527,6 +527,7 @@ public class ChromatoseManager : MainManager {
 			randomPos.z = -5;
 			GameObject wCol = Instantiate(Resources.Load("pre_Collectible"), randomPos, Quaternion.identity)as GameObject;
 			wCol.GetComponent<Collectible2>().effect = true;
+			MusicManager.soundManager.PlaySFX(43);
 			wCol.GetComponent<Collectible2>().colorCollectible = Collectible2._ColorCollectible.White;
 			StartCoroutine(DelaiToBlowColl(0.5f, wCol));
 		}
@@ -539,7 +540,7 @@ public class ChromatoseManager : MainManager {
 			GameObject bCol = Instantiate(Resources.Load("pre_Collectible"), randomPos, Quaternion.identity)as GameObject;
 			bCol.GetComponent<Collectible2>().effect = true;
 			bCol.GetComponent<Collectible2>().colorCollectible = Collectible2._ColorCollectible.Blue;
-			MusicManager.soundManager.PlaySFX(12);
+			MusicManager.soundManager.PlaySFX(44);
 			StartCoroutine(DelaiToBlowColl(0.5f, bCol));
 		}
 	}

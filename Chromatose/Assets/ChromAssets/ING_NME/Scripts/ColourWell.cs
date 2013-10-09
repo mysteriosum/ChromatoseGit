@@ -8,7 +8,6 @@ public class ColourWell : MonoBehaviour {
 	}
 	
 	public _WellTypeEnum wellType;
-	public AudioClip _FillBucketSound;
 	
 	private ChromatoseManager _Manager;
 	private Avatar _AvatarScript;
@@ -87,9 +86,6 @@ public class ColourWell : MonoBehaviour {
 	void Trigger(){
 
 		GameObject.FindGameObjectWithTag("avatar").GetComponent<Avatar>().FillBucket(myColor);
-		sfxPlayer.clip = _FillBucketSound;
-		sfxPlayer.loop = false;
-		sfxPlayer.Play();
-		
+		MusicManager.soundManager.PlaySFX(25);
 	}
 }

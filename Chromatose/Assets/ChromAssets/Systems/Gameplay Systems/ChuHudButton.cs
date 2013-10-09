@@ -34,7 +34,7 @@ public class ChuHudButton : MonoBehaviour {
 				if (!Physics.Raycast(ray, hitInfo.distance - 0.01f)){
 					switch(buttonType){
 					case buttonTypeEnum.Back:
-						
+						MusicManager.soundManager.PlaySFX(42);
 						if(HUDManager.hudManager.menuWindows == _MenuWindowsEnum.LevelSelectionWindows){
 							HUDManager.hudManager.menuWindows = _MenuWindowsEnum.MainMenu;
 							HUDManager.hudManager.DesactiveBackButton();
@@ -51,17 +51,20 @@ public class ChuHudButton : MonoBehaviour {
 						}
 						break;
 					case buttonTypeEnum.Credit:
+						MusicManager.soundManager.PlaySFX(38);
 						HUDManager.hudManager.menuWindows = _MenuWindowsEnum.CreditWindows;
 						break;
 					case buttonTypeEnum.Options:
+						MusicManager.soundManager.PlaySFX(38);
 						HUDManager.hudManager.menuWindows = _MenuWindowsEnum.OptionWindows;
 						HUDManager.hudManager.ActiveOptBG();
 						break;
 					case buttonTypeEnum.Statistics:
+						MusicManager.soundManager.PlaySFX(38);
 						HUDManager.hudManager.menuWindows = _MenuWindowsEnum.Stats;
 						break;
 					case buttonTypeEnum.GameMode:
-						
+						MusicManager.soundManager.PlaySFX(38);
 						break;
 					}
 					HUDManager.hudManager.DesactiveButton();
@@ -69,6 +72,21 @@ public class ChuHudButton : MonoBehaviour {
 				}
             }
         }
+	}
+	
+	void OnMouseEnter(){
+		int rndFXOver = Random.Range(0,3);
+		switch(rndFXOver){
+		case 0:
+			MusicManager.soundManager.PlaySFX(35);
+			break;
+		case 1:
+			MusicManager.soundManager.PlaySFX(36);
+			break;
+		case 2:
+			MusicManager.soundManager.PlaySFX(37);
+			break;
+		}
 	}
 	
 	void OnMouseOver(){

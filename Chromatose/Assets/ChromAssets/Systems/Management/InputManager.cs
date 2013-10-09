@@ -62,6 +62,7 @@ public class InputManager : MainManager {
 			//SPACE BAR
 		if(Input.GetKeyDown(KeyCode.Space)){
 			Debug.Log("SpaceBar Pressed");
+			MusicManager.soundManager.PlaySFX(52);
 			
 		}
 		

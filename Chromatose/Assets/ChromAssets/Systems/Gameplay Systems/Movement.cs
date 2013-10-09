@@ -57,6 +57,18 @@ public class Movement : MonoBehaviour {
 	void OnCollisionEnter(Collision collision){			//COLLISION CLASS! I'MA COLLIDE YOUR FACE!
 		
 		if (collision.gameObject.tag == "collision"){
+			int rndNb = Random.Range(0,3);
+			switch(rndNb){
+			case 0:
+				MusicManager.soundManager.PlaySFX(8);
+				break;
+			case 1:
+				MusicManager.soundManager.PlaySFX(9);
+				break;
+			case 2:
+				MusicManager.soundManager.PlaySFX(10);
+				break;
+			}
 			ContactPoint point = collision.contacts[0];
 			if (!collidedWith.Contains(collision.collider)){
 				collideTimer = -1;
@@ -75,7 +87,7 @@ public class Movement : MonoBehaviour {
 		
 		if (GetComponent<Avatar>() != null){
 			t.position += new Vector3(point.normal.x, point.normal.y, 0);
-			thruster.velocity += (Vector2)point.normal * thruster.accel * 2;
+			thruster.velocity += (Vector2)point.normal * thruster.accel * 3;
 			/*
 			gameObject.SendMessage("Push", thruster.velocity.magnitude + thruster.accel);		//this tried to push the avatar away to a knockbackTrigger
 			gameObject.SendMessage("Jolt", 1f);														//but it felt weird and was very easy to break
