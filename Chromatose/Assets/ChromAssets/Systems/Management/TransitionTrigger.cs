@@ -179,7 +179,6 @@ public class TransitionTrigger : MonoBehaviour {
 		}
 			
 		LevelSerializer.SaveObjectTreeToFile("Chromasave", GameObject.FindGameObjectWithTag("StatsManager").gameObject);
-		
 		MainManager._MainManager.LoadALevel(Application.loadedLevel + 1);
 		
 	}
@@ -188,8 +187,7 @@ public class TransitionTrigger : MonoBehaviour {
 		avatarT.position = localTarget.position;
 		avatarT.rotation = localTarget.rotation;
 		avatarT.SendMessage ("SetVelocity", Vector2.zero);
-		//Vector3 dataPos = localTarget.position;
-		//StatsManager.lastSpawnPos = dataPos;
+
 		Debug.Log("Last target Changed");
 		
 		if(_RoomManager.roomType == ChromaRoomManager._RoomTypeEnum.WhiteRoom && !_DontAddRoom){
@@ -200,7 +198,6 @@ public class TransitionTrigger : MonoBehaviour {
 		
 		if(!_DontAddRoom){
 			ChromatoseManager.manager.ResetComicCounter();
-			ChromatoseManager.manager.ResetColl();
 			_AvatarScript.CallFromFar();
 			_AvatarScript.LoseAllColourHidden();		
 			if(_AvatarScript.HasOutline){

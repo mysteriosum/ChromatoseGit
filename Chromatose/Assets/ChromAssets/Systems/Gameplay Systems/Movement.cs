@@ -16,6 +16,8 @@ public class Movement : MonoBehaviour {
 	public Rotator rotator = new Rotator();
 	public Collider2d collider2d = new Collider2d();
 	
+	private bool _TooMuchCollide = false;
+	
 	private float collideTimer = 0f;
 	private float collideTiming = 0.5f;
 	private List<Collider> collidedWith = new List<Collider>();
@@ -71,7 +73,7 @@ public class Movement : MonoBehaviour {
 			}
 			ContactPoint point = collision.contacts[0];
 			if (!collidedWith.Contains(collision.collider)){
-				collideTimer = -1;
+				collideTimer = -0.1f;
 				collidedWith.Add(collision.collider);
 			}
 			if (collideTimer <= 0){
@@ -85,9 +87,14 @@ public class Movement : MonoBehaviour {
 		if (collision.gameObject.tag != "collision") return;
 		ContactPoint point = collision.contacts[0];
 		
+		Debug.Log(collision.contacts.Length);
+		
+		if(collision.contacts.Length > 10)_TooMuchCollide = true;
+		else _TooMuchCollide = false;
+		
 		if (GetComponent<Avatar>() != null){
 			t.position += new Vector3(point.normal.x, point.normal.y, 0);
-			thruster.velocity += (Vector2)point.normal * thruster.accel * 3;
+			thruster.velocity += (Vector2)point.normal * 30;
 			/*
 			gameObject.SendMessage("Push", thruster.velocity.magnitude + thruster.accel);		//this tried to push the avatar away to a knockbackTrigger
 			gameObject.SendMessage("Jolt", 1f);														//but it felt weird and was very easy to break
@@ -100,6 +107,8 @@ public class Movement : MonoBehaviour {
 	//<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>
 	
 	public Vector2 Displace(bool thrust){
+		if(collideTimer > 10)return Vector2.zero;
+		
 		if(t != null){
 			float zRotR = t.rotation.eulerAngles.z * Mathf.Deg2Rad;
 			return Displace(thrust, zRotR);
@@ -111,6 +120,7 @@ public class Movement : MonoBehaviour {
 	}
 	
 	public Vector2 Displace(bool thrust, float angle){								//Displacement : Thrust, accel, stuff
+		if(collideTimer > 10)return Vector2.zero;
 		if (thrust){
 			
 			
@@ -188,7 +198,7 @@ public class Movement : MonoBehaviour {
 	
 	public class Collider2d{
 		
-		private float frictionFactor = 2;
+		private float frictionFactor = 4;
 		
 		
 		public Vector2 Collide(ContactPoint point, Vector2 velocity){

@@ -186,7 +186,7 @@ public class ChromatoseManager : MainManager {
 		
 		if(!_CollAlreadyAdded){
 			_CollAlreadyAdded = true;
-			StartCoroutine(ResetCanGrabCollectibles(0.05f));
+			StartCoroutine(ResetCanGrabCollectibles(0.1f));
 			
 			if(col == Color.white){
 				StatsManager.whiteCollCollected[Application.loadedLevel] += amount;
@@ -229,15 +229,18 @@ public class ChromatoseManager : MainManager {
 		
 		if(color == Color.white){
 			StatsManager.whiteCollDisplayed -= amount;
+			StatsManager.whiteCollCollected[currentLevel] -= amount;
 			BlowWhiteColl(amount, pos);			
 		}
 		else if(color == Color.red){
 			StatsManager.redCollDisplayed -= amount;
+			StatsManager.redCollCollected[currentLevel] -= amount;
 			ShootRedCollOnMini(amount, pos);
 			Debug.Log("Remove "+amount);
 		}
 		else if(color == Color.blue){
 			StatsManager.blueCollDisplayed -= amount;
+			StatsManager.blueCollCollected[currentLevel] -= amount;
 			BlowBlueColl(amount, pos);
 		}
 		else{
