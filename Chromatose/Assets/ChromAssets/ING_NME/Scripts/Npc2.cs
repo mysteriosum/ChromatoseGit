@@ -27,14 +27,19 @@ public class Npc2 : MonoBehaviour {
 	void Start () {
 		_MainAnim = GetComponent<tk2dAnimatedSprite>();
 		_Player = GetComponent<AudioSource>();
+		/*
+		_Player.Play();
+		StartCoroutine(PlayLoopFX());*/
+		
+		float rndOffsetTime = Random.Range(0f, 1f);
 		
 		switch(typeNpc){
 		case _TypeNPCEnum.Red:
-			_MainAnim.Play(_redBounceString);			
+			_MainAnim.Play(_redBounceString, rndOffsetTime);			
 			myColor = Color.red;
 			break;
 		case _TypeNPCEnum.Blue:
-			_MainAnim.Play(_blueBounceString);
+			_MainAnim.Play(_blueBounceString, rndOffsetTime);
 			myColor = Color.blue;
 			break;			
 		}
@@ -65,8 +70,7 @@ public class Npc2 : MonoBehaviour {
 	void Trigger(){
 		if(setuped){
 			_AvatarScript.FillBucket(myColor);
-			_Player.clip = _FillBucketSound;
-			_Player.Play();
+			MusicManager.soundManager.PlaySFX(14);
 			switch(typeNpc){
 			case _TypeNPCEnum.Red:
 				_MainAnim.Play("rNPC_redToGrey");
@@ -98,5 +102,8 @@ public class Npc2 : MonoBehaviour {
 	IEnumerator DelaiBeforeFade(float delai){
 		yield return new WaitForSeconds(delai);
 		losePart.Fade();
+	}
+	IEnumerator PlayLoopFX(){
+		yield return new WaitForSeconds(0.8f);
 	}
 }

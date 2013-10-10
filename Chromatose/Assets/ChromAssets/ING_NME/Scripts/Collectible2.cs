@@ -50,20 +50,21 @@ public class Collectible2 : MonoBehaviour {
 	
 	void Start () {
 		_MainAnim = GetComponent<tk2dAnimatedSprite>();
+		float rndOffsetTime = Random.Range(0f, 1f);
 		
 		switch(colorCollectible){
 		case _ColorCollectible.White:
 			myColor = Color.white;
-			_MainAnim.Play(idleAnimWhite);
+			_MainAnim.Play(idleAnimWhite, rndOffsetTime);
 			break;
 		case _ColorCollectible.Red:
 			myColor = Color.red;
-			_MainAnim.Play(idleAnimRed);
+			_MainAnim.Play(idleAnimRed, rndOffsetTime);
 			
 			break;
 		case _ColorCollectible.Blue:
 			myColor = Color.blue;
-			_MainAnim.Play(idleAnimBlue);
+			_MainAnim.Play(idleAnimBlue, rndOffsetTime);
 			
 			break;
 		}
@@ -180,6 +181,9 @@ public class Collectible2 : MonoBehaviour {
 				}
 				break;
 			case _ColorCollectible.Red:
+				if(!_Effect){
+					MusicManager.soundManager.PlaySFX(47);
+				}
 				_MainAnim.Play(takeAnimRed);
 				break;
 			case _ColorCollectible.Blue:

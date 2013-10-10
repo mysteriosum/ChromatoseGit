@@ -178,6 +178,7 @@ public class Avatar : MainManager{
 	private GameObject[] speedBoosts;
 	private Rect[] speedBoostAreas;
 	private bool canControl = true;
+	private bool _OnLoseColorFX = false;
 	private int speedBoostDist = 55;
 	private float speedBoostMod = 2.0f;
 	private float speedBoostCur = 1f;
@@ -721,7 +722,6 @@ public class Avatar : MainManager{
 			angles[i] = i * 22.5f;
 		}
 		
-		_SpaceBarActive = true;
 		/*
 		switch(Application.loadedLevelName){
 		case ("Tutorial"):
@@ -856,6 +856,11 @@ public class Avatar : MainManager{
 		
 		if(_Colored){
 			
+			if(!_OnLoseColorFX){
+				MusicManager.soundManager.PlaySFX(12, true);
+				_OnLoseColorFX = true;
+			}
+			
 			loseTimer += Mathf.Min(velocity.magnitude, basicMaxSpeed * Time.deltaTime);
 			
 			if (loseTimer >= loseRate){
@@ -877,7 +882,7 @@ public class Avatar : MainManager{
 		//colour.b = Mathf.Clamp(colour.b, 0, 255);
 			
 			//DESCENDRE OU MONTER LA VITESSE DU FADE ICI
-			_ColorCounter += Time.deltaTime * velocity.magnitude * 0.6f;
+			_ColorCounter += Time.deltaTime * velocity.magnitude * 0.5f;
 			
 			
 			if(_ColorCounter > 1){
@@ -942,7 +947,7 @@ public class Avatar : MainManager{
 				}
 			}
 		}
-		
+				
 		else if(!_Colored && HasOutline){
 			
 			switch(avatarType){
@@ -958,6 +963,12 @@ public class Avatar : MainManager{
 			Debug.Log("Change Collection Here");
 		}
 		else{
+			
+			if(_OnLoseColorFX){
+				MusicManager.soundManager.StopSFX(12);
+				_OnLoseColorFX = false;
+			}
+		
 			
 			switch(avatarType){
 				case _AvatarTypeEnum.avatar:

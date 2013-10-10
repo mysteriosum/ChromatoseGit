@@ -53,13 +53,13 @@ public class CheckPoint2 : MonoBehaviour {
 	void OnTriggerStay(Collider other){
 		if(other.tag != "avatar")return;
 				
-		
+		/*
 		if(MainManager._MainManager._Decel > 0 && _CanDisplayBubble){
 			MainManager._MainManager._Decel -= 0.013f;
 		}
 		else if (_CanDisplayBubble){
 			other.GetComponent<Avatar>().movement.SetVelocity(Vector2.zero);
-		}
+		}*/
 		
 	}	
 	
@@ -100,6 +100,6 @@ public class CheckPoint2 : MonoBehaviour {
 		_CanDisplayBubble = false;
 		GameObject.FindGameObjectWithTag("avatar").GetComponent<Avatar>().CanControl();
 		
-		MainManager._MainManager._Decel = 1;
+	//	MainManager._MainManager._Decel = 1;
 	}
 }

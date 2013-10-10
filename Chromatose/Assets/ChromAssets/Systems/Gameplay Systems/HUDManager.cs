@@ -219,7 +219,7 @@ public class HUDManager : MainManager {
 	
 	void Start () {
 		_FirstStart = true;
-				
+		_OnLogo = false;
 		_MenuWindows = _MenuWindowsEnum.FakeSplashScreen;
 	}
 	
@@ -963,12 +963,14 @@ public class HUDManager : MainManager {
 		GUI.DrawTexture(new Rect(400, 90, 550, 520), movieLoad);
 		StartCoroutine(CanShowLogo());
 		
-		if(_CanShowLogo && !_OnLogo){
-			
+		if(_CanShowLogo){
 			movieLogo.Play();
 			GUI.DrawTexture(new Rect(400, 90, 550, 520), movieLogo);
-			_OnLogo = true;
-			StartCoroutine(GoToMainMenu(5.1f));
+			
+			if(!_OnLogo){
+				_OnLogo = true;
+				StartCoroutine(GoToMainMenu(5.1f));
+			}
 		}
 	}
 	

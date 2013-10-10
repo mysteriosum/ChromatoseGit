@@ -4,9 +4,6 @@ using System.Collections;
 public class whiteTollBooth : MonoBehaviour {
 	public int requiredPayment = 1;
 	
-	public AudioClip locked;
-	public AudioClip unlocked;
-	public AudioClip open;
 	
 	public Vector3 positionOffSet;
 	public Vector3 rotationOffSet;
@@ -100,12 +97,10 @@ public class whiteTollBooth : MonoBehaviour {
 			StartIn();
 			waiting = true;
 			triggered = true;
-			sfxPlayer.clip = unlocked;
-			sfxPlayer.Play();
+			MusicManager.soundManager.PlaySFX(46);
 		}
 		else{
-			sfxPlayer.clip = locked;
-			sfxPlayer.Play();
+			MusicManager.soundManager.PlaySFX(45);
 		}
 	}
 	

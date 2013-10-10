@@ -446,7 +446,7 @@ public class ChromatoseManager : MainManager {
 	
 	public void NewCheckpoint(Transform cp){
 		curCheckpoint = cp;
-		MusicManager.soundManager.PlaySFX(2);
+		MusicManager.soundManager.PlaySFX(42);
 		GameObject[] cps = GameObject.FindGameObjectsWithTag("checkpoint");
 		foreach (GameObject check in cps){
 			Checkpoint script = check.GetComponent<Checkpoint>();
@@ -528,6 +528,7 @@ public class ChromatoseManager : MainManager {
 			GameObject wCol = Instantiate(Resources.Load("pre_Collectible"), randomPos, Quaternion.identity)as GameObject;
 			wCol.GetComponent<Collectible2>().effect = true;
 			MusicManager.soundManager.PlaySFX(43);
+			MusicManager.soundManager.PlaySFX(19);
 			wCol.GetComponent<Collectible2>().colorCollectible = Collectible2._ColorCollectible.White;
 			StartCoroutine(DelaiToBlowColl(0.5f, wCol));
 		}
