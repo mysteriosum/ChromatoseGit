@@ -24,7 +24,7 @@ public class Robot : MonoBehaviour {
 	int curSprite = 0;
 	int directionBin;
 	float timer = 0;
-	float delay;
+	public float delay = 1;
 	Transform myLaser;
 	Transform t;
 	tk2dSprite spriteInfo;
@@ -55,12 +55,9 @@ public class Robot : MonoBehaviour {
 	void Update () {
 		if (!rotates) return;
 		
-		if (delay > 0){
-			delay -= Time.deltaTime;
-			return;
-		}
+		
 		timer += Time.deltaTime;
-		if (timer >= turnRate){
+		if (timer >= delay){
 			curSprite = 1 - curSprite;
 			//spriteInfo.SetSprite(sprites[curSprite]);
 			if (curSprite == 0){
@@ -70,7 +67,7 @@ public class Robot : MonoBehaviour {
 				transform.position = new Vector3(transform.position.x, transform.position.y, 2);
 			}
 			timer = 0;
-			transform.Rotate(new Vector3(0, 0, angle));
+			transform.Rotate(new Vector3(0, 0, angle * turnRate));
 		}
 	}
 	
