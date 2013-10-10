@@ -1,5 +1,5 @@
 using UnityEngine;
-using UnityEditor;
+//using UnityEditor;
 using System.Collections;
 using System.IO;
 
@@ -37,7 +37,7 @@ public class DevManager : MainManager {
 				File.Delete(Application.persistentDataPath + "/" + "Chromasave");
 				LevelSerializer.SavedGames.Clear ();
 				LevelSerializer.SaveDataToPlayerPrefs (); 
-				EditorApplication.isPlaying = false;
+				//EditorApplication.isPlaying = false;
 			}
 			
 				//BOUTON SAVE
