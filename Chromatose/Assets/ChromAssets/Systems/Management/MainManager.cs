@@ -100,6 +100,9 @@ public class MainManager : MonoBehaviour {
 	public static float loopingCounter = 0;
 	
 	
+	//VARIABLES CHEATS
+	public static bool _CheatActivated = false;
+	
 	//VARIABLE HIGHSCORE
 	
 	
@@ -281,6 +284,14 @@ public class MainManager : MonoBehaviour {
 				StatsManager.levelUnlocked[i] = true;
 				return;
 			}
+		}
+	}
+	
+	public void UnlockNextLevelOnly(){
+		
+		if(!StatsManager.levelUnlocked[Application.loadedLevel]){
+			StatsManager.levelUnlocked[Application.loadedLevel] = true;
+			Debug.Log("You have just Won the Unlock of Level " + (Application.loadedLevel + 1));
 		}
 	}
 	

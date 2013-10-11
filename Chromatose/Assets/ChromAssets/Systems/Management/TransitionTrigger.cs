@@ -173,10 +173,13 @@ public class TransitionTrigger : MonoBehaviour {
 		_AvatarScript.CannotControlFor(false, 0);
 		_AvatarScript.movement.SetVelocity(Vector2.zero);
 		
+		MainManager._MainManager.UnlockNextLevelOnly();
+		
+		/*
 		if(!nextLvlUnlocked){
 			MainManager._MainManager.UnlockNextLevel();
 			nextLvlUnlocked = true;
-		}
+		}*/
 			
 		LevelSerializer.SaveObjectTreeToFile("Chromasave", GameObject.FindGameObjectWithTag("StatsManager").gameObject);
 		MainManager._MainManager.LoadALevel(Application.loadedLevel + 1);

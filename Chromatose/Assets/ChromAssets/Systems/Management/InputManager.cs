@@ -77,6 +77,49 @@ public class InputManager : MainManager {
 				Debug.Log("OutStart");
 			}
 		}
+		
+		
+			// Cheat Key
+		if(_CheatActivated){
+			if(currentLevel == 0)return;
+				//Color
+			if(Input.GetKeyDown(KeyCode.Keypad7)){
+				GameObject.FindGameObjectWithTag("avatar").GetComponent<Avatar>().EmptyingBucket();
+			}
+			if(Input.GetKeyDown(KeyCode.Keypad8)){
+				GameObject.FindGameObjectWithTag("avatar").GetComponent<Avatar>().FillBucket(Color.red);
+			}
+			if(Input.GetKeyDown(KeyCode.Keypad9)){
+				GameObject.FindGameObjectWithTag("avatar").GetComponent<Avatar>().FillBucket(Color.blue);
+			}
+			
+				//Add Coll
+			if(Input.GetKeyDown(KeyCode.Keypad4)){
+				ChromatoseManager.manager.AddCollectible(Color.white);
+			}
+			if(Input.GetKeyDown(KeyCode.Keypad5)){
+				ChromatoseManager.manager.AddCollectible(Color.red);
+			}
+			if(Input.GetKeyDown(KeyCode.Keypad6)){
+				ChromatoseManager.manager.AddCollectible(Color.blue);
+			}
+			
+				//Remove Coll
+			if(Input.GetKeyDown(KeyCode.Keypad1)){
+				ChromatoseManager.manager.RemoveCollectibles(Color.white, 1);
+			}
+			if(Input.GetKeyDown(KeyCode.Keypad2)){
+				ChromatoseManager.manager.RemoveCollectibles(Color.red, 1);
+			}
+			if(Input.GetKeyDown(KeyCode.Keypad3)){
+				ChromatoseManager.manager.RemoveCollectibles(Color.blue, 1);
+			}
+		}
+		
+		
+		
+		
+		
 	}
 	
 	void SetController(){
