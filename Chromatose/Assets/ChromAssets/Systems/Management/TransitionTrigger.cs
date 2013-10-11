@@ -169,7 +169,7 @@ public class TransitionTrigger : MonoBehaviour {
 		if(_AvatarScript.HasOutline){
 			_AvatarScript.CancelOutline();
 		}
-		
+		_AvatarScript.EmptyingBucket();
 		_AvatarScript.CannotControlFor(false, 0);
 		_AvatarScript.movement.SetVelocity(Vector2.zero);
 		

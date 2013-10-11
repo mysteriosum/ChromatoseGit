@@ -223,6 +223,7 @@ public class MusicManager : MainManager{
 			if(!sfxP.isPlaying){
 				sfxP.loop = loop;
 				sfxP.clip = _SFXList[sfxIndex];
+				sfxP.volume = sfxVolume;
 				sfxP.Play();
 				Debug.Log("Play FX #" + sfxIndex);
 				return;

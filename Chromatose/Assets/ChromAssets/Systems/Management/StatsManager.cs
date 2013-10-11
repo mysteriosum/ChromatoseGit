@@ -46,10 +46,10 @@ public class StatsManager : MainManager {
 		bool needInit = CheckIfInitializeStats();
 		
 		if(needInit){
-			redCollCollected = new int[13]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-			blueCollCollected = new int[13]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-			whiteCollCollected = new int[13]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-			comicThumbCollected = new int[13]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+			redCollCollected = new int[14]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+			blueCollCollected = new int[14]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+			whiteCollCollected = new int[14]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+			comicThumbCollected = new int[14]{0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 		
 			
 		levelUnlocked = new bool[13]{true, false, false, false, false,

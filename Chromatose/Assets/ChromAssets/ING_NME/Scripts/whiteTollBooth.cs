@@ -17,7 +17,6 @@ public class whiteTollBooth : MonoBehaviour {
 	protected Color myColor;
 	
 	private tk2dAnimatedSprite indicator;
-	private AudioSource sfxPlayer;
 	private string inString;
 	private string outString;
 	private int avatarCloseDist = 150;
@@ -56,7 +55,6 @@ public class whiteTollBooth : MonoBehaviour {
 	
 	void Setup(){
 		chroManager = ChromatoseManager.manager;
-		sfxPlayer = GetComponent<AudioSource>();
 		avatarT = GameObject.FindGameObjectWithTag("avatar").GetComponent<Transform>();
 		setuped = true;
 	}
@@ -75,6 +73,7 @@ public class whiteTollBooth : MonoBehaviour {
 				StartOut();
 			}
 			else if (dist > avatarCloseDist && isOut){
+				HUDManager.hudManager.OffAction ();
 				StartIn();
 			}
 		}
@@ -134,6 +133,7 @@ public class whiteTollBooth : MonoBehaviour {
 		if (triggered){
 			waiting = false;
 			collisionChild.gameObject.SetActive(false);
+			HUDManager.hudManager.OffAction ();
 			chroManager.RemoveCollectibles(Color.white, requiredPayment, avatarT.position);
 			if (anim)
 				Animate();

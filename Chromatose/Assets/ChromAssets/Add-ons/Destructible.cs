@@ -127,6 +127,8 @@ public class Destructible : MonoBehaviour {		//move sprite @ 15 frames or 0.5f s
 		avatarScript.EmptyingBucket();
 		MusicManager.soundManager.PlaySFX(49);
 		StartCoroutine(DelaiSFX());
+		avatarScript.AtDestructible = false;
+		HUDManager.hudManager.OffAction ();
 		Invoke("Destruct", 0.5f);
 	}
 	
@@ -157,7 +159,6 @@ public class Destructible : MonoBehaviour {		//move sprite @ 15 frames or 0.5f s
 		}
 		Debug.Log(newNewName);
 		spriteInfo.SetSprite(spriteInfo.GetSpriteIdByName(newNewName));
-		//spriteInfo.spriteId ++;
 	}
 	
 	protected virtual void Done(tk2dAnimatedSprite sprite, int index){
