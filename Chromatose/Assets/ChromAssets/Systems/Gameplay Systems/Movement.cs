@@ -87,7 +87,7 @@ public class Movement : MonoBehaviour {
 		if (collision.gameObject.tag != "collision") return;
 		ContactPoint point = collision.contacts[0];
 		
-		Debug.Log(collision.contacts.Length);
+		//Debug.Log(collision.contacts.Length);
 		
 		if(collision.contacts.Length > 10)_TooMuchCollide = true;
 		else _TooMuchCollide = false;

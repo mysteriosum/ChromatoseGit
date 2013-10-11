@@ -57,8 +57,15 @@ public class DevManager : MainManager {
 				//BOUTON DELETE MANAGER -- Dont know Why, but... just in case
 			GUI.skin = devButtonSkin;
 			GUI.skin.button.fontSize = 30;
-			if(GUI.Button(new Rect(750, 350, 300f, 50f), "DELETE MANAGER")){
-				Destroy(this.transform);
+			if(!_CheatActivated){
+				if(GUI.Button(new Rect(750, 350, 300f, 50f), "ACTIVATE CHEAT")){
+					_CheatActivated = true;
+				}
+			}
+			else{
+				if(GUI.Button(new Rect(750, 350, 300f, 50f), "DESACTIVATE CHEAT")){
+					_CheatActivated = false;
+				}
 			}
 		
 				//BOUTON SAVE ROOM

@@ -138,6 +138,10 @@ public class MusicManager : MainManager{
 	void Start () {		
 		Setup();
 	}
+	/*
+	void OnLevelWasLoaded(){
+		CheckLevel();
+	}*/
 	
 	void Setup(){
 		soundManager = this;
@@ -151,6 +155,10 @@ public class MusicManager : MainManager{
 		setuped = true;
 	}
 	
+	public void StartMenuMusic(){
+		CrossFadeMusic(0, 0.0025f);
+	}
+	
 	public void CheckLevel(){
 		
 		int curLevel = Application.loadedLevel;
@@ -158,8 +166,14 @@ public class MusicManager : MainManager{
 		switch(curLevel){
 			//MAIN MENU
 		case 0:
-			StartCoroutine(DelayingTrack(0,0f));
 			
+			bool musicOn = CheckMusicOn();
+			if(!musicOn){
+				StartCoroutine(DelayingTrack(0,0f));
+			}
+			else{
+				CrossFadeMusic(0, 0.0025f);
+			}
 			break;
 			
 			//TUTO
@@ -203,6 +217,15 @@ public class MusicManager : MainManager{
 			break;
 		}
 	}
+	
+	bool CheckMusicOn(){
+		foreach(AudioSource mS in _MusicSources){
+			if(mS.isPlaying){
+				return true;
+			}
+		}
+		return false;
+	}
 
 	void Update () {
 		if(!setuped)Setup();
@@ -235,7 +258,7 @@ public class MusicManager : MainManager{
 		foreach(AudioSource sfxP in _SFXPlayer){
 			if(!sfxP.isPlaying){
 				sfxP.PlayOneShot(_SFXList[sfxIndex], vol);
-				Debug.Log("Play FX #" + sfxIndex);
+				//Debug.Log("Play FX #" + sfxIndex);
 				return;
 			}
 		}

@@ -224,9 +224,27 @@ public class ChromatoseManager : MainManager {
 		}
 	}
 	
+	public void RemoveCollectibles(Color color, int amount){
+		
+		
+		if(color == Color.white){
+			StatsManager.whiteCollDisplayed -= amount;
+			StatsManager.whiteCollCollected[currentLevel] -= amount;		
+		}
+		else if(color == Color.red){
+			StatsManager.redCollDisplayed -= amount;
+			StatsManager.redCollCollected[currentLevel] -= amount;
+		}
+		else if(color == Color.blue){
+			StatsManager.blueCollDisplayed -= amount;
+			StatsManager.blueCollCollected[currentLevel] -= amount;
+		}
+		else{
+			Debug.Log("Cant delete this collectable, check color");
+		}
+	}
+	
 	public void RemoveCollectibles(Color color, int amount, Vector3 pos){
-		
-		
 		if(color == Color.white){
 			StatsManager.whiteCollDisplayed -= amount;
 			StatsManager.whiteCollCollected[currentLevel] -= amount;
