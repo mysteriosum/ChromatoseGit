@@ -39,6 +39,7 @@ public class OptiManager : MainManager {
 	}
 
 	public void OptimizeZone(){
+		CheckWhereIAm();
 		if(currentLevel == 0)return;
 		if(currentLevel == 1 || currentLevel == 3 || currentLevel == 5 || currentLevel == 7){
 			foreach(GameObject go in roomList){
@@ -70,7 +71,8 @@ public class OptiManager : MainManager {
 	}
 	
 	IEnumerator DelaiBeforeStartOpti(){
-		yield return new WaitForSeconds(0.5f);
+		yield return new WaitForSeconds(0f);
+		CheckWhereIAm();
 		OptimizeZone();
 	}
 	
