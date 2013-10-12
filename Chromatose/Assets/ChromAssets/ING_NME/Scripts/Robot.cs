@@ -61,10 +61,10 @@ public class Robot : MonoBehaviour {
 			curSprite = 1 - curSprite;
 			//spriteInfo.SetSprite(sprites[curSprite]);
 			if (curSprite == 0){
-				transform.position = new Vector3(transform.position.x, transform.position.y, -2);
+				transform.position = new Vector3(transform.position.x, transform.position.y, 0.5f);
 			}
 			else{
-				transform.position = new Vector3(transform.position.x, transform.position.y, 2);
+				transform.position = new Vector3(transform.position.x, transform.position.y, 0.5f);
 			}
 			timer = 0;
 			transform.Rotate(new Vector3(0, 0, angle * turnRate));
