@@ -20,6 +20,7 @@ public class Shop : MonoBehaviour {
 	
 	private BoxCollider blocker;
 	private tk2dSprite _SpriteInfo;
+	private tk2dAnimatedSprite _MainAnim;
 	private tk2dAnimatedSprite indicator;
 	private string inString;
 	private string outString;
@@ -31,7 +32,18 @@ public class Shop : MonoBehaviour {
 	
 	void Start () {
 		blocker = GetComponentInChildren<BoxCollider>();
-		_SpriteInfo = GetComponent<tk2dSprite>();
+		switch(requiredCollType){
+		case requiredCollTypeEnum.White:
+			_MainAnim = GetComponent<tk2dAnimatedSprite>();
+			break;
+		case requiredCollTypeEnum.Red:
+			_SpriteInfo = GetComponent<tk2dSprite>();
+			break;
+		case requiredCollTypeEnum.Blue:
+			_SpriteInfo = GetComponent<tk2dSprite>();
+			break;
+		}
+		
 		
 		Quaternion indicRotation = Quaternion.identity;
 		indicator = (Instantiate(Resources.Load("pre_shopIndicator"), transform.position + new Vector3(-25 + positionOffSet.x, 0 + positionOffSet.y, 0 + positionOffSet.z - 1), indicRotation) as GameObject).GetComponent<tk2dAnimatedSprite>();
@@ -202,7 +214,17 @@ public class Shop : MonoBehaviour {
 				break;
 			}
 			HUDManager.hudManager.OffAction ();
-			gameObject.SetActive(false);
+			switch(requiredCollType){
+			case requiredCollTypeEnum.White:
+				_MainAnim.Play();
+				break;
+			case requiredCollTypeEnum.Red:
+				gameObject.SetActive(false);
+				break;
+			case requiredCollTypeEnum.Blue:
+				gameObject.SetActive(false);
+				break;
+			}
 		}
 	}
 }

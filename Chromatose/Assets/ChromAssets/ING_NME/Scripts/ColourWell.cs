@@ -13,7 +13,6 @@ public class ColourWell : MonoBehaviour {
 	private Avatar _AvatarScript;
 	private Color myColor;
 	private tk2dAnimatedSprite _MainAnim;
-	private AudioSource sfxPlayer;
 	
 	
 	private string redWellString1 = "redWellL1_gyser";
@@ -25,8 +24,6 @@ public class ColourWell : MonoBehaviour {
 	
 	void Start () {
 		_MainAnim = GetComponent<tk2dAnimatedSprite>();
-		sfxPlayer = GetComponent<AudioSource>();
-		sfxPlayer.Play();
 		
 		switch(wellType){
 		case _WellTypeEnum.RedGyser_1:
