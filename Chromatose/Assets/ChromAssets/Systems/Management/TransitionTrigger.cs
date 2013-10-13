@@ -166,13 +166,19 @@ public class TransitionTrigger : MonoBehaviour {
 #region Methodes de Transition
 	
 	void NextLevel(){
+		
+		_AvatarScript = GameObject.FindGameObjectWithTag("avatar").GetComponent<Avatar>();
+			
 		if(_AvatarScript.HasOutline){
 			_AvatarScript.CancelOutline();
 		}
+		MusicManager.soundManager.StopSFX(12);
 		_AvatarScript.EmptyingBucket();
+		
 		_AvatarScript.CannotControlFor(false, 0);
 		_AvatarScript.movement.SetVelocity(Vector2.zero);
 		
+		MainManager.currentRoomString = "room00";
 		MainManager._MainManager.UnlockNextLevelOnly();
 		
 		/*

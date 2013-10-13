@@ -62,6 +62,7 @@ public class OptiManager : MainManager {
 				}
 			}
 			roomList[_CurRoom].SetActive(true);
+			currentRoomString = roomList[_CurRoom].name;
 			Invoke("SaveRoom", 0.5f);
 		}
 	}
@@ -71,7 +72,7 @@ public class OptiManager : MainManager {
 	}
 	
 	IEnumerator DelaiBeforeStartOpti(){
-		yield return new WaitForSeconds(0f);
+		yield return new WaitForSeconds(0.5f);
 		CheckWhereIAm();
 		OptimizeZone();
 	}

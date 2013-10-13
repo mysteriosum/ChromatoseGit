@@ -801,7 +801,7 @@ public class HUDManager : MainManager {
 			}
 			GUI.skin.textArea.fontSize = 22;
 			GUI.skin.textArea.normal.textColor = Color.black;
-			GUI.TextArea(new Rect(textOffset.x, textOffset.y, 100, 50), StatsManager.comicThumbDisplayed + " / " + _TotalComicThumb);
+			GUI.TextArea(new Rect(textOffset.x, textOffset.y, 100, 50), StatsManager.comicThumbDisplayed + "/" + _TotalComicThumb);
 			
 			
 		GUI.EndGroup();
@@ -860,6 +860,8 @@ public class HUDManager : MainManager {
 		GUI.skin = mainMenuButtonSkin;
 		if(GUI.Button(new Rect(400, 175, 501, 149), "")){
 			Pause();
+			MusicManager.soundManager.StopSFX(12);
+			GameObject.FindGameObjectWithTag("avatar").GetComponent<Avatar>().EmptyingBucket();
 			GameObject.FindGameObjectWithTag("avatar").GetComponent<Avatar>().movement.SetVelocity(Vector2.zero);
 			LevelSerializer.SaveObjectTreeToFile("Chromasave", GameObject.FindGameObjectWithTag("StatsManager").gameObject);
 			MusicManager.soundManager.StartMenuMusic();
@@ -983,16 +985,16 @@ public class HUDManager : MainManager {
 		GUI.skin.textArea.normal.textColor = Color.black;
 		
 		GUI.DrawTexture(new Rect(536f, 75f, 237f, 115f), whiteColTex);
-		GUI.TextArea(new Rect(635f, 130f, 170f, 50f), StatsManager.whiteCollCollected.ToString() + " / " + "100");
+		GUI.TextArea(new Rect(635f, 130f, 170f, 50f), StatsManager.whiteCollDisplayed.ToString() + " / " + "426");
 		GUI.DrawTexture(new Rect(528f, 169f, 240f, 99f), redColTex);
-		GUI.TextArea(new Rect(635f, 209f, 170f, 50f), StatsManager.redCollCollected.ToString() + " / " + "100");
+		GUI.TextArea(new Rect(635f, 209f, 170f, 50f), StatsManager.redCollDisplayed.ToString() + " / " + "47");
 		GUI.DrawTexture(new Rect(530f, 245f, 224f, 102f), blueColText);
-		GUI.TextArea(new Rect(635f, 288, 170f, 50f), StatsManager.blueCollCollected.ToString() + " / " + "100");
+		GUI.TextArea(new Rect(635f, 288, 170f, 50f), StatsManager.blueCollDisplayed.ToString() + " / " + "66");
 		GUI.DrawTexture(new Rect(530f, 330f, 236f, 96f), comicTex);
-		GUI.TextArea(new Rect(635f, 370f, 170f, 50f), StatsManager.comicThumbCollected.ToString() + " / " + "100");
+		GUI.TextArea(new Rect(635f, 370f, 170f, 50f), StatsManager.comicThumbDisplayed.ToString() + " / " + "100");
 		GUI.DrawTexture(new Rect(528f, 410f, 232f, 105f), deathCountTex);
 		GUI.skin.textArea.fontSize = 30;
-		GUI.TextArea(new Rect(620f, 465f, 50f, 50f), "000");
+		GUI.TextArea(new Rect(620f, 465f, 50f, 50f), StatsManager.deathCounter.ToString());
 		
 		GUI.skin = _TimeTrialButtonSkin;
 		if(GUI.Button(new Rect(528f, 520f, 240f, 100f), "")){
