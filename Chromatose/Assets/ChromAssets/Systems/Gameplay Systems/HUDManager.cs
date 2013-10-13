@@ -879,9 +879,10 @@ public class HUDManager : MainManager {
 			//START BUTTON
 		GUI.skin = _SkinMenuSansBox;
 		Rect startBox = new Rect(500, 350, 250, 126);
-		
 		GUI.DrawTexture(new Rect(300, 175, 489, 374), movieSecondLoad);
-		Debug.Log("InStart");
+		if(!MainManager._CanControl){
+			_AvatarScript.movement.SlowToStop();
+		}
 	}
 	
 		//DRAW LA FENETRE DU MAIN MENU

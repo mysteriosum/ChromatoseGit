@@ -71,6 +71,7 @@ public class InputManager : MainManager {
 			if(HUDManager._GUIState == GUIStateEnum.OnStart){
 				HUDManager._GUIState = GUIStateEnum.Interface;
 				GameObject.FindGameObjectWithTag("avatar").GetComponent<Avatar>().CanControl();
+				GameObject.FindGameObjectWithTag("avatar").GetComponent<Avatar>().movement.SetVelocity(Vector2.zero);
 				MusicManager.soundManager.PlaySFX(19);
 				MusicManager.soundManager.CheckLevel();
 				HUDManager.hudManager.StartHudOpenSequence();

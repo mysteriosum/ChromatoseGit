@@ -1,16 +1,10 @@
 using UnityEngine;
 using System.Collections;
 
-public class Shop : MonoBehaviour {
-	
-	public enum requiredCollTypeEnum{
-		White, Blue
-	}
-	
-	public requiredCollTypeEnum requiredCollType;
-	
-	public int requiredPayment = 1;
-	public int minBefOpenShop = 1;
+public class BossDoor : MonoBehaviour {
+
+	private int requiredPayment = 0;
+	private int minBefOpenShop = 47;
 	
 	public Vector3 positionOffSet;
 	public Vector3 rotationOffSet;
@@ -27,7 +21,7 @@ public class Shop : MonoBehaviour {
 	private tk2dAnimatedSprite indicator;
 	private string inString;
 	private string outString;
-	private int avatarCloseDist = 150;
+	private int avatarCloseDist = 350;
 	private bool isOut = false;
 	private bool isIn = true;
 	private bool setuped = false;
@@ -37,19 +31,9 @@ public class Shop : MonoBehaviour {
 	protected bool waiting = false;
 	// Use this for initialization
 	void Start () {
-		
-		switch(requiredCollType){
-		case requiredCollTypeEnum.White:
-			myColor = Color.white;
-			inString = "wshopFlagIn_" + requiredPayment.ToString();
-			outString = "wshopFlagOut_" + requiredPayment.ToString();
-			break;
-		case requiredCollTypeEnum.Blue:
-			myColor = Color.blue;
-			inString = "bshopFlagIn_" + requiredPayment.ToString();
-			outString = "bshopFlagOut_" + requiredPayment.ToString();
-			break;
-		}
+		myColor = Color.red;
+		inString = "bossFlagIn_47";
+		outString = "bossFlagOut_47";
 
 		//Debug.Log("Got a collider " + myCollider.name + " and a transform: " + colliderT.name);
 		
@@ -73,24 +57,19 @@ public class Shop : MonoBehaviour {
 	void Update () {
 		if(!setuped)Setup ();
 		inZone = myTriggerZone.GetComponent<ShopDetection>().onDetectZone;
-		if(chroManager.GetCollectibles(myColor) < minBefOpenShop)return;
 		
 		if(avatarT != null){
-			
-			switch(requiredCollType){
-			case requiredCollTypeEnum.White:
-				Check(Actions.WhitePay);
-				break;
-			case requiredCollTypeEnum.Blue:
-				Check(Actions.Pay);
-				break;
-			}
-			
 			if (triggered) return;
 
 			float dist = Vector3.Distance(avatarT.position, transform.position);
 			if (inZone && isIn){
 				StartOut();
+				if(StatsManager.redCollDisplayed >= minBefOpenShop){
+					StartIn();
+					waiting = true;
+					triggered = true;
+					MusicManager.soundManager.PlaySFX(46);
+				}
 			}
 			else if (!inZone && isOut){
 				HUDManager.hudManager.OffAction ();
@@ -98,30 +77,7 @@ public class Shop : MonoBehaviour {
 			}
 		}
 	}
-	
-	protected bool Check(Actions action){
-		if (triggered){
-			return false;
-		}
-		if (myTriggerZone.bounds.Contains(avatarT.position)){
-			HUDManager.hudManager.UpdateAction(action, Pay);
-			return true;
-		}
-		return false;
-	}
-	
-	void Pay(){
-		if (chroManager.GetCollectibles(myColor) >= requiredPayment){
-			
-			StartIn();
-			waiting = true;
-			triggered = true;
-			MusicManager.soundManager.PlaySFX(46);
-		}
-		else{
-			MusicManager.soundManager.PlaySFX(45);
-		}
-	}
+
 	
 	void Animate(){
 		anim.Play();
@@ -155,7 +111,6 @@ public class Shop : MonoBehaviour {
 			//collisionChild.gameObject.SetActive(false);
 			HUDManager.hudManager.OffAction ();
 			myCollider.enabled = false;
-			chroManager.RemoveCollectibles(myColor, requiredPayment, avatarT.position);
 			if (anim)
 				Animate();
 		}
