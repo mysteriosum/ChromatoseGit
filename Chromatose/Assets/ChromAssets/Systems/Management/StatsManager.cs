@@ -22,9 +22,11 @@ public class StatsManager : MainManager {
 	public static int blueCollDisplayed = 0;
 	public static int whiteCollDisplayed = 0;
 	public static int comicThumbDisplayed = 0;
+	public static int deathCounter = 0;
 	
 	public static int totalComicViewed = 0;
 	public static float playedTime = 0;
+	
 	
 	public static bool doneOneTime;
 	public static bool versionPirate;

@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-public class Shavatar1 : MainManager {
+public class Shavatar1 : MonoBehaviour {
 
 	public enum _BehaviourEnum{
 		idle, patrol, idle_Follow, patrol_Follow, bossFight
@@ -58,7 +58,10 @@ public class Shavatar1 : MainManager {
 	public SphereCollider _DetectionCollider;
 	public SphereCollider _CollisionDetectionCollider;
 	private ShavatarDetectionScript _DetectionScript;
-
+	
+	//Management
+	private GameObject _Avatar;
+	private Avatar _AvatarScript;
 	
 	void Start () {
 		
@@ -120,11 +123,13 @@ public class Shavatar1 : MainManager {
 		#endregion
 	}
 	void FixedUpdate () {
+	
+		if(!GameObject.FindGameObjectWithTag("avatar"))return;
+		
 		if(!_Avatar){
 			_Avatar = GameObject.FindGameObjectWithTag("avatar");
+			_AvatarScript = GameObject.FindGameObjectWithTag("avatar").GetComponent<Avatar>();
 		}
-		
-		if(!GameObject.FindGameObjectWithTag("avatar"))return;
 		
 		#region Idle
 		switch(behaviours){

@@ -298,6 +298,7 @@ public class ChromatoseManager : MainManager {
 			
 			avatar = GameObject.FindGameObjectWithTag("avatar").GetComponent<Avatar>();
 			if(!_NoDeathModeActivated){
+				StatsManager.deathCounter++;
 				MusicManager.soundManager.PlaySFX(16);
 				danim = new Avatar.DeathAnim();
 				danim.PlayDeath(Reset);
@@ -321,6 +322,7 @@ public class ChromatoseManager : MainManager {
 				}
 			}
 			else{
+				StatsManager.deathCounter++;
 				MusicManager.soundManager.PlaySFX(16);
 				danim = new Avatar.DeathAnim();
 				danim.PlayDeath(Reset);
@@ -346,6 +348,7 @@ public class ChromatoseManager : MainManager {
 			//avatar.renderer.enabled = false;
 		}
 		else{
+			StatsManager.deathCounter++;
 			MusicManager.soundManager.PlaySFX(16);
 			danim = new Avatar.DeathAnim();
 			danim.PlayDeath(LoadCheckpoint);
@@ -360,6 +363,9 @@ public class ChromatoseManager : MainManager {
 	
 	
 	public void DeathByBoss(){
+		
+		StatsManager.deathCounter++;
+		
 		Debug.Log("Mort par le Boss");
 			//Play le SFX de la Mort
 		MusicManager.soundManager.PlaySFX(16);
