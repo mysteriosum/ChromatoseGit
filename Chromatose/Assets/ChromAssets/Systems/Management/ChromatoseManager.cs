@@ -242,6 +242,7 @@ public class ChromatoseManager : MainManager {
 		else{
 			Debug.Log("Cant delete this collectable, check color");
 		}
+		StatsManager.manager.ReCalculateStats();
 	}
 	
 	public void RemoveCollectibles(Color color, int amount, Vector3 pos){
@@ -264,6 +265,7 @@ public class ChromatoseManager : MainManager {
 		else{
 			Debug.Log("Cant delete this collectable, check color");
 		}
+		StatsManager.manager.ReCalculateStats();
 	}
 	public void RemoveCollectibles(Color color, int amount, Vector3 pos, EndBoss_DataBase bossData){
 		
@@ -276,6 +278,7 @@ public class ChromatoseManager : MainManager {
 		else{
 			Debug.Log("Cant delete this collectable, check color");
 		}
+		StatsManager.manager.ReCalculateStats();
 	}
 #endregion	
 	
@@ -285,7 +288,8 @@ public class ChromatoseManager : MainManager {
 																			//<vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv>
 	
 	public void AddComicThumb(){
-		_ComicThumbCollected++;
+		StatsManager.comicThumbCollected[currentLevel]++;
+		StatsManager.manager.ReCalculateStats();
 	}
 
 #endregion	

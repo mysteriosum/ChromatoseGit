@@ -960,7 +960,7 @@ public class Avatar : MainManager{
 			}
 			
 			//spriteInfo.SetSprite(spriteInfo.CurrentSprite.name);
-			Debug.Log("Change Collection Here");
+			
 		}
 		else{
 			
@@ -1452,6 +1452,7 @@ public class Avatar : MainManager{
 		
 		_CurColor = color;
 		_SpriteIndex = 1;
+	//	_OnLoseColorFX = true;
 		
 		if(color == Color.red){
 			switch(avatarType){
