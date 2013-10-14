@@ -213,6 +213,8 @@ public class TransitionTrigger : MonoBehaviour {
 				_AvatarScript.CancelOutline();
 			}
 		}
+		
+		HUDManager.hudManager.ResetComicCounter();
 		//ResetBool();
 		
 		if(GameObject.FindGameObjectWithTag("OptiManager") != null){
