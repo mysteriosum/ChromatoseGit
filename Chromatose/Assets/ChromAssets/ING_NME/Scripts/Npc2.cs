@@ -27,10 +27,7 @@ public class Npc2 : MonoBehaviour {
 	void Start () {
 		_MainAnim = GetComponent<tk2dAnimatedSprite>();
 		_Player = GetComponent<AudioSource>();
-		/*
-		_Player.Play();
-		StartCoroutine(PlayLoopFX());*/
-		
+				
 		float rndOffsetTime = Random.Range(0f, 1f);
 		
 		switch(typeNpc){
@@ -71,6 +68,7 @@ public class Npc2 : MonoBehaviour {
 		if(setuped){
 			_AvatarScript.FillBucket(myColor);
 			MusicManager.soundManager.PlaySFX(14);
+			StatsManager.killedNpc++;
 			switch(typeNpc){
 			case _TypeNPCEnum.Red:
 				_MainAnim.Play("rNPC_redToGrey");

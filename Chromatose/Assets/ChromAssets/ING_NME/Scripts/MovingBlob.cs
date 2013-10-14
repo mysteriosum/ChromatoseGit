@@ -22,11 +22,13 @@ public bool waitingAvatarInZone = false;
 	private Avatar _AvatarScript;
 	private ChromatoseManager _Manager;
 	private MovingBlob_DetectionZone _DetectionZone;
+	private Vector3 _StartPosition;
 
 	private int currentIndex = 0;
 	private int maxIndex;
 	
 	void Start () {
+		_StartPosition = transform.position;
 		_DetectionZone = transform.parent.gameObject.GetComponentInChildren<MovingBlob_DetectionZone>();
 		SetupBlob();
 		SetupPatrol();
@@ -49,6 +51,12 @@ public bool waitingAvatarInZone = false;
 	void SetupPatrol(){
 		maxIndex = patrolNodes.Length;
 		
+	}
+	
+	public void ResetBlob(){
+		transform.position = _StartPosition;
+		currentIndex = 0;
+		_DetectionZone.inZone = false;
 	}
 	
 	IEnumerator SetupBlob(){

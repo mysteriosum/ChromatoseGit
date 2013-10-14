@@ -67,6 +67,18 @@ public class MiniBoss : MonoBehaviour {
 		}
 	}
 	
+	public void ResetMiniBoss(){
+		_KnockBack = 50f;
+		_FadeRate = 0.005f;
+		_FadingCounter = 1;
+		_ShooterCounter = 0;
+	
+		beingExtinguished = false;
+		_CanDie = false;
+		alreadyShooten = false;
+		StopAllCoroutines();
+	}
+	
 	void OnCollisionEnter(Collision other){
 		if(other.gameObject.tag != "avatar"){return;}
 		
@@ -76,7 +88,7 @@ public class MiniBoss : MonoBehaviour {
 	void DelegateActionTest(){
 		if(StatsManager.redCollDisplayed >= requiredPayment){
 			if(!alreadyShooten){
-				_Manager.RemoveCollectibles(Color.red, requiredPayment, this.transform.position);
+				_Manager.ShootRedCollOnMini(requiredPayment, transform.position);
 				alreadyShooten = true;
 				StartCoroutine(StartDie(2f));
 			}
