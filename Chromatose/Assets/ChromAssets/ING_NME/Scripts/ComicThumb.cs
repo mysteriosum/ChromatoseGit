@@ -101,7 +101,7 @@ public class ComicThumb : MonoBehaviour {
 	        transform.position = Vector3.Slerp(riseRelCenter, setRelCenter, fracComplete * _SlerpSpeedRate);
 	        transform.position += center;
 			
-			spriteInfo.MakePixelPerfect();
+			//spriteInfo.MakePixelPerfect();
 		}
 		
 		if(Vector3.Distance(_MyPos, _HUDPos) < (Vector3.Distance(_MyStartPos, _HUDPos)/2) && _CanGoBig){
@@ -203,7 +203,9 @@ public class ComicThumb : MonoBehaviour {
 		_CanGoSmall = false;
 		
 		if(!_Destroyed){
-			shadow.gameObject.SetActive(false);
+			if(shadow!=null){
+				shadow.gameObject.SetActive(false);
+			}
 			_Moi.transform.Translate(Vector3.forward * -3000);	
 			ChromatoseManager.manager.AddComicThumb();
 			_Destroyed = true;
