@@ -14,8 +14,8 @@ public class ComicBG : MonoBehaviour {
 	private int _ComicCollected = 0;
 	private bool _ComicDone = false;
 	private bool _AvatarInHall = false;
-	private bool[] onWait = new bool[]{false, false, false, false, false, false, false, false, false, false};
-	private bool[] alreadySpawn = new bool[]{false, false, false, false, false, false, false, false, false, false};
+	private bool[] onWait = new bool[]{false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false};
+	private bool[] alreadySpawn = new bool[]{false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false};
 
 	
 	// Use this for initialization
@@ -38,7 +38,6 @@ public class ComicBG : MonoBehaviour {
 	public void MakeActive(int index){
 		//comic[index].SetActive(true);
 		onWait[index] = true;
-		_ComicCollected++;
 	}
 	
 	void OnTriggerEnter(Collider other){

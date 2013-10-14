@@ -201,19 +201,19 @@ public class MusicManager : MainManager{
 			CrossFadeMusic(1, 0.0025f);
 			break;
 		case 8:
-			CrossFadeMusic(2, 0.0025f);
+			CrossFadeMusic(3, 0.0025f);
 			break;
 		case 9:
-			CrossFadeMusic(2, 0.0025f);
+			CrossFadeMusic(3, 0.0025f);
 			break;
 		case 10:
-			CrossFadeMusic(2, 0.0025f);
+			CrossFadeMusic(3, 0.0025f);
 			break;
 		case 11:
-			CrossFadeMusic(3, 0.0025f);
+			CrossFadeMusic(2, 0.0025f);
 			break;
 		case 12:
-			CrossFadeMusic(3, 0.0025f);
+			CrossFadeMusic(4, 0.0025f);
 			break;
 		}
 	}

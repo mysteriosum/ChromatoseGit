@@ -53,6 +53,7 @@ public class ComicThumb : MonoBehaviour {
 	private float _SlerpSpeedRate = 1.0f;
 
 	void Start () {
+		_MyStartPos = new Vector3(transform.position.x, transform.position.y, transform.position.z);
 		_Manager = ChromatoseManager.manager;
 		_Moi = this.gameObject;
 		_Camera = Camera.mainCamera;
@@ -189,7 +190,7 @@ public class ComicThumb : MonoBehaviour {
 			transform.position = new Vector3(transform.position.x, transform.position.y - 0.2f, 2);
 		}
 		else{
-			transform.position = new Vector3(transform.position.x, transform.position.y + 5f, 2);
+			transform.position = _MyStartPos;
 			_IdleCounter = 0;
 		}
 	}
