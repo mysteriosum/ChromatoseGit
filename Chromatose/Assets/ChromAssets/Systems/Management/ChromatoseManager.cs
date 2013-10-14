@@ -98,6 +98,9 @@ public class ChromatoseManager : MainManager {
 	private int _TotalBlueColl = 0;
 	private int _TotalComicThumb = 0;
 	
+	private int _TotalShoot = 0;
+	private int _TotalShooted = 0;
+	
 	
 	//Variables CheckPoint
 	private bool _NewLevel = false;
@@ -298,6 +301,20 @@ public class ChromatoseManager : MainManager {
 	Avatar.DeathAnim danim;		//avatar's death animation
 	public void Death(){
 		
+		StopAllCoroutines();
+		if(GameObject.FindGameObjectWithTag("miniBoss")){
+			GameObject[] bossInLvl = GameObject.FindGameObjectsWithTag("miniBoss");
+			foreach(GameObject boss in bossInLvl){
+				boss.GetComponent<MiniBoss>().ResetMiniBoss();
+			}
+		}
+		if(GameObject.FindGameObjectWithTag("blobreset")){
+			GameObject[] blobInLvl = GameObject.FindGameObjectsWithTag("blobreset");
+			foreach(GameObject blob in blobInLvl){
+				blob.GetComponentInChildren<MovingBlob>().ResetBlob();
+			}
+		}
+		
 		if(!_LevelSaveExist){
 			
 			avatar = GameObject.FindGameObjectWithTag("avatar").GetComponent<Avatar>();
@@ -306,7 +323,7 @@ public class ChromatoseManager : MainManager {
 				MusicManager.soundManager.PlaySFX(16);
 				danim = new Avatar.DeathAnim();
 				danim.PlayDeath(Reset);
-				//avatar.SendMessage("FadeAlpha", 0f);
+					//avatar.SendMessage("FadeAlpha", 0f);
 				GameObject.FindGameObjectWithTag("avatar").GetComponent<Avatar>().movement.SetVelocity(Vector2.zero);
 				StartCoroutine(OnDeath(0.15f));
 				StartCoroutine(RestartRoom());
@@ -330,7 +347,7 @@ public class ChromatoseManager : MainManager {
 				MusicManager.soundManager.PlaySFX(16);
 				danim = new Avatar.DeathAnim();
 				danim.PlayDeath(Reset);
-				//avatar.SendMessage("FadeAlpha", 0f);
+					//avatar.SendMessage("FadeAlpha", 0f);
 				avatar.movement.SetVelocity(Vector2.zero);
 				StartCoroutine(OnDeath(0.15f));
 				avatar.CancelOutline();
@@ -576,8 +593,7 @@ public class ChromatoseManager : MainManager {
 			StartCoroutine(DelaiToBlowColl(0.5f, bCol));
 		}
 	}
-	void ShootRedCollOnMini(int amount, Vector3 pos){
-		Debug.Log("Shoot");
+	public void ShootRedCollOnMini(int amount, Vector3 pos){
 		for(int i = 0; i < amount; i++){
 			StartCoroutine(ShootRed(i*0.5f, pos));
 			
@@ -614,6 +630,7 @@ public class ChromatoseManager : MainManager {
 		rCol.GetComponent<Collectible2>().redCollectorPos = newPos;
 		rCol.GetComponent<Collectible2>().effect = true;
 		rCol.GetComponent<Collectible2>().colorCollectible = Collectible2._ColorCollectible.Red;
+		RemoveCollectibles(Color.red, 1);
 	}
 	IEnumerator OnDeath(float _wait){
 		yield return new WaitForSeconds(_wait);

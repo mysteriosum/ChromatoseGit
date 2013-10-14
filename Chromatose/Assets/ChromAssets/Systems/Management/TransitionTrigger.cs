@@ -93,8 +93,7 @@ public class TransitionTrigger : MonoBehaviour {
 			if (_LightCounter > 1){
 				_FadeIn = false; 
 				_FadeOut = true; 
-				ChromatoseManager.manager.ResetComicCounter(); 
-				ChromatoseManager.manager.ResetColl(); 
+				
 				myTrigger();
 			}
 				
@@ -109,8 +108,8 @@ public class TransitionTrigger : MonoBehaviour {
 			
 			if (!_Popped) return;
 			
-			if (_LightCounter < 1 && _FadeIn){_LightCounter += 0.05f;}
-			if (_LightCounter > 0 && _FadeOut){_LightCounter -= 0.015f;}
+			if (_LightCounter < 1 && _FadeIn){_LightCounter += 0.075f;}
+			if (_LightCounter > 0 && _FadeOut){_LightCounter -= 0.01f;}
 			if (_LightCounter > 1){_FadeIn = false; _FadeOut = true; _Cam.SwitchCamType(); myTrigger();}
 			
 			break;
@@ -118,8 +117,8 @@ public class TransitionTrigger : MonoBehaviour {
 		case transitionVers.ReturnMainMenu:
 			if (!_Popped) return;
 			
-			if (_LightCounter < 1 && _FadeIn){_LightCounter += 0.05f;}
-			if (_LightCounter > 0 && _FadeOut){_LightCounter -= 0.015f;}
+			if (_LightCounter < 1 && _FadeIn){_LightCounter += 0.075f;}
+			if (_LightCounter > 0 && _FadeOut){_LightCounter -= 0.01f;}
 			if (_LightCounter > 1){_FadeIn = false; _FadeOut = true; myTrigger();}
 			break;
 		}
@@ -206,6 +205,7 @@ public class TransitionTrigger : MonoBehaviour {
 		}
 		
 		if(!_DontAddRoom){
+			ChromatoseManager.manager.ResetColl(); 
 			ChromatoseManager.manager.ResetComicCounter();
 			_AvatarScript.CallFromFar();
 			_AvatarScript.LoseAllColourHidden();		
@@ -267,10 +267,6 @@ public class TransitionTrigger : MonoBehaviour {
 		_AvatarScript = GameObject.FindGameObjectWithTag("avatar").GetComponent<Avatar>();
 		avatarT = GameObject.FindWithTag("avatar").transform;
 		_Cam = GameObject.FindGameObjectWithTag("MainCamera").GetComponent<ChromatoseCamera>();
-		/*	
-		if(_Manager.TimeTrialMode) {
-			_TransitEnum = transitionVers.TimeTrial;
-		}*/
 	}
 }
 #endregion

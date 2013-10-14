@@ -81,6 +81,7 @@ public class ComicBG : MonoBehaviour {
 		comic[index].SetActive(true);
 		alreadySpawn[index] = true;
 		_ComicCollected++;
+		StatsManager.totalComicViewed++;
 		MusicManager.soundManager.PlaySFX(1);
 	}
 }
