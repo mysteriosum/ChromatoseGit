@@ -10,6 +10,7 @@ public class ComicThumb : MonoBehaviour {
 	
 	public int myIndex;
 	public GameObject myComicBG;
+	public GameObject shadow;
 		
 	private ChromatoseManager _Manager;
 	private Camera _Camera;
@@ -46,6 +47,7 @@ public class ComicThumb : MonoBehaviour {
 	private Vector3 _MyPos = new Vector3(0,0,0);
 	private Vector3 _HUDPos = new Vector3(0,0,0);
 	private Vector3 _MyStartPos = new Vector3(0,0,0);
+	private Vector3 _StartBouncePos = new Vector3(0, 0, 0);
 	
 	//Slerp Variable
 	private float _StartTime = 0;
@@ -54,6 +56,7 @@ public class ComicThumb : MonoBehaviour {
 
 	void Start () {
 		_MyStartPos = new Vector3(transform.position.x, transform.position.y, transform.position.z);
+		_StartBouncePos = new Vector3(transform.position.x, transform.position.y, transform.position.z);
 		_Manager = ChromatoseManager.manager;
 		_Moi = this.gameObject;
 		_Camera = Camera.mainCamera;
@@ -98,7 +101,7 @@ public class ComicThumb : MonoBehaviour {
 	        transform.position = Vector3.Slerp(riseRelCenter, setRelCenter, fracComplete * _SlerpSpeedRate);
 	        transform.position += center;
 			
-			spriteInfo.MakePixelPerfect();
+			//spriteInfo.MakePixelPerfect();
 		}
 		
 		if(Vector3.Distance(_MyPos, _HUDPos) < (Vector3.Distance(_MyStartPos, _HUDPos)/2) && _CanGoBig){
@@ -190,7 +193,7 @@ public class ComicThumb : MonoBehaviour {
 			transform.position = new Vector3(transform.position.x, transform.position.y - 0.2f, 2);
 		}
 		else{
-			transform.position = _MyStartPos;
+			transform.position = new Vector3(transform.position.x, transform.position.y + 5.2f, 2);
 			_IdleCounter = 0;
 		}
 	}
@@ -200,6 +203,9 @@ public class ComicThumb : MonoBehaviour {
 		_CanGoSmall = false;
 		
 		if(!_Destroyed){
+			if(shadow!=null){
+				shadow.gameObject.SetActive(false);
+			}
 			_Moi.transform.Translate(Vector3.forward * -3000);	
 			ChromatoseManager.manager.AddComicThumb();
 			_Destroyed = true;
