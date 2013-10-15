@@ -864,7 +864,7 @@ public class HUDManager : MainManager {
 			GameObject.FindGameObjectWithTag("avatar").GetComponent<Avatar>().EmptyingBucket();
 			GameObject.FindGameObjectWithTag("avatar").GetComponent<Avatar>().movement.SetVelocity(Vector2.zero);
 			LevelSerializer.SaveObjectTreeToFile("Chromasave", GameObject.FindGameObjectWithTag("StatsManager").gameObject);
-			MusicManager.soundManager.StartMenuMusic();
+			//MusicManager.soundManager.StartMenuMusic();
 			LoadALevel(0);
 		}
 		

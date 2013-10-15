@@ -62,8 +62,9 @@ public class InputManager : MainManager {
 			//SPACE BAR
 		if(Input.GetKeyDown(KeyCode.Space)){
 			Debug.Log("SpaceBar Pressed");
-			MusicManager.soundManager.PlaySFX(52);
-			
+			if(avatarScript.spaceBarActive){
+				MusicManager.soundManager.PlaySFX(52);
+			}
 		}
 		
 			//P pour les menu et Start
@@ -73,7 +74,7 @@ public class InputManager : MainManager {
 				GameObject.FindGameObjectWithTag("avatar").GetComponent<Avatar>().CanControl();
 				GameObject.FindGameObjectWithTag("avatar").GetComponent<Avatar>().movement.SetVelocity(Vector2.zero);
 				MusicManager.soundManager.PlaySFX(19);
-				MusicManager.soundManager.CheckLevel();
+				//MusicManager.soundManager.CheckLevel();
 				HUDManager.hudManager.StartHudOpenSequence();
 				Debug.Log("OutStart");
 			}

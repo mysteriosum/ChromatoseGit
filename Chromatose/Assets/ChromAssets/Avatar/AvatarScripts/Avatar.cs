@@ -699,6 +699,14 @@ public class Avatar : MainManager{
 	#endregion
 	
 #endregion
+	
+	void OnLevelWasLoaded(){
+		switch(Application.loadedLevel){
+		case (1):
+			_SpaceBarActive = false;
+			break;
+		}
+	}
 
 	void Start (){	
 		
@@ -722,15 +730,6 @@ public class Avatar : MainManager{
 			angles[i] = i * 22.5f;
 		}
 		
-		/*
-		switch(Application.loadedLevelName){
-		case ("Tutorial"):
-			_SpaceBarActive = false;
-			break;
-		case ("GYM_CHU"):
-			_SpaceBarActive = false;
-			break;
-		}*/
 												//initializing my particle objects, as necessary
 		spriteInfo = GetComponent<tk2dSprite>();
 		turboPart = new TurboParticle(particleCollection, partAnimations, t);
@@ -780,7 +779,7 @@ public class Avatar : MainManager{
 												//Self-made checkpoints! Or whatever you want to call it
 		getSpace = Input.GetKeyDown(KeyCode.Space);
 		
-		if (getSpace){
+		if (getSpace && _SpaceBarActive){
 			
 			if (!hasOutline){
 				outline = new GameObject("Outline");

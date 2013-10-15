@@ -37,6 +37,7 @@ public class DevManager : MainManager {
 				File.Delete(Application.persistentDataPath + "/" + "Chromasave");
 				LevelSerializer.SavedGames.Clear ();
 				LevelSerializer.SaveDataToPlayerPrefs (); 
+				Debug.LogWarning("SAVE GAME RESETED");
 				//EditorApplication.isPlaying = false;
 			}
 			
