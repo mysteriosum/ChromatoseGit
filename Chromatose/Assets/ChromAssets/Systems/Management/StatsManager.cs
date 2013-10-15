@@ -33,6 +33,12 @@ public class StatsManager : MainManager {
 	public static bool newManager;
 	public static bool newLevel;
 	
+	public static bool spaceBarActive;
+	public static float musicVolume = 0.95f;
+	public static float sfxVolume = 0.95f;
+	public static bool keyboardAlreadyChoose = false;
+	
+	
 	void Awake(){
 		if(LevelSerializer.IsDeserializing) return;
 		manager = this;		

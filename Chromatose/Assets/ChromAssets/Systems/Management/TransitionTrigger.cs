@@ -207,7 +207,6 @@ public class TransitionTrigger : MonoBehaviour {
 		if(!_DontAddRoom){
 			ChromatoseManager.manager.ResetColl(); 
 			ChromatoseManager.manager.ResetComicCounter();
-			Debug.Log("Passe par !DontAddRoom");
 			_AvatarScript.CallFromFar();
 			_AvatarScript.LoseAllColourHidden();		
 			if(_AvatarScript.HasOutline){

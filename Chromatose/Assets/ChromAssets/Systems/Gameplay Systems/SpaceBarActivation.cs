@@ -9,7 +9,7 @@ public class SpaceBarActivation : MainManager {
 	void OnTriggerEnter(Collider other){
 		if(other.tag != "avatar") return;
 		if(_AvatarScript != null){
-			_AvatarScript.spaceBarActive = true;
+			StatsManager.spaceBarActive = true;
 		}
 	}
 }

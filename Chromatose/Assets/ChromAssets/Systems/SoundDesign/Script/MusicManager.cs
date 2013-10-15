@@ -264,7 +264,7 @@ public class MusicManager : MainManager{
 			if(!sfxP.isPlaying){
 				sfxP.loop = loop;
 				sfxP.clip = _SFXList[sfxIndex];
-				sfxP.volume = sfxVolume;
+				sfxP.volume = StatsManager.sfxVolume;
 				sfxP.Play();
 				Debug.Log("Play FX #" + sfxIndex);
 				return;
@@ -282,7 +282,7 @@ public class MusicManager : MainManager{
 		}
 	}	
 	public void PlaySFX(int sfxIndex){
-		PlaySFX(sfxIndex, sfxVolume);
+		PlaySFX(sfxIndex, StatsManager.sfxVolume);
 	}
 	
 	void SwitchTrack(int musicIndex){
@@ -291,6 +291,7 @@ public class MusicManager : MainManager{
 				mPlayer.Stop();
 			}
 		}
+		_MusicSources[musicIndex].volume = StatsManager.musicVolume;
 		_MusicSources[musicIndex].Play();
 	}
 	
@@ -317,7 +318,7 @@ public class MusicManager : MainManager{
 		
 		for(float f = 1f; f >= fadeRate; f = f - fadeRate){
 			_MusicSources[curPlayer].volume = f;
-			_MusicSources[musicIndex].volume += Mathf.Clamp(fadeRate * 2f, 0, musicVolume);
+			_MusicSources[musicIndex].volume += Mathf.Clamp(fadeRate * 2f, 0, StatsManager.musicVolume);
 			//Debug.Log("f = " + f);
 			if(f <= 0){
 				_MusicSources[curPlayer].Stop ();
@@ -336,7 +337,7 @@ public class MusicManager : MainManager{
 			}
 		}
 		_MusicSources[curPlayer].Stop();
-		_MusicSources[curPlayer].volume = GetComponent<MainManager>().musicVolume;
+		_MusicSources[curPlayer].volume = StatsManager.musicVolume;
 		_MusicSources[curPlayer].Play();
 	}
 	
@@ -353,7 +354,7 @@ public class MusicManager : MainManager{
 	}
 	IEnumerator DelayingTrack(int trackIndex, float delai){
 		yield return new WaitForSeconds(delai);
-		_MusicSources[trackIndex].volume = musicVolume;
+		_MusicSources[trackIndex].volume = StatsManager.musicVolume;
 		_MusicSources[trackIndex].Play();
 	}
 }
