@@ -142,10 +142,14 @@ public class MusicManager : MainManager{
 		//StartMenuMusic();
 		Setup();
 	}
-	/*
-	void OnLevelWasLoaded(){
-		CheckLevel();
-	}*/
+	
+	void Update(){
+		if(!setuped)Setup();
+		bool musicOn = CheckMusicOn();
+		if(!musicOn){
+			CheckLevel();
+		}
+	}
 	
 	void Setup(){
 		soundManager = this;
@@ -198,31 +202,40 @@ public class MusicManager : MainManager{
 			//CrossFadeMusic(1, 0.0025f);
 			break;
 		case 4:
-			CrossFadeMusic(2, 0.0025f);
+			SwitchTrack(2);
+			//CrossFadeMusic(2, 0.0025f);
 			break;
 		case 5:
-			CrossFadeMusic(1, 0.0025f);
+			SwitchTrack(1);
+			//CrossFadeMusic(1, 0.0025f);
 			break;
 		case 6:
-			CrossFadeMusic(2, 0.0025f);
+			SwitchTrack(2);
+			//CrossFadeMusic(2, 0.0025f);
 			break;
 		case 7:
-			CrossFadeMusic(1, 0.0025f);
+			SwitchTrack(1);
+			//CrossFadeMusic(1, 0.0025f);
 			break;
 		case 8:
-			CrossFadeMusic(3, 0.0025f);
+			SwitchTrack(3);
+			//CrossFadeMusic(3, 0.0025f);
 			break;
 		case 9:
-			CrossFadeMusic(3, 0.0025f);
+			SwitchTrack(3);
+			//CrossFadeMusic(3, 0.0025f);
 			break;
 		case 10:
-			CrossFadeMusic(3, 0.0025f);
+			SwitchTrack(3);
+			//CrossFadeMusic(3, 0.0025f);
 			break;
 		case 11:
-			CrossFadeMusic(2, 0.0025f);
+			SwitchTrack(2);
+			//CrossFadeMusic(2, 0.0025f);
 			break;
 		case 12:
-			CrossFadeMusic(4, 0.0025f);
+			SwitchTrack(4);
+			//CrossFadeMusic(4, 0.0025f);
 			break;
 		}
 	}
@@ -234,10 +247,6 @@ public class MusicManager : MainManager{
 			}
 		}
 		return false;
-	}
-
-	void Update () {
-		if(!setuped)Setup();
 	}
 	
 	public void StopSFX(int sfxIndex){

@@ -61,6 +61,7 @@ public class ChuHudButton : MonoBehaviour {
 						break;
 					case buttonTypeEnum.Statistics:
 						MusicManager.soundManager.PlaySFX(38);
+						StatsManager.manager.ReCalculateStats();
 						HUDManager.hudManager.menuWindows = _MenuWindowsEnum.Stats;
 						break;
 					case buttonTypeEnum.GameMode:

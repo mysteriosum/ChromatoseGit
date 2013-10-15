@@ -235,7 +235,10 @@ public class MainManager : MonoBehaviour {
 		HUDManager.hudManager.movieSecondLoad.Stop();
 	//	HUDManager.hudManager.menuWindows = _MenuWindowsEnum.LoadingScreen;
 		HUDManager.hudManager.movieSecondLoad.Play();
-		
+		/*
+		ChromatoseManager.manager.ResetColl(); 
+		ChromatoseManager.manager.ResetComicCounter();
+		*/
 		if(levelInt == 0){			
 			if(_Avatar){
 				_Avatar.SetActive(false);

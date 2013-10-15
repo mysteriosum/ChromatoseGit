@@ -73,8 +73,7 @@ public class InputManager : MainManager {
 				HUDManager._GUIState = GUIStateEnum.Interface;
 				GameObject.FindGameObjectWithTag("avatar").GetComponent<Avatar>().CanControl();
 				GameObject.FindGameObjectWithTag("avatar").GetComponent<Avatar>().movement.SetVelocity(Vector2.zero);
-				MusicManager.soundManager.PlaySFX(19);
-				//MusicManager.soundManager.CheckLevel();
+				MusicManager.soundManager.PlaySFX(38);
 				HUDManager.hudManager.StartHudOpenSequence();
 				Debug.Log("OutStart");
 			}
