@@ -21,7 +21,7 @@ public class InputManager : MainManager {
 			//ON S'ASSURE QU"ON EST PAS DANS LE MAINMENU
 		if(currentLevel!=0){
 				//PAUSE -- NE DOIT PAS ETRE ACTIF DANS LES MENU
-			if(Input.GetKey(KeyCode.Escape)){
+			if(Input.GetKey(KeyCode.Escape) && _CanHitEscape){
 				//Pause();
 				HUDManager.hudManager.StartHudCloseSequence();
 			}
@@ -62,7 +62,7 @@ public class InputManager : MainManager {
 			//SPACE BAR
 		if(Input.GetKeyDown(KeyCode.Space)){
 			Debug.Log("SpaceBar Pressed");
-			if(avatarScript.spaceBarActive){
+			if(StatsManager.spaceBarActive){
 				MusicManager.soundManager.PlaySFX(52);
 			}
 		}
@@ -114,6 +114,11 @@ public class InputManager : MainManager {
 			}
 			if(Input.GetKeyDown(KeyCode.Keypad3)){
 				ChromatoseManager.manager.RemoveCollectibles(Color.blue, 1);
+			}
+			
+				//SpaceBar
+			if(Input.GetKeyDown(KeyCode.Keypad0)){
+				StatsManager.spaceBarActive = !StatsManager.spaceBarActive;
 			}
 		}
 		

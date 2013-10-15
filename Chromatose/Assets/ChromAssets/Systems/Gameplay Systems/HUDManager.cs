@@ -101,7 +101,6 @@ public class HUDManager : MainManager {
 		//VARIABLE ELEMENTS DYNAMICS
 	public static bool mainBoxCanDown = false;
 	public static bool mainBoxCanUp = false;
-	public static bool keyboardAlreadyChoose = false;
 	
 	private float mainBoxStartY = -230f;
 	private float mainBoxPosY = -230f;
@@ -121,6 +120,8 @@ public class HUDManager : MainManager {
 	
 	public static bool[] hudBoxCanDisappear = new bool[4];
 	
+	private bool _FromGame = false;
+	
 	private float hudBoxStartX = 1280;
 	private float hudBoxMinX = 1150;
 	
@@ -136,6 +137,7 @@ public class HUDManager : MainManager {
 	public bool canFlash { get { return _CanFlash; } set { _CanFlash = value; } }
 	public bool onFlash { get { return _OnFlash; } set { _OnFlash = value; } }
 	public bool firstStart { get { return _FirstStart; } set { _FirstStart = value; } }
+	
 	
 	public GUIStateEnum guiState { get { return _GUIState; } set { _GUIState = value; } }
 	public _MenuWindowsEnum menuWindows { get { return _MenuWindows; } set { _MenuWindows = value; } }
@@ -352,11 +354,16 @@ public class HUDManager : MainManager {
 				_MenuWindows = _MenuWindowsEnum.FakeSplashScreen;
 				ResetComicCounter();
 			}
+			else if(_FromGame){
+				_GUIState = GUIStateEnum.MainMenu;
+				_MenuWindows = _MenuWindowsEnum.LevelSelectionWindows;
+				StartCoroutine(ResetFromGame());
+				Debug.Log("Retour au mainMenu Screen");
+			}
 			else{
 				_GUIState = GUIStateEnum.MainMenu;
 				_CanShowPressStartAnim = false;
 				_MenuWindows = _MenuWindowsEnum.MainMenu;
-				Debug.Log("Retour au mainMenu Screen");
 			}
 		}
 	}
@@ -369,6 +376,7 @@ public class HUDManager : MainManager {
 		}
 		else{
 			SetupActionBox();
+			_CanHitEscape = true;
 			mainBoxCanDown = false;
 		}
 	}
@@ -380,6 +388,7 @@ public class HUDManager : MainManager {
 		}
 		else{
 			mainBoxCanUp = false;
+			//_CanHitEscape = true;
 			Pause();
 		}
 	}	
@@ -481,6 +490,7 @@ public class HUDManager : MainManager {
 	
 		//Start Hud Open Sequence
 	public void StartHudOpenSequence(){
+		_CanHitEscape = false;
 		StartCoroutine(ActiveMainBox(0.25f, true));
 		hudBoxCanAppear[3] = true;
 		StartCoroutine(ActiveHudBox(0.2f, 2, true));
@@ -490,6 +500,7 @@ public class HUDManager : MainManager {
 	
 		//Start Hud Close Sequence
 	public void StartHudCloseSequence(){
+		_CanHitEscape = false;
 		StartCoroutine(ActiveMainBox(0.25f, false));
 		hudBoxCanDisappear[0] = true;
 		StartCoroutine(ActiveHudBox(0.2f, 1, false));
@@ -701,18 +712,18 @@ public class HUDManager : MainManager {
 			
 			//VOLUME MUSIQUE SLIDER
 		GUI.skin = _SkinMenuSansBox;
-		musicVolume = GUI.HorizontalSlider(new Rect(450, 150, 350, 70), musicVolume, 0f, 1f);
+		StatsManager.musicVolume = GUI.HorizontalSlider(new Rect(450, 150, 350, 70), StatsManager.musicVolume, 0f, 1f);
 		
 			//MUSIC OK BUTTON
 		GUI.skin = _OkButtonSkin;
 		if(GUI.Button(new Rect(815, 130, 78, 78), "")){
 			MusicManager.soundManager.ReplayCurTrack();
-			Debug.Log("music = " + musicVolume);
+			Debug.Log("music = " + StatsManager.musicVolume);
 		}
 		
 			//VOLUME SFX SLIDER
 		GUI.skin = _SkinMenuSansBox;
-		sfxVolume = GUI.HorizontalSlider(new Rect(450, 250, 350, 70), sfxVolume, 0f, 1f);
+		StatsManager.sfxVolume = GUI.HorizontalSlider(new Rect(450, 250, 350, 70), StatsManager.sfxVolume, 0f, 1f);
 		
 			//SFX OK BUTTON
 		GUI.skin = _OkButtonSkin;
@@ -755,7 +766,8 @@ public class HUDManager : MainManager {
 			if(GUI.Button(new Rect(540, 525, 193, 120), "")){
 				Debug.Log("Save Game Deleted");
 				File.Delete(Application.persistentDataPath + "/" + "Chromasave");
-				HUDManager.hudManager.menuWindows = _MenuWindowsEnum.LevelSelectionWindows;				
+				HUDManager.hudManager.menuWindows = _MenuWindowsEnum.LevelSelectionWindows;	
+				Application.Quit();
 			}
 		}
 	}	
@@ -803,7 +815,7 @@ public class HUDManager : MainManager {
 			}
 			GUI.skin.textArea.fontSize = 22;
 			GUI.skin.textArea.normal.textColor = Color.black;
-			GUI.TextArea(new Rect(textOffset.x, textOffset.y, 100, 50), StatsManager.comicThumbCollected[currentLevel].ToString() + "/" + _TotalComicThumb);
+			GUI.TextArea(new Rect(textOffset.x, textOffset.y, 100, 50), StatsManager.comicThumbCollected[currentLevel].ToString() + "/" + _RoomManager.UpdateTotalComic());
 			
 			
 		GUI.EndGroup();
@@ -867,6 +879,7 @@ public class HUDManager : MainManager {
 			GameObject.FindGameObjectWithTag("avatar").GetComponent<Avatar>().movement.SetVelocity(Vector2.zero);
 			LevelSerializer.SaveObjectTreeToFile("Chromasave", GameObject.FindGameObjectWithTag("StatsManager").gameObject);
 			//MusicManager.soundManager.StartMenuMusic();
+			_FromGame = true;
 			LoadALevel(0);
 		}
 		
@@ -1048,7 +1061,7 @@ public class HUDManager : MainManager {
 	IEnumerator GoToLvlSelection(){
 		yield return new WaitForSeconds(0.65f);
 		
-		if(!keyboardAlreadyChoose){
+		if(!StatsManager.keyboardAlreadyChoose){
 			_MenuWindows = _MenuWindowsEnum.KeyboardSelectionScreen;
 			ActiveKeyboardButton();
 		}
@@ -1075,5 +1088,9 @@ public class HUDManager : MainManager {
 	IEnumerator PlayStartFX(){
 		yield return new WaitForSeconds(4.8f);
 		MusicManager.soundManager.PlaySFX(3);
+	}
+	IEnumerator ResetFromGame(){
+		yield return new WaitForSeconds(4.0f);
+		_FromGame = false;
 	}
 }

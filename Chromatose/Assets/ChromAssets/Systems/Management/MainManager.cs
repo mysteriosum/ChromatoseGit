@@ -75,15 +75,13 @@ public class MainManager : MonoBehaviour {
 	
 	//VARIABLE SOUND
 	public static bool _MusicMute = false;
-	public static bool _SFXMute = false;
-	public static float _MusicVolume = 0.80f; public float musicVolume { get { return _MusicVolume; } set { _MusicVolume = value; } } 
-	public static float _SFXVolume = 0.80f; public float sfxVolume { get { return _SFXVolume ; } set { _SFXVolume = value; } }
-	
+	public static bool _SFXMute = false;	
 	
 	//VARIABLE D'INTERFACE DYNAMIC
 	public static float _RotStartButton = 0;
 	public static bool _RotUp = false;
 	public static int _LoadCounter = 0;
+	public static bool _CanHitEscape = false;
 	
 	//VARIABLE TRIAL (VERSION DEMO)
 	public static bool _ADADAD = true;
@@ -233,12 +231,8 @@ public class MainManager : MonoBehaviour {
 	public void LoadALevel(int levelInt){
 		HUDManager.hudManager.guiState = GUIStateEnum.MainMenu;
 		HUDManager.hudManager.movieSecondLoad.Stop();
-	//	HUDManager.hudManager.menuWindows = _MenuWindowsEnum.LoadingScreen;
 		HUDManager.hudManager.movieSecondLoad.Play();
-		/*
-		ChromatoseManager.manager.ResetColl(); 
-		ChromatoseManager.manager.ResetComicCounter();
-		*/
+
 		if(levelInt == 0){			
 			if(_Avatar){
 				_Avatar.SetActive(false);

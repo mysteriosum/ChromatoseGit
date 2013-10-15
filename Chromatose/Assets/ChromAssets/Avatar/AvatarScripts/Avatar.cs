@@ -110,13 +110,13 @@ public class Avatar : MainManager{
 	private bool getRight;		public bool getright { get { return getRight; } set { getRight = value; } }
 	
 	private bool getSpace;	public bool getspace { get { return getSpace; } set { getSpace = value; } }
-
+	/*
 	private bool _SpaceBarActive;
 		public bool spaceBarActive{
 			get{return _SpaceBarActive;}
 			set{_SpaceBarActive = value;}
 		}
-	
+	*/
 	private int currentSubimg;
 	private string spritePrefix = "Player";
 	private int rotCounter = 0;
@@ -703,7 +703,7 @@ public class Avatar : MainManager{
 	void OnLevelWasLoaded(){
 		switch(Application.loadedLevel){
 		case (1):
-			_SpaceBarActive = false;
+			StatsManager.spaceBarActive = false;
 			break;
 		}
 	}
@@ -779,7 +779,7 @@ public class Avatar : MainManager{
 												//Self-made checkpoints! Or whatever you want to call it
 		getSpace = Input.GetKeyDown(KeyCode.Space);
 		
-		if (getSpace && _SpaceBarActive){
+		if (getSpace && StatsManager.spaceBarActive){
 			
 			if (!hasOutline){
 				outline = new GameObject("Outline");

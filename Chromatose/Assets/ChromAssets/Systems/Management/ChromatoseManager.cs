@@ -603,8 +603,7 @@ public class ChromatoseManager : MainManager {
 	}
 	
 	public void ResetComicCounter(){
-		//_TotalComicThumb = _RoomManager.UpdateTotalComic();
-		//_ComicThumbCollected = 0;
+		StartCoroutine(ResetComic());
 	}
 	public void ResetColl(){
 		_RedCollected = 0;
@@ -661,6 +660,13 @@ public class ChromatoseManager : MainManager {
 		if(_RoomInstancier){
 			_RoomInstancier.LoadRoom();
 		}
+	}
+	IEnumerator ResetComic(){
+		yield return new WaitForSeconds(1f);
+		_TotalComicThumb = _RoomManager.UpdateTotalComic();
+		StatsManager.comicThumbCollected[currentLevel] = 0;
+		_ComicThumbCollected = 0;
+		Debug.Log("ResetComic");
 	}
 #endregion
 	

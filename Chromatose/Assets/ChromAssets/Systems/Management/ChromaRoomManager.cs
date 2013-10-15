@@ -48,7 +48,7 @@ public class ChromaRoomManager : MainManager {
 	public int UpdateTotalComic(){
 		
 		int retTotalComic = 0;
-		int curLevel = Application.loadedLevel;
+		int curLevel = currentLevel;
 		
 		if(curLevel != 1 && curLevel != 3 && curLevel != 5 && curLevel != 7){
 			

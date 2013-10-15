@@ -56,7 +56,7 @@ public class ChuKeyboardButton : MonoBehaviour {
 					MusicManager.soundManager.PlaySFX(38);
 					HUDManager.hudManager.DesactiveKeyboardButton();
 					HUDManager.hudManager.menuWindows = _MenuWindowsEnum.LevelSelectionWindows;
-					HUDManager.keyboardAlreadyChoose = true;
+					StatsManager.keyboardAlreadyChoose = true;
 				}
             }
         }
