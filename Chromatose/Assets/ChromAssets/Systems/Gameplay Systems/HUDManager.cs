@@ -754,6 +754,8 @@ public class HUDManager : MainManager {
 			GUI.skin = _DoItSkin;
 			if(GUI.Button(new Rect(540, 525, 193, 120), "")){
 				Debug.Log("Save Game Deleted");
+				File.Delete(Application.persistentDataPath + "/" + "Chromasave");
+				HUDManager.hudManager.menuWindows = _MenuWindowsEnum.LevelSelectionWindows;				
 			}
 		}
 	}	
@@ -801,7 +803,7 @@ public class HUDManager : MainManager {
 			}
 			GUI.skin.textArea.fontSize = 22;
 			GUI.skin.textArea.normal.textColor = Color.black;
-			GUI.TextArea(new Rect(textOffset.x, textOffset.y, 100, 50), StatsManager.comicThumbDisplayed + "/" + _TotalComicThumb);
+			GUI.TextArea(new Rect(textOffset.x, textOffset.y, 100, 50), StatsManager.comicThumbCollected[currentLevel].ToString() + "/" + _TotalComicThumb);
 			
 			
 		GUI.EndGroup();
@@ -996,10 +998,11 @@ public class HUDManager : MainManager {
 		GUI.skin.textArea.fontSize = 30;
 		GUI.TextArea(new Rect(620f, 465f, 50f, 50f), StatsManager.deathCounter.ToString());
 		
+		/*
 		GUI.skin = _TimeTrialButtonSkin;
 		if(GUI.Button(new Rect(528f, 520f, 240f, 100f), "")){
 			menuWindows = _MenuWindowsEnum.TimeTrialScreen;
-		}
+		}*/
 	}
 	
 	void DrawTimeTrialScreen(){
