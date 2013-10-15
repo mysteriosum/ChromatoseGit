@@ -327,8 +327,9 @@ public class ChromatoseManager : MainManager {
 				GameObject.FindGameObjectWithTag("avatar").GetComponent<Avatar>().movement.SetVelocity(Vector2.zero);
 				StartCoroutine(OnDeath(0.15f));
 				StartCoroutine(RestartRoom());
-				ResetColl();
-				ResetComicCounter();
+				//ResetColl();
+				//ResetComicCounter();
+				Debug.Log("Passe par 1");
 				avatar.EmptyingBucket();
 				avatar.CancelOutline();
 				avatar.Gone = true;
@@ -352,8 +353,9 @@ public class ChromatoseManager : MainManager {
 				StartCoroutine(OnDeath(0.15f));
 				avatar.CancelOutline();
 				avatar.Gone = true;
-				ResetColl();
-				ResetComicCounter();
+				//ResetColl();
+				//ResetComicCounter();
+				Debug.Log("Passe par 2");
 				avatar.EmptyingBucket();
 				switch(_AvatarScript.avaTypeAccess){
 				case _AvatarTypeEnum.avatar:

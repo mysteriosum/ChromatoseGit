@@ -94,7 +94,7 @@ public class Movement : MonoBehaviour {
 		
 		if (GetComponent<Avatar>() != null){
 			t.position += new Vector3(point.normal.x, point.normal.y, 0);
-			thruster.velocity += (Vector2)point.normal * 15;
+			thruster.velocity += (Vector2)point.normal * 20;
 			/*
 			gameObject.SendMessage("Push", thruster.velocity.magnitude + thruster.accel);		//this tried to push the avatar away to a knockbackTrigger
 			gameObject.SendMessage("Jolt", 1f);														//but it felt weird and was very easy to break

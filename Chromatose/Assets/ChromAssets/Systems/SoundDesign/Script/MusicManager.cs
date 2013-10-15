@@ -133,9 +133,13 @@ public class MusicManager : MainManager{
 	private bool onCrossfade = false;
 	
 	
+	void OnLevelWasLoaded(){
+		//StartCoroutine(CheckLevel());
+		CheckLevel();
+	}
 	
-	
-	void Start () {		
+	void Start () {	
+		//StartMenuMusic();
 		Setup();
 	}
 	/*
@@ -160,33 +164,38 @@ public class MusicManager : MainManager{
 	}
 	
 	public void CheckLevel(){
-		
+		//yield return new WaitForSeconds(1.0f);
 		int curLevel = Application.loadedLevel;
 		
 		switch(curLevel){
 			//MAIN MENU
 		case 0:
-			
+			/*
 			bool musicOn = CheckMusicOn();
 			if(!musicOn){
 				StartCoroutine(DelayingTrack(0,0f));
 			}
 			else{
 				CrossFadeMusic(0, 0.0025f);
-			}
+			}*/
+			SwitchTrack(0);
+			//CrossFadeMusic(0, 0.0025f);
 			break;
 			
 			//TUTO
 		case 1:
-			CrossFadeMusic(1, 0.0025f);
+			SwitchTrack(1);
+			//CrossFadeMusic(1, 0.0025f);
 			break;
 			
 			//LEVEL
 		case 2:
-			CrossFadeMusic(2, 0.0025f);
+			SwitchTrack(2);
+			//CrossFadeMusic(2, 0.0025f);
 			break;
 		case 3:
-			CrossFadeMusic(1, 0.0025f);
+			SwitchTrack(1);
+			//CrossFadeMusic(1, 0.0025f);
 			break;
 		case 4:
 			CrossFadeMusic(2, 0.0025f);
@@ -267,8 +276,22 @@ public class MusicManager : MainManager{
 		PlaySFX(sfxIndex, sfxVolume);
 	}
 	
+	void SwitchTrack(int musicIndex){
+		foreach(AudioSource mPlayer in _MusicSources){
+			if(mPlayer.isPlaying){
+				mPlayer.Stop();
+			}
+		}
+		_MusicSources[musicIndex].Play();
+	}
 	
 	void CrossFadeMusic(int musicIndex, float fadeRate){
+		
+		foreach(AudioSource mPlayer in _MusicSources){
+			if(mPlayer.isPlaying){
+				mPlayer.Stop();
+			}
+		}
 		
 		int curPlayer = 0;
 			
@@ -290,7 +313,9 @@ public class MusicManager : MainManager{
 			if(f <= 0){
 				_MusicSources[curPlayer].Stop ();
 			}
-		}		
+		}
+		
+		StartCoroutine(ResetCrossfade());
 	}
 	
 	public void ReplayCurTrack(){
