@@ -46,7 +46,7 @@ public class BossBullet : MonoBehaviour {
 				animSpr.Play("flame1", randomDelai);
 				break;
 			case bulletTypeEnum.tint:
-				animSpr.Play("flame5", randomDelai);
+				animSpr.Play("tintFlame1", randomDelai);
 				break;
 			}
 			
