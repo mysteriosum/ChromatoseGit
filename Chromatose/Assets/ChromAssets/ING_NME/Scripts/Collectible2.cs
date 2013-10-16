@@ -139,7 +139,7 @@ public class Collectible2 : MonoBehaviour {
 	
 	void OnTriggerEnter(Collider other){
 		if(other.tag != "avatar" || _Effect)return;
-		if(_AvatarScript!=other.GetComponent<Avatar>()){
+		if(_AvatarScript!=other.GetComponent<Avatar>() || _AvatarScript == null){
 			_AvatarScript = other.GetComponent<Avatar>();
 		}
 		

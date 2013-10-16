@@ -96,6 +96,7 @@ public class TollBooth : MonoBehaviour {
 	void Animate(){
 		anim.Play();
 		anim.CurrentClip.wrapMode = tk2dSpriteAnimationClip.WrapMode.Once;
+		HUDManager.hudManager.OffAction();
 	}
 	
 	void StartOut(){

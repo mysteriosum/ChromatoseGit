@@ -113,7 +113,21 @@ public class StatsManager : MainManager {
 		foreach(int cThumb in comicThumbCollected){
 			comicThumbDisplayed += cThumb;
 		}
+		if(redCollDisplayed < 0){
+			redCollDisplayed = 0;
+		}
+		if(blueCollDisplayed < 0){
+			blueCollDisplayed = 0;
+		}
+		if(whiteCollDisplayed < 0){
+			blueCollDisplayed = 0;
+		}
+		if(comicThumbDisplayed < 0){
+			comicThumbDisplayed = 0;
+		}
 	}
+	
+	/*
 	public void ReCalculateStats(Color colorColl, int amount, bool comicIs){
 		redCollDisplayed = 0;
 		foreach(int rCol in redCollCollected){
@@ -145,5 +159,5 @@ public class StatsManager : MainManager {
 		else{
 			comicThumbDisplayed -= amount;
 		}
-	}
+	}	*/
 }
