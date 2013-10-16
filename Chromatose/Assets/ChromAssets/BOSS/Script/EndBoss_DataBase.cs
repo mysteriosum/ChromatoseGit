@@ -225,7 +225,7 @@ public class EndBoss_DataBase : MonoBehaviour {
 	}
 	void OnTriggerExit(Collider other){
 		if(other.tag != "avatar")return;
-
+		HUDManager.hudManager.OffAction();
 	}
 	
 	

@@ -29,6 +29,7 @@ public class Collectible2 : MonoBehaviour {
 	private float journeyTime = 5.0f;
 	private float random1;
 	private float random2;
+	private float random3;
 	
 	private string idleAnimWhite = "wColl_idle";
 	private string takeAnimWhite = "wColl_pickedUp";
@@ -47,6 +48,7 @@ public class Collectible2 : MonoBehaviour {
 			get{return _RedCollectorPos;}
 			set{_RedCollectorPos = value;}
 		}
+	private Vector3 bossSpotForBullet;
 	
 	void Start () {
 		_MainAnim = GetComponent<tk2dAnimatedSprite>();
@@ -82,6 +84,12 @@ public class Collectible2 : MonoBehaviour {
 				startTime = Time.time;
 				random1 = Random.Range(0.35f, 0.5f);
 				random2 = Random.Range(0.5f, 1.25f);
+				random3 = Random.Range(1f, 100f);
+				if(Application.loadedLevel == 12){
+					Vector3 CollectorTempPos = GameObject.FindGameObjectWithTag("spotForBullet").transform.position;
+					Vector2 randomVelocity2 = Random.insideUnitCircle.normalized * Random.Range(25, 165);					
+					bossSpotForBullet = CollectorTempPos + (Vector3)randomVelocity2;
+				}
 				Transform _AvatarT = GameObject.FindGameObjectWithTag("avatar").transform;
 				randomVelocity = Random.insideUnitCircle.normalized * Random.Range(40, 65);
 				randomPos = _AvatarT.position + (Vector3)randomVelocity;
@@ -99,13 +107,24 @@ public class Collectible2 : MonoBehaviour {
 		        transform.position += center;
 			}
 			else{
-				Vector3 center = (randomPos + _RedCollectorPos) * random1;
-		        center -= new Vector3(0, random2, 0);
-		        Vector3 riseRelCenter = _RedCollectorPos - center;
-		        Vector3 setRelCenter = randomPos - center;
-		        float fracComplete = (Time.time - startTime) / journeyTime;
-		        transform.position = Vector3.Slerp(riseRelCenter, setRelCenter, fracComplete);
-		        transform.position += center;
+				if(Application.loadedLevel != 12){
+					Vector3 center = (randomPos + _RedCollectorPos) * random1;
+			        center -= new Vector3(0, random2, 0);
+			        Vector3 riseRelCenter = _RedCollectorPos - center;
+			        Vector3 setRelCenter = randomPos - center;
+			        float fracComplete = (Time.time - startTime) / journeyTime;
+			        transform.position = Vector3.Slerp(riseRelCenter, setRelCenter, fracComplete);
+		        	transform.position += center;
+				}
+				else{
+					Vector3 center = (bossSpotForBullet + _RedCollectorPos) * random1;
+			        center -= new Vector3(0, random2, 0);
+			        Vector3 riseRelCenter = _RedCollectorPos - center;
+			        Vector3 setRelCenter = bossSpotForBullet - center;
+			        float fracComplete = (Time.time - startTime) / journeyTime;
+			        transform.position = Vector3.Slerp(riseRelCenter, setRelCenter, fracComplete);
+		        	transform.position += center;
+				}
 			}
 		}
 		

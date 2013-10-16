@@ -302,6 +302,7 @@ public class ChromatoseManager : MainManager {
 	public void Death(){
 		
 		StopAllCoroutines();
+		
 		if(GameObject.FindGameObjectWithTag("miniBoss")){
 			GameObject[] bossInLvl = GameObject.FindGameObjectsWithTag("miniBoss");
 			foreach(GameObject boss in bossInLvl){
@@ -387,9 +388,12 @@ public class ChromatoseManager : MainManager {
 	
 	public void DeathByBoss(){
 		
+			//Ajoute au DeathCount
 		StatsManager.deathCounter++;
 		
-		Debug.Log("Mort par le Boss");
+			//Mets les actions a Off
+		HUDManager.hudManager.OffAction();
+		
 			//Play le SFX de la Mort
 		MusicManager.soundManager.PlaySFX(16);
 		
@@ -410,10 +414,11 @@ public class ChromatoseManager : MainManager {
 		avatar.Gone = false;		
 	
 			//Destruction des Collectibles inScene
+		/*
 		GameObject[] redColInBossLvl = GameObject.FindGameObjectsWithTag("collectible");
 		foreach (GameObject redC in redColInBossLvl){
 			Destroy(redC.gameObject);
-		}
+		}*/
 		
 			//Destruction des bossBullet inScene
 		GameObject[] bossBulletInBossLvl = GameObject.FindGameObjectsWithTag("bossBullet");
@@ -428,10 +433,12 @@ public class ChromatoseManager : MainManager {
 				//Securite d'Angle et Rotation
 			boss.transform.rotation = Quaternion.identity;
 		}
+		boss.GetComponent<EndBoss_DataBase>().StopAllCoroutines();
 		boss.GetComponent<EndBoss_DataBase>().round = 0;
 		
+		
 			//Remise des redColl a l'Avatar
-		StatsManager.redCollDisplayed = boss.GetComponent<EndBoss_DataBase>().redCollAtStart;
+		//StatsManager.redCollDisplayed = boss.GetComponent<EndBoss_DataBase>().redCollAtStart;
 		
 			//Repositionment de l'avatar, Reset de Velocity, Reset de AfterImage, Reset de couleur & Set le CannotControl
 		avatar.movement.SetVelocity(Vector2.zero);
@@ -450,6 +457,13 @@ public class ChromatoseManager : MainManager {
 			_AvatarScript.avaTypeAccess = _AvatarTypeEnum.avatar;
 			break;
 		}
+		
+			//Stop the Coroutine
+		StopAllCoroutines();
+		HUDManager.hudManager.OffAction();
+		
+		_AvatarScript.wantFightBoss = false;
+		
 		/*
 			//Mise-en Place de la fenetre "Start" et attente pour l'Input du Joueur
 		HUDManager.hudManager.ResetTitleBool();
