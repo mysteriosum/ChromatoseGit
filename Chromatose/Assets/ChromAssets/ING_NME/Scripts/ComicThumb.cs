@@ -149,6 +149,9 @@ public class ComicThumb : MonoBehaviour {
 		_OnIdle = false;
 		ThumbStartGoBig();
 		MusicManager.soundManager.PlaySFX(15);
+		if(shadow!=null){
+			shadow.gameObject.SetActive(false);
+		}
 	}
 	
 	void ThumbStartGoBig(){
@@ -203,9 +206,7 @@ public class ComicThumb : MonoBehaviour {
 		_CanGoSmall = false;
 		
 		if(!_Destroyed){
-			if(shadow!=null){
-				shadow.gameObject.SetActive(false);
-			}
+			
 			_Moi.transform.Translate(Vector3.forward * -3000);	
 			ChromatoseManager.manager.AddComicThumb();
 			_Destroyed = true;
