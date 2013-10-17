@@ -113,14 +113,15 @@ public class StatsManager : MainManager {
 		foreach(int cThumb in comicThumbCollected){
 			comicThumbDisplayed += cThumb;
 		}
-		if(redCollDisplayed < 0){
-			redCollDisplayed = 0;
+		
+		if(redCollCollected[currentLevel] < 0){
+			redCollCollected[currentLevel] = 0;
 		}
-		if(blueCollDisplayed < 0){
-			blueCollDisplayed = 0;
+		if(blueCollCollected[currentLevel] < 0){
+			blueCollCollected[currentLevel] = 0;
 		}
-		if(whiteCollDisplayed < 0){
-			blueCollDisplayed = 0;
+		if(whiteCollCollected[currentLevel] < 0){
+			whiteCollCollected[currentLevel] = 0;
 		}
 		if(comicThumbDisplayed < 0){
 			comicThumbDisplayed = 0;
