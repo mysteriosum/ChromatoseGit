@@ -585,27 +585,28 @@ public class ChromatoseManager : MainManager {
 	void BlowWhiteColl(int amount, Vector3 pos){
 		
 		MusicManager.soundManager.PlaySFX(8);
+		MusicManager.soundManager.PlaySFX(43);
+		MusicManager.soundManager.PlaySFX(19);
 		for(int i = 0; i < amount; i++){
+			
 			Vector2 randomVelocity = Random.insideUnitCircle.normalized * Random.Range(40, 65);
 			Vector3 randomPos = _Avatar.transform.position + (Vector3)randomVelocity;
 			randomPos.z = -5;
 			GameObject wCol = Instantiate(Resources.Load("pre_Collectible"), randomPos, Quaternion.identity)as GameObject;
 			wCol.GetComponent<Collectible2>().effect = true;
-			MusicManager.soundManager.PlaySFX(43);
-			MusicManager.soundManager.PlaySFX(19);
 			wCol.GetComponent<Collectible2>().colorCollectible = Collectible2._ColorCollectible.White;
 			StartCoroutine(DelaiToBlowColl(0.5f, wCol));
 		}
 	}
 	
 	void BlowBlueColl(int amount, Vector3 pos){
+		MusicManager.soundManager.PlaySFX(44);
 		for(int i = 0; i < amount; i++){
 			Vector2 randomVelocity = Random.insideUnitCircle.normalized * Random.Range(40, 65);
 			Vector3 randomPos = _Avatar.transform.position + (Vector3)randomVelocity;
 			GameObject bCol = Instantiate(Resources.Load("pre_Collectible"), randomPos, Quaternion.identity)as GameObject;
 			bCol.GetComponent<Collectible2>().effect = true;
 			bCol.GetComponent<Collectible2>().colorCollectible = Collectible2._ColorCollectible.Blue;
-			MusicManager.soundManager.PlaySFX(44);
 			StartCoroutine(DelaiToBlowColl(0.5f, bCol));
 		}
 	}

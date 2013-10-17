@@ -775,7 +775,7 @@ public class Avatar : MainManager{
 		
 	}
 	
-	void Update(){
+	void FixedUpdate(){
 												//Self-made checkpoints! Or whatever you want to call it
 		getSpace = Input.GetKeyDown(KeyCode.Space);
 		
@@ -828,11 +828,7 @@ public class Avatar : MainManager{
 				}
 			}
 		}
-	}
-
-	void FixedUpdate ()
-	{
-
+	
 		switch(avatarType){
 		case _AvatarTypeEnum.avatar:
 			travisMcGee.EyeFollow();
@@ -1003,13 +999,10 @@ public class Avatar : MainManager{
 			foreach (Rect rect in speedBoostAreas){
 				
 				if (rect.Contains((Vector2)t.position)){
-					//Debug.Log("Found my speed boost! number " + rectCounter);
-					//Debug.Log("The speed boost itself is called " + speedBoosts[rectCounter]);
 					foreach (Transform node in speedBoosts[rectCounter].GetComponentsInChildren<Transform>()){
 						if (node == speedBoosts[rectCounter].transform) continue;
 						if (Vector2.Distance((Vector2)t.position, (Vector2)node.position) < speedBoostDist){
 							detectedSB = true;
-							//Debug.Log("The one I found is " + node.name);
 						}
 					}
 				}
