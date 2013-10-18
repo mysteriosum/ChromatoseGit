@@ -10,11 +10,11 @@ public class BossActivator : MonoBehaviour {
 		_Boss.GetComponent<EndBoss_DataBase>().enabled = true;
 		_Boss.GetComponent<EndBoss_DataBase>().PlayerInCombatZone = true;
 		_Boss.GetComponent<EndBoss_FSM>().enabled = true;
-		
+		/*
 		if(StatsManager.redCollCollected[Application.loadedLevel] == 0){
 			ChromatoseManager.manager.AddCollectible(Color.red, 10);
 			StatsManager.manager.ReCalculateStats();
-		}
+		}*/
 		
 		
 			//Save les redColl que le joueur detient dans une variable du Boss pour le Reset

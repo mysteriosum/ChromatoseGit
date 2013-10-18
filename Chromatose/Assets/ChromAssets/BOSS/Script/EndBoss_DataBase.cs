@@ -58,7 +58,7 @@ public class EndBoss_DataBase : MonoBehaviour {
 	private bool _DiesOnImpact = true;
 	private bool _IsBlackFlame = true;
 	private bool _BeingExtinguished = false;
-	private bool _AlreadyShooten = false;
+	private bool _AlreadyShooten = false; public bool alreadyShooten { get { return _AlreadyShooten; } set { _AlreadyShooten = value; } }
 	private bool _ReadyToBlow = false;
 	private bool _CanForward = false;
 	
@@ -128,7 +128,7 @@ public class EndBoss_DataBase : MonoBehaviour {
 		//Animation Public Play
 	public void PlayAnim(string animName){
 		if(!_MainAnim.IsPlaying(animName)){
-			_MainAnim.Play(animName);
+			_MainAnim.Play(animName, 0f);
 		}
 	}
 	
@@ -239,7 +239,7 @@ public class EndBoss_DataBase : MonoBehaviour {
 		
 		if(StatsManager.redCollDisplayed >= requiredPayment){
 			if(!_AlreadyShooten){
-				ChromatoseManager.manager.RemoveCollectibles(Color.red, requiredPayment, this.transform.position, this);
+				ChromatoseManager.manager.ShootRedCollOnMini(requiredPayment, transform.position);
 				_AlreadyShooten = true;
 				StartCoroutine(ResetShooten(2.5f));
 				StartCoroutine(DelaiBeforeBlow());

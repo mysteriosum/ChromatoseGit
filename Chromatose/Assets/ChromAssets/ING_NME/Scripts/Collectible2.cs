@@ -87,7 +87,7 @@ public class Collectible2 : MonoBehaviour {
 				random3 = Random.Range(1f, 100f);
 				if(Application.loadedLevel == 12){
 					Vector3 CollectorTempPos = GameObject.FindGameObjectWithTag("spotForBullet").transform.position;
-					Vector2 randomVelocity2 = Random.insideUnitCircle.normalized * Random.Range(25, 165);					
+					Vector2 randomVelocity2 = Random.insideUnitCircle.normalized * Random.Range(15, 140);					
 					bossSpotForBullet = CollectorTempPos + (Vector3)randomVelocity2;
 				}
 				Transform _AvatarT = GameObject.FindGameObjectWithTag("avatar").transform;
@@ -98,7 +98,13 @@ public class Collectible2 : MonoBehaviour {
 			}
 			
 			if(!_Retour){
-				Vector3 center = (gameObject.transform.position + _RedCollectorPos) * random1;
+				Vector3 center;
+				if(Application.loadedLevel != 12){
+					center = (gameObject.transform.position + _RedCollectorPos) * random1;
+				}
+				else{
+					center = (gameObject.transform.position + GameObject.FindGameObjectWithTag("Boss").transform.position) * random1;
+				}
 		        center -= new Vector3(0, random2, 0);
 		        Vector3 riseRelCenter = gameObject.transform.position - center;
 		        Vector3 setRelCenter = _RedCollectorPos - center;
@@ -131,7 +137,7 @@ public class Collectible2 : MonoBehaviour {
 		if(Vector3.Distance(gameObject.transform.position, _RedCollectorPos) < 15 && !_Retour){
 			_Retour = true;
 		}
-		if(Vector3.Distance(gameObject.transform.position, randomPos) < 15 && _Retour && _Effect){
+		if(Vector3.Distance(gameObject.transform.position, Application.loadedLevel != 12? randomPos: bossSpotForBullet) < 15 && _Retour && _Effect){
 			_Effect = false;
 			Debug.Log("Redevient Coll");
 		}

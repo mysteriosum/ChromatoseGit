@@ -126,6 +126,7 @@ public class HUDManager : MainManager {
 	private float hudBoxMinX = 1150;
 	
 	private float hudBoxMovingRate = 8f;
+	private int _HudFontSize = 19;
 	
 	
 		//VARIABLE LOADING
@@ -137,6 +138,7 @@ public class HUDManager : MainManager {
 	public bool canFlash { get { return _CanFlash; } set { _CanFlash = value; } }
 	public bool onFlash { get { return _OnFlash; } set { _OnFlash = value; } }
 	public bool firstStart { get { return _FirstStart; } set { _FirstStart = value; } }
+	public bool onErase { get { return _OnErase; } set { _OnErase = value; } }
 	
 	
 	public GUIStateEnum guiState { get { return _GUIState; } set { _GUIState = value; } }
@@ -795,7 +797,9 @@ public class HUDManager : MainManager {
 			GUI.EndGroup();
 		}*/
 		
-		GUI.BeginGroup(hudRect[0]);										//comic counter		
+		GUI.BeginGroup(hudRect[0]);		
+													//comic counter	
+			_TotalComicThumb = _RoomManager.UpdateTotalComic();
 			GUI.skin.textArea.normal.textColor = Color.black;
 			if(StatsManager.comicThumbDisplayed >=  _TotalComicThumb && _TotalComicThumb != 0 && !_AfterComic){
 				_CanFlash = true;
@@ -813,31 +817,34 @@ public class HUDManager : MainManager {
 			else{
 				GUI.DrawTexture(new Rect(0, 0, comicCounter.width, comicCounter.height), comicCounter2);
 			}
-			GUI.skin.textArea.fontSize = 22;
+			GUI.skin.textArea.fontSize = _HudFontSize;
 			GUI.skin.textArea.normal.textColor = Color.black;
-			GUI.TextArea(new Rect(textOffset.x, textOffset.y, 100, 50), StatsManager.comicThumbCollected[currentLevel].ToString() + "/" + _RoomManager.UpdateTotalComic());
+			GUI.TextArea(new Rect(textOffset.x, textOffset.y, 90, 45), StatsManager.comicThumbCollected[currentLevel].ToString() + "/" + _TotalComicThumb);
 			
 			
 		GUI.EndGroup();
 		
 		GUI.BeginGroup(hudRect[1]);										//white collectible
+			GUI.skin.textArea.fontSize = _HudFontSize;
 			GUI.skin.textArea.normal.textColor = Color.white;
 			GUI.DrawTexture(new Rect(0, 0, whiteCollectible.width, whiteCollectible.height), whiteCollectible);
-			GUI.TextArea(new Rect(textOffset.x + 10, textOffset.y, 100, 50), StatsManager.whiteCollDisplayed.ToString());// + " / " + _TotalWhiteColl.ToString());
+			GUI.TextArea(new Rect(textOffset.x + 10, textOffset.y, 90, 45), StatsManager.whiteCollDisplayed.ToString());// + " / " + _TotalWhiteColl.ToString());
 		GUI.EndGroup();
 		
 		GUI.BeginGroup(hudRect[2]);										//red collectible
+			GUI.skin.textArea.fontSize = _HudFontSize;
 			GUI.skin.textArea.normal.textColor = Color.red;
 			GUI.DrawTexture(new Rect(0, 0, redCollectible.width, redCollectible.height), redCollectible);
-			GUI.TextArea(new Rect(textOffset.x + 10, textOffset.y, 100, 50), StatsManager.redCollDisplayed.ToString());// + " / " + _TotalRedColl.ToString());
+			GUI.TextArea(new Rect(textOffset.x + 10, textOffset.y, 90, 45), StatsManager.redCollDisplayed.ToString());// + " / " + _TotalRedColl.ToString());
 			
 		GUI.EndGroup();
 
 		
 		GUI.BeginGroup(hudRect[3]);										//blue collectible
+			GUI.skin.textArea.fontSize = _HudFontSize;
 			GUI.skin.textArea.normal.textColor = Color.blue;
 			GUI.DrawTexture(new Rect(0, 0, blueCollectible.width, blueCollectible.height), blueCollectible);
-			GUI.TextArea(new Rect(textOffset.x + 10, textOffset.y, 100, 50), StatsManager.blueCollDisplayed.ToString());// + " / " + _TotalBlueColl.ToString());
+			GUI.TextArea(new Rect(textOffset.x + 10, textOffset.y, 90, 45), StatsManager.blueCollDisplayed.ToString());// + " / " + _TotalBlueColl.ToString());
 			
 		GUI.EndGroup();
 		
@@ -880,6 +887,7 @@ public class HUDManager : MainManager {
 			LevelSerializer.SaveObjectTreeToFile("Chromasave", GameObject.FindGameObjectWithTag("StatsManager").gameObject);
 			//MusicManager.soundManager.StartMenuMusic();
 			_FromGame = true;
+			OffAction();
 			LoadALevel(0);
 		}
 		

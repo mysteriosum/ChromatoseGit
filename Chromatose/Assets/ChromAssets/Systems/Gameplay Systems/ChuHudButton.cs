@@ -45,6 +45,7 @@ public class ChuHudButton : MonoBehaviour {
 						else if(HUDManager.hudManager.menuWindows == _MenuWindowsEnum.OptionWindows){
 							HUDManager.hudManager.menuWindows = _MenuWindowsEnum.LevelSelectionWindows;
 							HUDManager.hudManager.DesactiveOptBG();
+							HUDManager.hudManager.onErase = false;
 						}
 						else if(HUDManager.hudManager.menuWindows == _MenuWindowsEnum.Stats){
 							HUDManager.hudManager.menuWindows = _MenuWindowsEnum.LevelSelectionWindows;
@@ -53,6 +54,7 @@ public class ChuHudButton : MonoBehaviour {
 					case buttonTypeEnum.Credit:
 						MusicManager.soundManager.PlaySFX(38);
 						HUDManager.hudManager.menuWindows = _MenuWindowsEnum.CreditWindows;
+						HUDManager.hudManager.DesactiveOptBG();
 						break;
 					case buttonTypeEnum.Options:
 						MusicManager.soundManager.PlaySFX(38);
@@ -63,6 +65,7 @@ public class ChuHudButton : MonoBehaviour {
 						MusicManager.soundManager.PlaySFX(38);
 						StatsManager.manager.ReCalculateStats();
 						HUDManager.hudManager.menuWindows = _MenuWindowsEnum.Stats;
+						HUDManager.hudManager.DesactiveOptBG();
 						break;
 					case buttonTypeEnum.GameMode:
 						MusicManager.soundManager.PlaySFX(38);
