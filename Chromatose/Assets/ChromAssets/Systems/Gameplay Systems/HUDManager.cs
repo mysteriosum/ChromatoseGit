@@ -154,7 +154,7 @@ public class HUDManager : MainManager {
 		//DontDestroyOnLoad(this);
 		hudManager = this;
 		
-		aX = absorbAction.width * 1.5f;		
+		aX = absorbAction.width;// * 1.5f;		
 		actionTexture = absorbAction;
 		shownActionTexture = actionTexture;
 		

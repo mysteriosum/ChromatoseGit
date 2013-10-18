@@ -23,6 +23,7 @@ public class MiniBoss_PayZone : MonoBehaviour {
 	void OnTriggerExit(Collider other){
 		if(other.tag != "avatar")return;
 			_InPayZone = false;
+		HUDManager.hudManager.OffAction();
 	}
 	
 }

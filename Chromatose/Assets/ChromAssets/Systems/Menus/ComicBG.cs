@@ -29,7 +29,7 @@ public class ComicBG : MonoBehaviour {
 		if(_ComicCollected >= comic.Length && _ComicDone){
 			if(rewardGuy != null){
 				rewardGuy.GetComponent<RewardGuy2>().canBe = true;
-				Debug.Log("Must be Done");
+				//Debug.Log("Must be Done");
 			}
 		}		
 	}
@@ -50,7 +50,7 @@ public class ComicBG : MonoBehaviour {
 		
 			if(_ComicCollected >= comic.Length && !_ComicDone){
 				_ComicDone = true;
-				Debug.Log("Comic = " + _ComicDone);
+				//Debug.Log("Comic = " + _ComicDone);
 			}
 		}
 	}
@@ -59,7 +59,7 @@ public class ComicBG : MonoBehaviour {
 		if(other.tag == "avatar"){
 			if(_ComicCollected >= comic.Length && !_ComicDone){
 				_ComicDone = true;
-				Debug.Log("Comic = " + _ComicDone);
+				//Debug.Log("Comic = " + _ComicDone);
 			}
 		}
 	}

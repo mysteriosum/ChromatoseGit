@@ -12,6 +12,7 @@ public class MiniBoss : MonoBehaviour {
 	
 	public GameObject flameBullet;
 	
+	
 	private tk2dAnimatedSprite[] myFlames;
 	private tk2dAnimatedSprite _MainAnim;
 	private Avatar _AvatarScript;
@@ -28,6 +29,7 @@ public class MiniBoss : MonoBehaviour {
 	private bool beingExtinguished = false;
 	private bool _CanDie = false;
 	private bool alreadyShooten = false;
+	private bool _OnDie = false;
 	public int shotCount = 0;
 	
 
@@ -42,6 +44,13 @@ public class MiniBoss : MonoBehaviour {
 	}
 	
 	void Update () {
+		
+		if(_OnDie){
+			_MainAnim.color -= new Color (0, 0, 0, 0.01f);
+			if(_MainAnim.color.a <= 0){
+				Destroy(this.gameObject);
+			}
+		}
 	
 		if(_ShootingZone != null){
 			if(_PayZoneScript.inPayZone){
@@ -69,6 +78,7 @@ public class MiniBoss : MonoBehaviour {
 		
 		if(shotCount >= requiredPayment){
 			StartCoroutine(StartDie(2f));
+			Debug.Log("MiniBoss devrait Die");
 		}
 	}
 	
@@ -110,12 +120,15 @@ public class MiniBoss : MonoBehaviour {
 	
 	void Die(){
 		_AvatarScript.WantsToRelease = false;
-		_MainAnim.Play("miniBossDie");
+		_MainAnim.Play("miniBossDie", 0f);
+		_OnDie = true;
+		//StartCoroutine(DelaiToDestroy ());
 		_MainAnim.animationCompleteDelegate = DestroyThis;
 	}
 	
 	void DestroyThis(tk2dAnimatedSprite sprite, int clipId){
-		StartCoroutine(DelaiToDestroy());
+		//StartCoroutine(DelaiToDestroy());
+		Destroy(this.gameObject);
 	}
 	
 	IEnumerator SetAnim(){
@@ -126,9 +139,16 @@ public class MiniBoss : MonoBehaviour {
 	IEnumerator StartDie(float delai){
 		yield return new WaitForSeconds(delai);
 		Die ();
+		Debug.Log("MiniBossDie");
 	}
 	IEnumerator DelaiToDestroy(){
 		yield return new WaitForSeconds(1.0f);
 		Destroy(this.gameObject);
+	}
+	IEnumerator SecondDie(){
+		yield return new WaitForSeconds(0.5f);
+		_AvatarScript.WantsToRelease = false;
+		_MainAnim.Play("miniBossDie", 0f);
+		_MainAnim.animationCompleteDelegate = DestroyThis;
 	}
 }
