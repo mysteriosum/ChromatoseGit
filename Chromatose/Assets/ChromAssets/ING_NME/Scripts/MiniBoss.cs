@@ -28,6 +28,7 @@ public class MiniBoss : MonoBehaviour {
 	private bool beingExtinguished = false;
 	private bool _CanDie = false;
 	private bool alreadyShooten = false;
+	public int shotCount = 0;
 	
 
 	void Start () {
@@ -65,6 +66,10 @@ public class MiniBoss : MonoBehaviour {
 				}
 			}
 		}
+		
+		if(shotCount >= requiredPayment){
+			StartCoroutine(StartDie(2f));
+		}
 	}
 	
 	public void ResetMiniBoss(){
@@ -77,6 +82,7 @@ public class MiniBoss : MonoBehaviour {
 		_CanDie = false;
 		alreadyShooten = false;
 		StopAllCoroutines();
+		shotCount = 0;
 	}
 	
 	void OnCollisionEnter(Collision other){
@@ -88,9 +94,9 @@ public class MiniBoss : MonoBehaviour {
 	void DelegateActionTest(){
 		if(StatsManager.redCollDisplayed >= requiredPayment){
 			if(!alreadyShooten){
+				_Manager.lastBoss = this.gameObject;
 				_Manager.ShootRedCollOnMini(requiredPayment, transform.position);
 				alreadyShooten = true;
-				StartCoroutine(StartDie(2f));
 			}
 		}
 	}

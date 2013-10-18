@@ -775,59 +775,64 @@ public class Avatar : MainManager{
 		
 	}
 	
-	void FixedUpdate(){
-												//Self-made checkpoints! Or whatever you want to call it
-		getSpace = Input.GetKeyDown(KeyCode.Space);
-		
-		if (getSpace && StatsManager.spaceBarActive){
+	void AfterImage(){
+		if (!hasOutline){
+			outline = new GameObject("Outline");
+			outline.transform.rotation = t.rotation;
+			outline.transform.position = t.position;
 			
-			if (!hasOutline){
-				outline = new GameObject("Outline");
-				outline.transform.rotation = t.rotation;
-				outline.transform.position = t.position;
-				
-				switch(avatarType){
-				case _AvatarTypeEnum.avatar:
-					if(!_Colored){
-						tk2dSprite.AddComponent<tk2dSprite>(outline, afterImageCollection, spriteInfo.CurrentSprite.name);
-					}
-					else{
-						tk2dSprite.AddComponent<tk2dSprite>(outline, afterImageCollection, _PlayerFadeString);
-					}
-					break;
-				case _AvatarTypeEnum.shavatar:
-					if(!_Colored){
-						tk2dSprite.AddComponent<tk2dSprite>(outline, shavaAfterImageCollection, spriteInfo.CurrentSprite.name);
-					}
-					else{
-						tk2dSprite.AddComponent<tk2dSprite>(outline, shavaAfterImageCollection, _PlayerFadeString);
-					}
-					break;
+			switch(avatarType){
+			case _AvatarTypeEnum.avatar:
+				if(!_Colored){
+					tk2dSprite.AddComponent<tk2dSprite>(outline, afterImageCollection, spriteInfo.CurrentSprite.name);
 				}
-				
-				hasOutline = true;
-				
-				foreach (GameObject go in allTheFaders){
-					go.SendMessage("SaveStateForTP", SendMessageOptions.DontRequireReceiver);
+				else{
+					tk2dSprite.AddComponent<tk2dSprite>(outline, afterImageCollection, _PlayerFadeString);
 				}
-				//spriteInfo.SwitchCollectionAndSprite()
+				break;
+			case _AvatarTypeEnum.shavatar:
+				if(!_Colored){
+					tk2dSprite.AddComponent<tk2dSprite>(outline, shavaAfterImageCollection, spriteInfo.CurrentSprite.name);
+				}
+				else{
+					tk2dSprite.AddComponent<tk2dSprite>(outline, shavaAfterImageCollection, _PlayerFadeString);
+				}
+				break;
 			}
-			else{
-				
-				t.position = outline.transform.position;
-				t.rotation = outline.transform.rotation;
-				MusicManager.soundManager.PlaySFX(17);
-				
-				Destroy(outline);
-				hasOutline = false;
-				//velocity = Vector2.zero;				//TEST For now I like the idea of keeping your current movement for when you go back. 
-				//movement.SetVelocity(velocity);		// But should we have you facing  the same direction?
-				
-				foreach (GameObject go in allTheFaders){
-					go.SendMessage("LoadStateForTP", SendMessageOptions.DontRequireReceiver);
-				}
+			
+			hasOutline = true;
+			
+			foreach (GameObject go in allTheFaders){
+				go.SendMessage("SaveStateForTP", SendMessageOptions.DontRequireReceiver);
+			}
+			//spriteInfo.SwitchCollectionAndSprite()
+		}
+		else{
+			
+			t.position = outline.transform.position;
+			t.rotation = outline.transform.rotation;
+			MusicManager.soundManager.PlaySFX(17);
+			
+			Destroy(outline);
+			hasOutline = false;
+			//velocity = Vector2.zero;				//TEST For now I like the idea of keeping your current movement for when you go back. 
+			//movement.SetVelocity(velocity);		// But should we have you facing  the same direction?
+			
+			foreach (GameObject go in allTheFaders){
+				go.SendMessage("LoadStateForTP", SendMessageOptions.DontRequireReceiver);
 			}
 		}
+	}
+	
+	void Update(){
+												//Self-made checkpoints! Or whatever you want to call it		
+		if(Input.GetKeyDown(KeyCode.Space) && StatsManager.spaceBarActive){
+			AfterImage();
+		}
+	}
+	
+	void FixedUpdate(){
+		
 	
 		switch(avatarType){
 		case _AvatarTypeEnum.avatar:
@@ -877,7 +882,7 @@ public class Avatar : MainManager{
 		//colour.b = Mathf.Clamp(colour.b, 0, 255);
 			
 			//DESCENDRE OU MONTER LA VITESSE DU FADE ICI
-			_ColorCounter += Time.deltaTime * velocity.magnitude * 0.5f;
+			_ColorCounter += Time.deltaTime * velocity.magnitude * 0.45f;
 			
 			
 			if(_ColorCounter > 1){

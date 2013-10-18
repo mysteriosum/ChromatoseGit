@@ -65,6 +65,7 @@ public class TollBooth : MonoBehaviour {
 			StartOut();
 		}
 		else if (dist > avatarCloseDist && isOut){
+			HUDManager.hudManager.OffAction();
 			StartIn();
 		}
 		

@@ -120,7 +120,7 @@ public class ChromatoseManager : MainManager {
 	private float defaultSpeed = 1.2f;
 	private int refreshTiming = 75;
 	
-	
+	private GameObject _LastBoss; public GameObject lastBoss { get { return _LastBoss; } set { _LastBoss = value; } }
 	
 #endregion
 	
@@ -435,6 +435,10 @@ public class ChromatoseManager : MainManager {
 		}
 		boss.GetComponent<EndBoss_DataBase>().StopAllCoroutines();
 		boss.GetComponent<EndBoss_DataBase>().round = 0;
+		boss.GetComponent<EndBoss_DataBase>().alreadyShooten = false;
+		
+			//Reset l'animation
+		boss.GetComponent<tk2dAnimatedSprite>().Play("bossIdle", 0f);
 		
 		
 			//Remise des redColl a l'Avatar
@@ -613,7 +617,6 @@ public class ChromatoseManager : MainManager {
 	public void ShootRedCollOnMini(int amount, Vector3 pos){
 		for(int i = 0; i < amount; i++){
 			StartCoroutine(ShootRed(i*0.5f, pos));
-			
 		}
 	}
 	
@@ -646,7 +649,13 @@ public class ChromatoseManager : MainManager {
 		rCol.GetComponent<Collectible2>().redCollectorPos = newPos;
 		rCol.GetComponent<Collectible2>().effect = true;
 		rCol.GetComponent<Collectible2>().colorCollectible = Collectible2._ColorCollectible.Red;
+		if(_LastBoss){
+			_LastBoss.GetComponent<MiniBoss>().shotCount++;
+		}
 		RemoveCollectibles(Color.red, 1);
+		if(Application.loadedLevel == 12){
+			GameObject.FindGameObjectWithTag("Boss").GetComponent<EndBoss_DataBase>().nbWhiteColRecu ++;
+		}
 	}
 	IEnumerator OnDeath(float _wait){
 		yield return new WaitForSeconds(_wait);
