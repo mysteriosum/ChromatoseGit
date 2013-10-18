@@ -656,6 +656,7 @@ public class ChromatoseManager : MainManager {
 		if(Application.loadedLevel == 12){
 			GameObject.FindGameObjectWithTag("Boss").GetComponent<EndBoss_DataBase>().nbWhiteColRecu ++;
 		}
+		Debug.Log("Boss Shoot");
 	}
 	IEnumerator OnDeath(float _wait){
 		yield return new WaitForSeconds(_wait);
