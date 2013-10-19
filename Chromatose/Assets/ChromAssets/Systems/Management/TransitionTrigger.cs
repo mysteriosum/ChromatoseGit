@@ -88,7 +88,7 @@ public class TransitionTrigger : MonoBehaviour {
 			if (!_Popped) return;
 			
 				
-			if (_LightCounter < 1 && _FadeIn){_LightCounter += 0.05f;}
+			if (_LightCounter < 1 && _FadeIn){_LightCounter += 0.075f;}
 			if (_LightCounter > 0 && _FadeOut){_LightCounter -= 0.015f;}
 			if (_LightCounter > 1){
 				_FadeIn = false; 
@@ -179,6 +179,11 @@ public class TransitionTrigger : MonoBehaviour {
 		
 		MainManager.currentRoomString = "room00";
 		MainManager._MainManager.UnlockNextLevelOnly();
+		
+		StatsManager.levelDoned[MainManager.currentLevel - 1] = true;
+		Debug.Log("The level " + MainManager.currentLevel + " are done = " + StatsManager.levelDoned[MainManager.currentLevel - 1]);
+		
+		HUDManager.hudManager.OffAction();
 		
 		/*
 		if(!nextLvlUnlocked){

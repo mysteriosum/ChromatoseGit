@@ -19,6 +19,7 @@ public class Npc2 : MonoBehaviour {
 	private Color myColor = Color.red;
 	private bool _ColorGone = false;
 	private bool setuped = false;
+	private bool triggered = false;
 
 	private string _redBounceString = "rNPC_bounce";
 	private string _greyBounceString = "rNPC_bounceGrey";
@@ -65,7 +66,9 @@ public class Npc2 : MonoBehaviour {
 	}
 	
 	void Trigger(){
+		if(triggered)return;
 		if(setuped){
+			triggered = true;
 			_AvatarScript.FillBucket(myColor);
 			MusicManager.soundManager.PlaySFX(14);
 			StatsManager.killedNpc++;

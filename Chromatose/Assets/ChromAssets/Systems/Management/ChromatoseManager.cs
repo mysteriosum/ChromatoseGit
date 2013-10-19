@@ -301,6 +301,7 @@ public class ChromatoseManager : MainManager {
 	Avatar.DeathAnim danim;		//avatar's death animation
 	public void Death(){
 		
+		HUDManager.hudManager.OffAction();
 		StopAllCoroutines();
 		
 		if(GameObject.FindGameObjectWithTag("miniBoss")){
@@ -332,6 +333,7 @@ public class ChromatoseManager : MainManager {
 				//ResetComicCounter();
 				Debug.Log("Passe par 1");
 				avatar.EmptyingBucket();
+				StatsManager.spaceBarActive = false;
 				avatar.CancelOutline();
 				avatar.Gone = true;
 				
@@ -352,6 +354,7 @@ public class ChromatoseManager : MainManager {
 					//avatar.SendMessage("FadeAlpha", 0f);
 				avatar.movement.SetVelocity(Vector2.zero);
 				StartCoroutine(OnDeath(0.15f));
+				StatsManager.spaceBarActive = false;
 				avatar.CancelOutline();
 				avatar.Gone = true;
 				//ResetColl();
@@ -382,6 +385,7 @@ public class ChromatoseManager : MainManager {
 	
 	public void LoadCheckpoint(tk2dAnimatedSprite anim, int index){
 		Destroy(danim.go);
+		
 		LevelSerializer.Resume();
 	}
 	
@@ -464,6 +468,7 @@ public class ChromatoseManager : MainManager {
 		
 			//Stop the Coroutine
 		StopAllCoroutines();
+		boss.GetComponent<EndBoss_DataBase>().onForward = false;
 		HUDManager.hudManager.OffAction();
 		
 		_AvatarScript.wantFightBoss = false;
@@ -480,9 +485,11 @@ public class ChromatoseManager : MainManager {
 		Destroy(danim.go);
 		avatar.Gone = false;
 		avatar.transform.position = curCheckpoint.transform.position;
-		avatar.transform.rotation = Quaternion.identity;
+		avatar.transform.rotation = curCheckpoint.transform.rotation;
 		avatar.movement.SetVelocity(Vector2.zero);
-
+		if(Application.loadedLevel != 1){
+			StatsManager.spaceBarActive = true;
+		}
 	}
 	
 	void TriggerQuestionMark(){
@@ -655,6 +662,7 @@ public class ChromatoseManager : MainManager {
 		RemoveCollectibles(Color.red, 1);
 		if(Application.loadedLevel == 12){
 			GameObject.FindGameObjectWithTag("Boss").GetComponent<EndBoss_DataBase>().nbWhiteColRecu ++;
+			GameObject.FindGameObjectWithTag("Boss").GetComponent<EndBoss_DataBase>().onSecurity = true;
 		}
 		Debug.Log("Boss Shoot");
 	}

@@ -40,6 +40,8 @@ public class ChuHudButton : MonoBehaviour {
 							HUDManager.hudManager.DesactiveBackButton();
 						}
 						else if(HUDManager.hudManager.menuWindows == _MenuWindowsEnum.CreditWindows){
+							HUDManager.hudManager.movieCredit.Stop();
+							HUDManager.hudManager.onCredit = false;
 							HUDManager.hudManager.menuWindows = _MenuWindowsEnum.LevelSelectionWindows;
 						}
 						else if(HUDManager.hudManager.menuWindows == _MenuWindowsEnum.OptionWindows){

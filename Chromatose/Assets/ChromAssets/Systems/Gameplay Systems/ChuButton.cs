@@ -71,11 +71,11 @@ public class ChuButton : MonoBehaviour {
 		}
 	}
 	void OnMouseExit(){
-		if(StatsManager.levelUnlocked[levelIndex - 1] == true){
-			mainSprite.SetSprite(0);
-		}
-		else if(StatsManager.levelDoned[levelIndex - 1] == true){
+		if(StatsManager.levelDoned[levelIndex - 1] == true){
 			mainSprite.SetSprite(3);
+		}
+		else if(StatsManager.levelUnlocked[levelIndex - 1] == true){
+			mainSprite.SetSprite(0);
 		}
 		else{
 			mainSprite.SetSprite(2);
@@ -88,11 +88,11 @@ public class ChuButton : MonoBehaviour {
 	
 	IEnumerator CheckUnlockable(){
 		yield return new WaitForSeconds(0.2f);
-		if(StatsManager.levelUnlocked[levelIndex - 1] == true){
-			mainSprite.SetSprite(0);
-		}
-		else if(StatsManager.levelDoned[levelIndex - 1] == true){
+		if(StatsManager.levelDoned[levelIndex - 1] == true){
 			mainSprite.SetSprite(3);
+		}
+		else if(StatsManager.levelUnlocked[levelIndex - 1] == true){
+			mainSprite.SetSprite(0);
 		}
 		else{
 			mainSprite.SetSprite(2);

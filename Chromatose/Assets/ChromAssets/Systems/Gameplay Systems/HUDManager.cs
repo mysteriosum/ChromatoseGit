@@ -131,7 +131,9 @@ public class HUDManager : MainManager {
 	
 		//VARIABLE LOADING
 	private Texture curLoadIcon;
-
+	
+	
+	private bool _OnCredit = false;
 	
 	//GETSET ACCESSOR
 	public bool afterComic { get { return _AfterComic; } set { _AfterComic = value; } }
@@ -139,7 +141,7 @@ public class HUDManager : MainManager {
 	public bool onFlash { get { return _OnFlash; } set { _OnFlash = value; } }
 	public bool firstStart { get { return _FirstStart; } set { _FirstStart = value; } }
 	public bool onErase { get { return _OnErase; } set { _OnErase = value; } }
-	
+	public bool onCredit { get { return _OnCredit; } set { _OnCredit = value; } }
 	
 	public GUIStateEnum guiState { get { return _GUIState; } set { _GUIState = value; } }
 	public _MenuWindowsEnum menuWindows { get { return _MenuWindows; } set { _MenuWindows = value; } }
@@ -513,7 +515,6 @@ public class HUDManager : MainManager {
 	public void ResetTitleBool(){
 		movieTitle.Stop();
 		movieStart.Stop();
-		movieCredit.Stop();
 		movieExit.Stop();
 		moviePressStart.Stop();
 		_CanShowPressStartAnim = false;
@@ -555,7 +556,6 @@ public class HUDManager : MainManager {
 	public void ResetAllMovie(){
 		movieTitle.Stop();
 		movieStart.Stop();
-		movieCredit.Stop();
 		movieExit.Stop();
 	}
 	
@@ -614,7 +614,7 @@ public class HUDManager : MainManager {
 
 				//DRAW LA FENETRE DES CREDITS
 			case _MenuWindowsEnum.CreditWindows:
-				//DrawCreditsScreen();
+				DrawCreditsScreen();
 				break;
 	
 				//DRAW LA FENETRE DE SELECTION DE KEYBOARD
@@ -879,7 +879,7 @@ public class HUDManager : MainManager {
 	
 		
 		GUI.skin = mainMenuButtonSkin;
-		if(GUI.Button(new Rect(400, 175, 501, 149), "")){
+		if(GUI.Button(new Rect(450, 325, 372, 159), "")){
 			Pause();
 			MusicManager.soundManager.StopSFX(12);
 			GameObject.FindGameObjectWithTag("avatar").GetComponent<Avatar>().EmptyingBucket();
@@ -892,7 +892,7 @@ public class HUDManager : MainManager {
 		}
 		
 		GUI.skin = pauseBackButton;
-		if(GUI.Button(new Rect(450, 325, 372, 159), "")){
+		if(GUI.Button(new Rect(400, 175, 501, 149), "")){ 
 			Pause();
 			StartHudOpenSequence();
 		}					
@@ -916,7 +916,6 @@ public class HUDManager : MainManager {
 			//START DES ANIM DU TITLESCREEN
 		movieTitle.Play();
 		movieStart.Play();
-		movieCredit.Play();
 		movieExit.Play();
 		
 			//BACKGROUND
@@ -977,8 +976,12 @@ public class HUDManager : MainManager {
 	
 		//DRAW LE CREDITS SCREEN
 	void DrawCreditsScreen(){
-		
-		
+		if(!movieCredit.isPlaying && !_OnCredit){
+			_OnCredit = true;
+			movieCredit.loop = true;
+			movieCredit.Play();
+		}
+		GUI.DrawTexture(new Rect(486, 112, 308, 496), movieCredit);
 	}
 		
 		//DRAW LE FAKE SPLASH SCREEN
@@ -1100,5 +1103,9 @@ public class HUDManager : MainManager {
 	IEnumerator ResetFromGame(){
 		yield return new WaitForSeconds(4.0f);
 		_FromGame = false;
+	}
+	IEnumerator PlayCredit(){
+		yield return new WaitForSeconds(4f);
+		movieCredit.Play();
 	}
 }

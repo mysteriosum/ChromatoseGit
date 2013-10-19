@@ -9,6 +9,7 @@ public class RedBarrierScript : MonoBehaviour {
 	private tk2dAnimatedSprite[] myFlames;
 	
 	private bool _CanDie = false;
+	private bool _OnDie = false;
 	private bool _Gone = false;
 	private float _FadingCounter = 1;
 	private float _FadeRate = 0.005f;
@@ -56,12 +57,14 @@ public class RedBarrierScript : MonoBehaviour {
 	
 	void OnCollisionEnter(Collision other){
 		if(other.gameObject.tag != "avatar") return;
+		if(_OnDie)return;
 		
 		Avatar avatar = other.gameObject.GetComponent<Avatar>();
 		bool sameColour = avatar.curColor == Color.red? true : false;
 		
 		if(sameColour){
 			//_CanDie = true;
+			_OnDie = true;
 			PlayDie();
 		}
 		else{

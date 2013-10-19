@@ -701,11 +701,7 @@ public class Avatar : MainManager{
 #endregion
 	
 	void OnLevelWasLoaded(){
-		switch(Application.loadedLevel){
-		case (1):
-			StatsManager.spaceBarActive = false;
-			break;
-		}
+		
 	}
 
 	void Start (){	

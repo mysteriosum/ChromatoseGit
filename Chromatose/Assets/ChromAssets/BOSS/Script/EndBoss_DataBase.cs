@@ -61,7 +61,8 @@ public class EndBoss_DataBase : MonoBehaviour {
 	private bool _AlreadyShooten = false; public bool alreadyShooten { get { return _AlreadyShooten; } set { _AlreadyShooten = value; } }
 	private bool _ReadyToBlow = false;
 	private bool _CanForward = false;
-	
+	private bool _OnForward = false; public bool onForward { get { return _OnForward; } set { _OnForward = value; } }
+	private bool _OnSecurity = false; public bool onSecurity { get { return _OnSecurity; } set { _OnSecurity = value; } }
 
 	private float _BossJourneyLength;
 	private float _JourneyStartTime;
@@ -179,6 +180,9 @@ public class EndBoss_DataBase : MonoBehaviour {
 	
 		//Public Translate
 	public void Forward(){
+		
+		
+		
 		if(_CanForward){
 			float distCovered = (Time.time - _JourneyStartTime) * 100; //10 = speed a changer au besoin
 			float fracJourney = distCovered / _BossJourneyLength;
@@ -194,6 +198,7 @@ public class EndBoss_DataBase : MonoBehaviour {
 			gameObject.transform.position = Vector3.Lerp(placeForBoss[1].position, placeForBoss[0].position, fracJourney);
 			if(Vector3.Distance(placeForBoss[0].position, gameObject.transform.position) < 10){
 				NextRound();
+				_OnForward = false;
 			}
 		}
 	}
@@ -208,12 +213,14 @@ public class EndBoss_DataBase : MonoBehaviour {
 		//Main Trigger Assignation Function [PayZONE]
 	void OnTriggerEnter(Collider other){
 		if(other.tag != "avatar")return;
+		if(_OnForward)return;
 		_PlayerInPayZone = true;
 		
 		
 	}
 	void OnTriggerStay(Collider other){
 		if(other.tag != "avatar")return;
+		if(_OnForward)return;
 		if(!_PlayerInPayZone){
 			_PlayerInPayZone = true;
 		}
@@ -225,6 +232,7 @@ public class EndBoss_DataBase : MonoBehaviour {
 	}
 	void OnTriggerExit(Collider other){
 		if(other.tag != "avatar")return;
+		if(_OnForward)return;
 		HUDManager.hudManager.OffAction();
 	}
 	
@@ -239,6 +247,10 @@ public class EndBoss_DataBase : MonoBehaviour {
 		
 		if(StatsManager.redCollDisplayed >= requiredPayment){
 			if(!_AlreadyShooten){
+				if(!_OnForward){
+					_OnForward = true;
+					HUDManager.hudManager.OffAction();
+				}
 				ChromatoseManager.manager.ShootRedCollOnMini(requiredPayment, transform.position);
 				_AlreadyShooten = true;
 				StartCoroutine(ResetShooten(2.5f));

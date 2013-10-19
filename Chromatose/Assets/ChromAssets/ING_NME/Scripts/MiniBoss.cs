@@ -48,6 +48,7 @@ public class MiniBoss : MonoBehaviour {
 		if(_OnDie){
 			_MainAnim.color -= new Color (0, 0, 0, 0.01f);
 			if(_MainAnim.color.a <= 0){
+				HUDManager.hudManager.OffAction();
 				Destroy(this.gameObject);
 			}
 		}
