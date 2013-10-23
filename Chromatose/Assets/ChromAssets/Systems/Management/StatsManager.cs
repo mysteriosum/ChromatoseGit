@@ -34,6 +34,7 @@ public class StatsManager : MainManager {
 	public static bool newLevel;
 	
 	public static bool spaceBarActive;
+	public static bool alreadyTakeSpace;
 	public static float musicVolume = 0.95f;
 	public static float sfxVolume = 0.95f;
 	public static bool keyboardAlreadyChoose = false;

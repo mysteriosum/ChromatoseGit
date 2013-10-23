@@ -487,7 +487,7 @@ public class ChromatoseManager : MainManager {
 		avatar.transform.position = curCheckpoint.transform.position;
 		avatar.transform.rotation = curCheckpoint.transform.rotation;
 		avatar.movement.SetVelocity(Vector2.zero);
-		if(Application.loadedLevel != 1){
+		if(Application.loadedLevel != 1 || StatsManager.alreadyTakeSpace){
 			StatsManager.spaceBarActive = true;
 		}
 	}

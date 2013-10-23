@@ -576,7 +576,9 @@ public class HUDManager : MainManager {
 			
 				//DRAW L'INTERFACE EN JEU
 		case GUIStateEnum.Interface:
-			DrawInterfaceHUD();
+			if(Application.loadedLevel != 12){
+				DrawInterfaceHUD();
+			}
 			return;
 			break;
 			
@@ -1011,13 +1013,13 @@ public class HUDManager : MainManager {
 		GUI.skin.textArea.normal.textColor = Color.black;
 		
 		GUI.DrawTexture(new Rect(536f, 75f, 237f, 115f), whiteColTex);
-		GUI.TextArea(new Rect(635f, 130f, 170f, 50f), StatsManager.whiteCollDisplayed.ToString() + " / " + "426");
+		GUI.TextArea(new Rect(635f, 130f, 170f, 50f), StatsManager.whiteCollDisplayed.ToString() + " / " + "423");
 		GUI.DrawTexture(new Rect(528f, 169f, 240f, 99f), redColTex);
-		GUI.TextArea(new Rect(635f, 209f, 170f, 50f), StatsManager.redCollDisplayed.ToString() + " / " + "47");
+		GUI.TextArea(new Rect(635f, 209f, 170f, 50f), StatsManager.redCollDisplayed.ToString() + " / " + "50");
 		GUI.DrawTexture(new Rect(530f, 245f, 224f, 102f), blueColText);
-		GUI.TextArea(new Rect(635f, 288, 170f, 50f), StatsManager.blueCollDisplayed.ToString() + " / " + "66");
+		GUI.TextArea(new Rect(635f, 288, 170f, 50f), StatsManager.blueCollDisplayed.ToString() + " / " + "77");
 		GUI.DrawTexture(new Rect(530f, 330f, 236f, 96f), comicTex);
-		GUI.TextArea(new Rect(635f, 370f, 170f, 50f), StatsManager.comicThumbDisplayed.ToString() + " / " + "100");
+		GUI.TextArea(new Rect(635f, 370f, 170f, 50f), StatsManager.comicThumbDisplayed.ToString() + " / " + "87");
 		GUI.DrawTexture(new Rect(528f, 410f, 232f, 105f), deathCountTex);
 		GUI.skin.textArea.fontSize = 30;
 		GUI.TextArea(new Rect(620f, 465f, 50f, 50f), StatsManager.deathCounter.ToString());

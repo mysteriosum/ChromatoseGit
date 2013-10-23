@@ -141,12 +141,16 @@ public class MainManager : MonoBehaviour {
 		_StatsManager = GetComponentInChildren<StatsManager>();
 	}
 	void OnLevelWasLoaded(){
-		if(Application.loadedLevel != 1){
+		if(Application.loadedLevel != 1 ){
 			StatsManager.spaceBarActive = true;
 		}
 		else{
 			StatsManager.spaceBarActive = false;
 		}
+		if(StatsManager.alreadyTakeSpace){
+			StatsManager.spaceBarActive = true;
+		}
+		
 		StartingDebug();
 		CheckWhereIAm();
 		StartCoroutine(SetupRoom());

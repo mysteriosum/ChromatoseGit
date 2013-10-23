@@ -137,7 +137,7 @@ public class Collectible2 : MonoBehaviour {
 		if(Vector3.Distance(gameObject.transform.position, _RedCollectorPos) < 15 && !_Retour){
 			_Retour = true;
 		}
-		if(Vector3.Distance(gameObject.transform.position, Application.loadedLevel != 12? randomPos: bossSpotForBullet) < 15 && _Retour && _Effect){
+		if(Vector3.Distance(gameObject.transform.position, bossSpotForBullet) < 25 && _Retour && _Effect){
 			_Effect = false;
 			Debug.Log("Redevient Coll");
 		}
